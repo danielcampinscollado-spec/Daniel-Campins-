@@ -37,12 +37,5 @@ function openNewClient(){
 
   section.appendChild(item);
 }
-  const name = prompt('Nombre del nuevo cliente:');
-  if(!name) return;
-  const list = document.querySelector('#coach-clients .grid.g3');
-  const item = document.createElement('div');
-  item.className = 'item';
-  item.innerHTML = '<b>' + name + '</b><br><span class="muted">Nuevo cliente</span>';
-  list.appendChild(item);
-}
+ 
 </script></body></html>
