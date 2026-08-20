@@ -28,6 +28,17 @@ function go(app,id){document.querySelectorAll('#'+app+' .screen').forEach(x=>x.c
 function openNewClient(){
   const name = prompt('Nombre del nuevo cliente:');
   if(!name) return;
+
+  const section = document.getElementById('coach-clients');
+
+  const item = document.createElement('div');
+  item.className = 'card';
+  item.innerHTML = '<b>' + name + '</b><br><span class="muted">Nuevo cliente · Pendiente</span>';
+
+  section.appendChild(item);
+}
+  const name = prompt('Nombre del nuevo cliente:');
+  if(!name) return;
   const list = document.querySelector('#coach-clients .grid.g3');
   const item = document.createElement('div');
   item.className = 'item';
