@@ -29,11 +29,17 @@ function openNewClient(){
   const name = prompt('Nombre del nuevo cliente:');
   if(!name) return;
 
+  const weight = prompt('Peso actual (kg):');
+  if(!weight) return;
+
+  const goal = prompt('Objetivo (pérdida de grasa, recomposición o ganancia muscular):');
+  if(!goal) return;
+
   const section = document.getElementById('coach-clients');
 
   const item = document.createElement('div');
   item.className = 'card';
-  item.innerHTML = '<b>' + name + '</b><br><span class="muted">Nuevo cliente · Pendiente</span>';
+  item.innerHTML = '<b>' + name + '</b><br><span class="muted">' + goal + ' · ' + weight + ' kg · Pendiente</span>';
 
   section.appendChild(item);
 }
