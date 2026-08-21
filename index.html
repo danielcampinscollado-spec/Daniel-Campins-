@@ -29,7 +29,7 @@
 <script>
 function openApp(x){document.getElementById('login').style.display='none';document.getElementById('client').style.display=x==='client'?'block':'none';document.getElementById('coach').style.display=x==='coach'?'block':'none'}
 function logout(){document.getElementById('login').style.display='grid';document.getElementById('client').style.display='none';document.getElementById('coach').style.display='none'}
-function go(app,id){document.querySelectorAll('#'+app+' .screen').forEach(x=>x.classList.remove('on'));let e=document.getElementById(app+'-'+id);if(e)e.classList.add('on');if(app==='coach'){const names={carlos:'Carlos García',laura:'Laura Martín',marcos:'Marcos López',pedro:'Pedro'};if(names[id])window.selectedClient=id;const selected=window.selectedClient;const nameEl=document.getElementById('selected-client-name');if(nameEl&&selected)nameEl.textContent=names[selected];}window.scrollTo(0,0)}{document.querySelectorAll('#'+app+' .screen').forEach(x=>x.classList.remove('on'));let e=document.getElementById(app+'-'+id);if(e)e.classList.add('on');window.scrollTo(0,0)}
+function go(app,id){document.querySelectorAll('#'+app+' .screen').forEach(x=>x.classList.remove('on'));let e=document.getElementById(app+'-'+id);if(e)e.classList.add('on');if(app==='coach'){const names={carlos:'Carlos García',laura:'Laura Martín',marcos:'Marcos López',pedro:'Pedro'};if(names[id])window.selectedClient=id;const selected=window.selectedClient;const nameEl=document.getElementById('selected-client-name');if(nameEl&&selected)nameEl.textContent=names[selected];}window.scrollTo(0,0)}
 function openNewClient(){
   const name = prompt('Nombre del nuevo cliente:');
   if(!name) return;
