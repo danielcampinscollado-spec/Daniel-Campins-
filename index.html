@@ -1043,6 +1043,102 @@ label{
   line-height:1.55;
   text-align:center;
 }
+/* NUEVO DISEÑO DE LOS PANELES */
+.login .choices .choice{
+  min-height:205px !important;
+  padding:28px 24px 24px !important;
+  border-radius:24px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  text-align:center !important;
+  gap:0 !important;
+}
+
+.login .choices .choice-icon{
+  width:86px !important;
+  height:86px !important;
+  min-height:86px !important;
+  border-radius:50% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 auto 20px !important;
+  background:rgba(20,24,32,.95) !important;
+  box-shadow:0 0 28px rgba(218,170,74,.20) !important;
+}
+
+.login .choices .choice-icon span{
+  font-size:38px !important;
+  color:#f5d27a !important;
+}
+
+.login .choices .choice b{
+  display:block !important;
+  font-size:27px !important;
+  line-height:1.15 !important;
+  letter-spacing:.3px !important;
+  margin:0 !important;
+}
+
+.login .choices .choice-line{
+  width:60px !important;
+  height:3px !important;
+  background:#d9aa4a !important;
+  margin:18px auto 22px !important;
+}
+
+.login .choices .choice-icons{
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:22px !important;
+  margin-bottom:20px !important;
+}
+
+.login .choices .choice-icons span{
+  font-size:25px !important;
+  line-height:1 !important;
+}
+
+.login .choices .choice-description{
+  display:block !important;
+  max-width:430px !important;
+  font-size:18px !important;
+  line-height:1.45 !important;
+  color:rgba(255,255,255,.62) !important;
+}
+
+.login .choices .choice-admin{
+  border-color:rgba(217,170,74,.75) !important;
+}
+
+.login .choices .choice-admin .choice-icon{
+  box-shadow:0 0 32px rgba(217,170,74,.28) !important;
+}
+
+@media(max-width:600px){
+  .login .choices .choice{
+    min-height:260px !important;
+    padding:30px 20px 26px !important;
+  }
+
+  .login .choices .choice-icon{
+    width:82px !important;
+    height:82px !important;
+    min-height:82px !important;
+    margin-bottom:18px !important;
+  }
+
+  .login .choices .choice b{
+    font-size:27px !important;
+  }
+
+  .login .choices .choice-description{
+    font-size:17px !important;
+  }
+}
 </style>
 </head>
 
