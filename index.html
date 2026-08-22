@@ -1631,6 +1631,7 @@ html=`
 <div class="top"><div><h1>Constructor de entrenamiento</h1><p class="muted">Crea y edita la rutina.</p></div></div>
 <div class="card"><h2>Cliente seleccionado</h2><div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
 <button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
+</div>
 <div class="card"><h2>Rutina</h2>
 ${routine.length?routine.map((r,i)=>`
 <div class="exercise">
@@ -1653,7 +1654,12 @@ Eliminar
 
 </div>
 `).join(""):"<div class='empty'>No hay ejercicios todavía.</div>"}
-}
+
+<button class="btn" onclick="addExercise('${selected}')">
++ Añadir ejercicio
+</button>
+
+</div>`;
 
 if(screen==="messages"){
 html=`
