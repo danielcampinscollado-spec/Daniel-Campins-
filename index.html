@@ -712,6 +712,23 @@ if(currentApp==="coach")showClientAdmin(id);
 toast("Peso actualizado");
 }
 
+function editDietMarcos(id,type){
+const diet=data.diets[id]?.[type];
+if(!diet)return;
+
+const calories=prompt("Calorías:",diet.calories||"");
+if(calories===null)return;
+
+const protein=prompt("Proteína:",diet.protein||"");
+if(protein===null)return;
+
+diet.calories=calories;
+diet.protein=protein;
+
+saveData();
+window.coachDietType=type;
+showCoach("diets");
+}
 function addMeal(id,type){
 const name=prompt("Nombre de la comida:");
 if(!name)return;
