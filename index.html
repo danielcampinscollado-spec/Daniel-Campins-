@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daniel Campins</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#101820}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:#071019}
+.login-box{width:min(720px,100%);background:white;border-radius:26px;padding:34px}
+.logo{font-size:25px;font-weight:800;letter-spacing:4px}
+.muted{color:#68717b}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.choice{padding:26px;border:1px solid #ddd;border-radius:16px;background:white;text-align:left}
+.choice.dark{background:#101a23;color:white}
+.choice b{display:block;font-size:19px;margin-bottom:8px}
+.app{display:none;min-height:100vh}
+.side{position:fixed;left:0;top:0;bottom:0;width:235px;background:#071019;color:white;padding:24px 14px;z-index:10}
+.side h2{font-size:17px;letter-spacing:3px;padding:0 10px 20px;border-bottom:1px solid #26313b}
+.nav button{display:block;width:100%;border:0;background:none;color:#dce2e7;text-align:left;padding:12px;border-radius:9px;margin:3px 0}
+.nav button:hover,.nav button.active{background:#17232d;color:#e7bd59}
+.out{position:absolute;bottom:20px;left:14px;right:14px;background:none;color:#ddd;border:1px solid #34404b;padding:9px;border-radius:8px}
+main{margin-left:235px;padding:30px;max-width:1350px}
+.screen{display:none}.screen.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:1.4fr .8fr}.g3{grid-template-columns:repeat(3,1fr)}
+.card{background:white;border:1px solid #e3e7eb;border-radius:15px;padding:20px;margin-bottom:16px}
+.metric b{display:block;font-size:26px;margin:6px 0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr)}
+.metric{padding:8px 15px;border-right:1px solid #e5e7eb}
+.metric:last-child{border:0}
+.item{padding:13px 0;border-bottom:1px solid #e7e9ec}
+.item:last-child{border:0}
+.btn{background:#e7b957;border:0;padding:11px 16px;border-radius:8px;font-weight:700}
+.ghost{background:white;border:1px solid #d8dce0;padding:9px 12px;border-radius:8px}
+.danger{background:#fff0f0;color:#c0392b;border:1px solid #f0caca;padding:9px 12px;border-radius:8px}
+.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#edf3ff;color:#356ae6;font-size:11px;font-weight:700}
+.client-row{padding:16px;border-bottom:1px solid #e5e7eb;cursor:pointer}
+.client-row:hover{background:#fafafa}
+.client-row:last-child{border:0}
+.exercise,.food{border:1px solid #e1e5e8;border-radius:10px;padding:13px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.food-actions,.exercise-actions{display:flex;gap:7px;align-items:center}
+textarea,input,select{width:100%;padding:11px;border:1px solid #d7dce0;border-radius:8px;background:white}
+label{display:block;font-weight:700;margin:12px 0 6px}
+.empty{padding:25px;text-align:center;color:#7a838c}
+.modal{position:fixed;inset:0;background:#0008;display:none;place-items:center;padding:20px;z-index:50}
+.modal-box{background:white;width:min(500px,100%);border-radius:18px;padding:24px;max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+.toast{position:fixed;right:20px;bottom:20px;background:#071019;color:white;padding:13px 17px;border-radius:10px;display:none;z-index:100}
+@media(max-width:700px){
+.side{width:100%;height:66px;top:auto;bottom:0;padding:6px;z-index:20}
+.side h2,.out{display:none}
+.nav{display:flex;justify-content:space-around}
+.nav button{width:auto;margin:0;padding:10px 8px;text-align:center}
+.nav button span{display:none}
+main{margin:0 0 66px;padding:18px}
+.choices,.g2,.g3{grid-template-columns:1fr}
+.metrics{grid-template-columns:1fr}
+.metric{border:0;border-bottom:1px solid #eee}
+.top{align-items:flex-start}
+.top .btn{white-space:nowrap}
+}
+</style>
+</head>
+
+<body>
+
+<div id="login" class="login">
+<div class="login-box">
+<div class="logo">DANIEL CAMPINS</div>
+<p class="muted">Transformación física personalizada</p>
+<div class="choices">
+<button class="choice" onclick="openApp('client')">
+<b>👤 Área cliente</b>
+<span class="muted">Alimentación, entrenamiento, progreso, check-in y mensajes.</span>
+</button>
+<button class="choice dark" onclick="openApp('coach')">
+<b>🧑‍💼 Panel Daniel</b>
+<span>Clientes, dietas, rutinas, check-ins y mensajes.</span>
+</button>
+</div>
+</div>
+</div>
+
+<div id="client" class="app">
+<aside class="side">
+<h2>DANIEL CAMPINS</h2>
+<div class="nav" id="client-nav"></div>
+<button class="out" onclick="logout()">Salir</button>
+</aside>
+<main id="client-main"></main>
+</div>
+
+<div id="coach" class="app">
+<aside class="side">
+<h2>DANIEL CAMPINS</h2>
+<div class="nav" id="coach-nav"></div>
+<button class="out" onclick="logout()">Salir</button>
+</aside>
+<main id="coach-main"></main>
+</div>
+
+<div id="modal" class="modal">
+<div class="modal-box" id="modal-content"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY="danielCampinsApp";
+
+const defaultData={
+clients:[
+{id:"carlos",name:"Carlos García",goal:"Recomposición",weight:78.4,initial:80,plan:"2.250 kcal · 180 g proteína",status:"Revisado"},
+{id:"laura",name:"Laura Martín",goal:"Pérdida de grasa",weight:64.2,initial:64.2,plan:"Plan pendiente",status:"Pendiente"},
+{id:"marcos",name:"Marcos López",goal:"Ganancia muscular",weight:70,initial:70,plan:"Plan pendiente",status:"Pendiente"},
+{id:"pedro",name:"Pedro",goal:"Pérdida de grasa",weight:70,initial:70,plan:"Plan pendiente",status:"Pendiente"}
+],
+diets:{
+carlos:[
+{name:"Desayuno",foods:[["Whey","30 g"],["Avena","60 g"],["Plátano","1 unidad"]]},
+{name:"Comida",foods:[["Pollo","180 g"],["Arroz","100 g"]]},
+{name:"Cena",foods:[["Pescado","180 g"],["Patata","250 g"]]}
+]
+},
+routines:{
+carlos:[
+["Press banca","4","8–10"],
+["Press inclinado","3","10–12"],
+["Elevaciones laterales","3","12–15"],
+["Press militar","3","8–10"]
+]
+},
+weights:{
+carlos:[80,78.4],
+laura:[64.2],
+marcos:[70],
+pedro:[70]
+},
+checkins:{
+carlos:{weight:"78,4 kg",diet:"9 / 10",training:"8 / 10",comment:"Todo bien esta semana.",reviewed:true},
+laura:{weight:"64,2 kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false},
+marcos:{weight:"70 kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false},
+pedro:{weight:"70 kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false}
+},
+messages:{
+carlos:[["Daniel","Perfecto, Carlos. Sigue así esta semana."],["Carlos","Gracias Dani, lo haré."]],
+laura:[],
+marcos:[["Marcos","Nuevo mensaje"]],
+pedro:[]
+}
+};
+
+let data=loadData();
+let currentApp="";
+let currentScreen="";
+
+function loadData(){
+try{
+const saved=localStorage.getItem(KEY);
+if(saved)return Object.assign({},defaultData,JSON.parse(saved));
+}catch(e){}
+return JSON.parse(JSON.stringify(defaultData));
+}
+
+function saveData(){
+localStorage.setItem(KEY,JSON.stringify(data));
+}
+
+function esc(value){
+return String(value??"").replace(/[&<>"']/g,function(c){
+return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
+});
+}
+
+function client(id){
+return data.clients.find(c=>c.id===id);
+}
+
+function money(n){
+return Number(n).toFixed(1).replace(".",",");
+}
+
+function toast(msg){
+const t=document.getElementById("toast");
+t.textContent=msg;
+t.style.display="block";
+setTimeout(()=>t.style.display="none",2200);
+}
+
+function openApp(app){
+currentApp=app;
+document.getElementById("login").style.display="none";
+document.getElementById("client").style.display=app==="client"?"block":"none";
+document.getElementById("coach").style.display=app==="coach"?"block":"none";
+
+if(app==="client"){
+buildClientNav();
+showClient("home");
+}else{
+buildCoachNav();
+showCoach("dashboard");
+}
+}
+
+function logout(){
+document.getElementById("login").style.display="grid";
+document.getElementById("client").style.display="none";
+document.getElementById("coach").style.display="none";
+}
+
+function navButton(icon,text,fn){
+return '<button onclick="'+fn+'">'+icon+' <span>'+text+"</span></button>";
+}
+
+function buildClientNav(){
+document.getElementById("client-nav").innerHTML=
+navButton("⌂","Inicio","showClient('home')")+
+navButton("👤","Mi perfil","showClient('profile')")+
+navButton("🍴","Alimentación","showClient('food')")+
+navButton("🏋️","Entrenamiento","showClient('training')")+
+navButton("📈","Progreso","showClient('progress')")+
+navButton("✓","Check-in","showClient('checkin')")+
+navButton("💬","Coach","showClient('coach')");
+}
+
+function buildCoachNav(){
+document.getElementById("coach-nav").innerHTML=
+navButton("▦","Dashboard","showCoach('dashboard')")+
+navButton("👥","Clientes","showCoach('clients')")+
+navButton("✓","Check-ins","showCoach('checkins')")+
+navButton("🍴","Dietas","showCoach('diets')")+
+navButton("🏋️","Rutinas","showCoach('routines')")+
+navButton("💬","Mensajes","showCoach('messages')");
+}
+
+function showClient(screen){
+currentScreen=screen;
+const main=document.getElementById("client-main");
+const c=data.clients[0];
+
+let html="";
+
+if(screen==="home"){
+html=`
+<div class="top"><div><p class="muted">Área cliente</p><h1>${esc(c.name)}, bienvenido</h1></div><span class="pill">SEMANA 3</span></div>
+<div class="grid g3">
+<div class="card"><small>Peso actual</small><div class="metric"><b>${money(c.weight)} kg</b><span class="muted">Inicio ${money(c.initial)} kg</span></div></div>
+<div class="card"><small>Entrenamientos</small><div class="metric"><b>3 / 4</b><span class="muted">Esta semana</span></div></div>
+<div class="card"><small>Alimentación</small><div class="metric"><b>85 %</b><span class="muted">Adherencia</span></div></div>
+</div>
+<div class="grid g2">
+<div class="card"><h2>Hoy</h2>
+<div class="item">🍴 <b>Comida pendiente</b></div>
+<div class="item">🏋️ <b>Push — Día 1</b></div>
+<div class="item">✓ <b>Check-in semanal</b></div></div>
+<div class="card"><h2>Mensaje de Daniel</h2><p class="muted">“Perfecto, Carlos. Sigue así esta semana.”</p></div>
+</div>`;
+}
+
+if(screen==="profile"){
+html=`
+<div class="top"><div><h1>Mi perfil</h1><p class="muted">Datos de tu proceso.</p></div></div>
+<div class="card"><h2>${esc(c.name)}</h2>
+<div class="item"><b>Objetivo</b><br>${esc(c.goal)}</div>
+<div class="item"><b>Peso actual</b><br>${money(c.weight)} kg</div>
+<div class="item"><b>Peso inicial</b><br>${money(c.initial)} kg</div>
+<div class="item"><b>Plan</b><br>${esc(c.plan)}</div>
+</div>`;
+}
+
+if(screen==="food"){
+const meals=data.diets.carlos||[];
+html=`
+<h1>Alimentación</h1>
+<p class="muted">Plan flexible · ${esc(c.plan)}</p>
+<div class="card">
+${meals.map(m=>`
+<div class="item"><h2>${esc(m.name)}</h2>
+${m.foods.map(f=>`<div class="food"><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`).join("")}
+</div>`).join("")}
+</div>`;
+}
+
+if(screen==="training"){
+const routine=data.routines.carlos||[];
+html=`
+<h1>Entrenamiento</h1>
+<p class="muted">Hoy · Push · ${routine.length} ejercicios</p>
+<div class="card" style="background:#071019;color:white">
+<h2>PUSH</h2><p style="color:#c8d0d8">Pecho · Hombro · Tríceps</p>
+<button class="btn" onclick="toast('Entrenamiento iniciado')">Empezar entrenamiento</button>
+</div>
+<div class="card">
+${routine.map(r=>`<div class="exercise"><b>${esc(r[0])}</b><span>${esc(r[1])} × ${esc(r[2])}</span></div>`).join("")}
+</div>`;
+}
+
+if(screen==="progress"){
+const history=data.weights.carlos||[c.initial,c.weight];
+const change=c.weight-c.initial;
+html=`
+<h1>Progreso</h1><p class="muted">Seguimiento de tu proceso.</p>
+<div class="grid g3">
+<div class="card"><small>Peso inicial</small><h2>${money(c.initial)} kg</h2></div>
+<div class="card"><small>Peso actual</small><h2>${money(c.weight)} kg</h2></div>
+<div class="card"><small>Cambio</small><h2>${change>=0?"+":""}${money(change)} kg</h2></div>
+</div>
+<div class="card"><h2>Historial de peso</h2>${history.map((w,i)=>`<div class="item">Registro ${i+1}<br><b>${money(w)} kg</b></div>`).join("")}</div>`;
+}
+
+if(screen==="checkin"){
+const x=data.checkins.carlos;
+html=`
+<h1>Check-in semanal</h1>
+<div class="card">
+<div class="item"><b>Peso</b><br>${esc(x.weight)}</div>
+<div class="item"><b>Alimentación</b><br>${esc(x.diet)}</div>
+<div class="item"><b>Entrenamiento</b><br>${esc(x.training)}</div>
+<div class="item"><b>Cómo me encuentro</b><br>${esc(x.comment)}</div>
+<button class="btn" onclick="sendClientCheckin()">Enviar check-in</button>
+</div>`;
+}
+
+if(screen==="coach"){
+const msgs=data.messages.carlos||[];
+html=`
+<h1>Coach</h1>
+<div class="card">
+${msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><p>${esc(m[1])}</p></div>`).join("")}
+<textarea id="client-message" placeholder="Escribe un mensaje..."></textarea>
+<button class="btn" style="margin-top:10px" onclick="sendClientMessage()">Enviar</button>
+</div>`;
+}
+
+main.innerHTML=html;
+window.scrollTo(0,0);
+}
+
+function sendClientCheckin(){
+data.checkins.carlos.reviewed=false;
+data.checkins.carlos.comment="Nuevo check-in enviado por Carlos.";
+saveData();
+toast("Check-in enviado a Daniel");
+}
+
+function sendClientMessage(){
+const box=document.getElementById("client-message");
+const text=box.value.trim();
+if(!text)return;
+data.messages.carlos.push(["Carlos",text]);
+saveData();
+showClient("coach");
+toast("Mensaje enviado");
+}
+
+function showCoach(screen){
+currentScreen=screen;
+const main=document.getElementById("coach-main");
+let html="";
+
+if(screen==="dashboard"){
+const pending=data.clients.filter(c=>c.status==="Pendiente").length;
+html=`
+<div class="top"><div><p class="muted">Panel privado</p><h1>Buenos días, Daniel</h1></div></div>
+<div class="grid g3">
+<div class="card"><small>Clientes activos</small><h2>${data.clients.length}</h2></div>
+<div class="card"><small>Check-ins pendientes</small><h2>${pending}</h2></div>
+<div class="card"><small>Mensajes nuevos</small><h2>${data.messages.carlos.length}</h2></div>
+</div>
+<div class="card"><h2>Acciones rápidas</h2>
+<button class="btn" onclick="showCoach('clients')">Gestionar clientes</button>
+<button class="ghost" onclick="showCoach('checkins')">Revisar check-ins</button>
+</div>`;
+}
+
+if(screen==="clients"){
+html=`
+<div class="top"><div><h1>Clientes</h1><p class="muted">Gestiona el proceso de cada persona.</p></div>
+<button class="btn" onclick="newClient()">+ Nuevo cliente</button></div>
+<div class="card">
+${data.clients.map(c=>`
+<div class="client-row" onclick="openClient('${c.id}')">
+<b>${esc(c.name)}</b><br>
+<span class="muted">${esc(c.goal)} · ${money(c.weight)} kg · ${c.status==="Revisado"?"✓ Revisado":"Pendiente"}</span>
+<br><button class="btn" style="margin-top:8px" onclick="event.stopPropagation();openClient('${c.id}')">Gestionar cliente</button>
+</div>`).join("")}
+</div>`;
+}
+
+if(screen==="checkins"){
+html=`
+<h1>Check-ins</h1>
+<p class="muted">Revisa el seguimiento de tus clientes.</p>
+<div class="card">
+${data.clients.map(c=>{
+const x=data.checkins[c.id]||{weight:money(c.weight)+" kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente",reviewed:false};
+return `<div class="item">
+<b>${esc(c.name)}</b><br>
+<span class="muted">${x.reviewed?"✓ Revisado":"Pendiente de revisión"}</span><br>
+<button class="btn" style="margin-top:8px" onclick="reviewCheckin('${c.id}')">${x.reviewed?"Ver check-in":"Revisar check-in"}</button>
+</div>`;
+}).join("")}
+</div>`;
+}
+
+if(screen==="diets"){
+const selected=window.selectedClient||"carlos";
+const c=client(selected);
+const meals=data.diets[selected]||[];
+html=`
+<div class="top"><div><h1>Constructor de alimentación</h1><p class="muted">Crea y edita el plan del cliente.</p></div></div>
+<div class="card"><h2>Cliente seleccionado</h2><div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
+<button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
+<div class="card"><h2>Comidas</h2>
+${meals.map((m,mi)=>`
+<div class="item"><h3>${esc(m.name)}</h3>
+${m.foods.map((f,fi)=>`<div class="food"><b>${esc(f[0])}</b><span>${esc(f[1])}</span><div class="food-actions"><button class="ghost" onclick="removeFood('${selected}',${mi},${fi})">Eliminar</button></div></div>`).join("")}
+<button class="btn" onclick="addFood('${selected}',${mi})">+ Añadir alimento</button>
+</div>`).join("")}
+<button class="ghost" onclick="addMeal('${selected}')">+ Añadir comida</button>
+</div>`;
+}
+
+if(screen==="routines"){
+const selected=window.selectedClient||"carlos";
+const c=client(selected);
+const routine=data.routines[selected]||[];
+html=`
+<div class="top"><div><h1>Constructor de entrenamiento</h1><p class="muted">Crea y edita la rutina.</p></div></div>
+<div class="card"><h2>Cliente seleccionado</h2><div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
+<button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
+<div class="card"><h2>Rutina</h2>
+${routine.length?routine.map((r,i)=>`
+<div class="exercise"><b>${esc(r[0])}</b><span>${esc(r[1])} × ${esc(r[2])}</span>
+<button class="ghost" onclick="removeExercise('${selected}',${i})">Eliminar</button></div>`).join(""):"<div class='empty'>No hay ejercicios todavía.</div>"}
+<button class="btn" onclick="addExercise('${selected}')">+ Añadir ejercicio</button>
+</div>`;
+}
+
+if(screen==="messages"){
+html=`
+<h1>Mensajes</h1>
+<div class="card">
+${data.clients.map(c=>`
+<div class="item"><b>${esc(c.name)}</b><br>
+<span class="muted">${esc((data.messages[c.id]||[]).slice(-1)[0]?.[1]||"Sin mensajes")}</span>
+<br><button class="ghost" style="margin-top:8px" onclick="openMessages('${c.id}')">Abrir conversación</button>
+</div>`).join("")}
+</div>`;
+}
+
+main.innerHTML=html;
+window.scrollTo(0,0);
+}
+
+function openClient(id){
+window.selectedClient=id;
+showClientAdmin(id);
+}
+
+function showClientAdmin(id){
+const c=client(id);
+if(!c)return;
+
+const history=data.weights[id]||[c.initial,c.weight];
+const change=c.weight-c.initial;
+
+document.getElementById("coach-main").innerHTML=`
+<button class="ghost" onclick="showCoach('clients')">← Clientes</button>
+<div class="top"><div><h1>${esc(c.name)}</h1><p class="muted">${esc(c.goal)}</p></div></div>
+
+<div class="grid g3">
+<div class="card"><small>Peso</small><h2>${money(c.weight)} kg</h2></div>
+<div class="card"><small>Alimentación</small><h2>${id==="carlos"?"9 / 10":"Pendiente"}</h2></div>
+<div class="card"><small>Entrenamiento</small><h2>${id==="carlos"?"8 / 10":"Pendiente"}</h2></div>
+</div>
+
+<div class="card">
+<h2>Gestionar ${esc(c.name)}</h2>
+<button class="btn" onclick="window.selectedClient='${id}';showCoach('diets')">🍴 Alimentación</button>
+<button class="btn" onclick="window.selectedClient='${id}';showCoach('routines')">🏋️ Entrenamiento</button>
+<button class="ghost" onclick="reviewCheckin('${id}')">✓ Check-in</button>
+</div>
+
+<div class="card">
+<h2>Evolución</h2>
+<div class="item"><b>Peso inicial</b><br>${money(c.initial)} kg</div>
+<div class="item"><b>Peso actual</b><br>${money(c.weight)} kg</div>
+<div class="item"><b>Cambio total</b><br>${change>=0?"+":""}${money(change)} kg</div>
+<div class="item"><b>Historial</b><br>${history.map(money).join(" → ")} kg</div>
+<button class="btn" onclick="addWeight('${id}')">+ Añadir peso</button>
+</div>
+
+<div class="card">
+<h2>Estado</h2>
+<p class="muted">${c.status==="Revisado"?"✓ Check-in revisado":"Pendiente de revisión"}</p>
+</div>`;
+}
+
+function newClient(){
+openModal(`
+<div class="modal-head"><h2>Nuevo cliente</h2><button class="ghost" onclick="closeModal()">✕</button></div>
+<label>Nombre</label><input id="new-name" placeholder="Nombre y apellidos">
+<label>Peso actual</label><input id="new-weight" placeholder="Ej. 75,5">
+<label>Objetivo</label><input id="new-goal" placeholder="Ej. Pérdida de grasa">
+<button class="btn" style="margin-top:18px" onclick="createClient()">Crear cliente</button>
+`);
+}
+
+function createClient(){
+const name=document.getElementById("new-name").value.trim();
+const weightText=document.getElementById("new-weight").value.trim();
+const goal=document.getElementById("new-goal").value.trim();
+
+if(!name||!weightText||!goal){
+toast("Completa todos los campos");
+return;
+}
+
+const weight=parseFloat(weightText.replace(",","."));
+if(!Number.isFinite(weight)||weight<=0){
+toast("Introduce un peso válido");
+return;
+}
+
+const id="client_"+Date.now();
+data.clients.push({id,name,goal,weight,initial:weight,plan:"Plan pendiente",status:"Pendiente"});
+data.weights[id]=[weight];
+data.checkins[id]={weight:money(weight)+" kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false};
+data.diets[id]=[];
+data.routines[id]=[];
+data.messages[id]=[];
+
+saveData();
+closeModal();
+showCoach("clients");
+toast("Cliente creado correctamente");
+}
+
+function addWeight(id){
+const c=client(id);
+if(!c)return;
+
+const text=prompt("Nuevo peso (kg):",money(c.weight));
+if(text===null)return;
+
+const value=parseFloat(text.replace(",","."));
+if(!Number.isFinite(value)||value<=0){
+toast("Introduce un peso válido");
+return;
+}
+
+c.weight=value;
+if(!data.weights[id])data.weights[id]=[c.initial];
+data.weights[id].push(value);
+saveData();
+
+if(currentApp==="coach")showClientAdmin(id);
+toast("Peso actualizado");
+}
+
+function addMeal(id){
+const name=prompt("Nombre de la comida:");
+if(!name)return;
+
+if(!data.diets[id])data.diets[id]=[];
+data.diets[id].push({name,foods:[]});
+saveData();
+showCoach("diets");
+}
+
+function addFood(id,mi){
+const food=prompt("Alimento:");
+if(!food)return;
+const qty=prompt("Cantidad:");
+if(!qty)return;
+
+if(!data.diets[id])data.diets[id]=[];
+if(!data.diets[id][mi])return;
+
+data.diets[id][mi].foods.push([food,qty]);
+saveData();
+showCoach("diets");
+}
+
+function removeFood(id,mi,fi){
+data.diets[id][mi].foods.splice(fi,1);
+saveData();
+showCoach("diets");
+}
+
+function addExercise(id){
+const name=prompt("Nombre del ejercicio:");
+if(!name)return;
+const sets=prompt("Series:");
+if(!sets)return;
+const reps=prompt("Repeticiones:");
+if(!reps)return;
+
+if(!data.routines[id])data.routines[id]=[];
+data.routines[id].push([name,sets,reps]);
+saveData();
+showCoach("routines");
+}
+
+function removeExercise(id,index){
+data.routines[id].splice(index,1);
+saveData();
+showCoach("routines");
+}
+
+function reviewCheckin(id){
+const c=client(id);
+const x=data.checkins[id]||{
+weight:money(c.weight)+" kg",
+diet:"Pendiente",
+training:"Pendiente",
+comment:"Pendiente",
+reviewed:false
+};
+
+openModal(`
+<div class="modal-head"><h2>Check-in · ${esc(c.name)}</h2><button class="ghost" onclick="closeModal()">✕</button></div>
+<div class="item"><b>Peso</b><br>${esc(x.weight)}</div>
+<div class="item"><b>Alimentación</b><br>${esc(x.diet)}</div>
+<div class="item"><b>Entrenamiento</b><br>${esc(x.training)}</div>
+<div class="item"><b>Comentario</b><br>${esc(x.comment)}</div>
+<button class="btn" onclick="markReviewed('${id}')">✓ Marcar como revisado</button>
+`);
+}
+
+function markReviewed(id){
+data.checkins[id].reviewed=true;
+client(id).status="Revisado";
+saveData();
+closeModal();
+showCoach("checkins");
+toast("Check-in marcado como revisado");
+}
+
+function openMessages(id){
+const c=client(id);
+const msgs=data.messages[id]||[];
+
+openModal(`
+<div class="modal-head"><h2>${esc(c.name)}</h2><button class="ghost" onclick="closeModal()">✕</button></div>
+<div id="conversation">
+${msgs.length?msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><p>${esc(m[1])}</p></div>`).join(""):"<div class='empty'>Sin mensajes.</div>"}
+</div>
+<textarea id="coach-message" placeholder="Escribe un mensaje..."></textarea>
+<button class="btn" style="margin-top:10px" onclick="sendCoachMessage('${id}')">Enviar</button>
+`);
+}
+
+function sendCoachMessage(id){
+const box=document.getElementById("coach-message");
+const text=box.value.trim();
+if(!text)return;
+
+if(!data.messages[id])data.messages[id]=[];
+data.messages[id].push(["Daniel",text]);
+saveData();
+closeModal();
+toast("Mensaje enviado");
+}
+
+function openModal(html){
+document.getElementById("modal-content").innerHTML=html;
+document.getElementById("modal").style.display="grid";
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+
+document.getElementById("modal").addEventListener("click",function(e){
+if(e.target===this)closeModal();
+});
+</script>
+
+</body>
+</html>
