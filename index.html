@@ -713,8 +713,16 @@ toast("Peso actualizado");
 }
 
 function editDietMarcos(id,type){
-const diet=data.diets[id]?.[type];
-if(!diet)return;
+if(!data.diets[id])data.diets[id]={};
+if(!data.diets[id][type]){
+data.diets[id][type]={
+calories:"",
+protein:"",
+meals:[]
+};
+}
+
+const diet=data.diets[id][type];
 
 const calories=prompt("Calorías:",diet.calories||"");
 if(calories===null)return;
