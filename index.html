@@ -120,11 +120,28 @@ clients:[
 {id:"pedro",name:"Pedro",goal:"Pérdida de grasa",weight:70,initial:70,plan:"Plan pendiente",status:"Pendiente"}
 ],
 diets:{
-carlos:[
+carlos:{
+training:{
+calories:"2.250 kcal",
+protein:"180 g",
+meals:[
 {name:"Desayuno",foods:[["Whey","30 g"],["Avena","60 g"],["Plátano","1 unidad"]]},
 {name:"Comida",foods:[["Pollo","180 g"],["Arroz","100 g"]]},
+{name:"Pre-entreno",foods:[["Yogur","200 g"],["Plátano","1 unidad"]]},
 {name:"Cena",foods:[["Pescado","180 g"],["Patata","250 g"]]}
 ]
+},
+rest:{
+calories:"2.050 kcal",
+protein:"180 g",
+meals:[
+{name:"Desayuno",foods:[["Huevos","3 unidades"],["Avena","40 g"],["Fruta","1 pieza"]]},
+{name:"Comida",foods:[["Pollo","180 g"],["Arroz","70 g"],["Verduras","libre"]]},
+{name:"Merienda",foods:[["Yogur","200 g"],["Frutos secos","20 g"]]},
+{name:"Cena",foods:[["Pescado","180 g"],["Patata","180 g"],["Verduras","libre"]]}
+]
+}
+}
 },
 routines:{
 carlos:[
@@ -273,15 +290,59 @@ html=`
 }
 
 if(screen==="food"){
-const meals=data.diets.carlos||[];
+const dietType=window.clientDietType||"training";
+const diet=data.diets.carlos?.[dietType]||{calories:"",protein:"",meals:[]};
+const meals=diet.meals||[];
+
 html=`
 <h1>Alimentación</h1>
-<p class="muted">Plan flexible · ${esc(c.plan)}</p>
+<p class="muted">Elige el tipo de día que corresponde hoy.</p>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0">
+<button class="${dietType==="training"?"btn":"ghost"}"
+onclick="window.clientDietType='training';showClient('food')">
+🏋️ Día de entrenamiento
+</button>
+
+<button class="${dietType==="rest"?"btn":"ghost"}"
+onclick="window.clientDietType='rest';showClient('food')">
+🛋️ Día de descanso
+</button>
+</div>
+
+<div class="card">
+<h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛋️ Día de descanso"}</h2>
+
+<div class="metrics">
+<div class="metric">
+<small>Calorías</small>
+<b>${esc(diet.calories)}</b>
+</div>
+
+<div class="metric">
+<small>Proteína</small>
+<b>${esc(diet.protein)}</b>
+</div>
+
+<div class="metric">
+<small>Comidas</small>
+<b>${meals.length}</b>
+</div>
+</div>
+</div>
+
 <div class="card">
 ${meals.map(m=>`
-<div class="item"><h2>${esc(m.name)}</h2>
-${m.foods.map(f=>`<div class="food"><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`).join("")}
-</div>`).join("")}
+<div class="item">
+<h2>${esc(m.name)}</h2>
+${m.foods.map(f=>`
+<div class="food">
+<b>${esc(f[0])}</b>
+<span>${esc(f[1])}</span>
+</div>
+`).join("")}
+</div>
+`).join("")}
 </div>`;
 }
 
