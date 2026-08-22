@@ -1633,10 +1633,26 @@ html=`
 <button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
 <div class="card"><h2>Rutina</h2>
 ${routine.length?routine.map((r,i)=>`
-<div class="exercise"><b>${esc(r[0])}</b><span>${esc(r[1])} × ${esc(r[2])}</span>
-<button class="ghost" onclick="removeExercise('${selected}',${i})">Eliminar</button></div>`).join(""):"<div class='empty'>No hay ejercicios todavía.</div>"}
-<button class="btn" onclick="addExercise('${selected}')">+ Añadir ejercicio</button>
-</div>`;
+<div class="exercise">
+
+${r[3]?`
+<img src="${esc(r[3])}"
+alt="${esc(r[0])}"
+style="width:120px;height:120px;object-fit:cover;border-radius:14px;">
+`:""}
+
+<div style="flex:1">
+<b>${esc(r[0])}</b>
+<span>${esc(r[1])} × ${esc(r[2])}</span>
+</div>
+
+<button class="ghost"
+onclick="removeExercise('${selected}',${i})">
+Eliminar
+</button>
+
+</div>
+`).join(""):"<div class='empty'>No hay ejercicios todavía.</div>"}
 }
 
 if(screen==="messages"){
