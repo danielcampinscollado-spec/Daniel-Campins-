@@ -1003,7 +1003,20 @@ label{
       </linearGradient>
     </defs>
 
-    <!-- D -->
+    <!-- C: se dibuja primero para quedar detrás -->
+    <path
+      d="M181 101
+         C173 88 160 82 145 82
+         C120 82 101 101 101 126
+         C101 151 120 169 145 169
+         C160 169 174 163 181 150"
+      fill="none"
+      stroke="url(#goldLogo)"
+      stroke-width="17"
+      stroke-linecap="butt"
+      stroke-linejoin="round"/>
+
+    <!-- D: se dibuja después y queda limpia por delante -->
     <path
       d="M48 135
          V42
@@ -1022,19 +1035,6 @@ label{
       stroke="url(#goldLogo)"
       stroke-width="17"
       stroke-linecap="square"/>
-
-    <!-- C desplazada hacia abajo y derecha -->
-    <path
-      d="M181 101
-         C173 88 160 82 145 82
-         C120 82 101 101 101 126
-         C101 151 120 169 145 169
-         C160 169 174 163 181 150"
-      fill="none"
-      stroke="url(#goldLogo)"
-      stroke-width="17"
-      stroke-linecap="butt"
-      stroke-linejoin="round"/>
 
   </svg>
 </div>
