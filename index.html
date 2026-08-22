@@ -471,21 +471,109 @@ return `<div class="item">
 if(screen==="diets"){
 const selected=window.selectedClient||"carlos";
 const c=client(selected);
-const meals=data.diets[selected]||[];
-html=`
-<div class="top"><div><h1>Constructor de alimentación</h1><p class="muted">Crea y edita el plan del cliente.</p></div></div>
-<div class="card"><h2>Cliente seleccionado</h2><div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
-<button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
-<div class="card"><h2>Comidas</h2>
-${meals.map((m,mi)=>`
-<div class="item"><h3>${esc(m.name)}</h3>
-${m.foods.map((f,fi)=>`<div class="food"><b>${esc(f[0])}</b><span>${esc(f[1])}</span><div class="food-actions"><button class="ghost" onclick="removeFood('${selected}',${mi},${fi})">Eliminar</button></div></div>`).join("")}
-<button class="btn" onclick="addFood('${selected}',${mi})">+ Añadir alimento</button>
-</div>`).join("")}
-<button class="ghost" onclick="addMeal('${selected}')">+ Añadir comida</button>
-</div>`;
-}
+const dietType=window.coachDietType||"training";
+const diet=data.diets[selected]?.[dietType]||{calories:"",protein:"",meals:[]};
+const meals=diet.meals||[];
 
+html=`
+<div class="top">
+<div>
+<h1>Constructor de alimentación</h1>
+<p class="muted">Crea y edita las dos dietas del cliente.</p>
+</div>
+</div>
+
+<div class="card">
+<h2>Cliente seleccionado</h2>
+<div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
+<button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button>
+</div>
+
+<div class="card">
+<h2>Tipo de dieta</h2>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+
+<button class="${dietType==="training"?"btn":"ghost"}"
+onclick="window.coachDietType='training';showCoach('diets')">
+🏋️ Día de entrenamiento
+</button>
+
+<button class="${dietType==="rest"?"btn":"ghost"}"
+onclick="window.coachDietType='rest';showCoach('diets')">
+🛋️ Día de descanso
+</button>
+
+</div>
+</div>
+
+<div class="card">
+<h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛋️ Día de descanso"}</h2>
+
+<div class="metrics">
+
+<div class="metric">
+<small>Calorías</small>
+<b>${esc(diet.calories||"Sin definir")}</b>
+</div>
+
+<div class="metric">
+<small>Proteína</small>
+<b>${esc(diet.protein||"Sin definir")}</b>
+</div>
+
+<div class="metric">
+<small>Comidas</small>
+<b>${meals.length}</b>
+</div>
+
+</div>
+
+<button class="ghost" style="margin-top:15px"
+onclick="editDietMacros('${selected}','${dietType}')">
+Editar calorías y proteína
+</button>
+</div>
+
+<div class="card">
+<h2>Comidas</h2>
+
+${meals.length?meals.map((m,mi)=>`
+<div class="item">
+<h3>${esc(m.name)}</h3>
+
+${(m.foods||[]).map((f,fi)=>`
+<div class="food">
+<b>${esc(f[0])}</b>
+<span>${esc(f[1])}</span>
+
+<div class="food-actions">
+<button class="ghost"
+onclick="removeFood('${selected}','${dietType}',${mi},${fi})">
+Eliminar
+</button>
+</div>
+
+</div>
+`).join("")}
+
+<button class="btn"
+onclick="addFood('${selected}','${dietType}',${mi})">
++ Añadir alimento
+</button>
+
+</div>
+`).join("")
+:"<div class='empty'>No hay comidas todavía.</div>"}
+
+<button class="ghost"
+onclick="addMeal('${selected}','${dietType}')">
++ Añadir comida
+</button>
+
+</div>
+`;
+}
 if(screen==="routines"){
 const selected=window.selectedClient||"carlos";
 const c=client(selected);
@@ -624,7 +712,23 @@ if(currentApp==="coach")showClientAdmin(id);
 toast("Peso actualizado");
 }
 
-function addMeal(id){
+function addMeal(id,type){
+const name=prompt("Nombre de la comida:");
+if(!name)return;
+
+if(!data.diets[id])data.diets[id]={};
+if(!data.diets[id][type])data.diets[id][type]={calories:"",protein:"",meals:[]};
+if(!data.diets[id][type].meals)data.diets[id][type].meals=[];
+
+data.diets[id][type].meals.push({
+name:name,
+foods:[]
+});
+
+saveData();
+window.coachDietType=type;
+showCoach("diets");
+}
 const name=prompt("Nombre de la comida:");
 if(!name)return;
 
@@ -634,7 +738,23 @@ saveData();
 showCoach("diets");
 }
 
-function addFood(id,mi){
+function addFood(id,type,mi){
+const food=prompt("Alimento:");
+if(!food)return;
+
+const qty=prompt("Cantidad:");
+if(!qty)return;
+
+const diet=data.diets[id]?.[type];
+
+if(!diet||!diet.meals||!diet.meals[mi])return;
+
+diet.meals[mi].foods.push([food,qty]);
+
+saveData();
+window.coachDietType=type;
+showCoach("diets");
+}
 const food=prompt("Alimento:");
 if(!food)return;
 const qty=prompt("Cantidad:");
@@ -648,7 +768,17 @@ saveData();
 showCoach("diets");
 }
 
-function removeFood(id,mi,fi){
+function removeFood(id,type,mi,fi){
+const diet=data.diets[id]?.[type];
+
+if(!diet||!diet.meals||!diet.meals[mi])return;
+
+diet.meals[mi].foods.splice(fi,1);
+
+saveData();
+window.coachDietType=type;
+showCoach("diets");
+}
 data.diets[id][mi].foods.splice(fi,1);
 saveData();
 showCoach("diets");
