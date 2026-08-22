@@ -985,48 +985,66 @@ label{
 <body>
 
 <div id="login" class="login">
+<div id="login" class="login">
 
   <div class="login-box">
 
-    <div class="brand-logo" aria-label="Daniel Campins">
-      <svg viewBox="0 0 260 150" role="img">
+    <div class="brand-logo">
+      <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" aria-label="Daniel Campins">
         <defs>
-          <linearGradient id="goldLogo" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#f7d27a"/>
-            <stop offset="50%" stop-color="#d9aa4a"/>
-            <stop offset="100%" stop-color="#f0c96b"/>
+          <linearGradient id="goldLogo" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f0c96b"/>
+            <stop offset="55%" stop-color="#d9aa4a"/>
+            <stop offset="100%" stop-color="#b98227"/>
           </linearGradient>
         </defs>
 
+        <!-- Forma exterior -->
         <path
-          d="M48 25
-             C48 16 55 10 64 10
-             H125
-             C164 10 190 31 190 62
-             C190 82 180 98 163 108
-             C174 96 180 82 180 65
-             C180 39 160 25 129 25
-             H77
-             V112
-             H48 Z"
+          d="M45 135
+             V45
+             Q45 28 62 28
+             H142
+             Q178 28 178 64
+             Q178 83 166 94"
           fill="none"
           stroke="url(#goldLogo)"
-          stroke-width="9"
+          stroke-width="18"
+          stroke-linecap="round"
           stroke-linejoin="round"/>
 
+        <!-- Línea interior -->
         <path
-          d="M137 42
-             C108 42 87 61 87 88
-             C87 116 108 135 137 135
-             C164 135 183 119 187 96
-             H169
-             C165 108 154 116 138 116
-             C119 116 106 105 106 88
-             C106 70 119 60 138 60
-             C151 60 162 66 168 76
-             L181 64
-             C171 50 155 42 137 42 Z"
+          d="M78 135
+             V62
+             H137
+             Q158 62 158 82"
+          fill="none"
+          stroke="url(#goldLogo)"
+          stroke-width="13"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+        <!-- C circular -->
+        <path
+          d="M166 103
+             A49 49 0 1 0 176 127"
+          fill="none"
+          stroke="url(#goldLogo)"
+          stroke-width="18"
+          stroke-linecap="round"/>
+
+        <!-- Punta -->
+        <path
+          d="M174 101 L193 101 L181 120"
           fill="url(#goldLogo)"/>
+
+        <!-- Detalle -->
+        <path
+          d="M117 89 H146"
+          stroke="#d9aa4a"
+          stroke-width="3"
+          stroke-linecap="round"/>
       </svg>
     </div>
 
