@@ -729,14 +729,7 @@ saveData();
 window.coachDietType=type;
 showCoach("diets");
 }
-const name=prompt("Nombre de la comida:");
-if(!name)return;
 
-if(!data.diets[id])data.diets[id]=[];
-data.diets[id].push({name,foods:[]});
-saveData();
-showCoach("diets");
-}
 
 function addFood(id,type,mi){
 const food=prompt("Alimento:");
@@ -755,18 +748,7 @@ saveData();
 window.coachDietType=type;
 showCoach("diets");
 }
-const food=prompt("Alimento:");
-if(!food)return;
-const qty=prompt("Cantidad:");
-if(!qty)return;
 
-if(!data.diets[id])data.diets[id]=[];
-if(!data.diets[id][mi])return;
-
-data.diets[id][mi].foods.push([food,qty]);
-saveData();
-showCoach("diets");
-}
 
 function removeFood(id,type,mi,fi){
 const diet=data.diets[id]?.[type];
@@ -779,10 +761,7 @@ saveData();
 window.coachDietType=type;
 showCoach("diets");
 }
-data.diets[id][mi].foods.splice(fi,1);
-saveData();
-showCoach("diets");
-}
+
 
 function addExercise(id){
 const name=prompt("Nombre del ejercicio:");
