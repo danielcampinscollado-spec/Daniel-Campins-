@@ -701,10 +701,10 @@ label{
 .nav button{
   position:relative;
   width:auto;
-  min-width:52px;
+  min-width:54px;
   height:54px;
   margin:0;
-  padding:8px 10px;
+  padding:8px 12px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -717,7 +717,30 @@ label{
   transition:
     color .2s ease,
     background .2s ease,
-    transform .2s ease;
+    transform .2s ease,
+    border-color .2s ease;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:#f0c96b;
+  background:rgba(217,170,74,.09);
+  border-color:rgba(217,170,74,.08);
+}
+
+.nav button.active{
+  transform:translateY(-1px);
+}
+
+.nav button svg{
+  width:23px;
+  height:23px;
+  flex:none;
+  stroke:currentColor;
+}
+
+.nav button.active svg{
+  filter:drop-shadow(0 0 7px rgba(217,170,74,.35));
 }
 
 .nav button:hover,
@@ -1430,7 +1453,87 @@ document.getElementById("coach").style.display="none";
 }
 
 function navButton(icon,text,fn){
-return '<button onclick="'+fn+';this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'active\'));this.classList.add(\'active\')">'+icon+' <span>'+text+"</span></button>";
+
+const icons={
+
+"⌂":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M3 10.8 12 3l9 7.8"/>
+<path d="M5.5 9.5V21h13V9.5"/>
+<path d="M9.5 21v-6h5v6"/>
+</svg>`,
+
+"👤":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<circle cx="12" cy="8" r="3.5"/>
+<path d="M5 21c.7-4 3-6 7-6s6.3 2 7 6"/>
+</svg>`,
+
+"🍴":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M7 3v7"/>
+<path d="M4.5 3v5.5A2.5 2.5 0 0 0 7 11a2.5 2.5 0 0 0 2.5-2.5V3"/>
+<path d="M7 11v10"/>
+<path d="M16 3v18"/>
+<path d="M16 3c3 1.5 3 5 0 7"/>
+</svg>`,
+
+"🏋️":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M4 9v6"/>
+<path d="M7 7v10"/>
+<path d="M17 7v10"/>
+<path d="M20 9v6"/>
+<path d="M7 12h10"/>
+<path d="M4 12H2"/>
+<path d="M22 12h-2"/>
+</svg>`,
+
+"📈":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M4 19V5"/>
+<path d="M4 19h16"/>
+<path d="m7 15 4-4 3 2 5-6"/>
+</svg>`,
+
+"✓":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<circle cx="12" cy="12" r="8.5"/>
+<path d="m8 12 2.5 2.5L16 9"/>
+</svg>`,
+
+"💬":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/>
+</svg>`,
+
+"▦":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<rect x="4" y="4" width="6" height="6" rx="1"/>
+<rect x="14" y="4" width="6" height="6" rx="1"/>
+<rect x="4" y="14" width="6" height="6" rx="1"/>
+<rect x="14" y="14" width="6" height="6" rx="1"/>
+</svg>`,
+
+"👥":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<circle cx="9" cy="8" r="3"/>
+<circle cx="17" cy="9" r="2.5"/>
+<path d="M3.5 20c.5-4 2.3-6 5.5-6s5 2 5.5 6"/>
+<path d="M14 15c3-.2 5 1.3 5.5 4.5"/>
+</svg>`,
+
+"▤":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M5 4h14v16H5z"/>
+<path d="M8 8h8M8 12h8M8 16h5"/>
+</svg>`,
+
+"⚊":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<path d="M4 12h16"/>
+<path d="M7 8v8M17 8v8"/>
+</svg>`,
+
+"◌":`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<circle cx="12" cy="12" r="8"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>`
+
+};
+
+const svg=icons[icon]||icons["⌂"];
+
+return '<button onclick="'+fn+';this.parentElement.querySelectorAll(\\'button\\').forEach(b=>b.classList.remove(\\'active\\'));this.classList.add(\\'active\\')">'+svg+'<span>'+text+"</span></button>";
 }
 
 function buildClientNav(){
@@ -1949,14 +2052,71 @@ if(screen==="routines"){
   const c=client(selected);
 
   if(!selected||!c){
-    html=`
-    <div class="top">
+
+  html=`
+  <div class="top">
+    <div>
       <h1>Rutinas</h1>
+      <p class="muted">Selecciona el cliente al que quieres gestionar el entrenamiento.</p>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <h2>Clientes</h2>
+
+    <div style="display:grid;gap:10px;margin-top:16px">
+
+      ${data.clients.map(clientItem=>`
+
+        <button
+          class="client-row"
+          style="
+            width:100%;
+            background:#fafbfc;
+            border:1px solid #e5e8ec;
+            text-align:left;
+          "
+          onclick="window.selectedClient='${clientItem.id}';showCoach('routines')"
+        >
+
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+          ">
+
+            <div>
+              <b style="font-size:17px">
+                ${esc(clientItem.name)}
+              </b>
+
+              <div class="muted" style="margin-top:5px">
+                ${esc(clientItem.goal||"Sin objetivo")}
+                · ${money(clientItem.weight)} kg
+              </div>
+            </div>
+
+            <span style="
+              font-size:22px;
+              color:#d9aa4a;
+            ">
+              →
+            </span>
+
+          </div>
+
+        </button>
+
+      `).join("")}
+
     </div>
 
-    <div class="card">
-      <h2>Selecciona un cliente</h2>
-    </div>`;
+  </div>
+  `;
+
+}
   }else{
 
     const days=data.routines[selected]||[];
