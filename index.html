@@ -1357,7 +1357,7 @@ async function openApp(app){
   }else{
 
     buildCoachNav();
-
+    await loadDietsFromSupabase();
     try{
 
       const { data:routines,error } = await supabaseClient
