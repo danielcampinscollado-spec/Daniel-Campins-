@@ -1321,11 +1321,13 @@ document.getElementById("client").style.display=app==="client"?"block":"none";
 document.getElementById("coach").style.display=app==="coach"?"block":"none";
 
 if(app==="client"){
-buildClientNav();
-showClient("home");
+  buildClientNav();
+  showClient("home");
+  loadDietsFromSupabase();
 }else{
-buildCoachNav();
-showCoach("dashboard");
+  buildCoachNav();
+  showCoach("dashboard");
+  loadDietsFromSupabase();
 }
 }
 
