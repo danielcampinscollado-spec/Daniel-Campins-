@@ -1456,6 +1456,7 @@ ${routine.map((r,i)=>`
         class="ghost"
         onclick="
           this.classList.toggle('completed');
+          const inputs=this.parentElement.querySelectorAll('input');if(!window.trainingSets)window.trainingSets=[];window.trainingSets.push({exercise:this.closest('.exercise').querySelector('h2').textContent,set:this.parentElement.querySelector('b').textContent,kg:inputs[0].value,reps:inputs[1].value});
           this.textContent=this.classList.contains('completed')
             ? '✓'
             : 'Listo';
