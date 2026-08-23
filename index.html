@@ -2077,21 +2077,27 @@ showCoach("diets");
 
 
 function addFood(id,type,mi){
-const food=prompt("Alimento:");
-if(!food)return;
+  const scrollY=window.scrollY;
 
-const qty=prompt("Cantidad:");
-if(!qty)return;
+  const food=prompt("Alimento:");
+  if(!food)return;
 
-const diet=data.diets[id]?.[type];
+  const qty=prompt("Cantidad:");
+  if(!qty)return;
 
-if(!diet||!diet.meals||!diet.meals[mi])return;
+  const diet=data.diets[id]?.[type];
 
-diet.meals[mi].foods.push([food,qty]);
+  if(!diet||!diet.meals||!diet.meals[mi])return;
 
-saveData();
-window.coachDietType=type;
-showCoach("diets");
+  diet.meals[mi].foods.push([food,qty]);
+
+  saveData();
+  window.coachDietType=type;
+  showCoach("diets");
+
+  requestAnimationFrame(()=>{
+    window.scrollTo(0,scrollY);
+  });
 }
 
 
@@ -2194,7 +2200,7 @@ function markReviewed(id){
 data.checkins[id].reviewed=true;
 client(id).status="Revisado";
 saveData();
-closeModal();
+openMessages(id);
 showCoach("checkins");
 toast("Check-in marcado como revisado");
 }
