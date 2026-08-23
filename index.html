@@ -2261,13 +2261,19 @@ async function addFood(id,type,mi){
     return;
   }
 
-  saveData();
+  const previousScroll=window.scrollY;
 
-  window.coachDietType=type;
+saveData();
 
-  showCoach("diets");
+window.coachDietType=type;
 
-  toast("Alimento guardado");
+showCoach("diets");
+
+requestAnimationFrame(()=>{
+  window.scrollTo(0,previousScroll);
+});
+
+toast("Alimento guardado");
 }
 
 function removeFood(id,type,mi,fi){
