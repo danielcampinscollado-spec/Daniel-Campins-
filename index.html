@@ -1394,15 +1394,84 @@ ${m.foods.map(f=>`
 
 if(screen==="training"){
 const routine=data.routines.carlos||[];
+
 html=`
-<h1>Entrenamiento</h1>
-<p class="muted">Hoy · Push · ${routine.length} ejercicios</p>
-<div class="card" style="background:#071019;color:white">
-<h2>PUSH</h2><p style="color:#c8d0d8">Pecho · Hombro · Tríceps</p>
-<button class="btn" onclick="toast('Entrenamiento iniciado')">Empezar entrenamiento</button>
+<div class="top">
+  <div>
+    <h1>Entrenamiento</h1>
+    <p class="muted">Hoy · Push · ${routine.length} ejercicios</p>
+  </div>
 </div>
+
+<div class="card" style="background:#071019;color:white">
+  <h2>PUSH</h2>
+  <p style="color:#c8d0d8">Pecho · Hombro · Tríceps</p>
+  <button class="btn" onclick="toast('Entrenamiento iniciado')">
+    ▶ Empezar entrenamiento
+  </button>
+</div>
+
 <div class="card">
-${routine.map(r=>`<div class="exercise"><b>${esc(r[0])}</b><span>${esc(r[1])} × ${esc(r[2])}</span></div>`).join("")}
+
+${routine.map((r,i)=>`
+<div class="exercise" style="display:block;margin-bottom:18px;padding:18px">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <div>
+      <h2 style="margin:0">${esc(r[0])}</h2>
+      <span class="muted">${esc(r[1])} series × ${esc(r[2])}</span>
+    </div>
+    <span class="pill">0 / ${esc(r[1])}</span>
+  </div>
+
+  <div style="margin-top:16px">
+
+    ${Array.from({length:Number(r[1])},(_,si)=>`
+    <div style="
+      display:grid;
+      grid-template-columns:42px 1fr 1fr auto;
+      gap:8px;
+      align-items:center;
+      margin:8px 0;
+      padding:10px;
+      background:#f7f8fa;
+      border-radius:12px;
+    ">
+
+      <b>Serie ${si+1}</b>
+
+      <input
+        type="number"
+        placeholder="kg"
+        inputmode="decimal"
+      >
+
+      <input
+        type="number"
+        placeholder="reps"
+        inputmode="numeric"
+      >
+
+      <button
+        class="ghost"
+        onclick="
+          this.classList.toggle('completed');
+          this.textContent=this.classList.contains('completed')
+            ? '✓'
+            : 'Listo';
+        "
+      >
+        Listo
+      </button>
+
+    </div>
+    `).join("")}
+
+  </div>
+
+</div>
+`).join("")}
+
 </div>`;
 }
 
