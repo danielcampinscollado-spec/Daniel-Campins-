@@ -671,14 +671,19 @@ label{
   }
 
   .side{
-    width:100%;
-    height:72px;
-    top:auto;
-    bottom:0;
-    padding:7px 5px;
-    border-top:1px solid #20252d;
-    border-right:0;
-  }
+  width:calc(100% - 20px);
+  height:68px;
+  top:auto;
+  bottom:10px;
+  left:10px;
+  padding:6px;
+  background:rgba(17,21,28,.94);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  box-shadow:0 12px 35px rgba(0,0,0,.45);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
 
   .side h2,
   .out{
@@ -686,22 +691,44 @@ label{
   }
 
   .nav{
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    height:100%;
-  }
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  height:100%;
+  gap:4px;
+}
 
-  .nav button{
-    width:auto;
-    min-width:50px;
-    margin:0;
-    padding:9px 7px;
-    justify-content:center;
-    text-align:center;
-    border-radius:13px;
-    font-size:20px;
-  }
+.nav button{
+  position:relative;
+  width:auto;
+  min-width:52px;
+  height:54px;
+  margin:0;
+  padding:8px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid transparent;
+  border-radius:17px;
+  background:transparent;
+  color:#7f8792;
+  text-align:center;
+  font-size:21px;
+  transition:
+    color .2s ease,
+    background .2s ease,
+    transform .2s ease;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:#f0c96b;
+  background:rgba(217,170,74,.09);
+}
+
+.nav button:active{
+  transform:scale(.94);
+}
 
   .nav button span{
     display:none;
@@ -1403,7 +1430,7 @@ document.getElementById("coach").style.display="none";
 }
 
 function navButton(icon,text,fn){
-return '<button onclick="'+fn+'">'+icon+' <span>'+text+"</span></button>";
+return '<button onclick="'+fn+';this.parentElement.querySelectorAll(\'button\').forEach(b=>b.classList.remove(\'active\'));this.classList.add(\'active\')">'+icon+' <span>'+text+"</span></button>";
 }
 
 function buildClientNav(){
