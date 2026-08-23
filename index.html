@@ -1220,7 +1220,7 @@ pedro:[]
 };
 
 let data=loadData();
-data.routines.carlos[0][3]="https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press/0.jpg";
+
 let currentApp="";
 let currentScreen="";
 
@@ -1784,42 +1784,101 @@ onclick="addFood('${selected}','${dietType}',${mi})">
 `;
 }
 if(screen==="routines"){
-const selected=window.selectedClient||"carlos";
-const c=client(selected);
-const routine=data.routines[selected]||[];
-html=`
-<div class="top"><div><h1>Constructor de entrenamiento</h1><p class="muted">Crea y edita la rutina.</p></div></div>
-<div class="card"><h2>Cliente seleccionado</h2><div class="item"><b>${esc(c?c.name:"Sin cliente")}</b></div>
-<button class="ghost" onclick="showCoach('clients')">Cambiar cliente</button></div>
-</div>
-<div class="card"><h2>Rutina</h2>
-${routine.length?routine.map((r,i)=>`
-<div class="exercise">
+  const selected=window.selectedClient||"";
+  const c=client(selected);
 
-${r[3]?`
-<img src="${esc(r[3])}"
-alt="${esc(r[0])}"
-style="width:120px;height:120px;object-fit:cover;border-radius:14px;">
-`:""}
+  if(!selected||!c){
+    html=`
+    <div class="top">
+      <h1>Rutinas</h1>
+    </div>
 
-<div style="flex:1">
-<b>${esc(r[0])}</b>
-<span>${esc(r[1])} × ${esc(r[2])}</span>
-</div>
+    <div class="card">
+      <h2>Selecciona un cliente</h2>
+    </div>`;
+  }else{
 
-<button class="ghost"
-onclick="removeExercise('${selected}',${i})">
-Eliminar
-</button>
+    const days=data.routines[selected]||[];
 
-</div>
-`).join(""):"<div class='empty'>No hay ejercicios todavía.</div>"}
+    html=`
+    <div class="top">
+      <div>
+        <h1>Rutinas</h1>
+        <p class="muted">${esc(c.name)}</p>
+      </div>
+    </div>
 
-<button class="btn" onclick="addExercise('${selected}')">
-+ Añadir ejercicio
-</button>
+    ${days.length?days.map((day,i)=>`
 
-</div>`;
+      <div class="card" style="margin-top:16px">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <div>
+            <h2 style="margin:0">Día ${i+1}</h2>
+
+            <p class="muted" style="margin:6px 0 0">
+              ${esc(day.muscle||"Sin grupo muscular")}
+            </p>
+          </div>
+
+          <button class="ghost"
+            onclick="removeTrainingDay('${selected}',${i})">
+            Eliminar día
+          </button>
+        </div>
+
+        <div style="margin-top:18px">
+
+          ${day.exercises&&day.exercises.length
+            ?day.exercises.map((ex,j)=>`
+
+              <div class="exercise" style="margin-top:12px">
+
+                <div style="flex:1">
+                  <b>${esc(ex.name||"Ejercicio")}</b>
+                  <span>
+                    ${esc(ex.sets||"")} × ${esc(ex.reps||"")}
+                  </span>
+                </div>
+
+                <button class="ghost"
+                  onclick="removeExercise('${selected}',${i},${j})">
+                  Eliminar
+                </button>
+
+              </div>
+
+            `).join("")
+            :`<div class="empty">
+                No hay ejercicios todavía.
+              </div>`
+          }
+
+        </div>
+
+        <button class="btn"
+          style="margin-top:16px"
+          onclick="addExercise('${selected}',${i})">
+          + Añadir ejercicio
+        </button>
+
+      </div>
+
+    `).join("")
+    :`<div class="card">
+        <div class="empty">
+          Todavía no hay días de entrenamiento.
+        </div>
+      </div>`
+    }
+
+    <button class="btn"
+      style="margin-top:20px"
+      onclick="addTrainingDay('${selected}')">
+      + Añadir día
+    </button>
+    `;
+  }
 }
 if(screen==="messages"){
 html=`
@@ -2049,24 +2108,66 @@ showCoach("diets");
 }
 
 
-function addExercise(id){
-const name=prompt("Nombre del ejercicio:");
-if(!name)return;
-const sets=prompt("Series:");
-if(!sets)return;
-const reps=prompt("Repeticiones:");
-if(!reps)return;
+function addTrainingDay(id){
+  if(!data.routines[id]) data.routines[id]=[];
 
-if(!data.routines[id])data.routines[id]=[];
-data.routines[id].push([name,sets,reps]);
-saveData();
-showCoach("routines");
+  const muscle=prompt("Grupo muscular de este día:");
+  if(!muscle) return;
+
+  data.routines[id].push({
+    day:data.routines[id].length+1,
+    muscle:muscle,
+    exercises:[]
+  });
+
+  saveData();
+  showCoach("routines");
 }
 
-function removeExercise(id,index){
-data.routines[id].splice(index,1);
-saveData();
-showCoach("routines");
+function addExercise(id,dayIndex){
+  const day=data.routines[id]?.[dayIndex];
+  if(!day) return;
+
+  const name=prompt("Nombre del ejercicio:");
+  if(!name) return;
+
+  const sets=prompt("Series:");
+  if(!sets) return;
+
+  const reps=prompt("Repeticiones:");
+  if(!reps) return;
+
+  day.exercises.push({
+    name:name,
+    sets:sets,
+    reps:reps
+  });
+
+  saveData();
+  showCoach("routines");
+}
+
+function removeExercise(id,dayIndex,exerciseIndex){
+  const day=data.routines[id]?.[dayIndex];
+  if(!day) return;
+
+  day.exercises.splice(exerciseIndex,1);
+
+  saveData();
+  showCoach("routines");
+}
+
+function removeTrainingDay(id,dayIndex){
+  if(!data.routines[id]) return;
+
+  data.routines[id].splice(dayIndex,1);
+
+  data.routines[id].forEach((day,i)=>{
+    day.day=i+1;
+  });
+
+  saveData();
+  showCoach("routines");
 }
 
 function reviewCheckin(id){
