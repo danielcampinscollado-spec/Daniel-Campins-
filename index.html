@@ -2116,12 +2116,13 @@ showCoach("diets");
 }
 
 
-function addFood(id,type,mi){
+async function addFood(id,type,mi){
+
   const previousScroll=window.scrollY;
 
   const diet=data.diets[id]?.[type];
 
-  if(!diet||!diet.meals||!diet.meals[mi]){
+  if(!diet || !diet.meals || !diet.meals[mi]){
     toast("No se encontró la comida");
     return;
   }
@@ -2136,8 +2137,31 @@ function addFood(id,type,mi){
     diet.meals[mi].foods=[];
   }
 
-  diet.meals[mi].foods.push([food,qty]);
+  const newFood=[food,qty];
 
+  /* Guardamos primero en la aplicación */
+  diet.meals[mi].foods.push(newFood);
+
+  /* Guardamos la dieta completa en Supabase */
+  const { error } = await supabaseClient
+    .from("dietas")
+    .upsert({
+      client_id:id,
+      diet_type:type,
+      data:diet
+    });
+
+  if(error){
+    console.error("Error guardando dieta:",error);
+
+    /* Si Supabase falla, deshacemos el alimento */
+    diet.meals[mi].foods.pop();
+
+    toast("No se pudo guardar la dieta");
+    return;
+  }
+
+  /* También mantenemos la copia local */
   saveData();
 
   window.coachDietType=type;
@@ -2147,6 +2171,8 @@ function addFood(id,type,mi){
   requestAnimationFrame(()=>{
     window.scrollTo(0,previousScroll);
   });
+
+  toast("Alimento guardado correctamente");
 }
 
 
