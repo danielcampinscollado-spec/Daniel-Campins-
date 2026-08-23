@@ -1406,9 +1406,9 @@ html=`
 <div class="card" style="background:#071019;color:white">
   <h2>PUSH</h2>
   <p style="color:#c8d0d8">Pecho · Hombro · Tríceps</p>
-  <button class="btn" onclick="toast('Entrenamiento iniciado')">
-    ▶ Empezar entrenamiento
-  </button>
+  <button class="btn" onclick="window.trainingStart=Date.now();toast('Entrenamiento iniciado');this.textContent='⏱️ Entrenamiento en curso';">
+▶ Empezar entrenamiento
+</button>
 </div>
 
 <div class="card">
@@ -1471,7 +1471,22 @@ ${routine.map((r,i)=>`
 
 </div>
 `).join("")}
-
+<div class="card" style="margin-top:16px;text-align:center;">
+  <button class="btn" onclick="
+    if(!window.trainingStart){
+      toast('Primero pulsa Empezar entrenamiento');
+      return;
+    }
+    const total=Math.floor((Date.now()-window.trainingStart)/1000);
+    const min=Math.floor(total/60);
+    const sec=total%60;
+    document.getElementById('trainingResult').textContent='Entrenamiento completado · '+min+' min '+sec+' s';
+    toast('Entrenamiento finalizado');
+  ">
+    ✅ Finalizar entreno
+  </button>
+  <p id="trainingResult" class="muted" style="margin-top:12px;"></p>
+</div>
 </div>`;
 }
 
