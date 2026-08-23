@@ -1331,13 +1331,55 @@ html=`
 }
 
 if(screen==="profile"){
+const saved=JSON.parse(localStorage.getItem("dcc_workoutHistory")||"{}");
+const history=saved[c.id]||[];
+
 html=`
-<div class="top"><div><h1>Mi perfil</h1><p class="muted">Datos de tu proceso.</p></div></div>
-<div class="card"><h2>${esc(c.name)}</h2>
-<div class="item"><b>Objetivo</b><br>${esc(c.goal)}</div>
-<div class="item"><b>Peso actual</b><br>${money(c.weight)} kg</div>
-<div class="item"><b>Peso inicial</b><br>${money(c.initial)} kg</div>
-<div class="item"><b>Plan</b><br>${esc(c.plan)}</div>
+<div class="top">
+  <div>
+    <h1>Mi perfil</h1>
+    <p class="muted">Tu progreso y tus entrenamientos</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>${esc(c.name)}</h2>
+  <div class="item"><b>Objetivo</b><br>${esc(c.goal||"")}</div>
+  <div class="item"><b>Peso actual</b><br>${money(c.weight)}</div>
+  <div class="item"><b>Peso inicial</b><br>${money(c.initial)}</div>
+  <div class="item"><b>Plan</b><br>${esc(c.plan||"")}</div>
+</div>
+
+<div class="card">
+  <h2>🏋️ Historial de entrenamientos</h2>
+
+  ${
+    history.length
+    ? history.slice().reverse().map(w=>`
+      <div class="item" style="margin-bottom:12px">
+        <b>📅 ${new Date(w.date).toLocaleDateString("es-ES")}</b>
+        <br>
+        <span class="muted">
+          ⏱️ ${Math.floor(w.duration/60)} min ${w.duration%60} s
+        </span>
+
+        <div style="margin-top:10px">
+          ${(w.exercises||[]).map(ex=>`
+            <div style="margin:8px 0;padding:10px;background:#f7f8fa;border-radius:10px">
+              <b>${esc(ex.name)}</b>
+              <br>
+              ${(ex.sets||[]).map(s=>`
+                <span class="muted">
+                  Serie ${s.set}: ${esc(String(s.kg||""))} kg × ${esc(String(s.reps||""))} reps
+                </span><br>
+              `).join("")}
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `).join("")
+    : `<p class="muted">Todavía no hay entrenamientos guardados.</p>`
+  }
 </div>`;
 }
 
