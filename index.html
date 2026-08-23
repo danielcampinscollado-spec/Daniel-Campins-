@@ -1228,76 +1228,30 @@ function loadData(){
   try{
     const saved=localStorage.getItem(KEY);
 
-    if(!saved){
-      return JSON.parse(JSON.stringify(defaultData));
+    if(saved){
+      const parsed=JSON.parse(saved);
+
+      const result=JSON.parse(JSON.stringify(defaultData));
+
+      if(parsed.clients) result.clients=parsed.clients;
+      if(parsed.weights) result.weights=parsed.weights;
+      if(parsed.workoutHistory) result.workoutHistory=parsed.workoutHistory;
+      if(parsed.checkins) result.checkins=parsed.checkins;
+      if(parsed.messages) result.messages=parsed.messages;
+      if(parsed.routines) result.routines=parsed.routines;
+
+      if(parsed.diets){
+        result.diets=parsed.diets;
+      }
+
+      return result;
     }
-
-    const parsed=JSON.parse(saved);
-
-    const result=JSON.parse(JSON.stringify(defaultData));
-
-    if(parsed.clients) result.clients=parsed.clients;
-    if(parsed.weights) result.weights=parsed.weights;
-    if(parsed.workoutHistory) result.workoutHistory=parsed.workoutHistory;
-    if(parsed.checkins) result.checkins=parsed.checkins;
-    if(parsed.messages) result.messages=parsed.messages;
-
-    if(parsed.diets){
-      result.diets=parsed.diets;
-    }
-
-    if(parsed.routines){
-      result.routines=parsed.routines;
-    }
-
-    /* Reparar estructuras antiguas o incorrectas */
-    result.clients.forEach(c=>{
-      if(!result.diets[c.id] || Array.isArray(result.diets[c.id])){
-        result.diets[c.id]={
-          training:{
-            calories:"",
-            protein:"",
-            meals:[]
-          },
-          rest:{
-            calories:"",
-            protein:"",
-            meals:[]
-          }
-        };
-      }
-
-      if(!result.diets[c.id].training){
-        result.diets[c.id].training={
-          calories:"",
-          protein:"",
-          meals:[]
-        };
-      }
-
-      if(!result.diets[c.id].rest){
-        result.diets[c.id].rest={
-          calories:"",
-          protein:"",
-          meals:[]
-        };
-      }
-
-      if(!Array.isArray(result.diets[c.id].training.meals)){
-        result.diets[c.id].training.meals=[];
-      }
-
-      if(!Array.isArray(result.diets[c.id].rest.meals)){
-        result.diets[c.id].rest.meals=[];
-      }
-    });
-
-    return result;
 
   }catch(e){
     console.error("Error cargando datos:",e);
-    return JSON.parse(JSON.stringify(defaultData));
   }
+
+  return JSON.parse(JSON.stringify(defaultData));
 }
 
 function saveData(){
