@@ -2270,9 +2270,14 @@ async function addTrainingDay(id){
   showCoach("routines");
 }
 
-function addExercise(id,dayIndex){
+async function addExercise(id,dayIndex){
+
   const day=data.routines[id]?.[dayIndex];
-  if(!day) return;
+
+  if(!day){
+    toast("No se encontró el día");
+    return;
+  }
 
   const name=prompt("Nombre del ejercicio:");
   if(!name) return;
@@ -2289,10 +2294,26 @@ function addExercise(id,dayIndex){
     reps:reps
   });
 
+  /* Guardado local */
   saveData();
-  showCoach("routines");
-}
 
+  /* Guardado en Supabase */
+  const { error } = await supabaseClient
+    .from("client_routines")
+    .upsert({
+      client_id:id,
+      routine:data.routines[id]
+    });
+
+  if(error){
+    console.error("Error guardando rutina en Supabase:",error);
+    toast("Guardado local, pero no en Supabase");
+    return;
+  }
+
+  showCoach("routines");
+  toast("Ejercicio guardado");
+}
 function removeExercise(id,dayIndex,exerciseIndex){
   const day=data.routines[id]?.[dayIndex];
   if(!day) return;
