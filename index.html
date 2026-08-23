@@ -1484,6 +1484,13 @@ ${routine.map((r,i)=>`
       toast('Primero pulsa Empezar entrenamiento');
       return;
     }
+    const allSets=[...document.querySelectorAll('.exercise button.ghost')];
+const completedSets=allSets.filter(btn=>btn.classList.contains('completed'));
+
+if(completedSets.length!==allSets.length){
+  toast('Completa todo el entrenamiento antes de finalizar');
+  return;
+}
     const total=Math.floor((Date.now()-window.trainingStart)/1000);
     const min=Math.floor(total/60);
     const sec=total%60;
