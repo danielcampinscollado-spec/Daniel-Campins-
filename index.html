@@ -1225,15 +1225,90 @@ let currentApp="";
 let currentScreen="";
 
 function loadData(){
-try{
-const saved=localStorage.getItem(KEY);
-if(saved)return Object.assign({},defaultData,JSON.parse(saved));
-}catch(e){}
-return JSON.parse(JSON.stringify(defaultData));
+  try{
+    const saved=localStorage.getItem(KEY);
+
+    if(!saved){
+      return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    const parsed=JSON.parse(saved);
+
+    const result=JSON.parse(JSON.stringify(defaultData));
+
+    if(parsed.clients) result.clients=parsed.clients;
+    if(parsed.weights) result.weights=parsed.weights;
+    if(parsed.workoutHistory) result.workoutHistory=parsed.workoutHistory;
+    if(parsed.checkins) result.checkins=parsed.checkins;
+    if(parsed.messages) result.messages=parsed.messages;
+
+    if(parsed.diets){
+      result.diets=parsed.diets;
+    }
+
+    if(parsed.routines){
+      result.routines=parsed.routines;
+    }
+
+    /* Reparar estructuras antiguas o incorrectas */
+    result.clients.forEach(c=>{
+      if(!result.diets[c.id] || Array.isArray(result.diets[c.id])){
+        result.diets[c.id]={
+          training:{
+            calories:"",
+            protein:"",
+            meals:[]
+          },
+          rest:{
+            calories:"",
+            protein:"",
+            meals:[]
+          }
+        };
+      }
+
+      if(!result.diets[c.id].training){
+        result.diets[c.id].training={
+          calories:"",
+          protein:"",
+          meals:[]
+        };
+      }
+
+      if(!result.diets[c.id].rest){
+        result.diets[c.id].rest={
+          calories:"",
+          protein:"",
+          meals:[]
+        };
+      }
+
+      if(!Array.isArray(result.diets[c.id].training.meals)){
+        result.diets[c.id].training.meals=[];
+      }
+
+      if(!Array.isArray(result.diets[c.id].rest.meals)){
+        result.diets[c.id].rest.meals=[];
+      }
+    });
+
+    return result;
+
+  }catch(e){
+    console.error("Error cargando datos:",e);
+    return JSON.parse(JSON.stringify(defaultData));
+  }
 }
 
 function saveData(){
-localStorage.setItem(KEY,JSON.stringify(data));
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+    return true;
+  }catch(e){
+    console.error("Error guardando datos:",e);
+    toast("Error al guardar los datos");
+    return false;
+  }
 }
 
 function esc(value){
@@ -2000,7 +2075,18 @@ data.checkins[id]={
   weight:money(weight)+" kg",
   diet:"Pendiente de revisión"
 };
-data.diets[id]=[];
+data.diets[id]={
+  training:{
+    calories:"",
+    protein:"",
+    meals:[]
+  },
+  rest:{
+    calories:"",
+    protein:"",
+    meals:[]
+  }
+};
 data.routines[id]=[];
 data.messages[id]=[];
 
