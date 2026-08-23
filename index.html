@@ -2128,11 +2128,9 @@ showCoach("diets");
 
 async function addFood(id,type,mi){
 
-  const previousScroll=window.scrollY;
-
   const diet=data.diets[id]?.[type];
 
-  if(!diet || !diet.meals || !diet.meals[mi]){
+  if(!diet||!diet.meals||!diet.meals[mi]){
     toast("No se encontró la comida");
     return;
   }
@@ -2147,44 +2145,35 @@ async function addFood(id,type,mi){
     diet.meals[mi].foods=[];
   }
 
-  const newFood=[food,qty];
+  diet.meals[mi].foods.push([food,qty]);
 
-  /* Guardamos primero en la aplicación */
-  diet.meals[mi].foods.push(newFood);
-
-  /* Guardamos la dieta completa en Supabase */
   const { error } = await supabaseClient
-    .from("dietas")
+    .from("client_diets")
     .upsert({
       client_id:id,
       diet_type:type,
-      data:diet
+      calories:diet.calories||"",
+      protein:diet.protein||"",
+      meals:diet.meals
+    },{
+      onConflict:"client_id,diet_type"
     });
 
   if(error){
     console.error("Error guardando dieta:",error);
-
-    /* Si Supabase falla, deshacemos el alimento */
     diet.meals[mi].foods.pop();
-
     toast("No se pudo guardar la dieta");
     return;
   }
 
-  /* También mantenemos la copia local */
-  saveDietData();
+  saveData();
 
   window.coachDietType=type;
 
   showCoach("diets");
 
-  requestAnimationFrame(()=>{
-    window.scrollTo(0,previousScroll);
-  });
-
-  toast("Alimento guardado correctamente");
+  toast("Alimento guardado");
 }
-
 
 function removeFood(id,type,mi,fi){
 const diet=data.diets[id]?.[type];
