@@ -2077,6 +2077,8 @@ showCoach("diets");
 
 
 function addFood(id,type,mi){
+  const previousScroll=window.scrollY;
+
   const diet=data.diets[id]?.[type];
 
   if(!diet||!diet.meals||!diet.meals[mi]){
@@ -2090,21 +2092,20 @@ function addFood(id,type,mi){
   const qty=prompt("Cantidad:");
   if(!qty)return;
 
+  if(!diet.meals[mi].foods){
+    diet.meals[mi].foods=[];
+  }
+
   diet.meals[mi].foods.push([food,qty]);
 
   saveData();
 
   window.coachDietType=type;
 
-  const previousScroll=window.scrollY;
-
   showCoach("diets");
 
   requestAnimationFrame(()=>{
-    window.scrollTo({
-      top:previousScroll,
-      behavior:"instant"
-    });
+    window.scrollTo(0,previousScroll);
   });
 }
 
