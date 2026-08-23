@@ -1202,6 +1202,12 @@ laura:[64.2],
 marcos:[70],
 pedro:[70]
 },
+workoutHistory:{
+carlos:[],
+laura:[],
+marcos:[],
+pedro:[]
+},
 checkins:{
 carlos:{weight:"78,4 kg",diet:"9 / 10",training:"8 / 10",comment:"Todo bien esta semana.",reviewed:true},
 laura:{weight:"64,2 kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false},
@@ -1481,6 +1487,30 @@ ${routine.map((r,i)=>`
     const total=Math.floor((Date.now()-window.trainingStart)/1000);
     const min=Math.floor(total/60);
     const sec=total%60;
+    const workout={
+  date:new Date().toISOString(),
+  duration:total,
+  exercises:[...document.querySelectorAll('.exercise')].map(ex=>{
+    const rows=[...ex.querySelectorAll('button')].map((btn,i)=>{
+      const inputs=btn.parentElement.querySelectorAll('input');
+      return {
+        set:i+1,
+        kg:inputs[0]?.value||'',
+        reps:inputs[1]?.value||'',
+        completed:btn.classList.contains('completed')
+      };
+    });
+    return {
+      name:ex.querySelector('h2')?.textContent||'Ejercicio',
+      sets:rows
+    };
+  })
+};
+
+const history=JSON.parse(localStorage.getItem('dcc_workoutHistory')||'{}');
+history.carlos=history.carlos||[];
+history.carlos.push(workout);
+localStorage.setItem('dcc_workoutHistory',JSON.stringify(history));
     document.getElementById('trainingResult').textContent='Entrenamiento completado · '+min+' min '+sec+' s';
     toast('Entrenamiento finalizado');
   ">
