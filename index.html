@@ -1292,7 +1292,34 @@ function saveData(){
     return false;
   }
 }
+async function saveRoutineToSupabase(id){
+  try{
+    const routine=data.routines[id]||[];
 
+    const {error}=await supabaseClient
+      .from("client_routines")
+      .upsert({
+        client_id:id,
+        routine:routine,
+        updated_at:new Date().toISOString()
+      },{
+        onConflict:"client_id"
+      });
+
+    if(error){
+      console.error("Error guardando rutina en Supabase:",error);
+      toast("No se pudo sincronizar la rutina");
+      return false;
+    }
+
+    return true;
+
+  }catch(e){
+    console.error("Error sincronizando rutina:",e);
+    toast("Error al sincronizar la rutina");
+    return false;
+  }
+}
 function esc(value){
 return String(value??"").replace(/[&<>"']/g,function(c){
 return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
