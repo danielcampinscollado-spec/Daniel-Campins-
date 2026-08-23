@@ -1896,7 +1896,7 @@ openModal(`
 `);
 }
 
-function createClient(){
+async function createClient(){
 const name=document.getElementById("new-name").value.trim();
 const weightText=document.getElementById("new-weight").value.trim();
 const goal=document.getElementById("new-goal").value.trim();
@@ -1913,9 +1913,39 @@ return;
 }
 
 const id="client_"+Date.now();
-data.clients.push({id,name,goal,weight,initial:weight,plan:"Plan pendiente",status:"Pendiente"});
+
+const { error } = await supabaseClient
+  .from("clients")
+  .insert({
+    id,
+    name,
+    goal,
+    weight,
+    initial_weight:weight,
+    plan:"",
+    status:"Pendiente de revisión"
+  });
+
+if(error){
+  console.error(error);
+  toast("No se pudo guardar el cliente");
+  return;
+}
+
+data.clients.push({
+  id,
+  name,
+  goal,
+  weight,
+  initial:weight,
+  plan:""
+});
+
 data.weights[id]=[weight];
-data.checkins[id]={weight:money(weight)+" kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente de revisión.",reviewed:false};
+data.checkins[id]={
+  weight:money(weight)+" kg",
+  diet:"Pendiente de revisión"
+};
 data.diets[id]=[];
 data.routines[id]=[];
 data.messages[id]=[];
