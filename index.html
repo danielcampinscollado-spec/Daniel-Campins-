@@ -1408,7 +1408,17 @@ html=`
   }
 </div>`;
 }
-
+function saveDietData(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify(data));
+    toast("Alimento guardado");
+    return true;
+  }catch(e){
+    console.error("Error guardando dieta:",e);
+    toast("Error al guardar la dieta");
+    return false;
+  }
+}
 if(screen==="food"){
 const dietType=window.clientDietType||"training";
 const diet=data.diets.carlos?.[dietType]||{calories:"",protein:"",meals:[]};
@@ -2162,7 +2172,7 @@ async function addFood(id,type,mi){
   }
 
   /* También mantenemos la copia local */
-  saveData();
+  saveDietData();
 
   window.coachDietType=type;
 
