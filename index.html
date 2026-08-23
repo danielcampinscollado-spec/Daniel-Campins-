@@ -1341,20 +1341,59 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2200);
 }
 
-function openApp(app){
-currentApp=app;
-document.getElementById("login").style.display="none";
-document.getElementById("client").style.display=app==="client"?"block":"none";
-document.getElementById("coach").style.display=app==="coach"?"block":"none";
+async function openApp(app){
 
-if(app==="client"){
-  buildClientNav();
-  showClient("home");
-  loadDietsFromSupabase();
-}else{
-  buildCoachNav();
-  showCoach("dashboard");
-  loadDietsFromSupabase();
+  currentApp=app;
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("client").style.display=app==="client"?"block":"none";
+  document.getElementById("coach").style.display=app==="coach"?"block":"none";
+
+  if(app==="client"){
+
+    buildClientNav();
+    showClient("home");
+
+  }else{
+
+    buildCoachNav();
+
+    try{
+
+      const { data: routines, error } = await supabaseClient
+        .from("client_routines")
+        .select("client_id,routine");
+
+      if(error){
+        console.error("Error cargando rutinas:",error);
+        toast("No se pudieron cargar las rutinas");
+      }else{
+
+        if(routines){
+
+          routines.forEach(row=>{
+
+            data.routines[row.client_id] =
+              Array.isArray(row.routine)
+                ? row.routine
+                : [];
+
+          });
+
+          saveData();
+        }
+
+      }
+
+    }catch(e){
+
+      console.error("Error cargando rutinas:",e);
+      toast("Error conectando con Supabase");
+
+    }
+
+    showCoach("dashboard");
+  }
 }
 }
 
