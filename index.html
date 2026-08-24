@@ -3289,6 +3289,82 @@ return `<div class="item">
 }
 
 if(screen==="diets"){
+  if(!window.selectedClient){
+
+  html=`
+    <div class="top">
+      <div>
+        <h1>Dietas</h1>
+        <p class="muted">Selecciona un cliente para gestionar su alimentación.</p>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <h2>Seleccionar cliente</h2>
+
+      <div style="
+        display:grid;
+        gap:10px;
+        margin-top:16px;
+      ">
+
+        ${data.clients.map(clientItem=>`
+
+          <button
+            class="client-row"
+            style="
+              width:100%;
+              background:#fafbfc;
+              border:1px solid #e5e8ec;
+              text-align:left;
+            "
+            onclick="
+              window.selectedClient='${clientItem.id}';
+              showCoach('diets');
+            "
+          >
+
+            <div style="
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap:12px;
+            ">
+
+              <div>
+                <b style="font-size:17px">
+                  ${esc(clientItem.name)}
+                </b>
+
+                <div class="muted" style="margin-top:5px">
+                  ${esc(clientItem.goal||"Sin objetivo")}
+                  · ${money(clientItem.weight)} kg
+                </div>
+              </div>
+
+              <span style="
+                font-size:22px;
+                color:#d9aa4a;
+              ">
+                →
+              </span>
+
+            </div>
+
+          </button>
+
+        `).join("")}
+
+      </div>
+
+    </div>
+  `;
+
+  main.innerHTML=html;
+  window.scrollTo(0,0);
+  return;
+}
 const selected=window.selectedClient||"carlos";
 const c=client(selected);
 
@@ -3397,6 +3473,84 @@ onclick="addFood('${selected}','${dietType}',${mi})">
 `;
 }
 if(screen==="routines"){
+  if(!window.selectedClient){
+
+  html=`
+    <div class="top">
+      <div>
+        <h1>Rutinas</h1>
+        <p class="muted">
+          Selecciona un cliente para gestionar su entrenamiento.
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+
+      <h2>Seleccionar cliente</h2>
+
+      <div style="
+        display:grid;
+        gap:10px;
+        margin-top:16px;
+      ">
+
+        ${data.clients.map(clientItem=>`
+
+          <button
+            class="client-row"
+            style="
+              width:100%;
+              background:#fafbfc;
+              border:1px solid #e5e8ec;
+              text-align:left;
+            "
+            onclick="
+              window.selectedClient='${clientItem.id}';
+              showCoach('routines');
+            "
+          >
+
+            <div style="
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap:12px;
+            ">
+
+              <div>
+                <b style="font-size:17px">
+                  ${esc(clientItem.name)}
+                </b>
+
+                <div class="muted" style="margin-top:5px">
+                  ${esc(clientItem.goal||"Sin objetivo")}
+                  · ${money(clientItem.weight)} kg
+                </div>
+              </div>
+
+              <span style="
+                font-size:22px;
+                color:#d9aa4a;
+              ">
+                →
+              </span>
+
+            </div>
+
+          </button>
+
+        `).join("")}
+
+      </div>
+
+    </div>
+  `;
+
+  main.innerHTML=html;
+  window.scrollTo(0,0);
+  return;
+}
   const selected=window.selectedClient||"";
   const c=client(selected);
 
