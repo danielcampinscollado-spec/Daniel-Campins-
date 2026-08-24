@@ -2838,17 +2838,27 @@ async function addExercise(id,dayIndex){
   showCoach("routines");
   toast("Ejercicio guardado");
 }
-function removeExercise(id,dayIndex,exerciseIndex){
+async function removeExercise(id,dayIndex,exerciseIndex){
+
   const day=data.routines[id]?.[dayIndex];
+
   if(!day) return;
 
   day.exercises.splice(exerciseIndex,1);
 
   saveData();
+
+  const ok=await saveRoutineToSupabase(id);
+
+  if(ok){
+    toast("Ejercicio eliminado");
+  }
+
   showCoach("routines");
 }
 
-function removeTrainingDay(id,dayIndex){
+async function removeTrainingDay(id,dayIndex){
+
   if(!data.routines[id]) return;
 
   data.routines[id].splice(dayIndex,1);
@@ -2858,6 +2868,13 @@ function removeTrainingDay(id,dayIndex){
   });
 
   saveData();
+
+  const ok=await saveRoutineToSupabase(id);
+
+  if(ok){
+    toast("Día de entrenamiento eliminado");
+  }
+
   showCoach("routines");
 }
 
