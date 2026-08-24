@@ -1751,133 +1751,207 @@ ${m.foods.map(f=>`
 }
 
 if(screen==="training"){
-const routine=data.routines.carlos||[];
 
-html=`
-<div class="top">
-  <div>
-    <h1>Entrenamiento</h1>
-    <p class="muted">Hoy · Push · ${routine.length} ejercicios</p>
-  </div>
-</div>
+const routine = data.routines["carlos"] || [];
+  html = `
+    <div class="top">
+      <div>
+        <p class="muted">Área cliente</p>
+        <h1>Entrenamiento</h1>
+        <p class="muted">Tu rutina personalizada</p>
+      </div>
 
-<div class="card" style="background:#071019;color:white">
-  <h2>PUSH</h2>
-  <p style="color:#c8d0d8">Pecho · Hombro · Tríceps</p>
-  <button class="btn" onclick="window.trainingStart=Date.now();toast('Entrenamiento iniciado');this.textContent='⏱️ Entrenamiento en curso';">
-▶ Empezar entrenamiento
-</button>
-</div>
-
-<div class="card">
-
-${routine.map((r,i)=>`
-<div class="exercise" style="display:block;margin-bottom:18px;padding:18px">
-
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-    <div>
-      <h2 style="margin:0">${esc(r[0])}</h2>
-      <span class="muted">${esc(r[1])} series × ${esc(r[2])}</span>
+      <span class="pill">
+        ${routine.length} ${routine.length===1?"día":"días"}
+      </span>
     </div>
-    <span class="pill">0 / ${esc(r[1])}</span>
-  </div>
 
-  <div style="margin-top:16px">
+    ${
+      routine.length
+      ? routine.map((day,dayIndex)=>`
 
-    ${Array.from({length:Number(r[1])},(_,si)=>`
-    <div style="
-      display:grid;
-      grid-template-columns:42px 1fr 1fr auto;
-      gap:8px;
-      align-items:center;
-      margin:8px 0;
-      padding:10px;
-      background:#f7f8fa;
-      border-radius:12px;
-    ">
+        <div class="card">
 
-      <b>Serie ${si+1}</b>
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:18px;
+          ">
 
-      <input
-        type="number"
-        placeholder="kg"
-        inputmode="decimal"
-      >
+            <div>
+              <div class="pill">
+                DÍA ${dayIndex+1}
+              </div>
 
-      <input
-        type="number"
-        placeholder="reps"
-        inputmode="numeric"
-      >
+              <h2 style="margin:10px 0 4px">
+                ${esc(day.muscle || "Entrenamiento")}
+              </h2>
 
-      <button
-        class="ghost"
-        onclick="
-          this.classList.toggle('completed');
-          const inputs=this.parentElement.querySelectorAll('input');if(!window.trainingSets)window.trainingSets=[];window.trainingSets.push({exercise:this.closest('.exercise').querySelector('h2').textContent,set:this.parentElement.querySelector('b').textContent,kg:inputs[0].value,reps:inputs[1].value});
-          this.textContent=this.classList.contains('completed')
-            ? '✓'
-            : 'Listo';
-        "
-      >
-        Listo
-      </button>
+              <p class="muted" style="margin:0">
+                ${(day.exercises||[]).length}
+                ${(day.exercises||[]).length===1?"ejercicio":"ejercicios"}
+              </p>
+            </div>
 
-    </div>
-    `).join("")}
+            <div style="
+              width:48px;
+              height:48px;
+              border-radius:15px;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              background:rgba(217,170,74,.10);
+              color:#d9aa4a;
+              font-size:23px;
+            ">
+              🏋️
+            </div>
 
-  </div>
+          </div>
 
-</div>
-`).join("")}
-<div class="card" style="margin-top:16px;text-align:center;">
-  <button class="btn" onclick="
-    if(!window.trainingStart){
-      toast('Primero pulsa Empezar entrenamiento');
-      return;
+          ${
+            day.exercises && day.exercises.length
+            ? day.exercises.map((ex,exerciseIndex)=>`
+
+              <div style="
+                padding:16px 0;
+                border-top:1px solid #eceef1;
+              ">
+
+                <div style="
+                  display:flex;
+                  align-items:center;
+                  gap:12px;
+                ">
+
+                  <div style="
+                    width:38px;
+                    height:38px;
+                    flex:none;
+                    border-radius:12px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#f5ead2;
+                    color:#956b18;
+                    font-weight:800;
+                  ">
+                    ${exerciseIndex+1}
+                  </div>
+
+                  <div style="flex:1">
+
+                    <b style="
+                      display:block;
+                      font-size:17px;
+                    ">
+                      ${esc(ex.name || "Ejercicio")}
+                    </b>
+
+                    <span class="muted">
+                      ${esc(ex.sets || "")} series
+                      ${ex.reps ? ` · ${esc(ex.reps)} repeticiones` : ""}
+                    </span>
+
+                  </div>
+
+                </div>
+
+                <div style="
+                  display:grid;
+                  grid-template-columns:repeat(2,1fr);
+                  gap:8px;
+                  margin-top:12px;
+                ">
+
+                  ${Array.from(
+                    {length:Number(ex.sets)||1},
+                    (_,setIndex)=>`
+
+                      <div style="
+                        padding:10px;
+                        background:#f7f8fa;
+                        border:1px solid #e5e8ec;
+                        border-radius:12px;
+                        text-align:center;
+                      ">
+
+                        <small class="muted">
+                          Serie ${setIndex+1}
+                        </small>
+
+                        <div style="
+                          margin-top:4px;
+                          font-weight:700;
+                        ">
+                          ${esc(ex.reps || "—")} reps
+                        </div>
+
+                      </div>
+
+                    `
+                  ).join("")}
+
+                </div>
+
+              </div>
+
+            `).join("")
+            : `
+              <div class="empty">
+                <div style="font-size:38px;margin-bottom:10px">
+                  🏋️
+                </div>
+
+                <h3>No hay ejercicios todavía</h3>
+
+                <p>
+                  Daniel todavía no ha añadido ejercicios
+                  a este día.
+                </p>
+              </div>
+            `
+          }
+
+        </div>
+
+      `).join("")
+      : `
+        <div class="card">
+
+          <div class="empty">
+
+            <div style="
+              width:64px;
+              height:64px;
+              margin:0 auto 16px;
+              border-radius:20px;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              background:rgba(217,170,74,.10);
+              color:#d9aa4a;
+              font-size:30px;
+            ">
+              🏋️
+            </div>
+
+            <h2>No hay rutina asignada</h2>
+
+            <p>
+              Daniel todavía no ha asignado una rutina
+              de entrenamiento.
+            </p>
+
+          </div>
+
+        </div>
+      `
     }
-    const allSets=[...document.querySelectorAll('.exercise button.ghost')];
-const completedSets=allSets.filter(btn=>btn.classList.contains('completed'));
+  `;
 
-if(completedSets.length!==allSets.length){
-  toast('Completa todo el entrenamiento antes de finalizar');
-  return;
-}
-    const total=Math.floor((Date.now()-window.trainingStart)/1000);
-    const min=Math.floor(total/60);
-    const sec=total%60;
-    const workout={
-  date:new Date().toISOString(),
-  duration:total,
-  exercises:[...document.querySelectorAll('.exercise')].map(ex=>{
-    const rows=[...ex.querySelectorAll('button')].map((btn,i)=>{
-      const inputs=btn.parentElement.querySelectorAll('input');
-      return {
-        set:i+1,
-        kg:inputs[0]?.value||'',
-        reps:inputs[1]?.value||'',
-        completed:btn.classList.contains('completed')
-      };
-    });
-    return {
-      name:ex.querySelector('h2')?.textContent||'Ejercicio',
-      sets:rows
-    };
-  })
-};
-
-const history=JSON.parse(localStorage.getItem('dcc_workoutHistory')||'{}');
-history.carlos=history.carlos||[];
-history.carlos.push(workout);
-localStorage.setItem('dcc_workoutHistory',JSON.stringify(history));
-    document.getElementById('trainingResult').textContent='Entrenamiento completado · '+min+' min '+sec+' s';
-    toast('Entrenamiento finalizado');
-  ">
-    ✅ Finalizar entreno
-  </button>
-  <p id="trainingResult" class="muted" style="margin-top:12px;"></p>
-</div>
-</div>`;
 }
 
 if(screen==="progress"){
