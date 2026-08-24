@@ -1242,7 +1242,78 @@ meals:[
 }
 }
 },
-routines:{},
+routines:{
+  carlos:[
+    {
+      day:1,
+      muscle:"Pecho · Hombro · Tríceps",
+      exercises:[
+        {
+          name:"Press banca",
+          sets:"4",
+          reps:"8-10"
+        },
+        {
+          name:"Press inclinado con mancuernas",
+          sets:"3",
+          reps:"10-12"
+        },
+        {
+          name:"Elevaciones laterales",
+          sets:"3",
+          reps:"12-15"
+        },
+        {
+          name:"Extensión de tríceps",
+          sets:"3",
+          reps:"10-12"
+        }
+      ]
+    },
+    {
+      day:2,
+      muscle:"Espalda · Bíceps",
+      exercises:[
+        {
+          name:"Jalón al pecho",
+          sets:"4",
+          reps:"8-10"
+        },
+        {
+          name:"Remo",
+          sets:"3",
+          reps:"10-12"
+        },
+        {
+          name:"Curl de bíceps",
+          sets:"3",
+          reps:"10-12"
+        }
+      ]
+    },
+    {
+      day:3,
+      muscle:"Pierna",
+      exercises:[
+        {
+          name:"Sentadilla",
+          sets:"4",
+          reps:"8-10"
+        },
+        {
+          name:"Prensa",
+          sets:"3",
+          reps:"10-12"
+        },
+        {
+          name:"Peso muerto rumano",
+          sets:"3",
+          reps:"8-10"
+        }
+      ]
+    }
+  ]
+},
 weights:{
 carlos:[80,78.4],
 laura:[64.2],
@@ -1273,6 +1344,7 @@ let data=loadData();
 
 let currentApp="";
 let currentScreen="";
+let currentClientId="carlos";
 
 function loadData(){
   try{
@@ -1627,7 +1699,7 @@ navButton("💬","Mensajes","showCoach('messages')");
 function showClient(screen){
 currentScreen=screen;
 const main=document.getElementById("client-main");
-const c=data.clients[0];
+const c=client(currentClientId);
 
 let html="";
 
@@ -1711,8 +1783,7 @@ function saveDietData(){
 }
 if(screen==="food"){
 const dietType=window.clientDietType||"training";
-const diet=data.diets.carlos?.[dietType]||{calories:"",protein:"",meals:[]};
-const meals=diet.meals||[];
+const diet=data.diets[currentClientId]?.[dietType]||{calories:"",protein:"",meals:[]};const meals=diet.meals||[];
 
 html=`
 <h1>Alimentación</h1>
@@ -1768,8 +1839,7 @@ ${m.foods.map(f=>`
 
 if(screen==="training"){
 
-  const routine = data.routines["carlos"] || [];
-
+  const routine = data.routines[currentClientId] || [];
   html = `
     <div class="top">
       <div>
