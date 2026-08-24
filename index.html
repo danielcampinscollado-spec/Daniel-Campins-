@@ -1752,7 +1752,8 @@ ${m.foods.map(f=>`
 
 if(screen==="training"){
 
-const routine = data.routines["carlos"] || [];
+  const routine = data.routines["carlos"] || [];
+
   html = `
     <div class="top">
       <div>
@@ -1762,7 +1763,8 @@ const routine = data.routines["carlos"] || [];
       </div>
 
       <span class="pill">
-        ${routine.length} ${routine.length===1?"día":"días"}
+        ${routine.length}
+        ${routine.length===1 ? "día" : "días"}
       </span>
     </div>
 
@@ -1781,9 +1783,10 @@ const routine = data.routines["carlos"] || [];
           ">
 
             <div>
-              <div class="pill">
+
+              <span class="pill">
                 DÍA ${dayIndex+1}
-              </div>
+              </span>
 
               <h2 style="margin:10px 0 4px">
                 ${esc(day.muscle || "Entrenamiento")}
@@ -1791,8 +1794,11 @@ const routine = data.routines["carlos"] || [];
 
               <p class="muted" style="margin:0">
                 ${(day.exercises||[]).length}
-                ${(day.exercises||[]).length===1?"ejercicio":"ejercicios"}
+                ${(day.exercises||[]).length===1
+                  ? "ejercicio"
+                  : "ejercicios"}
               </p>
+
             </div>
 
             <div style="
@@ -1813,95 +1819,82 @@ const routine = data.routines["carlos"] || [];
 
           ${
             day.exercises && day.exercises.length
-            ? day.exercises.map((ex,exerciseIndex)=>`
+            ? `
 
-              <div style="
-                padding:16px 0;
-                border-top:1px solid #eceef1;
-              ">
+              <div>
 
-                <div style="
-                  display:flex;
-                  align-items:center;
-                  gap:12px;
-                ">
+                ${day.exercises.map((ex,exerciseIndex)=>`
 
                   <div style="
-                    width:38px;
-                    height:38px;
-                    flex:none;
-                    border-radius:12px;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    background:#f5ead2;
-                    color:#956b18;
-                    font-weight:800;
+                    padding:16px 0;
+                    border-top:1px solid #eceef1;
                   ">
-                    ${exerciseIndex+1}
-                  </div>
 
-                  <div style="flex:1">
-
-                    <b style="
-                      display:block;
-                      font-size:17px;
+                    <div style="
+                      display:flex;
+                      align-items:center;
+                      gap:12px;
                     ">
-                      ${esc(ex.name || "Ejercicio")}
-                    </b>
-
-                    <span class="muted">
-                      ${esc(ex.sets || "")} series
-                      ${ex.reps ? ` · ${esc(ex.reps)} repeticiones` : ""}
-                    </span>
-
-                  </div>
-
-                </div>
-
-                <div style="
-                  display:grid;
-                  grid-template-columns:repeat(2,1fr);
-                  gap:8px;
-                  margin-top:12px;
-                ">
-
-                  ${Array.from(
-                    {length:Number(ex.sets)||1},
-                    (_,setIndex)=>`
 
                       <div style="
-                        padding:10px;
-                        background:#f7f8fa;
-                        border:1px solid #e5e8ec;
+                        width:38px;
+                        height:38px;
+                        flex:none;
                         border-radius:12px;
-                        text-align:center;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        background:#f5ead2;
+                        color:#956b18;
+                        font-weight:800;
                       ">
+                        ${exerciseIndex+1}
+                      </div>
 
-                        <small class="muted">
-                          Serie ${setIndex+1}
-                        </small>
+                      <div style="flex:1">
 
-                        <div style="
-                          margin-top:4px;
-                          font-weight:700;
+                        <b style="
+                          display:block;
+                          font-size:17px;
                         ">
-                          ${esc(ex.reps || "—")} reps
-                        </div>
+                          ${esc(ex.name || "Ejercicio")}
+                        </b>
+
+                        <span class="muted">
+                          ${esc(ex.sets || "")} series
+                          ${ex.reps
+                            ? ` · ${esc(ex.reps)} repeticiones`
+                            : ""}
+                        </span>
 
                       </div>
 
-                    `
-                  ).join("")}
+                    </div>
 
-                </div>
+                  </div>
+
+                `).join("")}
 
               </div>
 
-            `).join("")
+              <button
+                class="btn"
+                style="
+                  width:100%;
+                  margin-top:8px;
+                "
+                onclick="startWorkout('${dayIndex}')">
+                ▶ Empezar entrenamiento
+              </button>
+
+            `
             : `
               <div class="empty">
-                <div style="font-size:38px;margin-bottom:10px">
+
+                <div style="
+                  font-size:38px;
+                  margin-bottom:10px;
+                ">
                   🏋️
                 </div>
 
@@ -1911,6 +1904,7 @@ const routine = data.routines["carlos"] || [];
                   Daniel todavía no ha añadido ejercicios
                   a este día.
                 </p>
+
               </div>
             `
           }
@@ -1919,6 +1913,7 @@ const routine = data.routines["carlos"] || [];
 
       `).join("")
       : `
+
         <div class="card">
 
           <div class="empty">
@@ -1948,6 +1943,7 @@ const routine = data.routines["carlos"] || [];
           </div>
 
         </div>
+
       `
     }
   `;
@@ -1994,7 +1990,395 @@ ${msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><p>${esc(m[1])}</p></div>`).
 main.innerHTML=html;
 window.scrollTo(0,0);
 }
+function startWorkout(dayIndex){
 
+  const routine = data.routines["carlos"] || [];
+  const day = routine[Number(dayIndex)];
+
+  if(!day){
+    toast("No se encontró el entrenamiento");
+    return;
+  }
+
+  const exercises = day.exercises || [];
+
+  if(!exercises.length){
+    toast("Este entrenamiento no tiene ejercicios");
+    return;
+  }
+
+  window.activeWorkout = {
+    clientId:"carlos",
+    dayIndex:Number(dayIndex),
+    dayName:day.muscle || "Entrenamiento",
+    exercises:JSON.parse(JSON.stringify(exercises)),
+    startedAt:Date.now(),
+    currentExercise:0,
+    sets:[],
+    completedExercises:[]
+  };
+
+  renderWorkoutSession();
+}
+
+
+function renderWorkoutSession(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
+  const main=document.getElementById("client-main");
+
+  const exercise=
+    workout.exercises[workout.currentExercise];
+
+  if(!exercise){
+
+    finishWorkout();
+
+    return;
+
+  }
+
+  const totalExercises=workout.exercises.length;
+  const currentNumber=workout.currentExercise+1;
+
+  const plannedSets=parseInt(exercise.sets)||0;
+
+  let html=`
+
+    <div class="top">
+
+      <div>
+
+        <p class="muted">
+          Entrenamiento en curso
+        </p>
+
+        <h1>
+          ${esc(workout.dayName)}
+        </h1>
+
+      </div>
+
+      <span class="pill">
+        ${currentNumber} / ${totalExercises}
+      </span>
+
+    </div>
+
+
+    <div class="card">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+
+        <div>
+
+          <span class="muted">
+            Ejercicio ${currentNumber}
+          </span>
+
+          <h2 style="margin:6px 0">
+            ${esc(exercise.name || "Ejercicio")}
+          </h2>
+
+          <p class="muted">
+            ${esc(exercise.sets || "")} series
+            ${exercise.reps
+              ? ` · ${esc(exercise.reps)} repeticiones`
+              : ""}
+          </p>
+
+        </div>
+
+        <div style="
+          width:48px;
+          height:48px;
+          border-radius:15px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:rgba(217,170,74,.10);
+          color:#d9aa4a;
+          font-size:22px;
+        ">
+          🏋️
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Registrar serie</h2>
+
+      <label>
+        Peso utilizado (kg)
+      </label>
+
+      <input
+        id="workout-kg"
+        type="number"
+        inputmode="decimal"
+        step="0.5"
+        placeholder="Ej. 80"
+      >
+
+      <label>
+        Repeticiones
+      </label>
+
+      <input
+        id="workout-reps"
+        type="number"
+        inputmode="numeric"
+        placeholder="Ej. 10"
+      >
+
+      <button
+        class="btn"
+        style="
+          width:100%;
+          margin-top:18px;
+        "
+        onclick="saveWorkoutSet()">
+
+        ✓ Guardar serie
+
+      </button>
+
+    </div>
+
+
+    ${
+      workout.sets.length
+      ? `
+
+        <div class="card">
+
+          <h2>
+            Series realizadas
+          </h2>
+
+          ${workout.sets.map((s,i)=>`
+
+            <div class="item">
+
+              <b>
+                Serie ${i+1}
+              </b>
+
+              <span class="muted">
+                · ${esc(String(s.kg))} kg
+                × ${esc(String(s.reps))} reps
+              </span>
+
+            </div>
+
+          `).join("")}
+
+          ${
+            plannedSets && workout.sets.length >= plannedSets
+            ? `
+              <button
+                class="btn"
+                style="width:100%;margin-top:15px"
+                onclick="nextWorkoutExercise()">
+
+                ${
+                  currentNumber < totalExercises
+                  ? "Siguiente ejercicio →"
+                  : "Finalizar entrenamiento ✓"
+                }
+
+              </button>
+            `
+            : ""
+          }
+
+        </div>
+
+      `
+      : ""
+    }
+
+
+    <div class="card">
+
+      <button
+        class="ghost"
+        style="width:100%"
+        onclick="cancelWorkout()">
+
+        ← Salir del entrenamiento
+
+      </button>
+
+    </div>
+
+  `;
+
+  main.innerHTML=html;
+
+  window.scrollTo(0,0);
+}
+
+
+function saveWorkoutSet(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
+  const kg=document.getElementById("workout-kg").value.trim();
+  const reps=document.getElementById("workout-reps").value.trim();
+
+  if(!kg || !reps){
+
+    toast("Introduce peso y repeticiones");
+    return;
+
+  }
+
+  const kgValue=parseFloat(kg.replace(",","."));
+  const repsValue=parseInt(reps);
+
+  if(!Number.isFinite(kgValue) || !Number.isFinite(repsValue)){
+
+    toast("Introduce valores válidos");
+    return;
+
+  }
+
+  workout.sets.push({
+    kg:kgValue,
+    reps:repsValue
+  });
+
+  renderWorkoutSession();
+
+  toast("Serie guardada");
+}
+
+
+function nextWorkoutExercise(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
+  const exercise=
+    workout.exercises[workout.currentExercise];
+
+  workout.completedExercises.push({
+
+    name:exercise.name || "Ejercicio",
+
+    plannedSets:exercise.sets || "",
+
+    plannedReps:exercise.reps || "",
+
+    sets:JSON.parse(JSON.stringify(workout.sets))
+
+  });
+
+  workout.currentExercise++;
+
+  workout.sets=[];
+
+  renderWorkoutSession();
+}
+
+
+function finishWorkout(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
+  const lastExercise=
+    workout.exercises[workout.currentExercise];
+
+  if(lastExercise && workout.sets.length){
+
+    workout.completedExercises.push({
+
+      name:lastExercise.name || "Ejercicio",
+
+      plannedSets:lastExercise.sets || "",
+
+      plannedReps:lastExercise.reps || "",
+
+      sets:JSON.parse(JSON.stringify(workout.sets))
+
+    });
+
+  }
+
+  const duration=
+    Math.floor((Date.now()-workout.startedAt)/1000);
+
+  const history=JSON.parse(
+    localStorage.getItem("dcc_workoutHistory")||"{}"
+  );
+
+  if(!history[workout.clientId]){
+    history[workout.clientId]=[];
+  }
+
+  history[workout.clientId].push({
+
+    date:new Date().toISOString(),
+
+    duration:duration,
+
+    dayName:workout.dayName,
+
+    exercises:workout.completedExercises
+
+  });
+
+  localStorage.setItem(
+    "dcc_workoutHistory",
+    JSON.stringify(history)
+  );
+
+  data.workoutHistory[workout.clientId]=
+    history[workout.clientId];
+
+  saveData();
+
+  window.activeWorkout=null;
+
+  toast("Entrenamiento terminado");
+
+  showClient("profile");
+}
+
+
+function cancelWorkout(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
+  const confirmExit=
+    confirm("¿Quieres salir del entrenamiento? Se perderán las series realizadas.");
+
+  if(!confirmExit)return;
+
+  window.activeWorkout=null;
+
+  showClient("training");
+}
 function sendClientCheckin(){
 data.checkins.carlos.reviewed=false;
 data.checkins.carlos.comment="Nuevo check-in enviado por Carlos.";
@@ -2544,37 +2928,138 @@ function showClientAdmin(id){
 
     <!-- ENTRENAMIENTO -->
 
-    <div class="card">
+<div class="card">
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  ">
+
+    <div>
+      <h2 style="margin:0">🏋️ Entrenamiento</h2>
+
+      <p class="muted" style="margin:6px 0 0">
+        ${routine.length}
+        ${routine.length===1 ? "día programado" : "días programados"}
+      </p>
+    </div>
+
+    <button class="ghost"
+      onclick="window.selectedClient='${id}';showCoach('routines')">
+      Editar rutina
+    </button>
+
+  </div>
+
+  ${
+    routine.length
+    ? routine.map((day,dayIndex)=>`
 
       <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:12px;
+        padding:16px 0;
+        border-top:1px solid #eceef1;
       ">
-        <div>
-          <h2>🏋️ Entrenamiento</h2>
-          <p class="muted">
-            ${routine.length} días programados
-          </p>
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:12px;
+        ">
+
+          <div>
+
+            <span class="pill">
+              DÍA ${dayIndex+1}
+            </span>
+
+            <h3 style="margin:10px 0 4px">
+              ${esc(day.muscle||"Entrenamiento")}
+            </h3>
+
+            <span class="muted">
+              ${(day.exercises||[]).length}
+              ${(day.exercises||[]).length===1
+                ? "ejercicio"
+                : "ejercicios"}
+            </span>
+
+          </div>
+
         </div>
 
-        <button class="ghost"
-          onclick="window.selectedClient='${id}';showCoach('routines')">
-          Editar
-        </button>
+        ${
+          (day.exercises||[]).length
+          ? `
+            <div style="margin-top:12px">
+
+              ${(day.exercises||[]).map((ex,exerciseIndex)=>`
+
+                <div style="
+                  display:flex;
+                  justify-content:space-between;
+                  align-items:center;
+                  gap:12px;
+                  padding:11px 0;
+                  border-top:1px solid #f0f1f3;
+                ">
+
+                  <div>
+
+                    <b>
+                      ${exerciseIndex+1}.
+                      ${esc(ex.name||"Ejercicio")}
+                    </b>
+
+                    <div class="muted" style="margin-top:3px">
+                      ${esc(ex.sets||"")} series
+                      ${ex.reps
+                        ? ` · ${esc(ex.reps)} repeticiones`
+                        : ""}
+                    </div>
+
+                  </div>
+
+                </div>
+
+              `).join("")}
+
+            </div>
+          `
+          : `
+            <p class="muted" style="margin-top:12px">
+              Sin ejercicios todavía.
+            </p>
+          `
+        }
+
       </div>
 
-      ${
-  routine.length
-  ? `<p class="muted">
-      La rutina está asignada y disponible para el cliente.
-    </p>`
-  : `<div class="empty">
-      Todavía no hay entrenamiento asignado.
-    </div>`
-}
-    </div>
+    `).join("")
+    : `
+      <div class="empty">
+
+        <div style="
+          font-size:36px;
+          margin-bottom:10px;
+        ">
+          🏋️
+        </div>
+
+        <h3>No hay entrenamiento asignado</h3>
+
+        <p>
+          Todavía no has creado una rutina para este cliente.
+        </p>
+
+      </div>
+    `
+  }
+
+</div>
 
     <!-- EVOLUCIÓN -->
 
