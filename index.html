@@ -1777,11 +1777,27 @@ navButton("💬","Mensajes","showCoach('messages')");
 }
 
 function showClient(screen){
-currentScreen=screen;
-const main=document.getElementById("client-main");
-const c=client(currentClientId);
 
-let html="";
+  currentScreen=screen;
+
+  // Si hay un entrenamiento en curso,
+  // conservarlo al cambiar de pestaña
+  if(
+    window.activeWorkout &&
+    screen!=="training"
+  ){
+    window.workoutPausedScreen=screen;
+  }
+
+  const main=document.getElementById("client-main");
+  const c=client(currentClientId);
+
+  let html="";
+  // Recuperar entrenamiento que estaba en curso
+  if(screen==="training" && window.activeWorkout){
+    renderWorkoutSession();
+    return;
+  }
 
 if(screen==="home"){
 html=`
@@ -2521,18 +2537,7 @@ ${
         DESCANSO
       </small>
 
-      <div
-        id="rest-timer"
-        style="
-          font-size:48px;
-          font-weight:800;
-          color:#f0c96b;
-          margin:8px 0 14px;
-          letter-spacing:-2px;
-        "
-      >
-        1:30
-      </div>
+     
 
       <button
         class="ghost"
@@ -2847,6 +2852,25 @@ ${
 
 function startRestTimer(){
 
+  try{
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!window.workoutAudioCtx){
+      window.workoutAudioCtx = new AudioContext();
+    }
+
+    if(window.workoutAudioCtx.state === "suspended"){
+      window.workoutAudioCtx.resume();
+    }
+
+  }catch(e){
+
+    console.log("Audio no disponible:",e);
+
+  }
   clearInterval(window.restTimerInterval);
 
   const workout = window.activeWorkout;
@@ -2877,6 +2901,43 @@ function startRestTimer(){
 
     }
 
+    
+    if(remaining >= 1 && remaining <= 10){
+
+  if(window.lastBeepSecond !== remaining){
+
+    window.lastBeepSecond = remaining;
+
+    try{
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      const audioCtx = window.workoutAudioCtx || new AudioContext();
+
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.frequency.value = 800;
+      oscillator.type = "sine";
+
+      gainNode.gain.value = 0.12;
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start();
+
+      oscillator.stop(audioCtx.currentTime + 0.12);
+
+    }catch(e){
+      console.log("No se pudo reproducir el sonido:",e);
+    }
+
+  }
+
+}
     if(remaining <= 0){
 
       clearInterval(window.restTimerInterval);
