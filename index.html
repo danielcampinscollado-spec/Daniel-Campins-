@@ -1348,10 +1348,60 @@ async function loadDietsFromSupabase(){
   }catch(e){
 
     console.error("Error conectando con Supabase para dietas:",e);
+}
+  }
+async function loadWorkoutHistoryFromSupabase(){
+
+  try{
+
+    const { data:history, error } = await supabaseClient
+      .from("workout_history")
+      .select("client_id,workout_date,duration,exercises")
+      .order("workout_date",{ascending:false});
+
+    if(error){
+      console.error("Error cargando historial de entrenamientos:",error);
+      toast("No se pudo cargar el historial");
+      return;
+    }
+
+    if(!history) return;
+
+    data.workoutHistory={};
+
+    history.forEach(row=>{
+
+      if(!data.workoutHistory[row.client_id]){
+        data.workoutHistory[row.client_id]=[];
+      }
+
+      data.workoutHistory[row.client_id].push({
+
+        date:row.workout_date,
+
+        duration:Number(row.duration)||0,
+
+        exercises:Array.isArray(row.exercises)
+          ? row.exercises
+          : []
+
+      });
+
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para historial:",
+      e
+    );
 
   }
 
 }
+
 async function loadRoutinesFromSupabase(){
 
   const { data:routines, error } = await supabaseClient
@@ -1457,39 +1507,7 @@ async function openApp(app){
     buildCoachNav();
 
     await loadDietsFromSupabase();
-
-    try{
-
-      const { data:routines,error } = await supabaseClient
-        .from("client_routines")
-        .select("client_id,routine");
-
-      if(error){
-
-        console.error("Error cargando rutinas:",error);
-        toast("No se pudieron cargar las rutinas");
-
-      }else if(routines){
-
-        routines.forEach(row=>{
-
-          data.routines[row.client_id] =
-            Array.isArray(row.routine)
-              ? row.routine
-              : [];
-
-        });
-
-        saveData();
-
-      }
-
-    }catch(e){
-
-      console.error("Error cargando rutinas:",e);
-      toast("Error conectando con Supabase");
-
-    }
+    await loadRoutinesFromSupabase();
 
     showCoach("dashboard");
 
@@ -1631,9 +1649,7 @@ html=`
 }
 
 if(screen==="profile"){
-const saved=JSON.parse(localStorage.getItem("dcc_workoutHistory")||"{}");
-const history=saved[c.id]||[];
-
+const history=data.workoutHistory?.[c.id]||[];
 html=`
 <div class="top">
   <div>
@@ -2275,10 +2291,51 @@ function nextWorkoutExercise(){
 
   if(!workout)return;
 
+  function nextWorkoutExercise(){
+
+  const workout=window.activeWorkout;
+
+  if(!workout)return;
+
   const exercise=
     workout.exercises[workout.currentExercise];
 
+  if(!exercise){
+    finishWorkout();
+    return;
+  }
+
+  if(!workout.sets || !workout.sets.length){
+    toast("Registra al menos una serie");
+    return;
+  }
+
   workout.completedExercises.push({
+
+    name:exercise.name || "Ejercicio",
+
+    plannedSets:exercise.sets || "",
+
+    plannedReps:exercise.reps || "",
+
+    sets:JSON.parse(JSON.stringify(workout.sets))
+
+  });
+
+  workout.currentExercise++;
+
+  workout.sets=[];
+
+  if(workout.currentExercise >= workout.exercises.length){
+
+    finishWorkout();
+
+    return;
+
+  }
+
+  renderWorkoutSession();
+}
 
     name:exercise.name || "Ejercicio",
 
@@ -2298,7 +2355,7 @@ function nextWorkoutExercise(){
 }
 
 
-function finishWorkout(){
+async function finishWorkout(){
 
   const workout=window.activeWorkout;
 
@@ -2323,20 +2380,65 @@ function finishWorkout(){
 
   }
 
-  const duration=
-    Math.floor((Date.now()-workout.startedAt)/1000);
+  /* No guardar entrenamientos vacíos */
+  if(!workout.completedExercises.length){
 
-  const history=JSON.parse(
-    localStorage.getItem("dcc_workoutHistory")||"{}"
-  );
+    toast("No hay ejercicios registrados");
 
-  if(!history[workout.clientId]){
-    history[workout.clientId]=[];
+    window.activeWorkout=null;
+
+    showClient("training");
+
+    return;
+
   }
 
-  history[workout.clientId].push({
+  const duration=
+    Math.max(
+      1,
+      Math.floor((Date.now()-workout.startedAt)/1000)
+    );
 
-    date:new Date().toISOString(),
+  const workoutData={
+
+    client_id:workout.clientId,
+
+    workout_date:new Date().toISOString(),
+
+    duration:duration,
+
+    exercises:workout.completedExercises
+
+  };
+
+  /* Guardar definitivamente en Supabase */
+
+  const {error}=await supabaseClient
+    .from("workout_history")
+    .insert(workoutData);
+
+  if(error){
+
+    console.error(
+      "Error guardando entrenamiento en Supabase:",
+      error
+    );
+
+    toast("No se pudo guardar el entrenamiento");
+
+    return;
+
+  }
+
+  /* Mantener también copia local */
+
+  if(!data.workoutHistory[workout.clientId]){
+    data.workoutHistory[workout.clientId]=[];
+  }
+
+  data.workoutHistory[workout.clientId].push({
+
+    date:workoutData.workout_date,
 
     duration:duration,
 
@@ -2346,21 +2448,14 @@ function finishWorkout(){
 
   });
 
-  localStorage.setItem(
-    "dcc_workoutHistory",
-    JSON.stringify(history)
-  );
-
-  data.workoutHistory[workout.clientId]=
-    history[workout.clientId];
-
   saveData();
 
   window.activeWorkout=null;
 
-  toast("Entrenamiento terminado");
+  toast("Entrenamiento guardado ✓");
 
   showClient("profile");
+
 }
 
 
@@ -2824,9 +2919,6 @@ function showClientAdmin(id){
       </div>
     </div>
 
-
-    </div>
-
     <!-- GESTIÓN -->
 
     <div class="card">
@@ -2950,7 +3042,7 @@ const { error } = await supabaseClient
     weight,
     initial_weight:weight,
     plan:"",
-    status:"Pendiente de revisión"
+    status:"Pendiente"
   });
 
 if(error){
@@ -3115,16 +3207,44 @@ requestAnimationFrame(()=>{
 toast("Alimento guardado");
 }
 
-function removeFood(id,type,mi,fi){
-const diet=data.diets[id]?.[type];
+async function removeFood(id,type,mi,fi){
 
-if(!diet||!diet.meals||!diet.meals[mi])return;
+  const diet=data.diets[id]?.[type];
 
-diet.meals[mi].foods.splice(fi,1);
+  if(!diet||!diet.meals||!diet.meals[mi]){
+    return;
+  }
 
-saveData();
-window.coachDietType=type;
-showCoach("diets");
+  diet.meals[mi].foods.splice(fi,1);
+
+  const { error } = await supabaseClient
+    .from("client_diets")
+    .upsert({
+      client_id:id,
+      diet_type:type,
+      calories:diet.calories||"",
+      protein:diet.protein||"",
+      meals:diet.meals
+    },{
+      onConflict:"client_id,diet_type"
+    });
+
+  if(error){
+
+    console.error("Error eliminando alimento:",error);
+
+    toast("No se pudo guardar el cambio");
+
+    return;
+  }
+
+  saveData();
+
+  window.coachDietType=type;
+
+  showCoach("diets");
+
+  toast("Alimento eliminado");
 }
 
 
