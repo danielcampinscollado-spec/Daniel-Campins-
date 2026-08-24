@@ -1473,7 +1473,48 @@ async function loadWorkoutHistoryFromSupabase(){
   }
 
 }
+async function loadWeightsFromSupabase(){
 
+  try{
+
+    const { data:weights,error } = await supabaseClient
+      .from("client_weights")
+      .select("client_id,weight,recorded_at")
+      .order("recorded_at",{ascending:true});
+
+    if(error){
+      console.error("Error cargando pesos:",error);
+      return;
+    }
+
+    if(!weights) return;
+
+    data.weights={};
+
+    weights.forEach(row=>{
+
+      if(!data.weights[row.client_id]){
+        data.weights[row.client_id]=[];
+      }
+
+      data.weights[row.client_id].push(
+        Number(row.weight)
+      );
+
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para pesos:",
+      e
+    );
+
+  }
+
+}
 async function loadRoutinesFromSupabase(){
 
   const { data:routines, error } = await supabaseClient
@@ -1571,6 +1612,8 @@ async function openApp(app){
 
   await loadDietsFromSupabase();
   await loadRoutinesFromSupabase();
+  await loadWorkoutHistoryFromSupabase();
+  await loadWeightsFromSupabase();
 
   showClient("home");
 
@@ -1580,6 +1623,8 @@ async function openApp(app){
 
     await loadDietsFromSupabase();
     await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
 
     showCoach("dashboard");
 
@@ -1716,7 +1761,17 @@ html=`
 <div class="item">🍴 <b>Comida pendiente</b></div>
 <div class="item">🏋️ <b>Push — Día 1</b></div>
 <div class="item">✓ <b>Check-in semanal</b></div></div>
-<div class="card"><h2>Mensaje de Daniel</h2><p class="muted">“Perfecto, Carlos. Sigue así esta semana.”</p></div>
+<div class="card">
+  <h2>Mensaje de Daniel</h2>
+  <p class="muted">
+    ${
+      (data.messages[c.id]||[]).length
+      ? `“${esc((data.messages[c.id]||[]).slice(-1)[0][1])}”`
+      : "Todavía no tienes mensajes de Daniel."
+    }
+  </p>
+</div>
+
 </div>`;
 }
 
@@ -1805,20 +1860,10 @@ onclick="window.clientDietType='rest';showClient('food')">
 <h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛋️ Día de descanso"}</h2>
 
 <div class="metrics">
-<div class="metric">
-<small>Calorías</small>
-<b>${esc(diet.calories)}</b>
-</div>
-
-<div class="metric">
-<small>Proteína</small>
-<b>${esc(diet.protein)}</b>
-</div>
-
-<div class="metric">
-<small>Comidas</small>
-<b>${meals.length}</b>
-</div>
+  <div class="metric">
+    <small>Comidas</small>
+    <b>${meals.length}</b>
+  </div>
 </div>
 </div>
 
@@ -2037,8 +2082,7 @@ if(screen==="training"){
 }
 
 if(screen==="progress"){
-const history=data.weights.carlos||[c.initial,c.weight];
-const change=c.weight-c.initial;
+const history=data.weights[c.id]||[c.initial,c.weight];const change=c.weight-c.initial;
 html=`
 <h1>Progreso</h1><p class="muted">Seguimiento de tu proceso.</p>
 <div class="grid g3">
@@ -2050,7 +2094,7 @@ html=`
 }
 
 if(screen==="checkin"){
-const x=data.checkins.carlos;
+const x=data.checkins[c.id];
 html=`
 <h1>Check-in semanal</h1>
 <div class="card">
@@ -2063,7 +2107,7 @@ html=`
 }
 
 if(screen==="coach"){
-const msgs=data.messages.carlos||[];
+const msgs=data.messages[c.id]||[];
 html=`
 <h1>Coach</h1>
 <div class="card">
@@ -2078,7 +2122,7 @@ window.scrollTo(0,0);
 }
 function startWorkout(dayIndex){
 
-  const routine = data.routines["carlos"] || [];
+  const routine = data.routines[currentClientId] || [];
   const day = routine[Number(dayIndex)];
 
   if(!day){
@@ -2094,7 +2138,7 @@ function startWorkout(dayIndex){
   }
 
   window.activeWorkout = {
-    clientId:"carlos",
+    clientId:currentClientId,
     dayIndex:Number(dayIndex),
     dayName:day.muscle || "Entrenamiento",
     exercises:JSON.parse(JSON.stringify(exercises)),
@@ -2114,23 +2158,56 @@ function renderWorkoutSession(){
 
   if(!workout)return;
 
+if(!workout.completedExercises){
+  workout.completedExercises=[];
+}
   const main=document.getElementById("client-main");
 
-  const exercise=
-    workout.exercises[workout.currentExercise];
+  const exercise=workout.exercises[workout.currentExercise];
 
   if(!exercise){
-
     finishWorkout();
-
     return;
-
   }
 
   const totalExercises=workout.exercises.length;
   const currentNumber=workout.currentExercise+1;
 
   const plannedSets=parseInt(exercise.sets)||0;
+  const completedSets=workout.sets.length;
+  const currentSetNumber=completedSets+1;
+
+  const setsFinished=
+    plannedSets>0 &&
+    completedSets>=plannedSets;
+
+
+  /* =====================================
+     BUSCAR ÚLTIMA VEZ QUE HIZO ESTE EJERCICIO
+  ===================================== */
+
+  let lastSession=null;
+
+  const history=data.workoutHistory?.[workout.clientId]||[];
+
+  for(let i=history.length-1;i>=0;i--){
+
+    const previousWorkout=history[i];
+
+    const previousExercise=
+      (previousWorkout.exercises||[]).find(
+        ex=>ex.name===exercise.name
+      );
+
+    if(previousExercise){
+
+      lastSession=previousExercise;
+      break;
+
+    }
+
+  }
+
 
   let html=`
 
@@ -2155,6 +2232,8 @@ function renderWorkoutSession(){
     </div>
 
 
+    <!-- EJERCICIO ACTUAL -->
+
     <div class="card">
 
       <div style="
@@ -2174,7 +2253,7 @@ function renderWorkoutSession(){
             ${esc(exercise.name || "Ejercicio")}
           </h2>
 
-          <p class="muted">
+          <p class="muted" style="margin:0">
             ${esc(exercise.sets || "")} series
             ${exercise.reps
               ? ` · ${esc(exercise.reps)} repeticiones`
@@ -2202,47 +2281,344 @@ function renderWorkoutSession(){
     </div>
 
 
+    <!-- ÚLTIMA SESIÓN -->
+
     <div class="card">
 
-      <h2>Registrar serie</h2>
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        margin-bottom:14px;
+      ">
 
-      <label>
-        Peso utilizado (kg)
-      </label>
+        <div>
 
-      <input
-        id="workout-kg"
-        type="number"
-        inputmode="decimal"
-        step="0.5"
-        placeholder="Ej. 80"
+          <small class="muted">
+            ÚLTIMA SESIÓN
+          </small>
+
+          <h2 style="margin:4px 0 0">
+            ${lastSession ? "Esto hiciste la última vez" : "Primera vez"}
+          </h2>
+
+        </div>
+
+        ${
+          lastSession
+          ? `
+            <div style="
+              width:42px;
+              height:42px;
+              border-radius:13px;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              background:#f5ead2;
+              color:#956b18;
+              font-size:20px;
+            ">
+              ↗
+            </div>
+          `
+          : ""
+        }
+
+      </div>
+
+
+      ${
+        lastSession
+        ? `
+
+          <div>
+
+            ${(lastSession.sets||[]).map((s,i)=>`
+
+              <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                padding:11px 0;
+                border-top:1px solid #eceef1;
+              ">
+
+                <span>
+                  Serie ${i+1}
+                </span>
+
+                <b>
+                  ${esc(String(s.kg||""))} kg
+                  ×
+                  ${esc(String(s.reps||""))}
+                </b>
+
+              </div>
+
+            `).join("")}
+
+          </div>
+
+          <p class="muted" style="
+            margin:13px 0 0;
+            font-size:13px;
+          ">
+            Intenta igualarlo o superarlo.
+          </p>
+
+        `
+        : `
+
+          <div style="
+            padding:16px;
+            border-radius:14px;
+            background:#f7f8fa;
+            color:#7c858f;
+            text-align:center;
+          ">
+            No hay registros anteriores de este ejercicio.
+          </div>
+
+        `
+      }
+
+    </div>
+
+${
+  workout.restUntil && workout.restUntil>Date.now()
+  ? `
+
+    <div class="card" style="
+      text-align:center;
+      background:linear-gradient(
+        145deg,
+        #11151c,
+        #191e27
+      );
+      color:#fff;
+      border-color:rgba(217,170,74,.25);
+    ">
+
+      <small style="
+        color:#9da5af;
+        letter-spacing:1px;
+      ">
+        DESCANSO
+      </small>
+
+      <div
+        id="rest-timer"
+        style="
+          font-size:48px;
+          font-weight:800;
+          color:#f0c96b;
+          margin:8px 0 14px;
+          letter-spacing:-2px;
+        "
       >
-
-      <label>
-        Repeticiones
-      </label>
-
-      <input
-        id="workout-reps"
-        type="number"
-        inputmode="numeric"
-        placeholder="Ej. 10"
-      >
+        1:30
+      </div>
 
       <button
-        class="btn"
-        style="
-          width:100%;
-          margin-top:18px;
-        "
-        onclick="saveWorkoutSet()">
-
-        ✓ Guardar serie
-
+        class="ghost"
+        onclick="skipRest()"
+        style="width:100%"
+      >
+        Saltar descanso
       </button>
 
     </div>
 
+  `
+  : ""
+}
+
+    <!-- PROGRESO DE SERIES -->
+
+    <div class="card">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+        margin-bottom:16px;
+      ">
+
+        <div>
+
+          <small class="muted">
+            SERIES
+          </small>
+
+          <h2 style="margin:4px 0 0">
+            ${
+              setsFinished
+              ? "Todas completadas"
+              : `Serie ${currentSetNumber} de ${plannedSets || "—"}`
+            }
+          </h2>
+
+        </div>
+
+        <div style="
+          font-size:28px;
+          font-weight:800;
+          color:#d9aa4a;
+        ">
+          ${completedSets}/${plannedSets || "—"}
+        </div>
+
+      </div>
+
+
+      ${
+        plannedSets
+        ? `
+
+          <div style="
+            display:grid;
+            grid-template-columns:repeat(${plannedSets},1fr);
+            gap:7px;
+            margin-bottom:20px;
+          ">
+
+            ${Array.from({length:plannedSets},(_,i)=>`
+
+              <div style="
+                height:7px;
+                border-radius:999px;
+                background:${
+                  i<completedSets
+                  ? "#d9aa4a"
+                  : "#e5e7eb"
+                };
+              "></div>
+
+            `).join("")}
+
+          </div>
+
+        `
+        : ""
+      }
+
+
+      ${
+  !setsFinished
+  ? (
+
+      workout.restUntil && workout.restUntil > Date.now()
+
+      ? `
+
+        <div style="
+          padding:20px;
+          border-radius:16px;
+          background:#f7f8fa;
+          border:1px solid #e5e8ec;
+          text-align:center;
+        ">
+
+          <div style="
+            font-size:30px;
+            margin-bottom:8px;
+          ">
+            ⏱️
+          </div>
+
+          <h3 style="margin:0 0 6px">
+            Descanso
+          </h3>
+
+          <p class="muted" style="margin:0 0 14px">
+            Recupera antes de hacer la siguiente serie.
+          </p>
+
+          <div id="rest-timer" style="
+            font-size:42px;
+            font-weight:800;
+            color:#d9aa4a;
+            margin-bottom:16px;
+          ">
+            1:30
+          </div>
+
+          <button
+            class="ghost"
+            style="width:100%"
+            onclick="skipRest()">
+            Saltar descanso
+          </button>
+
+        </div>
+
+      `
+
+      : `
+
+        <label>
+          Peso utilizado (kg)
+        </label>
+
+        <input
+          id="workout-kg"
+          type="number"
+          inputmode="decimal"
+          step="0.5"
+          placeholder="Ej. 80"
+          autocomplete="off"
+        >
+
+        <label>
+          Repeticiones
+        </label>
+
+        <input
+          id="workout-reps"
+          type="number"
+          inputmode="numeric"
+          placeholder="Ej. 12"
+          autocomplete="off"
+        >
+
+        <button
+          class="btn"
+          style="
+            width:100%;
+            margin-top:18px;
+          "
+          onclick="saveWorkoutSet()">
+
+          ✓ Guardar serie ${currentSetNumber}
+
+        </button>
+
+      `
+
+    )
+  : `
+        
+
+          <div style="
+            padding:18px;
+            border-radius:15px;
+            background:#eef8f3;
+            color:#267a55;
+            text-align:center;
+            font-weight:700;
+          ">
+            ✓ ${plannedSets} series completadas
+          </div>
+
+        `
+      }
+
+    </div>
+
+
+    <!-- SERIES REALIZADAS EN ESTA SESIÓN -->
 
     ${
       workout.sets.length
@@ -2254,29 +2630,63 @@ function renderWorkoutSession(){
             Series realizadas
           </h2>
 
-          ${workout.sets.map((s,i)=>`
+         ${workout.sets.map((s,i)=>`
 
-            <div class="item">
+  <div class="item">
 
-              <b>
-                Serie ${i+1}
-              </b>
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    ">
 
-              <span class="muted">
-                · ${esc(String(s.kg))} kg
-                × ${esc(String(s.reps))} reps
-              </span>
+      <div>
+        <b>
+          Serie ${i+1}
+        </b>
 
-            </div>
+        <div class="muted" style="margin-top:4px">
+          ${esc(String(s.kg))} kg × ${esc(String(s.reps))} reps
+        </div>
+      </div>
 
-          `).join("")}
+      <div style="
+        display:flex;
+        gap:7px;
+      ">
+
+        <button
+          class="ghost"
+          onclick="editWorkoutSet(${i})">
+          ✏️
+        </button>
+
+        <button
+          class="danger"
+          onclick="deleteWorkoutSet(${i})">
+          🗑️
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+`).join("")}
+
 
           ${
-            plannedSets && workout.sets.length >= plannedSets
+            setsFinished
             ? `
+
               <button
                 class="btn"
-                style="width:100%;margin-top:15px"
+                style="
+                  width:100%;
+                  margin-top:15px;
+                "
                 onclick="nextWorkoutExercise()">
 
                 ${
@@ -2286,6 +2696,7 @@ function renderWorkoutSession(){
                 }
 
               </button>
+
             `
             : ""
           }
@@ -2296,6 +2707,8 @@ function renderWorkoutSession(){
       : ""
     }
 
+
+    <!-- SALIR -->
 
     <div class="card">
 
@@ -2318,30 +2731,134 @@ function renderWorkoutSession(){
 }
 
 
+function startRestTimer(){
+
+  clearInterval(window.restTimerInterval);
+
+  const workout = window.activeWorkout;
+
+  if(!workout || !workout.restUntil) return;
+
+  window.restTimerInterval = setInterval(()=>{
+
+    if(!window.activeWorkout){
+      clearInterval(window.restTimerInterval);
+      return;
+    }
+
+    const remaining = Math.max(
+      0,
+      Math.ceil((workout.restUntil - Date.now()) / 1000)
+    );
+
+    const timer = document.getElementById("rest-timer");
+
+    if(timer){
+
+      const minutes = Math.floor(remaining / 60);
+      const seconds = remaining % 60;
+
+      timer.textContent =
+        `${minutes}:${String(seconds).padStart(2,"0")}`;
+
+    }
+
+    if(remaining <= 0){
+
+      clearInterval(window.restTimerInterval);
+
+      workout.restUntil = null;
+
+      renderWorkoutSession();
+
+      toast("Descanso terminado · Siguiente serie");
+    }
+
+  },250);
+}
+
+
+function skipRest(){
+
+  const workout = window.activeWorkout;
+
+  if(!workout) return;
+
+  clearInterval(window.restTimerInterval);
+
+  workout.restUntil = null;
+
+  renderWorkoutSession();
+
+  toast("Descanso terminado");
+}
+
+
 function saveWorkoutSet(){
 
-  const workout=window.activeWorkout;
+  const workout = window.activeWorkout;
 
-  if(!workout)return;
+  if(!workout) return;
 
-  const kg=document.getElementById("workout-kg").value.trim();
-  const reps=document.getElementById("workout-reps").value.trim();
+  /* No permitir guardar otra serie durante el descanso */
+
+  if(workout.restUntil && workout.restUntil > Date.now()){
+
+    toast("Espera a que termine el descanso");
+
+    return;
+  }
+
+  const exercise =
+    workout.exercises[workout.currentExercise];
+
+  const plannedSets =
+    parseInt(exercise?.sets) || 0;
+
+  if(plannedSets && workout.sets.length >= plannedSets){
+
+    toast("Ya has completado todas las series");
+
+    return;
+  }
+
+  const kgInput =
+    document.getElementById("workout-kg");
+
+  const repsInput =
+    document.getElementById("workout-reps");
+
+  if(!kgInput || !repsInput) return;
+
+  const kg =
+    kgInput.value.trim();
+
+  const reps =
+    repsInput.value.trim();
 
   if(!kg || !reps){
 
     toast("Introduce peso y repeticiones");
-    return;
 
+    return;
   }
 
-  const kgValue=parseFloat(kg.replace(",","."));
-  const repsValue=parseInt(reps);
+  const kgValue =
+    parseFloat(kg.replace(",","."));
 
-  if(!Number.isFinite(kgValue) || !Number.isFinite(repsValue)){
+  const repsValue =
+    parseInt(reps);
+
+  if(
+    !Number.isFinite(kgValue) ||
+    !Number.isFinite(repsValue) ||
+    kgValue < 0 ||
+    repsValue <= 0
+  ){
 
     toast("Introduce valores válidos");
-    return;
 
+    return;
   }
 
   workout.sets.push({
@@ -2349,12 +2866,82 @@ function saveWorkoutSet(){
     reps:repsValue
   });
 
+  /* Descanso obligatorio de 90 segundos */
+
+  workout.restUntil =
+    Date.now() + 90000;
+
   renderWorkoutSession();
 
-  toast("Serie guardada");
+  startRestTimer();
+
+  toast("Serie guardada · Descanso 90 s");
+}
+
+function editWorkoutSet(index){
+
+  const workout=window.activeWorkout;
+
+  if(!workout || !workout.sets[index])return;
+
+  const set=workout.sets[index];
+
+  const kgText=prompt(
+    `Peso de la serie ${index+1} (kg):`,
+    String(set.kg)
+  );
+
+  if(kgText===null)return;
+
+  const repsText=prompt(
+    `Repeticiones de la serie ${index+1}:`,
+    String(set.reps)
+  );
+
+  if(repsText===null)return;
+
+  const kg=parseFloat(kgText.replace(",","."));
+  const reps=parseInt(repsText);
+
+  if(
+    !Number.isFinite(kg) ||
+    !Number.isFinite(reps) ||
+    kg<0 ||
+    reps<=0
+  ){
+    toast("Introduce valores válidos");
+    return;
+  }
+
+  workout.sets[index]={
+    kg:kg,
+    reps:reps
+  };
+
+  renderWorkoutSession();
+
+  toast(`Serie ${index+1} actualizada`);
 }
 
 
+function deleteWorkoutSet(index){
+
+  const workout=window.activeWorkout;
+
+  if(!workout || !workout.sets[index])return;
+
+  const ok=confirm(
+    `¿Eliminar la serie ${index+1}?`
+  );
+
+  if(!ok)return;
+
+  workout.sets.splice(index,1);
+
+  renderWorkoutSession();
+
+  toast("Serie eliminada");
+}
 function nextWorkoutExercise(){
 
   const workout=window.activeWorkout;
@@ -2404,8 +2991,10 @@ function nextWorkoutExercise(){
 
 async function finishWorkout(){
 
-  const workout=window.activeWorkout;
+  clearInterval(window.restTimerInterval);
+  window.restTimerInterval=null;
 
+  const workout=window.activeWorkout;
   if(!workout)return;
 
   const lastExercise=
@@ -2517,14 +3106,15 @@ function cancelWorkout(){
 
   if(!confirmExit)return;
 
-  window.activeWorkout=null;
+clearInterval(window.restTimerInterval);
+window.restTimerInterval=null;
 
+window.activeWorkout=null;
   showClient("training");
 }
 function sendClientCheckin(){
-data.checkins.carlos.reviewed=false;
-data.checkins.carlos.comment="Nuevo check-in enviado por Carlos.";
-saveData();
+data.checkins[currentClientId].reviewed=false;
+data.checkins[currentClientId].comment="Nuevo check-in enviado.";saveData();
 toast("Check-in enviado a Daniel");
 }
 
@@ -2532,7 +3122,14 @@ function sendClientMessage(){
 const box=document.getElementById("client-message");
 const text=box.value.trim();
 if(!text)return;
-data.messages.carlos.push(["Carlos",text]);
+if(!data.messages[currentClientId]){
+  data.messages[currentClientId]=[];
+}
+
+data.messages[currentClientId].push([
+  client(currentClientId)?.name || "Cliente",
+  text
+]);
 saveData();
 showClient("coach");
 toast("Mensaje enviado");
@@ -2550,8 +3147,7 @@ html=`
 <div class="grid g3">
 <div class="card"><small>Clientes activos</small><h2>${data.clients.length}</h2></div>
 <div class="card"><small>Check-ins pendientes</small><h2>${pending}</h2></div>
-<div class="card"><small>Mensajes nuevos</small><h2>${data.messages.carlos.length}</h2></div>
-</div>
+<div class="card"><small>Mensajes nuevos</small><h2>${data.clients.reduce((total,c)=>total+(data.messages[c.id]||[]).length,0)}</h2></div></div>
 <div class="card"><h2>Acciones rápidas</h2>
 <button class="btn" onclick="showCoach('clients')">Gestionar clientes</button>
 <button class="ghost" onclick="showCoach('checkins')">Revisar check-ins</button>
@@ -3104,13 +3700,16 @@ data.clients.push({
   goal,
   weight,
   initial:weight,
-  plan:""
+  plan:"",
+  status:"Pendiente"
 });
-
 data.weights[id]=[weight];
 data.checkins[id]={
   weight:money(weight)+" kg",
-  diet:"Pendiente de revisión"
+  diet:"Pendiente",
+  training:"Pendiente",
+  comment:"Pendiente de revisión.",
+  reviewed:false
 };
 data.diets[id]={
   training:{
@@ -3149,6 +3748,18 @@ return;
 c.weight=value;
 if(!data.weights[id])data.weights[id]=[c.initial];
 data.weights[id].push(value);
+supabaseClient
+  .from("client_weights")
+  .insert({
+    client_id:id,
+    weight:value
+  })
+  .then(({error})=>{
+    if(error){
+      console.error("Error guardando peso en Supabase:",error);
+      toast("Peso guardado localmente, pero no en Supabase");
+    }
+  });
 saveData();
 
 if(currentApp==="coach")showClientAdmin(id);
