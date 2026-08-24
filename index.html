@@ -1533,8 +1533,7 @@ const icons={
 
 const svg=icons[icon]||icons["⌂"];
 
-return '<button onclick="'+fn+';this.parentElement.querySelectorAll(\\'button\\').forEach(b=>b.classList.remove(\\'active\\'));this.classList.add(\\'active\\')">'+svg+'<span>'+text+"</span></button>";
-}
+return `<button onclick="${fn};this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${svg}<span>${text}</span></button>`;}
 
 function buildClientNav(){
 document.getElementById("client-nav").innerHTML=
@@ -2115,8 +2114,6 @@ if(screen==="routines"){
 
   </div>
   `;
-
-}
   }else{
 
     const days=data.routines[selected]||[];
