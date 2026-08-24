@@ -1668,11 +1668,11 @@ html=`
             <div style="margin:8px 0;padding:10px;background:#f7f8fa;border-radius:10px">
               <b>${esc(ex.name)}</b>
               <br>
-              ${(ex.sets||[]).map(s=>`
-                <span class="muted">
-                  Serie ${s.set}: ${esc(String(s.kg||""))} kg × ${esc(String(s.reps||""))} reps
-                </span><br>
-              `).join("")}
+              ${(ex.sets||[]).map((s,i)=>`
+  <span class="muted">
+    Serie ${i+1}: ${esc(String(s.kg||""))} kg × ${esc(String(s.reps||""))} reps
+  </span><br>
+`).join("")}
             </div>
           `).join("")}
         </div>
