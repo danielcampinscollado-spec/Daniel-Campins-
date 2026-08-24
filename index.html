@@ -1303,6 +1303,55 @@ function loadData(){
 
   return JSON.parse(JSON.stringify(defaultData));
 }
+async function loadDietsFromSupabase(){
+
+  try{
+
+    const { data:diets,error } = await supabaseClient
+      .from("client_diets")
+      .select("client_id,diet_type,calories,protein,meals");
+
+    if(error){
+      console.error("Error cargando dietas:",error);
+      return;
+    }
+
+    if(!diets) return;
+
+    diets.forEach(row=>{
+
+      if(!data.diets[row.client_id]){
+        data.diets[row.client_id]={
+          training:{
+            calories:"",
+            protein:"",
+            meals:[]
+          },
+          rest:{
+            calories:"",
+            protein:"",
+            meals:[]
+          }
+        };
+      }
+
+      data.diets[row.client_id][row.diet_type]={
+        calories:row.calories||"",
+        protein:row.protein||"",
+        meals:Array.isArray(row.meals)?row.meals:[]
+      };
+
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error("Error conectando con Supabase para dietas:",e);
+
+  }
+
+}
 async function loadRoutinesFromSupabase(){
 
   const { data:routines, error } = await supabaseClient
