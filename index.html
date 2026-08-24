@@ -2220,42 +2220,288 @@ showClientAdmin(id);
 }
 
 function showClientAdmin(id){
-const c=client(id);
-if(!c)return;
+  const c=client(id);
+  if(!c)return;
 
-const history=data.weights[id]||[c.initial,c.weight];
-const change=c.weight-c.initial;
+  const history=data.weights[id]||[c.initial,c.weight];
+  const change=c.weight-c.initial;
 
-document.getElementById("coach-main").innerHTML=`
-<button class="ghost" onclick="showCoach('clients')">← Clientes</button>
-<div class="top"><div><h1>${esc(c.name)}</h1><p class="muted">${esc(c.goal)}</p></div></div>
+  const dietTraining=data.diets[id]?.training||{
+    calories:"",
+    protein:"",
+    meals:[]
+  };
 
-<div class="grid g3">
-<div class="card"><small>Peso</small><h2>${money(c.weight)} kg</h2></div>
-<div class="card"><small>Alimentación</small><h2>${id==="carlos"?"9 / 10":"Pendiente"}</h2></div>
-<div class="card"><small>Entrenamiento</small><h2>${id==="carlos"?"8 / 10":"Pendiente"}</h2></div>
-</div>
+  const dietRest=data.diets[id]?.rest||{
+    calories:"",
+    protein:"",
+    meals:[]
+  };
 
-<div class="card">
-<h2>Gestionar ${esc(c.name)}</h2>
-<button class="btn" onclick="window.selectedClient='${id}';showCoach('diets')">🍴 Alimentación</button>
-<button class="btn" onclick="window.selectedClient='${id}';showCoach('routines')">🏋️ Entrenamiento</button>
-<button class="ghost" onclick="reviewCheckin('${id}')">✓ Check-in</button>
-</div>
+  const routine=data.routines[id]||[];
 
-<div class="card">
-<h2>Evolución</h2>
-<div class="item"><b>Peso inicial</b><br>${money(c.initial)} kg</div>
-<div class="item"><b>Peso actual</b><br>${money(c.weight)} kg</div>
-<div class="item"><b>Cambio total</b><br>${change>=0?"+":""}${money(change)} kg</div>
-<div class="item"><b>Historial</b><br>${history.map(money).join(" → ")} kg</div>
-<button class="btn" onclick="addWeight('${id}')">+ Añadir peso</button>
-</div>
+  const trainingMeals=(dietTraining.meals||[])
+    .filter(m=>m.foods&&m.foods.length)
+    .map(m=>`
+      <div class="item">
+        <b>${esc(m.name)}</b>
+        ${m.foods.map(f=>`
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            gap:10px;
+            padding:7px 0;
+          ">
+            <span>${esc(f[0])}</span>
+            <span class="muted">${esc(f[1])}</span>
+          </div>
+        `).join("")}
+      </div>
+    `).join("");
 
-<div class="card">
-<h2>Estado</h2>
-<p class="muted">${c.status==="Revisado"?"✓ Check-in revisado":"Pendiente de revisión"}</p>
-</div>`;
+  const routinePreview=routine.map((day,i)=>`
+    <div class="item">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+      ">
+        <div>
+          <b>Día ${i+1}</b>
+          <div class="muted" style="margin-top:4px">
+            ${esc(day.muscle||"Sin grupo muscular")}
+          </div>
+        </div>
+
+        <span class="pill">
+          ${(day.exercises||[]).length} ejercicios
+        </span>
+      </div>
+
+      ${
+        (day.exercises||[]).length
+        ?
+        `<div style="margin-top:12px">
+          ${(day.exercises||[]).map(ex=>`
+            <div style="
+              padding:9px 0;
+              border-top:1px solid #eceef1;
+            ">
+              <b>${esc(ex.name||"Ejercicio")}</b>
+              <span class="muted">
+                · ${esc(ex.sets||"")} series × ${esc(ex.reps||"")}
+              </span>
+            </div>
+          `).join("")}
+        </div>`
+        :
+        `<p class="muted">Sin ejercicios.</p>`
+      }
+
+    </div>
+  `).join("");
+
+  document.getElementById("coach-main").innerHTML=`
+
+    <button class="ghost" onclick="showCoach('clients')">
+      ← Clientes
+    </button>
+
+    <div class="top" style="margin-top:18px">
+      <div>
+        <h1>${esc(c.name)}</h1>
+        <p class="muted">${esc(c.goal||"")}</p>
+      </div>
+    </div>
+
+    <div class="grid g3">
+
+      <div class="card">
+        <small>Peso</small>
+        <h2>${money(c.weight)} kg</h2>
+      </div>
+
+      <div class="card">
+        <small>Alimentación</small>
+        <h2>${data.checkins[id]?.diet||"Pendiente"}</h2>
+      </div>
+
+      <div class="card">
+        <small>Entrenamiento</small>
+        <h2>${data.checkins[id]?.training||"Pendiente"}</h2>
+      </div>
+
+    </div>
+
+    <!-- GESTIÓN -->
+
+    <div class="card">
+
+      <h2>Gestionar ${esc(c.name)}</h2>
+
+      <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+      ">
+
+        <button class="btn"
+          onclick="window.selectedClient='${id}';showCoach('diets')">
+          🍴 Editar alimentación
+        </button>
+
+        <button class="btn"
+          onclick="window.selectedClient='${id}';showCoach('routines')">
+          🏋️ Editar entrenamiento
+        </button>
+
+        <button class="ghost"
+          onclick="reviewCheckin('${id}')">
+          ✓ Check-in
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- DIETA -->
+
+    <div class="card">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+        <div>
+          <h2>🍴 Alimentación</h2>
+          <p class="muted">
+            Día de entrenamiento
+          </p>
+        </div>
+
+        <button class="ghost"
+          onclick="window.selectedClient='${id}';showCoach('diets')">
+          Editar
+        </button>
+      </div>
+
+      <div class="metrics" style="margin-top:15px">
+
+        <div class="metric">
+          <small>Calorías</small>
+          <b>${esc(dietTraining.calories||"—")}</b>
+        </div>
+
+        <div class="metric">
+          <small>Proteína</small>
+          <b>${esc(dietTraining.protein||"—")}</b>
+        </div>
+
+        <div class="metric">
+          <small>Comidas</small>
+          <b>${(dietTraining.meals||[]).length}</b>
+        </div>
+
+      </div>
+
+      ${
+        trainingMeals
+        ||
+        `<div class="empty">
+          Todavía no hay alimentos añadidos.
+        </div>`
+      }
+
+    </div>
+
+    <!-- ENTRENAMIENTO -->
+
+    <div class="card">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+        <div>
+          <h2>🏋️ Entrenamiento</h2>
+          <p class="muted">
+            ${routine.length} días programados
+          </p>
+        </div>
+
+        <button class="ghost"
+          onclick="window.selectedClient='${id}';showCoach('routines')">
+          Editar
+        </button>
+      </div>
+
+      ${
+        routinePreview
+        ||
+        `<div class="empty">
+          Todavía no hay entrenamiento asignado.
+        </div>`
+      }
+
+    </div>
+
+    <!-- EVOLUCIÓN -->
+
+    <div class="card">
+
+      <h2>Evolución</h2>
+
+      <div class="item">
+        <b>Peso inicial</b><br>
+        ${money(c.initial)} kg
+      </div>
+
+      <div class="item">
+        <b>Peso actual</b><br>
+        ${money(c.weight)} kg
+      </div>
+
+      <div class="item">
+        <b>Cambio total</b><br>
+        ${change>=0?"+":""}${money(change)} kg
+      </div>
+
+      <div class="item">
+        <b>Historial</b><br>
+        ${history.map(money).join(" → ")} kg
+      </div>
+
+      <button class="btn"
+        onclick="addWeight('${id}')">
+        + Añadir peso
+      </button>
+
+    </div>
+
+    <!-- ESTADO -->
+
+    <div class="card">
+
+      <h2>Estado</h2>
+
+      <p class="muted">
+        ${
+          c.status==="Revisado"
+          ?"✓ Check-in revisado"
+          :"Pendiente de revisión"
+        }
+      </p>
+
+    </div>
+  `;
+
+  window.scrollTo(0,0);
 }
 
 function newClient(){
