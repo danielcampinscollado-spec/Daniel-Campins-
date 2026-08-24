@@ -2291,12 +2291,6 @@ function nextWorkoutExercise(){
 
   if(!workout)return;
 
-  function nextWorkoutExercise(){
-
-  const workout=window.activeWorkout;
-
-  if(!workout)return;
-
   const exercise=
     workout.exercises[workout.currentExercise];
 
@@ -2333,23 +2327,6 @@ function nextWorkoutExercise(){
     return;
 
   }
-
-  renderWorkoutSession();
-}
-
-    name:exercise.name || "Ejercicio",
-
-    plannedSets:exercise.sets || "",
-
-    plannedReps:exercise.reps || "",
-
-    sets:JSON.parse(JSON.stringify(workout.sets))
-
-  });
-
-  workout.currentExercise++;
-
-  workout.sets=[];
 
   renderWorkoutSession();
 }
