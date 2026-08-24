@@ -2041,11 +2041,11 @@ if(screen==="training"){
                         </span>
 
                         ${
-                          ex.video
+                          ex.videoUrl
                           ? `
                             <div style="margin-top:8px">
                               <a
-                                href="${esc(ex.video)}"
+                                href="${esc(ex.videoUrl)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style="
@@ -2351,6 +2351,28 @@ if(!workout.completedExercises){
               ? ` · ${esc(exercise.reps)} repeticiones`
               : ""}
           </p>
+${
+  exercise.videoUrl
+  ? `
+    <a
+      href="${esc(exercise.videoUrl)}"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+        margin-top:9px;
+        color:#956b18;
+        font-weight:700;
+        text-decoration:none;
+      "
+    >
+      ▶ Ver vídeo del ejercicio
+    </a>
+  `
+  : ""
+}
 
         </div>
 
@@ -4214,9 +4236,8 @@ const video=prompt(
   name:name,
   sets:sets,
   reps:reps,
-  video:video || ""
+  videoUrl:video.trim()
 });
-
   /* Guardado local */
   saveData();
 
