@@ -2566,13 +2566,14 @@ function showClientAdmin(id){
       </div>
 
       ${
-        routinePreview
-        ||
-        `<div class="empty">
-          Todavía no hay entrenamiento asignado.
-        </div>`
-      }
-
+  routine.length
+  ? `<p class="muted">
+      La rutina está asignada y disponible para el cliente.
+    </p>`
+  : `<div class="empty">
+      Todavía no hay entrenamiento asignado.
+    </div>`
+}
     </div>
 
     <!-- EVOLUCIÓN -->
