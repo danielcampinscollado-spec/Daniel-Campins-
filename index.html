@@ -2998,7 +2998,7 @@ function addWeight(id){
 const c=client(id);
 if(!c)return;
 
-const text=prompt("Nuevo peso (kg):",money(c.weight));
+const text=prompt("Nuevo peso (kg):","0");
 if(text===null)return;
 
 const value=parseFloat(text.replace(",","."));
