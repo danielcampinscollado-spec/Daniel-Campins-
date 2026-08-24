@@ -1408,6 +1408,8 @@ async function openApp(app){
 
     buildCoachNav();
     await loadDietsFromSupabase();
+    console.log("DIETAS CARGADAS:", data.diets);
+console.log("RUTINAS CARGADAS:", data.routines);
     try{
 
       const { data:routines,error } = await supabaseClient
