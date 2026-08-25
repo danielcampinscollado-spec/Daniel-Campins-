@@ -4787,12 +4787,16 @@ openModal(`
 }
 
 function markReviewed(id){
-data.checkins[id].reviewed=true;
-client(id).status="Revisado";
-saveData();
-openMessages(id);
-showCoach("checkins");
-toast("Check-in marcado como revisado");
+  data.checkins[id].reviewed=true;
+  data.checkins[id].status="Revisado";
+  client(id).status="Revisado";
+
+  saveData();
+
+  closeModal();
+  showCoach("checkins");
+
+  toast("Check-in marcado como revisado");
 }
 
 function openMessages(id){
