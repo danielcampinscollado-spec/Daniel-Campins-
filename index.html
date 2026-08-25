@@ -2646,13 +2646,14 @@ html=`
     </p>
 
     <textarea
-      id="checkin-comment"
-      maxlength="500"
-      rows="4"
-      placeholder="Ej. Me he encontrado con más energía..."
-      style="resize:none"
-    >${esc(x.comment||"")}</textarea>
-
+  id="checkin-comment"
+  maxlength="500"
+  rows="4"
+  placeholder="Check-in semanal completado."
+  onclick="this.placeholder=''"
+  onfocus="this.placeholder=''"
+  style="resize:none"
+></textarea>
   </div>
 
   <button
