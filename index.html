@@ -1376,7 +1376,7 @@ function loadData(){
       if(parsed.checkins) result.checkins=parsed.checkins;
       if(parsed.messages) result.messages=parsed.messages;
       if(parsed.routines) result.routines=parsed.routines;
-if(parsed.completedTrainingDays) result.completedTrainingDays=parsed.completedTrainingDays;
+
 
 if(parsed.completedTrainingDays){
   result.completedTrainingDays=parsed.completedTrainingDays;
@@ -1434,6 +1434,13 @@ async function loadDietsFromSupabase(){
       };
 
     });
+    saveData();
+
+  }catch(e){
+
+    console.error("Error conectando con Supabase para dietas:",e);
+  }
+}
 
 async function loadClientsFromSupabase(){
 
@@ -1804,6 +1811,7 @@ async function openApp(app){
   buildClientNav();
 
   await loadDietsFromSupabase();
+  await loadClientsFromSupabase();
   await loadRoutinesFromSupabase();
   await loadWorkoutHistoryFromSupabase();
   await loadWeightsFromSupabase();
@@ -1815,6 +1823,7 @@ async function openApp(app){
     buildCoachNav();
 
     await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
     await loadRoutinesFromSupabase();
     await loadWorkoutHistoryFromSupabase();
     await loadWeightsFromSupabase();
@@ -3832,38 +3841,7 @@ window.restTimerInterval=null;
 window.activeWorkout=null;
   showClient("training");
 }
-function sendClientCheckin(){
 
-  const checkin = data.checkins[currentClientId];
-
-  if(!checkin) return;
-
-  const commentBox = document.getElementById("checkin-comment");
-
-  const comment = commentBox
-    ? commentBox.value.trim()
-    : "";
-
-  checkin.reviewed = false;
-  checkin.status = "Nuevo check-in";
-  checkin.comment = comment;
-
-  const c = client(currentClientId);
-
-  if(c){
-    c.status = "Pendiente";
-  }
-
-  saveData();
-
-  toast(
-    c
-      ? `Nuevo check-in enviado por ${c.name.split(" ")[0]}`
-      : "Check-in enviado a Daniel"
-  );
-
-  showClient("checkin");
-}
 
 function sendClientMessage(){
 const box=document.getElementById("client-message");
@@ -5460,11 +5438,17 @@ async function removeFood(id,type,mi,fi){
 
   if(error){
 
-    console.error("Error eliminando alimento:",error);
+  console.error("ERROR SUPABASE DIETA:",error);
 
-    toast("No se pudo guardar el cambio");
+  diet.meals[mi].foods.pop();
 
-    return;
+  toast(
+    "ERROR: " +
+    (error.message || error.code || "desconocido")
+  );
+
+  return;
+}
   }
 
   saveData();
