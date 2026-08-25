@@ -1641,7 +1641,83 @@ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
 function client(id){
 return data.clients.find(c=>c.id===id);
 }
+function getClientManagementStatus(id){
 
+  const diet = data.diets?.[id];
+
+  const trainingMeals =
+    diet?.training?.meals || [];
+
+  const restMeals =
+    diet?.rest?.meals || [];
+
+  const trainingFoods = trainingMeals.reduce(
+    (total,meal) =>
+      total + (meal.foods?.length || 0),
+    0
+  );
+
+  const restFoods = restMeals.reduce(
+    (total,meal) =>
+      total + (meal.foods?.length || 0),
+    0
+  );
+
+  let dietStatus = "Falta gestionar dieta";
+
+  if(trainingFoods > 0 || restFoods > 0){
+
+    const hasTrainingMeals =
+      trainingMeals.length > 0 &&
+      trainingMeals.every(
+        meal => (meal.foods?.length || 0) > 0
+      );
+
+    const hasRestMeals =
+      restMeals.length > 0 &&
+      restMeals.every(
+        meal => (meal.foods?.length || 0) > 0
+      );
+
+    if(hasTrainingMeals && hasRestMeals){
+
+      dietStatus = "Dieta gestionada";
+
+    }else{
+
+      dietStatus = "Acabar de gestionar alimentación";
+
+    }
+
+  }
+
+
+  const routine =
+    data.routines?.[id] || [];
+
+  let routineStatus =
+    "Falta gestionar entrenamiento";
+
+  if(routine.length > 0){
+
+    const completeRoutine =
+      routine.every(day =>
+        Array.isArray(day.exercises) &&
+        day.exercises.length > 0
+      );
+
+    routineStatus =
+      completeRoutine
+        ? "Entrenamiento gestionado"
+        : "Acabar de gestionar entrenamiento";
+  }
+
+
+  return {
+    diet:dietStatus,
+    training:routineStatus
+  };
+}
 function money(n){
 return Number(n).toFixed(1).replace(".",",");
 }
@@ -3800,26 +3876,52 @@ if(screen==="dashboard"){
 
   });
 
-  /* CLIENTES SIN PLAN */
+    /* ALIMENTACIÓN PENDIENTE */
 
-  clients
-    .filter(c =>
-      !c.plan ||
-      c.plan.trim()==="" ||
-      c.plan==="Plan pendiente"
-    )
-    .forEach(c => {
+  clients.forEach(c => {
+
+    const diets = data.diets?.[c.id];
+
+    const trainingMeals =
+      diets?.training?.meals || [];
+
+    const restMeals =
+      diets?.rest?.meals || [];
+
+    const trainingFoods = trainingMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
+    );
+
+    const restFoods = restMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
+    );
+
+    /*
+      Solo avisamos si realmente no hay
+      alimentación configurada.
+
+      Si tiene al menos un alimento,
+      no mostramos "sin configurar".
+    */
+
+    if(trainingFoods === 0 && restFoods === 0){
 
       attention.push({
-        type:"plan",
-        icon:"▤",
+        type:"diet",
+        icon:"🍴",
         title:c.name,
-        text:"Plan pendiente de configurar",
+        text:"Alimentación sin configurar",
         action:`openClient('${c.id}')`,
         label:"Gestionar"
       });
 
-    });
+    }
+
+  });
 
   /* LIMITAR PARA NO HACER EL PANEL INFINITO */
 
@@ -4302,12 +4404,122 @@ html=`
 <div class="top"><div><h1>Clientes</h1><p class="muted">Gestiona el proceso de cada persona.</p></div>
 <button class="btn" onclick="newClient()">+ Nuevo cliente</button></div>
 <div class="card">
-${data.clients.map(c=>`
-<div class="client-row" onclick="openClient('${c.id}')">
-<b>${esc(c.name)}</b><br>
-<span class="muted">${esc(c.goal)} · ${money(c.weight)} kg · ${c.status==="Revisado"?"✓ Revisado":"Pendiente"}</span>
-<br><button class="btn" style="margin-top:8px" onclick="event.stopPropagation();openClient('${c.id}')">Gestionar cliente</button>
-</div>`).join("")}
+${data.clients.map(c=>{
+
+const management = getClientManagementStatus(c.id);
+
+const dietOk =
+  management.diet === "Dieta gestionada";
+
+const trainingOk =
+  management.training === "Entrenamiento gestionado";
+
+return `
+
+<div class="client-row"
+     onclick="openClient('${c.id}')">
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+  ">
+
+    <div>
+
+      <b style="font-size:16px">
+        ${esc(c.name)}
+      </b>
+
+      <div class="muted" style="
+        margin-top:4px;
+        font-size:13px;
+      ">
+        ${esc(c.goal)} · ${money(c.weight)} kg
+      </div>
+
+    </div>
+
+    <span style="
+      font-size:18px;
+      color:${dietOk && trainingOk ? "#267a55" : "#b47b13"};
+    ">
+      ${dietOk && trainingOk ? "✓" : "!"}
+    </span>
+
+  </div>
+
+
+  <div style="
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:13px;
+    padding-top:12px;
+    border-top:1px solid #eceef1;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+    ">
+
+      <span>🍴 Alimentación</span>
+
+      <span style="
+        color:${dietOk ? "#267a55" : "#b47b13"};
+        font-weight:700;
+        text-align:right;
+      ">
+        ${esc(management.diet)}
+      </span>
+
+    </div>
+
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+    ">
+
+      <span>🏋️ Entrenamiento</span>
+
+      <span style="
+        color:${trainingOk ? "#267a55" : "#b47b13"};
+        font-weight:700;
+        text-align:right;
+      ">
+        ${esc(management.training)}
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <button
+    class="btn"
+    style="
+      margin-top:12px;
+      padding:9px 13px;
+      font-size:12px;
+    "
+    onclick="event.stopPropagation();openClient('${c.id}')">
+
+    Gestionar cliente
+
+  </button>
+
+</div>
+
+`;
+
+}).join("")}
 </div>`;
 }
 
