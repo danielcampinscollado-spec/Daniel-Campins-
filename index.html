@@ -2205,9 +2205,7 @@ ${m.foods.map(f=>`
 if(screen==="training"){
 
   const routine = data.routines[currentClientId] || [];
-  const completedDays = getCompletedTrainingDays(currentClientId);
-
-  html = `
+const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);  html = `
     <div class="top">
       <div>
         <p class="muted">Área cliente</p>
@@ -2225,9 +2223,8 @@ if(screen==="training"){
       routine.length
       ? routine.map((day,dayIndex)=>{
 
-          const completed =
-            completedDays.includes(dayIndex);
-
+            const completed =
+  dayIndex < weeklyWorkouts;  
           return `
 
         <div class="card">
