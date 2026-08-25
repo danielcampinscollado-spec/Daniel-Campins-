@@ -2468,16 +2468,219 @@ html=`
 }
 
 if(screen==="checkin"){
-const x=data.checkins[c.id];
+
+const x=data.checkins[c.id]||{
+  weight:money(c.weight)+" kg",
+  diet:"",
+  training:"",
+  comment:"",
+  reviewed:false
+};
+
+const currentWeight=c.weight;
+
 html=`
-<h1>Check-in semanal</h1>
+
+<div class="top">
+
+  <div>
+    <p class="muted">Área cliente</p>
+    <h1>Check-in semanal</h1>
+    <p class="muted">
+      Cuéntale a Daniel cómo ha ido tu semana.
+    </p>
+  </div>
+
+  <span class="pill">
+    ${x.reviewed ? "REVISADO" : "PENDIENTE"}
+  </span>
+
+</div>
+
 <div class="card">
-<div class="item"><b>Peso</b><br>${esc(x.weight)}</div>
-<div class="item"><b>Alimentación</b><br>${esc(x.diet)}</div>
-<div class="item"><b>Entrenamiento</b><br>${esc(x.training)}</div>
-<div class="item"><b>Cómo me encuentro</b><br>${esc(x.comment)}</div>
-<button class="btn" onclick="sendClientCheckin()">Enviar check-in</button>
-</div>`;
+
+  <div style="
+    padding-bottom:20px;
+    border-bottom:1px solid #eceef1;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    ">
+
+      <div>
+        <small class="muted">PESO ACTUAL</small>
+
+        <h2 style="
+          margin:5px 0 0;
+          font-size:28px;
+        ">
+          ${money(currentWeight)} kg
+        </h2>
+      </div>
+
+      <button
+        class="ghost"
+        onclick="updateClientWeight()">
+        ✏️ Actualizar peso
+      </button>
+
+    </div>
+
+  </div>
+
+  <div style="margin-top:22px">
+
+    <b style="
+      display:block;
+      font-size:15px;
+      letter-spacing:.5px;
+    ">
+      🍴 Alimentación
+    </b>
+
+    <p class="muted" style="
+      margin:6px 0 12px;
+      font-size:14px;
+    ">
+      ¿Cómo has llevado tu alimentación esta semana?
+    </p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      border:1px solid #dfe3e8;
+      border-radius:14px;
+      overflow:hidden;
+    ">
+
+      ${["Mal","Normal","Bien"].map(option=>`
+
+        <button
+          class="checkin-option"
+          onclick="selectCheckinOption('diet','${option}')"
+          style="
+            padding:13px 6px;
+            border:0;
+            border-right:1px solid #dfe3e8;
+            background:${x.diet===option?"#f5ead2":"#fff"};
+            color:${x.diet===option?"#956b18":"#555"};
+            font-weight:700;
+          "
+        >
+          ${option}
+        </button>
+
+      `).join("")}
+
+    </div>
+
+  </div>
+
+  <div style="margin-top:24px">
+
+    <b style="
+      display:block;
+      font-size:15px;
+      letter-spacing:.5px;
+    ">
+      🏋️ Entrenamiento
+    </b>
+
+    <p class="muted" style="
+      margin:6px 0 12px;
+      font-size:14px;
+    ">
+      ¿Cómo has llevado tus entrenamientos esta semana?
+    </p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      border:1px solid #dfe3e8;
+      border-radius:14px;
+      overflow:hidden;
+    ">
+
+      ${["Mal","Normal","Bien"].map(option=>`
+
+        <button
+          class="checkin-option"
+          onclick="selectCheckinOption('training','${option}')"
+          style="
+            padding:13px 6px;
+            border:0;
+            border-right:1px solid #dfe3e8;
+            background:${x.training===option?"#f5ead2":"#fff"};
+            color:${x.training===option?"#956b18":"#555"};
+            font-weight:700;
+          "
+        >
+          ${option}
+        </button>
+
+      `).join("")}
+
+    </div>
+
+  </div>
+
+  <div style="margin-top:24px">
+
+    <b style="
+      display:block;
+      font-size:15px;
+      letter-spacing:.5px;
+    ">
+      💬 ¿Cómo te has encontrado?
+    </b>
+
+    <p class="muted" style="
+      margin:6px 0 12px;
+      font-size:14px;
+    ">
+      Cuéntale a Daniel cualquier cosa importante de esta semana.
+    </p>
+
+    <textarea
+      id="checkin-comment"
+      maxlength="500"
+      rows="4"
+      placeholder="Ej. Me he encontrado con más energía..."
+      style="resize:none"
+    >${esc(x.comment||"")}</textarea>
+
+  </div>
+
+  <button
+    class="btn"
+    style="
+      width:100%;
+      margin-top:20px;
+      padding:14px;
+      font-size:15px;
+    "
+    onclick="sendClientCheckin()">
+
+    ➤ Enviar check-in a Daniel
+
+  </button>
+
+  <p class="muted" style="
+    text-align:center;
+    margin:10px 0 0;
+    font-size:12px;
+  ">
+    Tu check-in será visible para Daniel cuando lo envíes.
+  </p>
+
+</div>
+
+`;
+
 }
 
 if(screen==="coach"){
@@ -3475,10 +3678,16 @@ window.restTimerInterval=null;
 window.activeWorkout=null;
   showClient("training");
 }
-function sendClientCheckin(){
-data.checkins[currentClientId].reviewed=false;
-data.checkins[currentClientId].comment="Nuevo check-in enviado.";saveData();
-toast("Check-in enviado a Daniel");
+function sendClientCheckin(estado){
+  const checkin = data.checkins[currentClientId];
+
+  if(!checkin) return;
+
+  checkin.reviewed = false;
+  checkin.status = estado || "normal";
+  checkin.comment = "Check-in semanal enviado por el cliente.";
+
+  toast("Check-in enviado a Daniel");
 }
 
 function sendClientMessage(){
