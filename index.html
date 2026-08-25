@@ -4811,6 +4811,177 @@ document.getElementById("modal").style.display="none";
 document.getElementById("modal").addEventListener("click",function(e){
 if(e.target===this)closeModal();
 });
+function updateClientWeight(){
+
+  const c = client(currentClientId);
+
+  if(!c){
+    toast("No se encontró el cliente");
+    return;
+  }
+
+  const current = c.weight || "";
+
+  const text = prompt(
+    "Introduce tu peso actual (kg):",
+    String(current).replace(".",",")
+  );
+
+  if(text === null) return;
+
+  const value = parseFloat(
+    text.trim().replace(",",".")
+  );
+
+  if(
+    !Number.isFinite(value) ||
+    value <= 0 ||
+    value > 500
+  ){
+    toast("Introduce un peso válido");
+    return;
+  }
+
+  /* Actualizar cliente */
+
+  c.weight = value;
+
+  /* Actualizar historial local */
+
+  if(!data.weights[currentClientId]){
+    data.weights[currentClientId] = [];
+  }
+
+  data.weights[currentClientId].push(value);
+
+  /* Actualizar check-in */
+
+  if(!data.checkins[currentClientId]){
+    data.checkins[currentClientId] = {
+      weight:"",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
+    };
+  }
+
+  data.checkins[currentClientId].weight =
+    money(value) + " kg";
+
+  data.checkins[currentClientId].reviewed = false;
+
+  /* Guardar localmente */
+
+  saveData();
+
+  /* Guardar peso en Supabase */
+
+  supabaseClient
+    .from("client_weights")
+    .insert({
+      client_id:currentClientId,
+      weight:value,
+      recorded_at:new Date().toISOString()
+    })
+    .then(({error})=>{
+
+      if(error){
+
+        console.error(
+          "Error guardando peso en Supabase:",
+          error
+        );
+
+        toast(
+          "Peso actualizado, pero no se pudo sincronizar"
+        );
+
+        return;
+      }
+
+      toast("Peso actualizado correctamente");
+
+    });
+
+  /* Refrescar pantalla */
+
+  showClient("checkin");
+}
+
+
+function selectCheckinOption(type,option){
+
+  if(
+    type !== "diet" &&
+    type !== "training"
+  ){
+    return;
+  }
+
+  if(!data.checkins[currentClientId]){
+    const c = client(currentClientId);
+
+    data.checkins[currentClientId] = {
+      weight:money(c?.weight || 0) + " kg",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
+    };
+  }
+
+  data.checkins[currentClientId][type] = option;
+
+  data.checkins[currentClientId].reviewed = false;
+
+  saveData();
+
+  showClient("checkin");
+}
+
+
+function sendClientCheckin(){
+
+  const c = client(currentClientId);
+
+  if(!c){
+    toast("No se encontró el cliente");
+    return;
+  }
+
+  if(!data.checkins[currentClientId]){
+    data.checkins[currentClientId] = {
+      weight:money(c.weight) + " kg",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
+    };
+  }
+
+  const checkin = data.checkins[currentClientId];
+
+  const commentBox =
+    document.getElementById("checkin-comment");
+
+  if(commentBox){
+    checkin.comment = commentBox.value.trim();
+  }
+
+  checkin.weight =
+    money(c.weight) + " kg";
+
+  checkin.reviewed = false;
+
+  c.status = "Pendiente";
+
+  saveData();
+
+  toast("Check-in enviado a Daniel");
+
+  showClient("checkin");
+}
 </script>
 
 </body>
