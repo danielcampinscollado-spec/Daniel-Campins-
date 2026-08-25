@@ -1487,7 +1487,17 @@ async function loadClientsFromSupabase(){
         data.clients.push(clientData);
 
       }
+const localCheckin = data.checkins?.[row.id];
 
+if(localCheckin?.reviewed){
+  const savedClient = data.clients.find(
+    c => c.id === row.id
+  );
+
+  if(savedClient){
+    savedClient.status="Revisado";
+  }
+}
     });
 
 
@@ -5638,15 +5648,54 @@ openModal(`
 `);
 }
 
-function markReviewed(id){
+async function markReviewed(id){
+
+  const c = client(id);
+
+  if(!c){
+    toast("No se encontró el cliente");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("clients")
+    .update({
+      status:"Revisado"
+    })
+    .eq("id",id);
+
+  if(error){
+
+    console.error(
+      "Error guardando estado del check-in:",
+      error
+    );
+
+    toast("No se pudo guardar la revisión");
+
+    return;
+  }
+
+  if(!data.checkins[id]){
+    data.checkins[id]={
+      weight:money(c.weight)+" kg",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
+    };
+  }
+
   data.checkins[id].reviewed=true;
   data.checkins[id].status="Revisado";
-  client(id).status="Revisado";
+
+  c.status="Revisado";
 
   saveData();
 
   closeModal();
-  showCoach("checkins");
+
+  showCoach("dashboard");
 
   toast("Check-in marcado como revisado");
 }
