@@ -1079,6 +1079,542 @@ label{
   }
 
 }
+/* =========================================
+   REDISEÑO PROFESIONAL ÁREA CLIENTE
+========================================= */
+
+.client-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:22px;
+}
+
+.section-eyebrow{
+  display:block;
+  margin-bottom:7px;
+  color:#a17828;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.7px;
+}
+
+.section-title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.section-title-row h2{
+  margin:0;
+  font-size:21px;
+}
+
+.section-count{
+  min-width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:#f5ead2;
+  color:#956b18;
+  font-weight:800;
+  font-size:13px;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.profile-stat{
+  padding:17px;
+  background:#fff;
+  border:1px solid #e7e9ed;
+  border-radius:16px;
+}
+
+.profile-stat span{
+  display:block;
+  color:#7c858f;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.profile-stat strong{
+  font-size:20px;
+  letter-spacing:-.4px;
+}
+
+.profile-card{
+  padding:20px;
+}
+
+.history-row{
+  border-top:1px solid #eceef1;
+}
+
+.history-row summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:15px 0;
+}
+
+.history-row summary::-webkit-details-marker{
+  display:none;
+}
+
+.history-row summary > div{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.history-arrow{
+  font-size:23px;
+  color:#a17828;
+  transition:.2s;
+}
+
+.history-row[open] .history-arrow{
+  transform:rotate(90deg);
+}
+
+.history-detail{
+  padding:0 0 12px 10px;
+}
+
+.history-exercise{
+  padding:10px 0;
+  border-left:2px solid #f0dfb7;
+  padding-left:12px;
+}
+
+.history-exercise .muted{
+  margin-top:4px;
+  font-size:12px;
+}
+
+.compact-empty{
+  padding:20px 10px;
+}
+
+.progress-value{
+  color:#956b18;
+  font-size:16px;
+}
+
+.weight-chart{
+  position:relative;
+  height:150px;
+  margin:18px 0 10px;
+  overflow:hidden;
+  border-radius:14px;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 24%,
+      #eef0f2 25%,
+      transparent 26%,
+      transparent 49%,
+      #eef0f2 50%,
+      transparent 51%,
+      transparent 74%,
+      #eef0f2 75%,
+      transparent 76%
+    );
+}
+
+.weight-chart svg{
+  width:100%;
+  height:100%;
+  color:#c39135;
+}
+
+.chart-empty{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center;
+  color:#8b929c;
+  font-size:13px;
+}
+
+.weight-history{
+  border-top:1px solid #eceef1;
+}
+
+.weight-history summary{
+  list-style:none;
+  cursor:pointer;
+  padding:15px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#3b4047;
+  font-weight:700;
+}
+
+.weight-history summary::-webkit-details-marker{
+  display:none;
+}
+
+.weight-history summary span{
+  color:#a17828;
+  font-size:22px;
+}
+
+.weight-history-row{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-top:1px solid #f0f1f3;
+  font-size:13px;
+}
+
+.diet-switch{
+  display:flex;
+  gap:6px;
+  padding:4px;
+  margin-bottom:14px;
+  background:#f1f2f4;
+  border-radius:13px;
+}
+
+.diet-switch button{
+  flex:1;
+  padding:10px 12px;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#737a84;
+  font-size:13px;
+  font-weight:700;
+}
+
+.diet-switch button.active{
+  background:#fff;
+  color:#956b18;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.diet-summary{
+  display:flex;
+  gap:1px;
+  margin-bottom:14px;
+  overflow:hidden;
+  border:1px solid #e5e8ec;
+  border-radius:15px;
+  background:#e5e8ec;
+}
+
+.diet-summary div{
+  flex:1;
+  padding:13px;
+  background:#fff;
+}
+
+.diet-summary span{
+  display:block;
+  color:#858c95;
+  font-size:11px;
+  margin-bottom:4px;
+}
+
+.diet-summary strong{
+  font-size:15px;
+}
+
+.diet-list{
+  display:grid;
+  gap:8px;
+}
+
+.meal-card{
+  background:#fff;
+  border:1px solid #e5e8ec;
+  border-radius:15px;
+  overflow:hidden;
+}
+
+.meal-card summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:15px 16px;
+}
+
+.meal-card summary::-webkit-details-marker{
+  display:none;
+}
+
+.meal-card summary > div{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.meal-number{
+  width:31px;
+  height:31px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px;
+  background:#f7f0e1;
+  color:#956b18;
+  font-size:10px;
+  font-weight:800;
+}
+
+.meal-count{
+  color:#8a919a;
+  font-size:11px;
+}
+
+.meal-content{
+  padding:0 16px 13px;
+  border-top:1px solid #eceef1;
+}
+
+.food-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:10px 0;
+  border-bottom:1px solid #f0f1f3;
+  font-size:13px;
+}
+
+.food-row:last-child{
+  border-bottom:0;
+}
+
+.food-row b{
+  color:#6d747e;
+  font-size:12px;
+}
+
+.week-complete{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px;
+  margin-bottom:16px;
+  border:1px solid rgba(57,185,130,.22);
+  border-radius:17px;
+  background:#f3faf6;
+}
+
+.week-complete-icon{
+  width:42px;
+  height:42px;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px;
+  background:#dff3e8;
+  color:#267a55;
+  font-weight:900;
+  font-size:19px;
+}
+
+.week-complete span{
+  color:#267a55;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.2px;
+}
+
+.week-complete h2{
+  margin:3px 0;
+  font-size:16px;
+}
+
+.week-complete p{
+  margin:0;
+  color:#65716b;
+  font-size:12px;
+  line-height:1.45;
+}
+
+.monday-checkin{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:17px;
+  margin-bottom:16px;
+  background:#fff;
+  border:1px solid rgba(217,170,74,.35);
+  border-radius:17px;
+  box-shadow:0 8px 25px rgba(15,23,42,.045);
+}
+
+.monday-checkin-icon{
+  width:42px;
+  height:42px;
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px;
+  background:#f5ead2;
+  color:#956b18;
+  font-weight:900;
+}
+
+.monday-checkin span{
+  color:#956b18;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.2px;
+}
+
+.monday-checkin h3{
+  margin:3px 0;
+  font-size:16px;
+}
+
+.monday-checkin p{
+  margin:0;
+  color:#7c858f;
+  font-size:12px;
+}
+
+.conversation-card{
+  max-width:720px;
+}
+
+.conversation-person{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:16px;
+  border-bottom:1px solid #eceef1;
+}
+
+.conversation-avatar{
+  width:44px;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  background:#f5ead2;
+  color:#956b18;
+  font-size:12px;
+  font-weight:800;
+}
+
+.conversation-person b{
+  display:block;
+}
+
+.conversation-person .muted{
+  display:block;
+  margin-top:3px;
+  font-size:12px;
+}
+
+.conversation-status{
+  color:#39b982;
+  font-size:11px;
+}
+
+.last-message{
+  padding:16px 0;
+}
+
+.last-message span{
+  color:#858c95;
+  font-size:11px;
+}
+
+.last-message p{
+  margin:6px 0 0;
+  line-height:1.5;
+}
+
+.conversation-empty{
+  padding:28px 10px 15px;
+}
+
+.conversation-empty-icon{
+  width:50px;
+  height:50px;
+  margin:0 auto 12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:15px;
+  background:#f5f6f7;
+  font-size:22px;
+}
+@media(max-width:700px){
+
+  .client-header{
+    margin-bottom:18px;
+  }
+
+  .profile-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .profile-stat:last-child{
+    grid-column:1 / -1;
+  }
+
+  .profile-stat strong{
+    font-size:18px;
+  }
+
+  .profile-card{
+    padding:17px;
+  }
+
+  .diet-summary div{
+    padding:11px 9px;
+  }
+
+  .diet-summary strong{
+    font-size:13px;
+  }
+
+  .meal-card summary{
+    padding:14px;
+  }
+
+  .week-complete{
+    align-items:flex-start;
+  }
+
+  .monday-checkin{
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+
+  .monday-checkin .btn{
+    width:100%;
+  }
+
+}
 </style>
 </head>
 
@@ -1361,6 +1897,59 @@ let currentApp="";
 let currentScreen="";
 let currentClientId="carlos";
 
+function getCurrentWeekKey(){
+
+  const now = new Date();
+  const day = now.getDay();
+
+  const monday = new Date(now);
+
+  const diff = day === 0 ? -6 : 1 - day;
+
+  monday.setDate(now.getDate() + diff);
+  monday.setHours(0,0,0,0);
+
+  return monday.toISOString().slice(0,10);
+}
+
+
+function isMonday(){
+
+  return new Date().getDay() === 1;
+
+}
+
+
+function resetWeeklyCheckinIfNeeded(){
+
+  if(!data.checkins) return;
+
+  const weekKey = getCurrentWeekKey();
+
+  if(!data.checkinWeek){
+    data.checkinWeek = {};
+  }
+
+  if(data.checkinWeek[currentClientId] !== weekKey){
+
+    const checkin = data.checkins[currentClientId];
+
+    if(checkin){
+
+      checkin.diet = "";
+      checkin.training = "";
+      checkin.comment = "";
+      checkin.reviewed = false;
+
+    }
+
+    data.checkinWeek[currentClientId] = weekKey;
+
+    saveData();
+
+  }
+
+}
 function loadData(){
   try{
     const saved=localStorage.getItem(KEY);
@@ -1867,6 +2456,8 @@ console.log("openApp funciona", app);
 
     buildClientNav();
 
+resetWeeklyCheckinIfNeeded.();
+
     await loadDietsFromSupabase();
     await loadClientsFromSupabase();
     await loadRoutinesFromSupabase();
@@ -2062,6 +2653,9 @@ if(screen==="home"){
       : null;
 
   const checkin = data.checkins?.[c.id];
+const mondayCheckin =
+  isMonday() &&
+  (!checkin || checkin.weekKey !== getCurrentWeekKey());
 
   html=`
 
@@ -2314,54 +2908,282 @@ if(screen==="home"){
 }
 
 if(screen==="profile"){
-const history=data.workoutHistory?.[c.id]||[];
-html=`
-<div class="top">
-  <div>
-    <h1>Mi perfil</h1>
-    <p class="muted">Tu progreso y tus entrenamientos</p>
+
+  const history=data.workoutHistory?.[c.id]||[];
+  const weightHistory=data.weights?.[c.id]||[c.initial,c.weight];
+
+  const change=c.weight-c.initial;
+
+  html=`
+
+  <div class="client-header">
+
+    <div>
+      <span class="section-eyebrow">
+        MI PERFIL
+      </span>
+
+      <h1>
+        ${esc(c.name)}
+      </h1>
+
+      <p class="muted">
+        ${esc(c.goal||"Objetivo personal")}
+      </p>
+    </div>
+
   </div>
-</div>
 
-<div class="card">
-  <h2>${esc(c.name)}</h2>
-  <div class="item"><b>Objetivo</b><br>${esc(c.goal||"")}</div>
-  <div class="item"><b>Peso actual</b><br>${money(c.weight)}</div>
-  <div class="item"><b>Peso inicial</b><br>${money(c.initial)}</div>
-  <div class="item"><b>Plan</b><br>${esc(c.plan||"")}</div>
-</div>
 
-<div class="card">
-  <h2>🏋️ Historial de entrenamientos</h2>
+  <div class="profile-grid">
 
-  ${
-    history.length
-    ? history.slice().reverse().map(w=>`
-      <div class="item" style="margin-bottom:12px">
-        <b>📅 ${new Date(w.date).toLocaleDateString("es-ES")}</b>
-        <br>
-        <span class="muted">
-          ⏱️ ${Math.floor(w.duration/60)} min ${w.duration%60} s
+    <div class="profile-stat">
+      <span>Peso actual</span>
+      <strong>${money(c.weight)} kg</strong>
+    </div>
+
+    <div class="profile-stat">
+      <span>Peso inicial</span>
+      <strong>${money(c.initial)} kg</strong>
+    </div>
+
+    <div class="profile-stat">
+      <span>Peso objetivo</span>
+      <strong>
+        ${
+          c.targetWeight
+          ? money(c.targetWeight)+" kg"
+          : "Por definir"
+        }
+      </strong>
+    </div>
+
+  </div>
+
+
+  <div class="card profile-card">
+
+    <div class="section-title-row">
+
+      <div>
+        <span class="section-eyebrow">
+          ENTRENAMIENTO
         </span>
 
-        <div style="margin-top:10px">
-          ${(w.exercises||[]).map(ex=>`
-            <div style="margin:8px 0;padding:10px;background:#f7f8fa;border-radius:10px">
-              <b>${esc(ex.name)}</b>
-              <br>
-              ${(ex.sets||[]).map((s,i)=>`
-  <span class="muted">
-    Serie ${i+1}: ${esc(String(s.kg||""))} kg × ${esc(String(s.reps||""))} reps
-  </span><br>
-`).join("")}
-            </div>
-          `).join("")}
-        </div>
+        <h2>
+          Historial
+        </h2>
       </div>
-    `).join("")
-    : `<p class="muted">Todavía no hay entrenamientos guardados.</p>`
-  }
-</div>`;
+
+      <span class="section-count">
+        ${history.length}
+      </span>
+
+    </div>
+
+
+    ${
+      history.length
+
+      ? history
+          .slice()
+          .reverse()
+          .map((w,i)=>`
+
+            <details class="history-row">
+
+              <summary>
+
+                <div>
+
+                  <b>
+                    ${new Date(w.date).toLocaleDateString(
+                      "es-ES",
+                      {
+                        weekday:"short",
+                        day:"numeric",
+                        month:"short"
+                      }
+                    )}
+                  </b>
+
+                  <span class="muted">
+                    ${Math.floor((w.duration||0)/60)} min
+                  </span>
+
+                </div>
+
+                <span class="history-arrow">
+                  ›
+                </span>
+
+              </summary>
+
+
+              <div class="history-detail">
+
+                ${(w.exercises||[]).map(ex=>`
+
+                  <div class="history-exercise">
+
+                    <b>
+                      ${esc(ex.name)}
+                    </b>
+
+                    <div class="muted">
+
+                      ${(ex.sets||[]).map((s,j)=>`
+                        Serie ${j+1}:
+                        ${esc(String(s.kg||""))} kg ×
+                        ${esc(String(s.reps||""))}
+                      `).join(" · ")}
+
+                    </div>
+
+                  </div>
+
+                `).join("")}
+
+              </div>
+
+            </details>
+
+          `)
+          .join("")
+
+      : `
+
+        <div class="empty compact-empty">
+          Todavía no tienes entrenamientos registrados.
+        </div>
+
+      `
+    }
+
+  </div>
+
+
+  <div class="card profile-card">
+
+    <div class="section-title-row">
+
+      <div>
+        <span class="section-eyebrow">
+          EVOLUCIÓN
+        </span>
+
+        <h2>
+          Peso
+        </h2>
+      </div>
+
+      <strong class="progress-value">
+        ${change>=0?"+":""}${money(change)} kg
+      </strong>
+
+    </div>
+
+
+    <div class="weight-chart">
+
+      ${
+        weightHistory.length > 1
+
+        ? (()=>{
+
+            const values=weightHistory.map(Number);
+            const min=Math.min(...values);
+            const max=Math.max(...values);
+
+            const range=max-min || 1;
+
+            const points=values.map((value,index)=>{
+
+              const x=
+                values.length===1
+                ? 50
+                : (index/(values.length-1))*100;
+
+              const y=
+                92 -
+                ((value-min)/range)*72;
+
+              return `${x},${y}`;
+
+            }).join(" ");
+
+            return `
+
+              <svg
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+
+                <polyline
+                  points="${points}"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  vector-effect="non-scaling-stroke"
+                />
+
+              </svg>
+
+            `;
+
+          })()
+
+        : `
+
+          <div class="chart-empty">
+            Necesitamos más registros para mostrar tu evolución.
+          </div>
+
+        `
+      }
+
+    </div>
+
+
+    <details class="weight-history">
+
+      <summary>
+        Ver historial de peso
+        <span>›</span>
+      </summary>
+
+      <div>
+
+        ${
+          weightHistory
+            .slice()
+            .reverse()
+            .map((w,i)=>`
+
+              <div class="weight-history-row">
+
+                <span>
+                  Registro ${weightHistory.length-i}
+                </span>
+
+                <b>
+                  ${money(w)} kg
+                </b>
+
+              </div>
+
+            `)
+            .join("")
+        }
+
+      </div>
+
+    </details>
+
+  </div>
+
+  `;
+
 }
 function saveDietData(){
   try{
@@ -2375,56 +3197,193 @@ function saveDietData(){
   }
 }
 if(screen==="food"){
-const dietType=window.clientDietType||"training";
-const diet=data.diets[currentClientId]?.[dietType]||{calories:"",protein:"",meals:[]};const meals=diet.meals||[];
 
-html=`
-<h1>Alimentación</h1>
-<p class="muted">Elige el tipo de día que corresponde hoy.</p>
+  const dietType=window.clientDietType||"training";
 
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0">
-<button class="${dietType==="training"?"btn":"ghost"}"
-onclick="window.clientDietType='training';showClient('food')">
-🏋️ Día de entrenamiento
-</button>
+  const diet=
+    data.diets[currentClientId]?.[dietType]
+    || {
+      calories:"",
+      protein:"",
+      meals:[]
+    };
 
-<button class="${dietType==="rest"?"btn":"ghost"}"
-onclick="window.clientDietType='rest';showClient('food')">
-🛋️ Día de descanso
-</button>
-</div>
+  const meals=diet.meals||[];
 
-<div class="card">
-<h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛋️ Día de descanso"}</h2>
+  html=`
 
-<div class="metrics">
-  <div class="metric">
-    <small>Comidas</small>
-    <b>${meals.length}</b>
+  <div class="client-header">
+
+    <div>
+
+      <span class="section-eyebrow">
+        ALIMENTACIÓN
+      </span>
+
+      <h1>
+        Tu alimentación
+      </h1>
+
+      <p class="muted">
+        ${dietType==="training"
+          ? "Día de entrenamiento"
+          : "Día de descanso"}
+      </p>
+
+    </div>
+
   </div>
-</div>
-</div>
 
-<div class="card">
-${meals.map(m=>`
-<div class="item">
-<h2>${esc(m.name)}</h2>
-${m.foods.map(f=>`
-<div class="food">
-<b>${esc(f[0])}</b>
-<span>${esc(f[1])}</span>
-</div>
-`).join("")}
-</div>
-`).join("")}
-</div>`;
+
+  <div class="diet-switch">
+
+    <button
+      class="${dietType==="training"?"active":""}"
+      onclick="
+        window.clientDietType='training';
+        showClient('food')
+      "
+    >
+      🏋️ Entrenamiento
+    </button>
+
+    <button
+      class="${dietType==="rest"?"active":""}"
+      onclick="
+        window.clientDietType='rest';
+        showClient('food')
+      "
+    >
+      Descanso
+    </button>
+
+  </div>
+
+
+  <div class="diet-summary">
+
+    <div>
+      <span>Comidas</span>
+      <strong>${meals.length}</strong>
+    </div>
+
+    ${
+      diet.calories
+      ? `
+        <div>
+          <span>Objetivo</span>
+          <strong>${esc(diet.calories)}</strong>
+        </div>
+      `
+      : ""
+    }
+
+    ${
+      diet.protein
+      ? `
+        <div>
+          <span>Proteína</span>
+          <strong>${esc(diet.protein)}</strong>
+        </div>
+      `
+      : ""
+    }
+
+  </div>
+
+
+  <div class="diet-list">
+
+    ${
+      meals.length
+
+      ? meals.map((m,i)=>`
+
+          <details class="meal-card">
+
+            <summary>
+
+              <div>
+
+                <span class="meal-number">
+                  ${String(i+1).padStart(2,"0")}
+                </span>
+
+                <b>
+                  ${esc(m.name)}
+                </b>
+
+              </div>
+
+              <span class="meal-count">
+                ${(m.foods||[]).length}
+                ${(m.foods||[]).length===1
+                  ? "alimento"
+                  : "alimentos"}
+                ·
+                ›
+              </span>
+
+            </summary>
+
+
+            <div class="meal-content">
+
+              ${
+                m.foods?.length
+
+                ? m.foods.map(f=>`
+
+                    <div class="food-row">
+
+                      <span>
+                        ${esc(f[0])}
+                      </span>
+
+                      <b>
+                        ${esc(f[1])}
+                      </b>
+
+                    </div>
+
+                  `).join("")
+
+                : `
+                  <div class="empty compact-empty">
+                    Esta comida todavía no tiene alimentos.
+                  </div>
+                `
+              }
+
+            </div>
+
+          </details>
+
+        `).join("")
+
+      : `
+        <div class="card">
+          <div class="empty">
+            Daniel todavía no ha configurado tu alimentación.
+          </div>
+        </div>
+      `
+    }
+
+  </div>
+
+  `;
+
 }
 
 if(screen==="training"){
 
   const routine = data.routines[currentClientId] || [];
 const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);  html = `
-    <div class="top">
+  const weekCompleted =
+  routine.length > 0 &&
+  weeklyWorkouts >= routine.length;
+      <div class="top">
       <div>
         <p class="muted">Área cliente</p>
         <h1>Entrenamiento</h1>
@@ -2540,26 +3499,7 @@ const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);  html = `
                             : ""}
                         </span>
 
-                        ${
-                          ex.videoUrl
-                          ? `
-                            <div style="margin-top:8px">
-                              <a
-                                href="${esc(ex.videoUrl)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style="
-                                  color:#956b18;
-                                  font-weight:700;
-                                  text-decoration:none;
-                                "
-                              >
-                                🎥 Ver ejercicio
-                              </a>
-                            </div>
-                          `
-                          : ""
-                        }
+                        
 
                       </div>
 
@@ -3020,6 +3960,28 @@ for(let i=history.length-1;i>=0;i--){
       ${esc(exercise.sets || "")} series
       ${exercise.reps ? ` · ${esc(exercise.reps)} repeticiones` : ""}
     </p>
+${
+  exercise.videoUrl
+  ? `
+    <button
+      class="ghost"
+      style="
+        margin-top:12px;
+        width:100%;
+      "
+      onclick="
+        window.open(
+          '${esc(exercise.videoUrl)}',
+          '_blank',
+          'noopener'
+        )
+      "
+    >
+      ▶ Ver técnica del ejercicio
+    </button>
+  `
+  : ""
+}
 
   </div>
 
@@ -5928,6 +6890,8 @@ function sendClientCheckin(){
 checkin.status = "Nuevo check-in";
 
 c.status = "Pendiente";
+  checkin.sentAt = new Date().toISOString();
+checkin.weekKey = getCurrentWeekKey();
   saveData();
 
   toast("Check-in enviado a Daniel");
