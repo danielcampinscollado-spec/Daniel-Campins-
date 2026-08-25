@@ -2290,188 +2290,106 @@ if(!workout.completedExercises){
     completedSets>=plannedSets;
 
 
-  /* =====================================
-     BUSCAR ÚLTIMA VEZ QUE HIZO ESTE EJERCICIO
-  ===================================== */
+    /* =====================================
+   ÚLTIMA SESIÓN — PESTAÑA DESPLEGABLE
+===================================== */
 
-  let lastSession=null;
+let lastSession=null;
 
-  const history=data.workoutHistory?.[workout.clientId]||[];
+const history=data.workoutHistory?.[workout.clientId]||[];
 
-  for(let i=history.length-1;i>=0;i--){
+for(let i=history.length-1;i>=0;i--){
 
-    const previousWorkout=history[i];
+  const previousWorkout=history[i];
 
-    const previousExercise=
-      (previousWorkout.exercises||[]).find(
-        ex=>ex.name===exercise.name
-      );
+  const previousExercise=
+    (previousWorkout.exercises||[]).find(
+      ex=>ex.name===exercise.name
+    );
 
-    if(previousExercise){
-
-      lastSession=previousExercise;
-      break;
-
-    }
-
+  if(previousExercise){
+    lastSession=previousExercise;
+    break;
   }
 
-
-  let html=`
-
-    <div class="top">
-
-      <div>
-
-        <p class="muted">
-          Entrenamiento en curso
-        </p>
-
-        <h1>
-          ${esc(workout.dayName)}
-        </h1>
-
-      </div>
-
-      <span class="pill">
-        ${currentNumber} / ${totalExercises}
-      </span>
-
-    </div>
-
-
-    <!-- EJERCICIO ACTUAL -->
-
-    <div class="card">
-
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:12px;
-      ">
-
-        <div>
-
-          <span class="muted">
-            Ejercicio ${currentNumber}
-          </span>
-
-          <h2 style="margin:6px 0">
-            ${esc(exercise.name || "Ejercicio")}
-          </h2>
-
-          <p class="muted" style="margin:0">
-            ${esc(exercise.sets || "")} series
-            ${exercise.reps
-              ? ` · ${esc(exercise.reps)} repeticiones`
-              : ""}
-          </p>
-${
-  exercise.videoUrl
-  ? `
-    <a
-      href="${esc(exercise.videoUrl)}"
-      target="_blank"
-      rel="noopener noreferrer"
-      style="
-        display:inline-flex;
-        align-items:center;
-        gap:7px;
-        margin-top:9px;
-        color:#956b18;
-        font-weight:700;
-        text-decoration:none;
-      "
-    >
-      ▶ Ver vídeo del ejercicio
-    </a>
-  `
-  : ""
 }
 
-        </div>
+html = `
 
-        <div style="
-          width:48px;
-          height:48px;
-          border-radius:15px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:rgba(217,170,74,.10);
-          color:#d9aa4a;
-          font-size:22px;
-        ">
-          🏋️
-        </div>
+<div class="top">
 
-      </div>
+  <div>
 
-    </div>
+    <p class="muted">
+      Ejercicio ${currentNumber} de ${totalExercises}
+    </p>
+
+    <h1>
+      ${esc(exercise.name || "Ejercicio")}
+    </h1>
+
+    <p class="muted">
+      ${esc(exercise.sets || "")} series
+      ${exercise.reps ? ` · ${esc(exercise.reps)} repeticiones` : ""}
+    </p>
+
+  </div>
+
+</div>
 
 
-    <!-- ÚLTIMA SESIÓN -->
+<!-- ÚLTIMA SESIÓN -->
 
-    <div class="card">
+${
+  lastSession
+  ? `
 
-      <div style="
+    <details class="card" style="
+      padding:0;
+      overflow:hidden;
+      margin-bottom:18px;
+    ">
+
+      <summary style="
+        list-style:none;
+        cursor:pointer;
+        padding:20px;
         display:flex;
-        justify-content:space-between;
         align-items:center;
-        gap:10px;
-        margin-bottom:14px;
+        justify-content:space-between;
+        gap:12px;
+        font-weight:700;
       ">
 
-        <div>
+        <span>
+          📊 Esto hiciste la última vez
+        </span>
 
-          <small class="muted">
-            ÚLTIMA SESIÓN
-          </small>
+        <span style="
+          color:#d9aa4a;
+          font-size:20px;
+        ">
+          ▾
+        </span>
 
-          <h2 style="margin:4px 0 0">
-            ${lastSession ? "Esto hiciste la última vez" : "Primera vez"}
-          </h2>
+      </summary>
 
-        </div>
+      <div style="
+        padding:0 20px 20px;
+        border-top:1px solid #eceef1;
+      ">
 
         ${
-          lastSession
-          ? `
-            <div style="
-              width:42px;
-              height:42px;
-              border-radius:13px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              background:#f5ead2;
-              color:#956b18;
-              font-size:20px;
-            ">
-              ↗
-            </div>
-          `
-          : ""
-        }
-
-      </div>
-
-
-      ${
-        lastSession
-        ? `
-
-          <div>
-
-            ${(lastSession.sets||[]).map((s,i)=>`
+          (lastSession.sets||[]).length
+          ? (lastSession.sets||[]).map((s,i)=>`
 
               <div style="
                 display:flex;
                 justify-content:space-between;
                 align-items:center;
-                padding:11px 0;
-                border-top:1px solid #eceef1;
+                gap:10px;
+                padding:14px 0;
+                border-bottom:1px solid #eceef1;
               ">
 
                 <span>
@@ -2479,41 +2397,37 @@ ${
                 </span>
 
                 <b>
-                  ${esc(String(s.kg||""))} kg
-                  ×
+                  ${esc(String(s.kg||""))} kg ×
                   ${esc(String(s.reps||""))}
                 </b>
 
               </div>
 
-            `).join("")}
+            `).join("")
+          : `
+              <p class="muted" style="margin:16px 0 0">
+                No hay series registradas.
+              </p>
+            `
+        }
 
-          </div>
+        <p class="muted" style="
+          margin:15px 0 0;
+          font-size:13px;
+        ">
+          Intenta igualarlo o superarlo.
+        </p>
 
-          <p class="muted" style="
-            margin:13px 0 0;
-            font-size:13px;
-          ">
-            Intenta igualarlo o superarlo.
-          </p>
+      </div>
 
-        `
-        : `
+    </details>
 
-          <div style="
-            padding:16px;
-            border-radius:14px;
-            background:#f7f8fa;
-            color:#7c858f;
-            text-align:center;
-          ">
-            No hay registros anteriores de este ejercicio.
-          </div>
+  `
+  : ""
+}
 
-        `
-      }
 
-    </div>
+`;
 
 ${
   workout.restUntil && workout.restUntil>Date.now()
