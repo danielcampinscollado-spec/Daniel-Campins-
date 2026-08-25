@@ -4995,9 +4995,9 @@ function sendClientCheckin(){
     money(c.weight) + " kg";
 
   checkin.reviewed = false;
+checkin.status = "Nuevo check-in";
 
-  c.status = "Pendiente";
-
+c.status = "Pendiente";
   saveData();
 
   toast("Check-in enviado a Daniel");
