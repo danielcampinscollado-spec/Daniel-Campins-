@@ -1791,29 +1791,41 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2200);
 }
 
-function openApp(app){
+async function openApp(app){
+console.log("openApp funciona", app);
+  currentApp=app;
 
-  currentApp = app;
+  document.getElementById("login").style.display="none";
+  document.getElementById("client").style.display=app==="client"?"block":"none";
+  document.getElementById("coach").style.display=app==="coach"?"block":"none";
 
-  document.getElementById("login").style.display = "none";
-
-  document.getElementById("client").style.display =
-    app === "client" ? "block" : "none";
-
-  document.getElementById("coach").style.display =
-    app === "coach" ? "block" : "none";
-
-  if(app === "client"){
+  if(app==="client"){
 
     buildClientNav();
+
+    await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
+    await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
+
     showClient("home");
 
-  }else if(app === "coach"){
+  }else{
 
     buildCoachNav();
+
+    await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
+    await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
+
     showCoach("dashboard");
 
   }
+
+}
 
 }function logout(){
 document.getElementById("login").style.display="grid";
