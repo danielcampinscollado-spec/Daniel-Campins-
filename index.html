@@ -1776,6 +1776,34 @@ navButton("🏋️","Rutinas","showCoach('routines')")+
 navButton("💬","Mensajes","showCoach('messages')");
 }
 
+function getWeekStart(date=new Date()){
+
+  const d=new Date(date);
+  const day=d.getDay();
+
+  const diff=day===0 ? -6 : 1-day;
+
+  d.setDate(d.getDate()+diff);
+  d.setHours(0,0,0,0);
+
+  return d;
+}
+
+function getWeeklyWorkoutCount(clientId){
+
+  const history=data.workoutHistory?.[clientId]||[];
+
+  const weekStart=getWeekStart();
+  const now=new Date();
+
+  return history.filter(w=>{
+
+    const date=new Date(w.date);
+
+    return date>=weekStart && date<=now;
+
+  }).length;
+}
 function showClient(screen){
 
   currentScreen=screen;
@@ -1800,30 +1828,266 @@ function showClient(screen){
   }
 
 if(screen==="home"){
-html=`
-<div class="top"><div><p class="muted">Área cliente</p><h1>${esc(c.name)}, bienvenido</h1></div><span class="pill">SEMANA 3</span></div>
-<div class="grid g3">
-<div class="card"><small>Peso actual</small><div class="metric"><b>${money(c.weight)} kg</b><span class="muted">Inicio ${money(c.initial)} kg</span></div></div>
-<div class="card"><small>Entrenamientos</small><div class="metric"><b>3 / 4</b><span class="muted">Esta semana</span></div></div>
-<div class="card"><small>Alimentación</small><div class="metric"><b>85 %</b><span class="muted">Adherencia</span></div></div>
-</div>
-<div class="grid g2">
-<div class="card"><h2>Hoy</h2>
-<div class="item">🍴 <b>Comida pendiente</b></div>
-<div class="item">🏋️ <b>Push — Día 1</b></div>
-<div class="item">✓ <b>Check-in semanal</b></div></div>
-<div class="card">
-  <h2>Mensaje de Daniel</h2>
-  <p class="muted">
-    ${
-      (data.messages[c.id]||[]).length
-      ? `“${esc((data.messages[c.id]||[]).slice(-1)[0][1])}”`
-      : "Todavía no tienes mensajes de Daniel."
-    }
-  </p>
-</div>
 
-</div>`;
+  const routine = data.routines?.[c.id] || [];
+  const weeklyWorkouts = getWeeklyWorkoutCount(c.id);
+  const totalWorkouts = routine.length;
+
+  const nextWorkout =
+    totalWorkouts > 0 && weeklyWorkouts < totalWorkouts
+      ? routine[weeklyWorkouts]
+      : null;
+
+  const checkin = data.checkins?.[c.id];
+
+  html=`
+
+  <div class="top">
+    <div>
+      <p class="muted">Área cliente</p>
+      <h1>${esc(c.name)}, bienvenido</h1>
+    </div>
+
+    <span class="pill">
+      SEMANA 3
+    </span>
+  </div>
+
+
+  <!-- RESUMEN PRINCIPAL -->
+
+  <div class="grid g2">
+
+    <div class="card">
+
+      <small>Peso actual</small>
+
+      <div class="metric">
+
+        <b>
+          ${money(c.weight)} kg
+        </b>
+
+        <span class="muted">
+          Inicio ${money(c.initial)} kg
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <small>Entrenamientos</small>
+
+      <div class="metric">
+
+        <b>
+          ${weeklyWorkouts} / ${totalWorkouts || "—"}
+        </b>
+
+        <span class="muted">
+          Esta semana
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACTIVIDAD -->
+
+  <div class="card">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:15px;
+      margin-bottom:8px;
+    ">
+
+      <div>
+
+        <p class="muted" style="
+          margin:0 0 5px;
+          font-size:13px;
+          text-transform:uppercase;
+          letter-spacing:1px;
+        ">
+          Tu semana
+        </p>
+
+        <h2 style="margin:0">
+          ${
+            nextWorkout
+              ? "Siguiente entrenamiento"
+              : totalWorkouts && weeklyWorkouts >= totalWorkouts
+                ? "Semana completada"
+                : "Sin entrenamiento asignado"
+          }
+        </h2>
+
+      </div>
+
+      <div style="
+        width:46px;
+        height:46px;
+        border-radius:15px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(217,170,74,.10);
+        color:#956b18;
+        font-size:22px;
+        flex:none;
+      ">
+        🏋️
+      </div>
+
+    </div>
+
+
+    ${
+      nextWorkout
+      ? `
+
+        <div style="
+          margin-top:18px;
+          padding:17px;
+          background:#f7f8fa;
+          border:1px solid #e7e9ed;
+          border-radius:15px;
+        ">
+
+          <b style="font-size:17px">
+            Día ${weeklyWorkouts + 1}
+          </b>
+
+          <div class="muted" style="margin-top:5px">
+            ${esc(nextWorkout.muscle || "Entrenamiento")}
+          </div>
+
+          <div class="muted" style="margin-top:8px;font-size:13px">
+            ${(nextWorkout.exercises || []).length}
+            ${(nextWorkout.exercises || []).length === 1
+              ? "ejercicio"
+              : "ejercicios"}
+          </div>
+
+        </div>
+
+        <button
+          class="btn"
+          style="width:100%;margin-top:12px"
+          onclick="showClient('training')">
+          Ver entrenamiento
+        </button>
+
+      `
+      : totalWorkouts && weeklyWorkouts >= totalWorkouts
+      ? `
+
+        <div style="
+          margin-top:18px;
+          padding:17px;
+          border-radius:15px;
+          background:#eef8f3;
+          color:#267a55;
+          font-weight:700;
+        ">
+          ✓ Has completado todos los entrenamientos de esta semana.
+        </div>
+
+      `
+      : `
+
+        <div class="empty">
+          Daniel todavía no ha asignado una rutina.
+        </div>
+
+      `
+    }
+
+
+    <div style="
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid #eceef1;
+    ">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+
+        <div>
+
+          <b>Check-in semanal</b>
+
+          <div class="muted" style="margin-top:4px">
+            ${
+              checkin?.reviewed
+                ? "✓ Revisado por Daniel"
+                : "Pendiente de revisión"
+            }
+          </div>
+
+        </div>
+
+        <span class="pill">
+          ${checkin?.reviewed ? "REVISADO" : "PENDIENTE"}
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MENSAJE -->
+
+  <div class="card">
+
+    <p class="muted" style="
+      margin:0 0 6px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    ">
+      Daniel
+    </p>
+
+    <h2 style="margin:0 0 12px">
+      Mensaje de tu coach
+    </h2>
+
+    <p class="muted">
+
+      ${
+        (data.messages[c.id]||[]).length
+        ? `“${esc((data.messages[c.id]||[]).slice(-1)[0][1])}”`
+        : "Todavía no tienes mensajes de Daniel."
+      }
+
+    </p>
+
+    <button
+      class="ghost"
+      style="margin-top:5px"
+      onclick="showClient('coach')">
+      Abrir mensajes
+    </button>
+
+  </div>
+
+  `;
 }
 
 if(screen==="profile"){
