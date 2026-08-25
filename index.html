@@ -1791,42 +1791,31 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2200);
 }
 
-async function openApp(app){
+function openApp(app){
 
-  currentApp=app;
+  currentApp = app;
 
-  document.getElementById("login").style.display="none";
-  document.getElementById("client").style.display=app==="client"?"block":"none";
-  document.getElementById("coach").style.display=app==="coach"?"block":"none";
+  document.getElementById("login").style.display = "none";
 
-  if(app==="client"){
+  document.getElementById("client").style.display =
+    app === "client" ? "block" : "none";
 
-  buildClientNav();
+  document.getElementById("coach").style.display =
+    app === "coach" ? "block" : "none";
 
-  await loadDietsFromSupabase();
-  await loadClientsFromSupabase();
-  await loadRoutinesFromSupabase();
-  await loadWorkoutHistoryFromSupabase();
-  await loadWeightsFromSupabase();
+  if(app === "client"){
 
-  showClient("home");
+    buildClientNav();
+    showClient("home");
 
-}else{
+  }else if(app === "coach"){
 
     buildCoachNav();
-
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
-
     showCoach("dashboard");
 
   }
 
-}
-function logout(){
+}function logout(){
 document.getElementById("login").style.display="grid";
 document.getElementById("client").style.display="none";
 document.getElementById("coach").style.display="none";
