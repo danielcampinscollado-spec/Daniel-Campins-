@@ -1504,15 +1504,8 @@ async function loadClientsFromSupabase(){
   }
 
 }
-    saveData();
 
-  }catch(e){
-
-    console.error("Error conectando con Supabase para dietas:",e);
-}
-  }
 async function loadWorkoutHistoryFromSupabase(){
-
   try{
 
     const { data:history, error } = await supabaseClient
