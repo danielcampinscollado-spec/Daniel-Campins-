@@ -3766,9 +3766,7 @@ if(screen==="dashboard"){
     return last && last[0] !== "Daniel";
   });
 
-  const workoutsThisWeek = clients.reduce((total,c) => {
-    return total + getWeeklyWorkoutCount(c.id);
-  },0);
+  
 
   const attention = [];
 
@@ -3891,7 +3889,7 @@ if(screen==="dashboard"){
 
   <div style="
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:12px;
     margin-bottom:18px;
   ">
@@ -4008,39 +4006,7 @@ if(screen==="dashboard"){
     </div>
 
 
-    <div class="card" style="
-      margin:0;
-      padding:17px;
-      border-radius:17px;
-    ">
-
-      <small class="muted">
-        Entrenamientos
-      </small>
-
-      <div style="
-        display:flex;
-        align-items:end;
-        justify-content:space-between;
-        margin-top:7px;
-      ">
-
-        <strong style="
-          font-size:25px;
-          letter-spacing:-.7px;
-        ">
-          ${workoutsThisWeek}
-        </strong>
-
-        <span style="
-          font-size:18px;
-        ">
-          🏋️
-        </span>
-
-      </div>
-
-    </div>
+  
 
   </div>
 
