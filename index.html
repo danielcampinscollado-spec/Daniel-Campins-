@@ -1435,6 +1435,68 @@ async function loadDietsFromSupabase(){
 
     });
 
+async function loadClientsFromSupabase(){
+
+  try{
+
+    const { data:clients,error } = await supabaseClient
+      .from("clients")
+      .select("id,name,goal,weight,initial_weight,plan,status")
+      .order("created_at",{ascending:true});
+
+    if(error){
+      console.error("Error cargando clientes:",error);
+      return;
+    }
+
+    if(!clients) return;
+
+    /*
+      Supabase actualiza los clientes que ya existen.
+      Los clientes que solo estén en local se mantienen
+      para no perder información.
+    */
+
+    clients.forEach(row=>{
+
+      const existing = data.clients.find(
+        c => c.id === row.id
+      );
+
+      const clientData = {
+        id:row.id,
+        name:row.name,
+        goal:row.goal,
+        weight:Number(row.weight),
+        initial:Number(row.initial_weight),
+        plan:row.plan || "",
+        status:row.status || "Pendiente"
+      };
+
+      if(existing){
+
+        Object.assign(existing,clientData);
+
+      }else{
+
+        data.clients.push(clientData);
+
+      }
+
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para clientes:",
+      e
+    );
+
+  }
+
+}
     saveData();
 
   }catch(e){
