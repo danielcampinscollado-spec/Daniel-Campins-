@@ -3678,16 +3678,37 @@ window.restTimerInterval=null;
 window.activeWorkout=null;
   showClient("training");
 }
-function sendClientCheckin(estado){
+function sendClientCheckin(){
+
   const checkin = data.checkins[currentClientId];
 
   if(!checkin) return;
 
-  checkin.reviewed = false;
-  checkin.status = estado || "normal";
-  checkin.comment = "Check-in semanal enviado por el cliente.";
+  const commentBox = document.getElementById("checkin-comment");
 
-  toast("Check-in enviado a Daniel");
+  const comment = commentBox
+    ? commentBox.value.trim()
+    : "";
+
+  checkin.reviewed = false;
+  checkin.status = "Nuevo check-in";
+  checkin.comment = comment;
+
+  const c = client(currentClientId);
+
+  if(c){
+    c.status = "Pendiente";
+  }
+
+  saveData();
+
+  toast(
+    c
+      ? `Nuevo check-in enviado por ${c.name.split(" ")[0]}`
+      : "Check-in enviado a Daniel"
+  );
+
+  showClient("checkin");
 }
 
 function sendClientMessage(){
