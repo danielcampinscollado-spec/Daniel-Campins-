@@ -1362,6 +1362,10 @@ function loadData(){
       if(parsed.messages) result.messages=parsed.messages;
       if(parsed.routines) result.routines=parsed.routines;
 
+if(parsed.completedTrainingDays){
+  result.completedTrainingDays=parsed.completedTrainingDays;
+}
+
       if(parsed.diets){
         result.diets=parsed.diets;
       }
