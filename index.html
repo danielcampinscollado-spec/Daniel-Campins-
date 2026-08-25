@@ -2314,7 +2314,7 @@ for(let i=history.length-1;i>=0;i--){
 
 }
 
-html = `
+  let html = `
 
 <div class="top">
 
@@ -2423,15 +2423,11 @@ ${
     </details>
 
   `
-  : ""
+    : ""
 }
 
-
-`;
-
 ${
-  workout.restUntil && workout.restUntil>Date.now()
-  ? `
+  workout.restUntil && workout.restUntil>Date.now()  ? `
 
     <div class="card" style="
       text-align:center;
