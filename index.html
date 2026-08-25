@@ -1991,11 +1991,11 @@ navButton("💬","Coach","showClient('coach')");
 
 function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
-navButton("▦","Dashboard","showCoach('dashboard')")+
+navButton("▦","Menú principal","showCoach('dashboard')")+
 navButton("👥","Clientes","showCoach('clients')")+
-navButton("✓","Check-ins","showCoach('checkins')")+
-navButton("🍴","Dietas","showCoach('diets')")+
-navButton("🏋️","Rutinas","showCoach('routines')")+
+navButton("🍴","Alimentación","showCoach('diets')")+
+navButton("🏋️","Entrenamiento","showCoach('routines')")+
+navButton("✓","Check-in","showCoach('checkins')")+
 navButton("💬","Mensajes","showCoach('messages')");
 }
 
@@ -4792,8 +4792,7 @@ onclick="window.coachDietType='rest';showCoach('diets')">
 <h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛌 Día de descanso"}</h2>
 
 ${meals.map((m,mi)=>`
-<div class="item">
-
+<div class="item" data-diet-meal="${mi}">
 <h3>${esc(m.name)}</h3>
 
 ${m.foods?.length?m.foods.map((f,fi)=>`
@@ -5419,16 +5418,16 @@ async function addFood(id,type,mi){
 
   const diet=data.diets[id]?.[type];
 
-  if(!diet||!diet.meals||!diet.meals[mi]){
+  if(!diet || !diet.meals || !diet.meals[mi]){
     toast("No se encontró la comida");
     return;
   }
 
   const food=prompt("Alimento:");
-  if(!food)return;
+  if(!food) return;
 
   const qty=prompt("Cantidad:");
-  if(!qty)return;
+  if(!qty) return;
 
   if(!diet.meals[mi].foods){
     diet.meals[mi].foods=[];
@@ -5449,25 +5448,51 @@ async function addFood(id,type,mi){
     });
 
   if(error){
+
     console.error("Error guardando dieta:",error);
+
     diet.meals[mi].foods.pop();
+
     toast("No se pudo guardar la dieta");
+
     return;
   }
 
-  const previousScroll=window.scrollY;
+  saveData();
 
-saveData();
+  window.coachDietType=type;
 
-window.coachDietType=type;
+  /*
+    Guardamos la comida que acabamos de editar
+    para poder continuar desde la siguiente.
+  */
+  window.nextDietMealIndex = mi + 1;
 
-showCoach("diets");
+  showCoach("diets");
 
-requestAnimationFrame(()=>{
-  window.scrollTo(0,previousScroll);
-});
+  /*
+    Después de reconstruir la pantalla,
+    bajamos automáticamente hasta la siguiente comida.
+  */
+  requestAnimationFrame(()=>{
 
-toast("Alimento guardado");
+    const nextMeal =
+      document.querySelector(
+        `[data-diet-meal="${window.nextDietMealIndex}"]`
+      );
+
+    if(nextMeal){
+
+      nextMeal.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+
+    }
+
+  });
+
+  toast("Alimento guardado");
 }
 
 async function removeFood(id,type,mi,fi){
