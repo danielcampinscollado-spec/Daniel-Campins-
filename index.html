@@ -1064,6 +1064,21 @@ label{
     line-height:1.35;
   }
 }
+@media(max-width:700px){
+
+  #coach-main .dashboard-summary{
+    grid-template-columns:repeat(2,1fr) !important;
+  }
+
+  #coach-main > .card{
+    box-shadow:0 8px 25px rgba(15,23,42,.045);
+  }
+
+  #coach-main .top h1{
+    font-size:28px;
+  }
+
+}
 </style>
 </head>
 
@@ -3735,17 +3750,694 @@ const main=document.getElementById("coach-main");
 let html="";
 
 if(screen==="dashboard"){
-const pending=data.clients.filter(c=>c.status==="Pendiente").length;
-html=`
-<div class="top"><div><p class="muted">Panel privado</p><h1>Buenos días, Daniel</h1></div></div>
-<div class="grid g3">
-<div class="card"><small>Clientes activos</small><h2>${data.clients.length}</h2></div>
-<div class="card"><small>Check-ins pendientes</small><h2>${pending}</h2></div>
-<div class="card"><small>Mensajes nuevos</small><h2>${data.clients.reduce((total,c)=>total+(data.messages[c.id]||[]).length,0)}</h2></div></div>
-<div class="card"><h2>Acciones rápidas</h2>
-<button class="btn" onclick="showCoach('clients')">Gestionar clientes</button>
-<button class="ghost" onclick="showCoach('checkins')">Revisar check-ins</button>
-</div>`;
+
+  const clients = data.clients || [];
+
+  const pendingCheckins = clients.filter(c =>
+    c.status === "Pendiente"
+  );
+
+  const newMessages = clients.filter(c => {
+    const msgs = data.messages?.[c.id] || [];
+    if(!msgs.length) return false;
+
+    const last = msgs[msgs.length - 1];
+
+    return last && last[0] !== "Daniel";
+  });
+
+  const workoutsThisWeek = clients.reduce((total,c) => {
+    return total + getWeeklyWorkoutCount(c.id);
+  },0);
+
+  const attention = [];
+
+  /* CHECK-INS PENDIENTES */
+
+  pendingCheckins.forEach(c => {
+
+    attention.push({
+      type:"checkin",
+      icon:"✓",
+      title:c.name,
+      text:"Check-in pendiente de revisión",
+      action:`reviewCheckin('${c.id}')`,
+      label:"Revisar"
+    });
+
+  });
+
+  /* MENSAJES NUEVOS */
+
+  newMessages.forEach(c => {
+
+    attention.push({
+      type:"message",
+      icon:"💬",
+      title:c.name,
+      text:"Tiene un mensaje nuevo",
+      action:`openMessages('${c.id}')`,
+      label:"Responder"
+    });
+
+  });
+
+  /* CLIENTES SIN PLAN */
+
+  clients
+    .filter(c =>
+      !c.plan ||
+      c.plan.trim()==="" ||
+      c.plan==="Plan pendiente"
+    )
+    .forEach(c => {
+
+      attention.push({
+        type:"plan",
+        icon:"▤",
+        title:c.name,
+        text:"Plan pendiente de configurar",
+        action:`openClient('${c.id}')`,
+        label:"Gestionar"
+      });
+
+    });
+
+  /* LIMITAR PARA NO HACER EL PANEL INFINITO */
+
+  const visibleAttention = attention.slice(0,6);
+
+  /* ACTIVIDAD RECIENTE */
+
+  const recentWorkouts = [];
+
+  clients.forEach(c => {
+
+    const history = data.workoutHistory?.[c.id] || [];
+
+    history.forEach(w => {
+
+      recentWorkouts.push({
+        client:c.name,
+        date:new Date(w.date),
+        duration:w.duration || 0
+      });
+
+    });
+
+  });
+
+  recentWorkouts.sort((a,b)=>b.date-a.date);
+
+  const recent = recentWorkouts.slice(0,5);
+
+
+  html=`
+
+  <!-- CABECERA -->
+
+  <div class="top" style="
+    margin-bottom:24px;
+  ">
+
+    <div>
+
+      <p class="muted" style="
+        margin:0 0 5px;
+        font-size:13px;
+        text-transform:uppercase;
+        letter-spacing:1.2px;
+      ">
+        Panel privado
+      </p>
+
+      <h1>
+        Buenos días, Daniel
+      </h1>
+
+      <p class="muted" style="
+        margin:7px 0 0;
+        font-size:14px;
+      ">
+        Esto es lo que requiere tu atención.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESUMEN -->
+
+  <div style="
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-bottom:18px;
+  ">
+
+    <div class="card" style="
+      margin:0;
+      padding:17px;
+      border-radius:17px;
+    ">
+
+      <small class="muted">
+        Clientes
+      </small>
+
+      <div style="
+        display:flex;
+        align-items:end;
+        justify-content:space-between;
+        margin-top:7px;
+      ">
+
+        <strong style="
+          font-size:25px;
+          letter-spacing:-.7px;
+        ">
+          ${clients.length}
+        </strong>
+
+        <span style="
+          font-size:18px;
+          color:#956b18;
+        ">
+          👥
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="card" style="
+      margin:0;
+      padding:17px;
+      border-radius:17px;
+      cursor:pointer;
+    "
+    onclick="showCoach('checkins')">
+
+      <small class="muted">
+        Check-ins
+      </small>
+
+      <div style="
+        display:flex;
+        align-items:end;
+        justify-content:space-between;
+        margin-top:7px;
+      ">
+
+        <strong style="
+          font-size:25px;
+          letter-spacing:-.7px;
+          color:${pendingCheckins.length ? "#b47b13" : "#267a55"};
+        ">
+          ${pendingCheckins.length}
+        </strong>
+
+        <span style="
+          font-size:18px;
+        ">
+          ✓
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="card" style="
+      margin:0;
+      padding:17px;
+      border-radius:17px;
+      cursor:pointer;
+    "
+    onclick="showCoach('messages')">
+
+      <small class="muted">
+        Mensajes
+      </small>
+
+      <div style="
+        display:flex;
+        align-items:end;
+        justify-content:space-between;
+        margin-top:7px;
+      ">
+
+        <strong style="
+          font-size:25px;
+          letter-spacing:-.7px;
+          color:${newMessages.length ? "#b47b13" : "#111318"};
+        ">
+          ${newMessages.length}
+        </strong>
+
+        <span style="
+          font-size:18px;
+        ">
+          💬
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="card" style="
+      margin:0;
+      padding:17px;
+      border-radius:17px;
+    ">
+
+      <small class="muted">
+        Entrenamientos
+      </small>
+
+      <div style="
+        display:flex;
+        align-items:end;
+        justify-content:space-between;
+        margin-top:7px;
+      ">
+
+        <strong style="
+          font-size:25px;
+          letter-spacing:-.7px;
+        ">
+          ${workoutsThisWeek}
+        </strong>
+
+        <span style="
+          font-size:18px;
+        ">
+          🏋️
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- REQUIERE ATENCIÓN -->
+
+  <div class="card" style="
+    padding:20px;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:15px;
+    ">
+
+      <div>
+
+        <h2 style="
+          margin:0;
+          font-size:20px;
+        ">
+          Requiere tu atención
+        </h2>
+
+        <p class="muted" style="
+          margin:4px 0 0;
+          font-size:13px;
+        ">
+          Lo que tienes pendiente ahora mismo.
+        </p>
+
+      </div>
+
+      ${
+        visibleAttention.length
+        ? `<span class="pill">
+            ${visibleAttention.length}
+          </span>`
+        : ""
+      }
+
+    </div>
+
+
+    ${
+      visibleAttention.length
+
+      ? visibleAttention.map(item=>`
+
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:12px;
+          padding:13px 0;
+          border-top:1px solid #eceef1;
+        ">
+
+          <div style="
+            width:38px;
+            height:38px;
+            flex:none;
+            border-radius:11px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f7f3e9;
+            color:#956b18;
+            font-size:17px;
+          ">
+            ${item.icon}
+          </div>
+
+
+          <div style="
+            flex:1;
+            min-width:0;
+          ">
+
+            <b style="
+              display:block;
+              font-size:14px;
+              margin-bottom:3px;
+            ">
+              ${esc(item.title)}
+            </b>
+
+            <span class="muted" style="
+              font-size:13px;
+            ">
+              ${item.text}
+            </span>
+
+          </div>
+
+
+          <button
+            class="ghost"
+            style="
+              padding:7px 11px;
+              border-radius:9px;
+              font-size:12px;
+              font-weight:700;
+              white-space:nowrap;
+            "
+            onclick="${item.action}"
+          >
+            ${item.label}
+          </button>
+
+        </div>
+
+      `).join("")
+
+      : `
+
+        <div style="
+          padding:20px 10px 8px;
+          text-align:center;
+        ">
+
+          <div style="
+            width:46px;
+            height:46px;
+            margin:0 auto 10px;
+            border-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#eef8f3;
+            color:#267a55;
+            font-size:20px;
+          ">
+            ✓
+          </div>
+
+          <b>
+            Todo al día
+          </b>
+
+          <p class="muted" style="
+            margin:5px 0 0;
+            font-size:13px;
+          ">
+            No tienes tareas pendientes.
+          </p>
+
+        </div>
+
+      `
+    }
+
+  </div>
+
+
+  <!-- CLIENTES -->
+
+  <div class="card" style="
+    padding:20px;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    ">
+
+      <div>
+
+        <h2 style="
+          margin:0;
+          font-size:20px;
+        ">
+          Clientes
+        </h2>
+
+        <p class="muted" style="
+          margin:4px 0 0;
+          font-size:13px;
+        ">
+          Acceso rápido a tu cartera.
+        </p>
+
+      </div>
+
+      <button
+        class="ghost"
+        style="
+          padding:7px 11px;
+          font-size:12px;
+        "
+        onclick="showCoach('clients')"
+      >
+        Ver todos
+      </button>
+
+    </div>
+
+
+    ${clients.slice(0,5).map(c=>`
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding:12px 0;
+        border-top:1px solid #eceef1;
+      ">
+
+        <div style="
+          width:36px;
+          height:36px;
+          border-radius:50%;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:#f5ead2;
+          color:#956b18;
+          font-weight:800;
+          font-size:13px;
+          flex:none;
+        ">
+          ${esc(c.name.charAt(0))}
+        </div>
+
+
+        <div style="
+          flex:1;
+          min-width:0;
+        ">
+
+          <b style="
+            font-size:14px;
+          ">
+            ${esc(c.name)}
+          </b>
+
+          <div class="muted" style="
+            font-size:12px;
+            margin-top:3px;
+          ">
+            ${esc(c.goal || "Sin objetivo")}
+            · ${money(c.weight)} kg
+          </div>
+
+        </div>
+
+
+        <button
+          class="ghost"
+          style="
+            padding:7px 10px;
+            font-size:12px;
+          "
+          onclick="openClient('${c.id}')"
+        >
+          Gestionar
+        </button>
+
+      </div>
+
+    `).join("")}
+
+  </div>
+
+
+  <!-- ACTIVIDAD RECIENTE -->
+
+  <div class="card" style="
+    padding:20px;
+  ">
+
+    <h2 style="
+      margin:0;
+      font-size:20px;
+    ">
+      Actividad reciente
+    </h2>
+
+    <p class="muted" style="
+      margin:4px 0 10px;
+      font-size:13px;
+    ">
+      Últimos entrenamientos registrados.
+    </p>
+
+
+    ${
+      recent.length
+
+      ? recent.map(item=>`
+
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:12px;
+          padding:11px 0;
+          border-top:1px solid #eceef1;
+        ">
+
+          <span style="
+            font-size:17px;
+          ">
+            🏋️
+          </span>
+
+          <div style="
+            flex:1;
+          ">
+
+            <b style="
+              font-size:14px;
+            ">
+              ${esc(item.client)}
+            </b>
+
+            <div class="muted" style="
+              margin-top:3px;
+              font-size:12px;
+            ">
+              Entrenamiento completado
+              · ${Math.floor(item.duration/60)} min
+            </div>
+
+          </div>
+
+          <span class="muted" style="
+            font-size:11px;
+          ">
+            ${item.date.toLocaleDateString("es-ES")}
+          </span>
+
+        </div>
+
+      `).join("")
+
+      : `
+
+        <div class="empty">
+          Todavía no hay actividad registrada.
+        </div>
+
+      `
+    }
+
+  </div>
+
+
+  <!-- ACCIONES PEQUEÑAS -->
+
+  <div style="
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  ">
+
+    <button
+      class="ghost"
+      style="
+        padding:9px 13px;
+        font-size:12px;
+      "
+      onclick="showCoach('clients')"
+    >
+      + Nuevo cliente
+    </button>
+
+    <button
+      class="ghost"
+      style="
+        padding:9px 13px;
+        font-size:12px;
+      "
+      onclick="showCoach('checkins')"
+    >
+      Revisar check-ins
+    </button>
+
+    <button
+      class="ghost"
+      style="
+        padding:9px 13px;
+        font-size:12px;
+      "
+      onclick="showCoach('messages')"
+    >
+      Ver mensajes
+    </button>
+
+  </div>
+
+  `;
+
 }
 
 if(screen==="clients"){
