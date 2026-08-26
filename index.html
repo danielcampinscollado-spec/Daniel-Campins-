@@ -3040,6 +3040,93 @@ label{
   }
 
 }
+/* ===== BARRA INFERIOR MÓVIL — AJUSTE FINAL ===== */
+
+@media (max-width:700px){
+
+  #client-nav{
+    width:100%;
+    overflow:hidden;
+  }
+
+  #client-nav .nav{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:repeat(6,1fr) !important;
+    gap:0 !important;
+    justify-content:initial !important;
+  }
+
+  #client-nav .nav button{
+    width:100% !important;
+    min-width:0 !important;
+    height:64px !important;
+    padding:4px 0 !important;
+    margin:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:3px !important;
+    border:0 !important;
+    background:transparent !important;
+    border-radius:0 !important;
+  }
+
+  #client-nav .nav button svg,
+  #client-nav .nav button .icon{
+    width:24px !important;
+    height:24px !important;
+    flex:none !important;
+  }
+
+  #client-nav .nav button span{
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    overflow:hidden !important;
+    text-overflow:clip !important;
+    white-space:nowrap !important;
+    text-align:center !important;
+    font-size:9px !important;
+    line-height:1.1 !important;
+    letter-spacing:0 !important;
+  }
+
+  /* CÍRCULO DEL ELEMENTO ACTIVO */
+  #client-nav .nav button.active::before,
+  #client-nav .nav button[aria-current="page"]::before{
+    content:"";
+    position:absolute;
+    top:4px;
+    left:50%;
+    transform:translateX(-50%);
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:rgba(214,164,55,.16);
+    border:1px solid rgba(214,164,55,.45);
+    z-index:0;
+  }
+
+  #client-nav .nav button{
+    position:relative;
+  }
+
+  #client-nav .nav button svg,
+  #client-nav .nav button .icon,
+  #client-nav .nav button span{
+    position:relative;
+    z-index:1;
+  }
+
+  /* El texto activo sigue dorado */
+  #client-nav .nav button.active span,
+  #client-nav .nav button[aria-current="page"] span{
+    color:#d9aa45 !important;
+  }
+
+}
 </style>
 </head>
 
