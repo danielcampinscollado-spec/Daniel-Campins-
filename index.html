@@ -1675,6 +1675,621 @@ label{
   }
 
 }
+/* =========================================================
+   DANIEL CAMPINS — INICIO CLIENTE / DISEÑO PREMIUM
+========================================================= */
+
+.dc-home{
+  max-width:1180px;
+  margin:0 auto;
+  padding-bottom:30px;
+}
+
+.dc-home-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:24px;
+  margin-bottom:34px;
+}
+
+.dc-brand{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.dc-logo{
+  width:58px;
+  height:58px;
+  flex:none;
+  filter:drop-shadow(0 0 18px rgba(217,170,74,.18));
+}
+
+.dc-brand-name{
+  margin:0;
+  color:#f5f5f2;
+  font-size:21px;
+  font-weight:500;
+  letter-spacing:4px;
+}
+
+.dc-brand-sub{
+  margin-top:6px;
+  color:var(--gold);
+  font-size:10px;
+  letter-spacing:3px;
+}
+
+.dc-header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.dc-circle-btn{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(145deg,#151921,#0b0e13);
+  border:1px solid rgba(217,170,74,.48);
+  color:var(--gold-light);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 10px 30px rgba(0,0,0,.25);
+}
+
+.dc-circle-btn svg{
+  width:22px;
+  height:22px;
+}
+
+.dc-avatar{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  overflow:hidden;
+  border:1px solid rgba(217,170,74,.72);
+  background:
+    radial-gradient(circle at 50% 30%,#41444a,#111318 62%);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  color:#d9aa4a;
+}
+
+.dc-avatar svg{
+  width:38px;
+  height:38px;
+}
+
+.dc-welcome{
+  margin-bottom:34px;
+}
+
+.dc-eyebrow{
+  margin:0 0 7px;
+  color:var(--gold-light);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:2px;
+}
+
+.dc-welcome-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:20px;
+}
+
+.dc-welcome h1{
+  margin:0;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:52px;
+  line-height:1;
+  font-weight:500;
+  letter-spacing:-1.8px;
+  color:#f7f7f4;
+}
+
+.dc-tagline{
+  margin:13px 0 0;
+  color:#aeb4bd;
+  font-size:18px;
+}
+
+.dc-week{
+  padding:12px 20px;
+  border-radius:999px;
+  border:1px solid rgba(217,170,74,.55);
+  color:var(--gold-light);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:1px;
+  white-space:nowrap;
+  background:rgba(217,170,74,.025);
+}
+
+.dc-card{
+  position:relative;
+  overflow:hidden;
+  margin-bottom:22px;
+  border-radius:25px;
+  border:1px solid rgba(255,255,255,.13);
+  background:
+    radial-gradient(circle at 90% 10%,rgba(217,170,74,.075),transparent 30%),
+    linear-gradient(145deg,#151921,#0b0e13);
+  box-shadow:
+    0 20px 55px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.035);
+}
+
+.dc-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255,255,255,.018) 45%,
+      transparent 70%
+    );
+}
+
+.dc-stats{
+  display:grid;
+  grid-template-columns:1fr 1px 1fr;
+  min-height:270px;
+}
+
+.dc-divider{
+  width:1px;
+  background:rgba(255,255,255,.11);
+  margin:34px 0;
+}
+
+.dc-stat{
+  padding:34px 38px;
+  position:relative;
+  z-index:1;
+}
+
+.dc-stat-label{
+  color:#9da4ae;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:1.7px;
+  text-transform:uppercase;
+}
+
+.dc-stat-icon{
+  width:54px;
+  height:54px;
+  margin-bottom:18px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold-light);
+  border:1px solid rgba(217,170,74,.42);
+  background:rgba(217,170,74,.035);
+}
+
+.dc-stat-icon svg{
+  width:29px;
+  height:29px;
+}
+
+.dc-weight{
+  margin-top:12px;
+  color:#fff;
+  font-size:56px;
+  line-height:1;
+  font-weight:700;
+  letter-spacing:-2px;
+}
+
+.dc-weight span{
+  font-size:28px;
+  letter-spacing:-.5px;
+  font-weight:500;
+}
+
+.dc-stat-sub{
+  margin-top:10px;
+  color:#9299a5;
+  font-size:16px;
+}
+
+.dc-change{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:22px;
+  padding:10px 17px;
+  border-radius:999px;
+  border:1px solid rgba(217,170,74,.5);
+  color:var(--gold-light);
+  font-weight:700;
+}
+
+.dc-progress-value{
+  margin-top:13px;
+  color:var(--gold-light);
+  font-size:38px;
+  font-weight:700;
+  letter-spacing:-1px;
+}
+
+.dc-progress-sub{
+  margin-top:5px;
+  color:#9299a5;
+  font-size:15px;
+}
+
+.dc-chart{
+  margin-top:13px;
+  width:100%;
+  height:78px;
+}
+
+.dc-chart svg{
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+
+.dc-training{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:210px;
+}
+
+.dc-training-left,
+.dc-training-right{
+  padding:34px 38px;
+  position:relative;
+  z-index:1;
+}
+
+.dc-training-left{
+  border-right:1px solid rgba(255,255,255,.11);
+}
+
+.dc-training-count{
+  margin-top:10px;
+  font-size:46px;
+  font-weight:700;
+  letter-spacing:-1px;
+}
+
+.dc-training-sub{
+  color:#9299a5;
+  margin-top:3px;
+}
+
+.dc-checks{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+
+.dc-check{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(145deg,#f4c96b,#d9aa4a);
+  color:#12100a;
+  font-weight:900;
+}
+
+.dc-complete{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  height:100%;
+}
+
+.dc-trophy{
+  width:76px;
+  height:76px;
+  flex:none;
+  border-radius:50%;
+  border:1px solid rgba(217,170,74,.65);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold-light);
+  background:rgba(217,170,74,.035);
+  box-shadow:0 0 25px rgba(217,170,74,.10);
+}
+
+.dc-trophy svg{
+  width:39px;
+  height:39px;
+}
+
+.dc-complete h2{
+  margin:0;
+  color:#f5f5f2;
+  font-size:23px;
+}
+
+.dc-complete p{
+  margin:7px 0 0;
+  color:#9da4ae;
+  line-height:1.5;
+}
+
+.dc-next{
+  padding:25px 28px 28px;
+}
+
+.dc-next-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+.dc-next-title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#aeb4bd;
+  font-size:13px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+
+.dc-next-title svg{
+  width:23px;
+  height:23px;
+  color:var(--gold-light);
+}
+
+.dc-routine-btn{
+  padding:10px 17px;
+  border-radius:999px;
+  border:1px solid rgba(217,170,74,.5);
+  background:transparent;
+  color:var(--gold-light);
+  font-weight:600;
+}
+
+.dc-next-inner{
+  display:grid;
+  grid-template-columns:240px 1fr auto;
+  min-height:150px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:20px;
+  background:#0c1016;
+}
+
+.dc-next-image{
+  position:relative;
+  min-height:150px;
+  background:
+    linear-gradient(145deg,#242a31,#0a0c10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#8c939d;
+}
+
+.dc-next-image svg{
+  width:54px;
+  height:54px;
+  color:var(--gold);
+  opacity:.9;
+}
+
+.dc-next-info{
+  padding:28px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.dc-next-info h2{
+  margin:0;
+  color:#f5f5f2;
+  font-size:25px;
+}
+
+.dc-next-info p{
+  margin:8px 0 0;
+  color:#8f97a2;
+}
+
+.dc-start{
+  align-self:center;
+  margin-right:25px;
+  padding:15px 28px;
+  border:0;
+  border-radius:999px;
+  background:linear-gradient(145deg,#f4cb70,#d9aa4a);
+  color:#15120b;
+  font-weight:800;
+  font-size:15px;
+  box-shadow:0 12px 28px rgba(217,170,74,.15);
+}
+
+.dc-quote{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:25px;
+  padding:24px 32px;
+}
+
+.dc-quote-mark{
+  color:var(--gold-light);
+  font-family:Georgia,serif;
+  font-size:48px;
+  line-height:.6;
+}
+
+.dc-quote-text{
+  flex:1;
+  color:#e4e4df;
+  font-family:Georgia,"Times New Roman",serif;
+  font-style:italic;
+  font-size:18px;
+}
+
+.dc-quote-sign{
+  color:var(--gold-light);
+  font-family:cursive;
+  font-size:22px;
+}
+
+/* MÓVIL */
+@media(max-width:700px){
+
+  .dc-home{
+    padding:4px 0 95px;
+  }
+
+  .dc-home-header{
+    margin-bottom:30px;
+  }
+
+  .dc-brand-name{
+    font-size:16px;
+    letter-spacing:2.5px;
+  }
+
+  .dc-brand-sub{
+    font-size:8px;
+    letter-spacing:2px;
+  }
+
+  .dc-logo{
+    width:46px;
+    height:46px;
+  }
+
+  .dc-circle-btn{
+    width:44px;
+    height:44px;
+  }
+
+  .dc-avatar{
+    width:48px;
+    height:48px;
+  }
+
+  .dc-welcome{
+    margin-bottom:25px;
+  }
+
+  .dc-welcome-row{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .dc-welcome h1{
+    font-size:39px;
+    line-height:1.02;
+  }
+
+  .dc-tagline{
+    font-size:16px;
+  }
+
+  .dc-week{
+    align-self:flex-end;
+    margin-top:-5px;
+  }
+
+  .dc-stats{
+    grid-template-columns:1fr;
+    min-height:0;
+  }
+
+  .dc-divider{
+    width:auto;
+    height:1px;
+    margin:0 24px;
+  }
+
+  .dc-stat{
+    padding:27px 25px;
+  }
+
+  .dc-weight{
+    font-size:46px;
+  }
+
+  .dc-weight span{
+    font-size:24px;
+  }
+
+  .dc-training{
+    grid-template-columns:1fr;
+  }
+
+  .dc-training-left{
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.11);
+  }
+
+  .dc-training-left,
+  .dc-training-right{
+    padding:27px 25px;
+  }
+
+  .dc-complete{
+    min-height:145px;
+  }
+
+  .dc-next{
+    padding:22px 18px;
+  }
+
+  .dc-next-head{
+    align-items:flex-start;
+  }
+
+  .dc-next-inner{
+    grid-template-columns:1fr;
+  }
+
+  .dc-next-image{
+    min-height:135px;
+  }
+
+  .dc-next-info{
+    padding:22px;
+  }
+
+  .dc-start{
+    margin:0 22px 22px;
+  }
+
+  .dc-quote{
+    padding:22px;
+  }
+
+  .dc-quote-text{
+    font-size:15px;
+  }
+
+  .dc-quote-sign{
+    display:none;
+  }
+}
 </style>
 </head>
 
@@ -2712,255 +3327,592 @@ if(screen==="home"){
       ? routine[weeklyWorkouts]
       : null;
 
-  const checkin = data.checkins?.[c.id];
-const mondayCheckin =
-  isMonday() &&
-  (!checkin || checkin.weekKey !== getCurrentWeekKey());
+  const change = Number(c.weight || 0) - Number(c.initial || 0);
+
+  const lastMessage =
+    (data.messages?.[c.id] || []).slice(-1)[0];
+
+  const messageText =
+    lastMessage
+      ? lastMessage[1]
+      : "La constancia convierte lo invisible en imparable.";
+
+  const completedCount =
+    Math.min(weeklyWorkouts,totalWorkouts || weeklyWorkouts);
 
   html=`
 
-  <div class="top">
-    <div>
-      <p class="muted">Área cliente</p>
-      <h1>${esc(c.name)}, bienvenido</h1>
+  <div class="dc-home">
+
+    <!-- CABECERA -->
+
+    <div class="dc-home-header">
+
+      <div class="dc-brand">
+
+        <svg
+          class="dc-logo"
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+
+          <defs>
+            <linearGradient
+              id="dcGoldHome"
+              x1="15"
+              y1="10"
+              x2="85"
+              y2="90"
+              gradientUnits="userSpaceOnUse">
+              <stop stop-color="#F5D17A"/>
+              <stop offset=".5" stop-color="#D9AA4A"/>
+              <stop offset="1" stop-color="#B77E22"/>
+            </linearGradient>
+          </defs>
+
+          <path
+            d="M25 20h28c13 0 23 10 23 23v6"
+            stroke="url(#dcGoldHome)"
+            stroke-width="7"
+            stroke-linecap="round"/>
+
+          <path
+            d="M25 20v59"
+            stroke="url(#dcGoldHome)"
+            stroke-width="7"
+            stroke-linecap="round"/>
+
+          <path
+            d="M25 79h27"
+            stroke="url(#dcGoldHome)"
+            stroke-width="7"
+            stroke-linecap="round"/>
+
+          <path
+            d="M67 34c-16 0-28 12-28 28s12 28 28 28c10 0 18-5 23-13"
+            stroke="url(#dcGoldHome)"
+            stroke-width="7"
+            stroke-linecap="round"/>
+
+        </svg>
+
+        <div>
+
+          <div class="dc-brand-name">
+            DANIEL CAMPINS
+          </div>
+
+          <div class="dc-brand-sub">
+            COACHING · PERFORMANCE
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="dc-header-actions">
+
+        <button
+          class="dc-circle-btn"
+          aria-label="Notificaciones">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7">
+
+            <path
+              d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+
+            <path
+              d="M10 21h4"/>
+
+          </svg>
+
+        </button>
+
+
+        <button
+          class="dc-avatar"
+          onclick="showClient('profile')"
+          aria-label="Mi perfil">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4">
+
+            <circle
+              cx="12"
+              cy="7"
+              r="3.2"/>
+
+            <path
+              d="M5.5 20c.7-4.2 2.8-6.2 6.5-6.2s5.8 2 6.5 6.2"/>
+
+          </svg>
+
+        </button>
+
+      </div>
+
     </div>
 
-    <span class="pill">
-      SEMANA 3
-    </span>
-  </div>
+
+    <!-- BIENVENIDA -->
+
+    <div class="dc-welcome">
+
+      <p class="dc-eyebrow">
+        BIENVENIDO
+      </p>
+
+      <div class="dc-welcome-row">
+
+        <div>
+
+          <h1>
+            ${esc(c.name)}
+          </h1>
+
+          <p class="dc-tagline">
+            Disciplina hoy. Resultados mañana.
+          </p>
+
+        </div>
+
+        <span class="dc-week">
+          SEMANA 3&nbsp;&nbsp;⌑
+        </span>
+
+      </div>
+
+    </div>
 
 
-  <!-- RESUMEN PRINCIPAL -->
+    <!-- PESO + PROGRESO -->
 
-  <div class="grid g2">
+    <div class="dc-card dc-stats">
 
-    <div class="card">
+      <div class="dc-stat">
 
-      <small>Peso actual</small>
+        <div class="dc-stat-icon">
 
-      <div class="metric">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7">
 
-        <b>
-          ${money(c.weight)} kg
-        </b>
+            <rect
+              x="4"
+              y="5"
+              width="16"
+              height="15"
+              rx="2"/>
 
-        <span class="muted">
+            <path d="M8 5V3h8v2"/>
+
+            <path d="M9 10c1.8-1.8 4.2-1.8 6 0"/>
+
+          </svg>
+
+        </div>
+
+        <div class="dc-stat-label">
+          PESO ACTUAL
+        </div>
+
+        <div class="dc-weight">
+          ${money(c.weight)}
+          <span>kg</span>
+        </div>
+
+        <div class="dc-stat-sub">
           Inicio ${money(c.initial)} kg
-        </span>
+        </div>
+
+        <div class="dc-change">
+          ↓
+          ${change > 0 ? "+" : ""}
+          ${money(change)} kg
+        </div>
+
+      </div>
+
+
+      <div class="dc-divider"></div>
+
+
+      <div class="dc-stat">
+
+        <div class="dc-stat-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7">
+
+            <path d="M4 19V10"/>
+            <path d="M10 19V6"/>
+            <path d="M16 19V3"/>
+            <path d="M22 19V8"/>
+
+          </svg>
+
+        </div>
+
+        <div class="dc-stat-label">
+          PROGRESO
+        </div>
+
+        <div class="dc-progress-value">
+          ${change > 0 ? "+" : ""}
+          ${money(change)} kg
+        </div>
+
+        <div class="dc-progress-sub">
+          desde el inicio
+        </div>
+
+
+        <div class="dc-chart">
+
+          <svg
+            viewBox="0 0 500 90"
+            preserveAspectRatio="none">
+
+            <defs>
+
+              <linearGradient
+                id="dcChartFill"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1">
+
+                <stop
+                  offset="0"
+                  stop-color="#d9aa4a"
+                  stop-opacity=".30"/>
+
+                <stop
+                  offset="1"
+                  stop-color="#d9aa4a"
+                  stop-opacity="0"/>
+
+              </linearGradient>
+
+              <filter id="dcGlow">
+
+                <feGaussianBlur
+                  stdDeviation="3"
+                  result="blur"/>
+
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+
+              </filter>
+
+            </defs>
+
+            <path
+              d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82 V90 H0Z"
+              fill="url(#dcChartFill)"/>
+
+            <path
+              d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82"
+              fill="none"
+              stroke="#f0c96b"
+              stroke-width="3"
+              stroke-linecap="round"
+              filter="url(#dcGlow)"/>
+
+            <circle
+              cx="500"
+              cy="82"
+              r="7"
+              fill="#f0c96b"/>
+
+            <circle
+              cx="500"
+              cy="82"
+              r="12"
+              fill="none"
+              stroke="#d9aa4a"
+              stroke-opacity=".35"/>
+
+          </svg>
+
+        </div>
 
       </div>
 
     </div>
 
 
-    <div class="card">
+    <!-- ENTRENAMIENTOS -->
 
-      <small>Entrenamientos</small>
+    <div class="dc-card dc-training">
 
-      <div class="metric">
+      <div class="dc-training-left">
 
-        <b>
+        <div class="dc-stat-icon">
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7">
+
+            <path d="M3 10h3v4H3z"/>
+            <path d="M18 10h3v4h-3z"/>
+            <path d="M6 8h3v8H6z"/>
+            <path d="M15 8h3v8h-3z"/>
+            <path d="M9 11h6v2H9z"/>
+
+          </svg>
+
+        </div>
+
+        <div class="dc-stat-label">
+          ENTRENAMIENTOS
+        </div>
+
+        <div class="dc-training-count">
           ${weeklyWorkouts} / ${totalWorkouts || "—"}
-        </b>
+        </div>
 
-        <span class="muted">
+        <div class="dc-training-sub">
           Esta semana
-        </span>
+        </div>
 
-      </div>
+        <div class="dc-checks">
 
-    </div>
-
-  </div>
-
-
-  <!-- ACTIVIDAD -->
-
-  <div class="card">
-
-    <div style="
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:15px;
-      margin-bottom:8px;
-    ">
-
-      <div>
-
-        <p class="muted" style="
-          margin:0 0 5px;
-          font-size:13px;
-          text-transform:uppercase;
-          letter-spacing:1px;
-        ">
-          Tu semana
-        </p>
-
-        <h2 style="margin:0">
           ${
-            nextWorkout
-              ? "Siguiente entrenamiento"
-              : totalWorkouts && weeklyWorkouts >= totalWorkouts
-                ? "Semana completada"
-                : "Sin entrenamiento asignado"
+            Array.from({
+              length:Math.max(totalWorkouts,3)
+            }).slice(0,3).map((_,i)=>`
+
+              <span class="dc-check">
+                ${i < completedCount ? "✓" : ""}
+              </span>
+
+            `).join("")
           }
-        </h2>
+
+        </div>
 
       </div>
 
-      <div style="
-        width:46px;
-        height:46px;
-        border-radius:15px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:rgba(217,170,74,.10);
-        color:#956b18;
-        font-size:22px;
-        flex:none;
-      ">
-        🏋️
+
+      <div class="dc-training-right">
+
+        <div class="dc-complete">
+
+          <div class="dc-trophy">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5">
+
+              <path d="M8 4h8v5c0 3-2 5-4 5s-4-2-4-5V4z"/>
+              <path d="M8 6H5c0 4 2 6 5 6"/>
+              <path d="M16 6h3c0 4-2 6-5 6"/>
+              <path d="M12 14v4"/>
+              <path d="M8 21h8"/>
+              <path d="M9 18h6"/>
+
+            </svg>
+
+          </div>
+
+          <div>
+
+            <h2>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "Semana completada"
+                  : "Tu semana"
+              }
+            </h2>
+
+            <p>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "¡Enhorabuena! Has completado todos los entrenamientos."
+                  : `${weeklyWorkouts} de ${totalWorkouts || "—"} entrenamientos completados esta semana.`
+              }
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
 
     </div>
 
 
-    ${
-      nextWorkout
-      ? `
+    <!-- PRÓXIMO ENTRENAMIENTO -->
 
-        <div style="
-          margin-top:18px;
-          padding:17px;
-          background:#f7f8fa;
-          border:1px solid #e7e9ed;
-          border-radius:15px;
-        ">
+    <div class="dc-card dc-next">
 
-          <b style="font-size:17px">
-            Día ${weeklyWorkouts + 1}
-          </b>
+      <div class="dc-next-head">
 
-          <div class="muted" style="margin-top:5px">
-            ${esc(nextWorkout.muscle || "Entrenamiento")}
-          </div>
+        <div class="dc-next-title">
 
-          <div class="muted" style="margin-top:8px;font-size:13px">
-            ${(nextWorkout.exercises || []).length}
-            ${(nextWorkout.exercises || []).length === 1
-              ? "ejercicio"
-              : "ejercicios"}
-          </div>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7">
+
+            <rect
+              x="4"
+              y="5"
+              width="16"
+              height="15"
+              rx="2"/>
+
+            <path d="M8 3v4M16 3v4M4 9h16"/>
+
+          </svg>
+
+          TU PRÓXIMO ENTRENAMIENTO
 
         </div>
 
         <button
-          class="btn"
-          style="width:100%;margin-top:12px"
+          class="dc-routine-btn"
           onclick="showClient('training')">
-          Ver entrenamiento
+
+          Ver rutina&nbsp;&nbsp;→
+
         </button>
 
-      `
-      : totalWorkouts && weeklyWorkouts >= totalWorkouts
-      ? `
+      </div>
 
-        <div style="
-          margin-top:18px;
-          padding:17px;
-          border-radius:15px;
-          background:#eef8f3;
-          color:#267a55;
-          font-weight:700;
-        ">
-          ✓ Has completado todos los entrenamientos de esta semana.
+
+      ${
+        nextWorkout
+        ? `
+
+        <div class="dc-next-inner">
+
+          <div class="dc-next-image">
+
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5">
+
+              <path d="M4 18h16"/>
+              <path d="M6 18v-7"/>
+              <path d="M9 18v-9"/>
+              <path d="M15 18v-9"/>
+              <path d="M18 18v-7"/>
+              <path d="M4 11h5"/>
+              <path d="M15 11h5"/>
+
+            </svg>
+
+          </div>
+
+
+          <div class="dc-next-info">
+
+            <h2>
+              ${esc(nextWorkout.muscle || "Entrenamiento")}
+              · Día ${weeklyWorkouts + 1}
+            </h2>
+
+            <p>
+              ${(nextWorkout.exercises || []).length}
+              ${
+                (nextWorkout.exercises || []).length === 1
+                  ? "ejercicio"
+                  : "ejercicios"
+              }
+              &nbsp; · &nbsp; ~45 min
+            </p>
+
+          </div>
+
+
+          <button
+            class="dc-start"
+            onclick="showClient('training')">
+
+            EMPEZAR
+
+          </button>
+
         </div>
 
-      `
-      : `
+        `
+        : `
 
-        <div class="empty">
-          Daniel todavía no ha asignado una rutina.
-        </div>
+        <div class="dc-next-inner">
 
-      `
-    }
+          <div class="dc-next-info">
 
+            <h2>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "Semana completada"
+                  : "Sin entrenamiento asignado"
+              }
+            </h2>
 
-    <div style="
-      margin-top:18px;
-      padding-top:16px;
-      border-top:1px solid #eceef1;
-    ">
+            <p>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "Has completado todos tus entrenamientos."
+                  : "Daniel todavía no ha asignado una rutina."
+              }
+            </p>
 
-      <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:12px;
-      ">
-
-        <div>
-
-          <b>Check-in semanal</b>
-
-          <div class="muted" style="margin-top:4px">
-            ${
-              checkin?.reviewed
-                ? "✓ Revisado por Daniel"
-                : "Pendiente de revisión"
-            }
           </div>
 
         </div>
 
-        <span class="pill">
-          ${checkin?.reviewed ? "REVISADO" : "PENDIENTE"}
-        </span>
-
-      </div>
+        `
+      }
 
     </div>
 
-  </div>
 
+    <!-- FRASE -->
 
-  <!-- MENSAJE -->
+    <div class="dc-card dc-quote">
 
-  <div class="card">
+      <div class="dc-quote-mark">
+        “
+      </div>
 
-    <p class="muted" style="
-      margin:0 0 6px;
-      font-size:13px;
-      text-transform:uppercase;
-      letter-spacing:1px;
-    ">
-      Daniel
-    </p>
+      <div class="dc-quote-text">
+        ${esc(messageText)}
+      </div>
 
-    <h2 style="margin:0 0 12px">
-      Mensaje de tu coach
-    </h2>
+      <div class="dc-quote-sign">
+        Daniel Campins
+      </div>
 
-    <p class="muted">
-
-      ${
-        (data.messages[c.id]||[]).length
-        ? `“${esc((data.messages[c.id]||[]).slice(-1)[0][1])}”`
-        : "Todavía no tienes mensajes de Daniel."
-      }
-
-    </p>
-
-    <button
-      class="ghost"
-      style="margin-top:5px"
-      onclick="showClient('coach')">
-      Abrir mensajes
-    </button>
+    </div>
 
   </div>
 
