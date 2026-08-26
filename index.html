@@ -2155,67 +2155,140 @@ label{
 }
 
 /* MÓVIL */
+/* =========================================================
+   DANIEL CAMPINS — INICIO MÓVIL PREMIUM
+========================================================= */
+
 @media(max-width:700px){
 
   .dc-home{
-    padding:4px 0 95px;
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:10px 16px 105px;
+    box-sizing:border-box;
   }
+
+  /* CABECERA */
 
   .dc-home-header{
-    margin-bottom:30px;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:28px;
   }
 
-  .dc-brand-name{
-    font-size:16px;
-    letter-spacing:2.5px;
-  }
-
-  .dc-brand-sub{
-    font-size:8px;
-    letter-spacing:2px;
+  .dc-brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
   }
 
   .dc-logo{
-    width:46px;
-    height:46px;
+    width:43px;
+    height:43px;
+  }
+
+  .dc-brand-name{
+    font-size:14px;
+    line-height:1.1;
+    letter-spacing:2.5px;
+    white-space:nowrap;
+  }
+
+  .dc-brand-sub{
+    margin-top:4px;
+    font-size:7px;
+    letter-spacing:1.8px;
+    white-space:nowrap;
+  }
+
+  .dc-header-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:none;
   }
 
   .dc-circle-btn{
-    width:44px;
-    height:44px;
+    width:43px;
+    height:43px;
+    padding:0;
+  }
+
+  .dc-circle-btn svg{
+    width:19px;
+    height:19px;
   }
 
   .dc-avatar{
-    width:48px;
-    height:48px;
+    width:43px;
+    height:43px;
   }
+
+  .dc-avatar svg{
+    width:27px;
+    height:27px;
+  }
+
+  /* BIENVENIDA */
 
   .dc-welcome{
     margin-bottom:25px;
   }
 
+  .dc-eyebrow{
+    margin:0 0 7px;
+    font-size:12px;
+    letter-spacing:2px;
+  }
+
   .dc-welcome-row{
-    align-items:flex-start;
-    flex-direction:column;
+    display:block;
   }
 
   .dc-welcome h1{
-    font-size:39px;
-    line-height:1.02;
+    margin:0;
+    font-size:43px;
+    line-height:1;
+    letter-spacing:-1.5px;
   }
 
   .dc-tagline{
+    margin:12px 0 0;
     font-size:16px;
+    line-height:1.35;
   }
 
   .dc-week{
-    align-self:flex-end;
-    margin-top:-5px;
+    display:table;
+    margin:27px 0 0 auto;
+    padding:11px 18px;
+    font-size:12px;
+    letter-spacing:1.2px;
   }
 
+  /* TARJETAS GENERALES */
+
+  .dc-card{
+    width:100%;
+    box-sizing:border-box;
+    margin-bottom:18px;
+    border-radius:23px;
+  }
+
+  /* PESO + PROGRESO */
+
   .dc-stats{
-    grid-template-columns:1fr;
+    display:block;
     min-height:0;
+  }
+
+  .dc-stat{
+    padding:26px 24px 28px;
   }
 
   .dc-divider{
@@ -2224,20 +2297,71 @@ label{
     margin:0 24px;
   }
 
-  .dc-stat{
-    padding:27px 25px;
+  .dc-stat-icon{
+    width:58px;
+    height:58px;
+    margin-bottom:27px;
+    border-radius:16px;
+  }
+
+  .dc-stat-icon svg{
+    width:30px;
+    height:30px;
+  }
+
+  .dc-stat-label{
+    font-size:12px;
+    letter-spacing:2px;
   }
 
   .dc-weight{
-    font-size:46px;
+    margin-top:10px;
+    font-size:51px;
+    line-height:1;
+    letter-spacing:-2px;
   }
 
   .dc-weight span{
-    font-size:24px;
+    font-size:27px;
+    letter-spacing:-.5px;
   }
 
+  .dc-stat-sub{
+    margin-top:10px;
+    font-size:17px;
+  }
+
+  .dc-change{
+    margin-top:22px;
+    padding:10px 17px;
+    font-size:16px;
+  }
+
+  .dc-progress-value{
+    margin-top:11px;
+    font-size:36px;
+  }
+
+  .dc-progress-sub{
+    margin-top:6px;
+    font-size:15px;
+  }
+
+  .dc-chart{
+    height:80px;
+    margin-top:18px;
+  }
+
+  /* ENTRENAMIENTOS */
+
   .dc-training{
-    grid-template-columns:1fr;
+    display:block;
+    min-height:0;
+  }
+
+  .dc-training-left,
+  .dc-training-right{
+    padding:26px 24px;
   }
 
   .dc-training-left{
@@ -2245,50 +2369,201 @@ label{
     border-bottom:1px solid rgba(255,255,255,.11);
   }
 
-  .dc-training-left,
-  .dc-training-right{
-    padding:27px 25px;
+  .dc-training-count{
+    margin-top:10px;
+    font-size:50px;
+    line-height:1;
+  }
+
+  .dc-training-sub{
+    margin-top:7px;
+    font-size:17px;
+  }
+
+  .dc-checks{
+    gap:13px;
+    margin-top:22px;
+  }
+
+  .dc-check{
+    width:38px;
+    height:38px;
+    font-size:17px;
   }
 
   .dc-complete{
     min-height:145px;
+    display:flex;
+    align-items:center;
+    gap:22px;
   }
 
+  .dc-trophy{
+    width:76px;
+    height:76px;
+  }
+
+  .dc-trophy svg{
+    width:38px;
+    height:38px;
+  }
+
+  .dc-complete h2{
+    font-size:22px;
+    line-height:1.15;
+  }
+
+  .dc-complete p{
+    margin-top:7px;
+    font-size:16px;
+    line-height:1.45;
+  }
+
+  /* PRÓXIMO ENTRENAMIENTO */
+
   .dc-next{
-    padding:22px 18px;
+    padding:22px 18px 18px;
+  }
+
+  .dc-next-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+  }
+
+  .dc-next-title{
+    gap:9px;
+    font-size:11px;
+    line-height:1.35;
+    letter-spacing:1.6px;
+  }
+
+  .dc-next-title svg{
+    width:21px;
+    height:21px;
+    flex:none;
+  }
+
+  .dc-routine-btn{
+    padding:10px 14px;
+    font-size:13px;
+    white-space:nowrap;
+  }
+
+  .dc-next-inner{
+    display:block;
+    min-height:0;
+    border-radius:19px;
+  }
+
+  .dc-next-image{
+    width:100%;
+    height:145px;
+    min-height:145px;
+  }
+
+  .dc-next-image svg{
+    width:48px;
+    height:48px;
+  }
+
+  .dc-next-info{
+    padding:22px 20px 18px;
+  }
+
+  .dc-next-info h2{
+    font-size:23px;
+    line-height:1.2;
+  }
+
+  .dc-next-info p{
+    margin-top:8px;
+    font-size:15px;
+  }
+
+  .dc-start{
+    display:block;
+    width:calc(100% - 40px);
+    margin:0 20px 20px;
+    padding:15px 20px;
+    font-size:15px;
+  }
+
+  /* FRASE */
+
+  .dc-quote{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:21px 22px;
+    min-height:72px;
+    box-sizing:border-box;
+  }
+
+  .dc-quote-mark{
+    flex:none;
+    font-size:42px;
+  }
+
+  .dc-quote-text{
+    font-size:16px;
+    line-height:1.35;
+  }
+
+  .dc-quote-sign{
+    display:none;
+  }
+
+}
+
+/* MÓVILES PEQUEÑOS */
+
+@media(max-width:380px){
+
+  .dc-home{
+    padding-left:13px;
+    padding-right:13px;
+  }
+
+  .dc-brand-name{
+    font-size:12px;
+    letter-spacing:2px;
+  }
+
+  .dc-brand-sub{
+    font-size:6.5px;
+  }
+
+  .dc-logo{
+    width:39px;
+    height:39px;
+  }
+
+  .dc-circle-btn,
+  .dc-avatar{
+    width:40px;
+    height:40px;
+  }
+
+  .dc-welcome h1{
+    font-size:39px;
+  }
+
+  .dc-weight{
+    font-size:46px;
   }
 
   .dc-next-head{
     align-items:flex-start;
   }
 
-  .dc-next-inner{
-    grid-template-columns:1fr;
+  .dc-routine-btn{
+    padding:9px 11px;
+    font-size:12px;
   }
 
-  .dc-next-image{
-    min-height:135px;
-  }
-
-  .dc-next-info{
-    padding:22px;
-  }
-
-  .dc-start{
-    margin:0 22px 22px;
-  }
-
-  .dc-quote{
-    padding:22px;
-  }
-
-  .dc-quote-text{
-    font-size:15px;
-  }
-
-  .dc-quote-sign{
-    display:none;
-  }
 }
 </style>
 </head>
