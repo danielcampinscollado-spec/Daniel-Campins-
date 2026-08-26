@@ -472,21 +472,26 @@ h3{
 ========================= */
 
 .btn{
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  color:#17130a;
-  border:0;
-  padding:11px 17px;
-  border-radius:12px;
-  font-weight:750;
-  transition:.2s;
-  box-shadow:0 5px 18px rgba(217,170,74,.12);
+    background:linear-gradient(135deg,var(--gold),#f4d98a);
+    color:#17130a;
+    border:0;
+    padding:12px 18px;
+    border-radius:14px;
+    font-weight:750;
+    transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+    box-shadow:0 5px 18px rgba(217,170,74,.10);
 }
 
 .btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 25px rgba(217,170,74,.20);
+    transform:translateY(-1px);
+    filter:brightness(1.04);
+    box-shadow:0 8px 24px rgba(217,170,74,.18);
 }
 
+.btn:active{
+    transform:scale(.97);
+    box-shadow:0 3px 12px rgba(217,170,74,.12);
+}
 .ghost{
   background:#fff;
   color:#111318;
