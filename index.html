@@ -3435,10 +3435,13 @@ if(screen==="food"){
 if(screen==="training"){
 
   const routine = data.routines[currentClientId] || [];
-const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);  html = `
+  const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);
+
   const weekCompleted =
-  routine.length > 0 &&
-  weeklyWorkouts >= routine.length;
+    routine.length > 0 &&
+    weeklyWorkouts >= routine.length;
+
+  html = `
       <div class="top">
       <div>
         <p class="muted">Área cliente</p>
