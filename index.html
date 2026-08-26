@@ -3038,6 +3038,87 @@ label{
     font-size:11px !important;
     line-height:1.1 !important;
   }
+/* ===== BARRA INFERIOR CLIENTE — AJUSTE FINAL ===== */
+
+#client .side{
+  height:78px !important;
+  bottom:10px !important;
+  left:10px !important;
+  width:calc(100% - 20px) !important;
+  padding:5px 4px !important;
+  box-sizing:border-box !important;
+}
+
+#client .nav{
+  display:flex !important;
+  width:100% !important;
+  height:100% !important;
+  gap:0 !important;
+  justify-content:stretch !important;
+  align-items:stretch !important;
+}
+
+#client .nav button{
+  position:relative !important;
+  flex:1 1 0 !important;
+  width:0 !important;
+  min-width:0 !important;
+  height:68px !important;
+  padding:5px 0 4px !important;
+  margin:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:4px !important;
+  border:0 !important;
+  border-radius:16px !important;
+  background:transparent !important;
+  box-sizing:border-box !important;
+  overflow:visible !important;
+}
+
+/* CÍRCULO ACTIVO CENTRADO */
+#client .nav button::before{
+  left:50% !important;
+  top:3px !important;
+  width:42px !important;
+  height:42px !important;
+  transform:translateX(-50%) scale(.65) !important;
+  opacity:0 !important;
+  z-index:0 !important;
+}
+
+#client .nav button.active::before{
+  transform:translateX(-50%) scale(1) !important;
+  opacity:1 !important;
+}
+
+#client .nav button svg{
+  position:relative !important;
+  z-index:2 !important;
+  width:22px !important;
+  height:22px !important;
+  margin-top:5px !important;
+  flex:none !important;
+}
+
+#client .nav button span{
+  position:relative !important;
+  z-index:2 !important;
+  display:block !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  font-size:9px !important;
+  line-height:1 !important;
+  letter-spacing:0 !important;
+  color:inherit !important;
+}
 
 </style>
 </head>
