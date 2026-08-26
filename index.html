@@ -2687,7 +2687,46 @@ label{
   .dc-divider{
     margin:0 20px;
   }
+/* PESO + PROGRESO EN UNA SOLA TARJETA */
 
+.dc-stats{
+  grid-template-columns:1fr 1px 1fr;
+  min-height:0;
+}
+
+.dc-divider{
+  width:1px;
+  height:auto;
+  margin:22px 0;
+}
+
+.dc-stat{
+  padding:22px 18px;
+}
+
+.dc-chart{
+  height:48px;
+}
+
+@media(max-width:380px){
+
+  .dc-stat{
+    padding:20px 15px;
+  }
+
+  .dc-weight{
+    font-size:34px;
+  }
+
+  .dc-progress-value{
+    font-size:25px;
+  }
+
+  .dc-stat-label{
+    font-size:9px;
+  }
+
+}
   .dc-progress-value{
     margin-top:10px;
     font-size:30px;
