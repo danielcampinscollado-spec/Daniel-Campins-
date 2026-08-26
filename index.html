@@ -3327,7 +3327,14 @@ if(screen==="home"){
       ? routine[weeklyWorkouts]
       : null;
 
-  const change = Number(c.weight || 0) - Number(c.initial || 0);
+  const change =
+    Number(c.weight || 0) - Number(c.initial || 0);
+
+  const completedCount =
+    Math.min(
+      weeklyWorkouts,
+      totalWorkouts || weeklyWorkouts
+    );
 
   const lastMessage =
     (data.messages?.[c.id] || []).slice(-1)[0];
@@ -3337,16 +3344,15 @@ if(screen==="home"){
       ? lastMessage[1]
       : "La constancia convierte lo invisible en imparable.";
 
-  const completedCount =
-    Math.min(weeklyWorkouts,totalWorkouts || weeklyWorkouts);
-
-  html=`
+  html = `
 
   <div class="dc-home">
 
-    <!-- CABECERA -->
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
 
-    <div class="dc-home-header">
+    <header class="dc-home-header">
 
       <div class="dc-brand">
 
@@ -3364,9 +3370,11 @@ if(screen==="home"){
               x2="85"
               y2="90"
               gradientUnits="userSpaceOnUse">
+
               <stop stop-color="#F5D17A"/>
               <stop offset=".5" stop-color="#D9AA4A"/>
               <stop offset="1" stop-color="#B77E22"/>
+
             </linearGradient>
           </defs>
 
@@ -3426,8 +3434,7 @@ if(screen==="home"){
             <path
               d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
 
-            <path
-              d="M10 21h4"/>
+            <path d="M10 21h4"/>
 
           </svg>
 
@@ -3459,12 +3466,14 @@ if(screen==="home"){
 
       </div>
 
-    </div>
+    </header>
 
 
-    <!-- BIENVENIDA -->
+    <!-- =====================================================
+         BIENVENIDA
+    ====================================================== -->
 
-    <div class="dc-welcome">
+    <section class="dc-welcome">
 
       <p class="dc-eyebrow">
         BIENVENIDO
@@ -3490,12 +3499,16 @@ if(screen==="home"){
 
       </div>
 
-    </div>
+    </section>
 
 
-    <!-- PESO + PROGRESO -->
+    <!-- =====================================================
+         PESO + PROGRESO
+    ====================================================== -->
 
-    <div class="dc-card dc-stats">
+    <section class="dc-card dc-stats">
+
+      <!-- PESO -->
 
       <div class="dc-stat">
 
@@ -3547,6 +3560,8 @@ if(screen==="home"){
       <div class="dc-divider"></div>
 
 
+      <!-- PROGRESO -->
+
       <div class="dc-stat">
 
         <div class="dc-stat-icon">
@@ -3578,7 +3593,6 @@ if(screen==="home"){
         <div class="dc-progress-sub">
           desde el inicio
         </div>
-
 
         <div class="dc-chart">
 
@@ -3614,17 +3628,21 @@ if(screen==="home"){
                   result="blur"/>
 
                 <feMerge>
+
                   <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
+
                 </feMerge>
 
               </filter>
 
             </defs>
 
+
             <path
               d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82 V90 H0Z"
               fill="url(#dcChartFill)"/>
+
 
             <path
               d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82"
@@ -3633,6 +3651,7 @@ if(screen==="home"){
               stroke-width="3"
               stroke-linecap="round"
               filter="url(#dcGlow)"/>
+
 
             <circle
               cx="500"
@@ -3654,12 +3673,14 @@ if(screen==="home"){
 
       </div>
 
-    </div>
+    </section>
 
 
-    <!-- ENTRENAMIENTOS -->
+    <!-- =====================================================
+         ENTRENAMIENTOS
+    ====================================================== -->
 
-    <div class="dc-card dc-training">
+    <section class="dc-card dc-training">
 
       <div class="dc-training-left">
 
@@ -3698,13 +3719,16 @@ if(screen==="home"){
           ${
             Array.from({
               length:Math.max(totalWorkouts,3)
-            }).slice(0,3).map((_,i)=>`
+            })
+            .slice(0,3)
+            .map((_,i)=>`
 
               <span class="dc-check">
                 ${i < completedCount ? "✓" : ""}
               </span>
 
-            `).join("")
+            `)
+            .join("")
           }
 
         </div>
@@ -3724,11 +3748,19 @@ if(screen==="home"){
               stroke="currentColor"
               stroke-width="1.5">
 
-              <path d="M8 4h8v5c0 3-2 5-4 5s-4-2-4-5V4z"/>
-              <path d="M8 6H5c0 4 2 6 5 6"/>
-              <path d="M16 6h3c0 4-2 6-5 6"/>
+              <path
+                d="M8 4h8v5c0 3-2 5-4 5s-4-2-4-5V4z"/>
+
+              <path
+                d="M8 6H5c0 4 2 6 5 6"/>
+
+              <path
+                d="M16 6h3c0 4-2 6-5 6"/>
+
               <path d="M12 14v4"/>
+
               <path d="M8 21h8"/>
+
               <path d="M9 18h6"/>
 
             </svg>
@@ -3761,12 +3793,14 @@ if(screen==="home"){
 
       </div>
 
-    </div>
+    </section>
 
 
-    <!-- PRÓXIMO ENTRENAMIENTO -->
+    <!-- =====================================================
+         PRÓXIMO ENTRENAMIENTO
+    ====================================================== -->
 
-    <div class="dc-card dc-next">
+    <section class="dc-card dc-next">
 
       <div class="dc-next-head">
 
@@ -3785,13 +3819,16 @@ if(screen==="home"){
               height="15"
               rx="2"/>
 
-            <path d="M8 3v4M16 3v4M4 9h16"/>
+            <path d="M8 3v4"/>
+            <path d="M16 3v4"/>
+            <path d="M4 9h16"/>
 
           </svg>
 
           TU PRÓXIMO ENTRENAMIENTO
 
         </div>
+
 
         <button
           class="dc-routine-btn"
@@ -3893,12 +3930,14 @@ if(screen==="home"){
         `
       }
 
-    </div>
+    </section>
 
 
-    <!-- FRASE -->
+    <!-- =====================================================
+         FRASE
+    ====================================================== -->
 
-    <div class="dc-card dc-quote">
+    <section class="dc-card dc-quote">
 
       <div class="dc-quote-mark">
         “
@@ -3912,7 +3951,7 @@ if(screen==="home"){
         Daniel Campins
       </div>
 
-    </div>
+    </section>
 
   </div>
 
