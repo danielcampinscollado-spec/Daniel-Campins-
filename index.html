@@ -3038,61 +3038,7 @@ label{
     font-size:11px !important;
     line-height:1.1 !important;
   }
-/* ===== ARO ACTIVO CON MOVIMIENTO CONTINUO ===== */
 
-@media (max-width:700px){
-
-  #client-nav.nav button.active::before,
-  #client-nav.nav button[aria-current="page"]::before{
-    animation: dcOrbit 2.8s linear infinite !important;
-    transform:translateX(-50%) rotate(0deg) !important;
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.08),
-      0 0 12px rgba(220,174,70,.10) !important;
-  }
-
-}
-
-@keyframes dcOrbit{
-
-  0%{
-    transform:translateX(-50%) rotate(0deg);
-    border-color:rgba(220,174,70,.28);
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.06),
-      0 0 8px rgba(220,174,70,.08);
-  }
-
-  25%{
-    border-color:rgba(220,174,70,.65);
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.12),
-      0 0 16px rgba(220,174,70,.20);
-  }
-
-  50%{
-    border-color:rgba(220,174,70,.30);
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.06),
-      0 0 8px rgba(220,174,70,.08);
-  }
-
-  75%{
-    border-color:rgba(220,174,70,.70);
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.14),
-      0 0 18px rgba(220,174,70,.22);
-  }
-
-  100%{
-    transform:translateX(-50%) rotate(360deg);
-    border-color:rgba(220,174,70,.28);
-    box-shadow:
-      0 0 0 1px rgba(220,174,70,.06),
-      0 0 8px rgba(220,174,70,.08);
-  }
-
-}
 </style>
 </head>
 
