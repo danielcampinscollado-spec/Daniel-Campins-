@@ -2889,6 +2889,58 @@ label{
   }
 
 }
+/* =========================================================
+   AJUSTE FINAL MÓVIL — TARJETAS
+   ========================================================= */
+
+@media (max-width:700px){
+
+  /* Tarjeta PESO / PROGRESO */
+  #coach-main .dashboard-summary{
+    grid-template-columns:1fr 1fr !important;
+    gap:0 !important;
+    min-height:310px !important;
+  }
+
+  #coach-main .dashboard-summary > *{
+    min-width:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Evita que la gráfica quede cortada */
+  #coach-main .dashboard-summary svg,
+  #coach-main .dashboard-summary canvas{
+    max-width:100% !important;
+  }
+
+  /* Tarjeta ENTRENAMIENTOS */
+  #coach-main .dashboard-summary + .card{
+    min-height:225px !important;
+  }
+
+  /* Semana completada: más espacio para el texto */
+  #coach-main .dashboard-summary + .card > *{
+    min-width:0 !important;
+  }
+
+  #coach-main .dashboard-summary + .card p{
+    line-height:1.35 !important;
+  }
+
+  /* Próximo entrenamiento */
+  .dc-next,
+  .next-training,
+  .next-workout{
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Que el contenido no quede escondido detrás del menú inferior */
+  .dc-home{
+    padding-bottom:110px !important;
+  }
+
+}
 </style>
 </head>
 
