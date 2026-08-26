@@ -3038,149 +3038,58 @@ label{
     font-size:11px !important;
     line-height:1.1 !important;
   }
-
-}
-/* ===== AJUSTE MÓVIL FINAL ===== */
+/* ===== ARO ACTIVO CON MOVIMIENTO CONTINUO ===== */
 
 @media (max-width:700px){
 
-  /* ---------- BARRA INFERIOR ---------- */
-
-  #client-nav.nav{
-    width:100% !important;
-    height:100% !important;
-    display:grid !important;
-    grid-template-columns:repeat(6, minmax(0,1fr)) !important;
-    gap:0 !important;
-    justify-content:initial !important;
-    align-items:center !important;
-  }
-
-  #client-nav.nav button{
-    position:relative !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:none !important;
-    height:62px !important;
-    margin:0 !important;
-    padding:3px 0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-    gap:3px !important;
-    border:0 !important;
-    border-radius:0 !important;
-    background:transparent !important;
-    overflow:visible !important;
-  }
-
-  #client-nav.nav button svg,
-  #client-nav.nav button img{
-    width:22px !important;
-    height:22px !important;
-    flex:0 0 22px !important;
-  }
-
-  #client-nav.nav button span{
-    display:block !important;
-    width:100% !important;
-    max-width:100% !important;
-    margin:0 !important;
-    padding:0 1px !important;
-    font-size:8px !important;
-    line-height:10px !important;
-    letter-spacing:-0.15px !important;
-    text-align:center !important;
-    white-space:nowrap !important;
-    overflow:hidden !important;
-  }
-
-  /* Entrenamiento necesita un poco menos de tamaño */
-  #client-nav.nav button:nth-child(4) span{
-    font-size:7.5px !important;
-    letter-spacing:-0.3px !important;
-  }
-
-  /* ---------- CÍRCULO ACTIVO ---------- */
-
-  #client-nav.nav button.active,
-  #client-nav.nav button[aria-current="page"]{
-    background:transparent !important;
-    border-radius:0 !important;
-  }
-
   #client-nav.nav button.active::before,
   #client-nav.nav button[aria-current="page"]::before{
-    content:"" !important;
-    position:absolute !important;
-    left:50% !important;
-    top:2px !important;
-    transform:translateX(-50%) !important;
-    width:40px !important;
-    height:40px !important;
-    border-radius:50% !important;
-    background:rgba(220,174,70,.14) !important;
-    border:1px solid rgba(220,174,70,.38) !important;
-    z-index:0 !important;
+    animation: dcOrbit 2.8s linear infinite !important;
+    transform:translateX(-50%) rotate(0deg) !important;
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.08),
+      0 0 12px rgba(220,174,70,.10) !important;
   }
 
-  #client-nav.nav button.active svg,
-  #client-nav.nav button.active img,
-  #client-nav.nav button.active span,
-  #client-nav.nav button[aria-current="page"] svg,
-  #client-nav.nav button[aria-current="page"] img,
-  #client-nav.nav button[aria-current="page"] span{
-    position:relative !important;
-    z-index:1 !important;
+}
+
+@keyframes dcOrbit{
+
+  0%{
+    transform:translateX(-50%) rotate(0deg);
+    border-color:rgba(220,174,70,.28);
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.06),
+      0 0 8px rgba(220,174,70,.08);
   }
 
-  #client-nav.nav button.active span,
-  #client-nav.nav button[aria-current="page"] span{
-    color:#dcae46 !important;
+  25%{
+    border-color:rgba(220,174,70,.65);
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.12),
+      0 0 16px rgba(220,174,70,.20);
   }
 
-
-  /* ---------- CONTENIDO GENERAL ---------- */
-
-  .dc-home{
-    padding:8px 14px 92px !important;
+  50%{
+    border-color:rgba(220,174,70,.30);
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.06),
+      0 0 8px rgba(220,174,70,.08);
   }
 
-  .dc-home-header{
-    margin-bottom:18px !important;
+  75%{
+    border-color:rgba(220,174,70,.70);
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.14),
+      0 0 18px rgba(220,174,70,.22);
   }
 
-  .dc-home-header h1{
-    font-size:40px !important;
-    line-height:1 !important;
-    margin:4px 0 8px !important;
-  }
-
-  .dc-home-header p{
-    font-size:16px !important;
-    line-height:1.25 !important;
-  }
-
-  .dc-home .card{
-    border-radius:22px !important;
-  }
-
-  /* Reducimos las tarjetas sin cambiar su diseño */
-  .dc-home .card{
-    padding:20px !important;
-  }
-
-  .dc-home .card strong{
-    font-size:28px !important;
-  }
-
-  .dc-home .card h3{
-    font-size:17px !important;
-  }
-
-  .dc-home .card p{
-    font-size:13px !important;
+  100%{
+    transform:translateX(-50%) rotate(360deg);
+    border-color:rgba(220,174,70,.28);
+    box-shadow:
+      0 0 0 1px rgba(220,174,70,.06),
+      0 0 8px rgba(220,174,70,.08);
   }
 
 }
