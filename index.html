@@ -2440,18 +2440,18 @@ label{
   }
 
   .dc-next-inner{
-    height:72px !important;
-    min-height:72px !important;
+    height:150px !important;
+    min-height:150px !important;
     margin:0 10px 10px !important;
     box-sizing:border-box !important;
-  }
-
+    grid-template-columns:105px minmax(0,1fr) auto !important;
+}
   .dc-next-image{
-    width:72px !important;
-    min-width:72px !important;
-    height:52px !important;
+    width:105px !important;
+    min-width:105px !important;
+    height:118px !important;
     overflow:hidden !important;
-  }
+}
 
   .dc-next-info{
     padding:0 10px !important;
@@ -2543,10 +2543,10 @@ label{
     min-height:138px !important;
   }
 
-  .dc-next{
-    height:122px !important;
-    min-height:122px !important;
-  }
+ .dc-next{
+    height:235px !important;
+    min-height:235px !important;
+}
 
   .dc-quote{
     height:58px !important;
@@ -2758,13 +2758,13 @@ label{
 
   /* PRÓXIMO ENTRENAMIENTO */
 
-  #client .dc-next{
-    width:100%;
-    min-height:122px !important;
-    height:122px !important;
-    box-sizing:border-box;
-    overflow:hidden;
-  }
+ #client .dc-next{
+    width:100% !important;
+    min-height:235px !important;
+    height:235px !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+}
 
   /* FRASE */
 
@@ -2786,7 +2786,7 @@ label{
 
     width:auto !important;
     max-width:none !important;
-    height:82px !important;
+    height:76px !important;
 
     display:grid !important;
     grid-template-columns:repeat(6,minmax(0,1fr)) !important;
