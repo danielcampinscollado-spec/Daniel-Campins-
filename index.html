@@ -813,10 +813,13 @@ label{
   transform:scale(.94);
 }
 
-  .nav button span{
-    display:none;
-  }
-
+ .nav button span{
+  display:block;
+  font-size:10px;
+  line-height:1;
+  letter-spacing:0;
+  color:inherit;
+}
   main{
     margin:0 0 72px;
     padding:20px 15px;
@@ -4189,8 +4192,7 @@ navButton("💬","Mensajes","showClient('coach')")}
 
 function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
-navButton("▦","Menú principal","showCoach('dashboard')")+
-navButton("👥","Clientes","showCoach('clients')")+
+navButton("▦","Panel","showCoach('dashboard')")+navButton("👥","Clientes","showCoach('clients')")+
 navButton("🍴","Alimentación","showCoach('diets')")+
 navButton("🏋️","Entrenamiento","showCoach('routines')")+
 navButton("✓","Check-in","showCoach('checkins')")+
