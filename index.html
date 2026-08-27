@@ -3430,6 +3430,151 @@ margin:0 !important;
   }
 
 }
+/* =========================================================
+   PANEL COACH — AJUSTE VISUAL FIEL A REFERENCIA
+   MÓVIL
+   ========================================================= */
+
+@media (max-width:700px){
+
+  /* CONTENEDOR PRINCIPAL */
+  #coach-main{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    margin:0 0 80px 0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+  }
+
+  /* CONTENEDOR INTERNO DEL DASHBOARD */
+  #coach-main > div:first-child{
+    width:100% !important;
+    max-width:none !important;
+    padding:4px 38px 110px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* LOGO */
+  #coach-main > div:first-child > div:first-child{
+    width:375px !important;
+    max-width:100% !important;
+    min-height:70px !important;
+    margin:0 0 28px !important;
+    gap:15px !important;
+    box-sizing:border-box !important;
+  }
+
+  #coach-main > div:first-child > div:first-child svg{
+    width:70px !important;
+    height:70px !important;
+    flex:0 0 70px !important;
+  }
+
+  /* CABECERA */
+  #coach-main h1{
+    font-size:40px !important;
+    line-height:1.08 !important;
+    margin:0 !important;
+  }
+
+  #coach-main h2{
+    font-size:20px !important;
+  }
+
+  /* TEXTOS SUPERIORES */
+  #coach-main > div:first-child > div:nth-child(2){
+    margin-bottom:24px !important;
+  }
+
+  /* TARJETAS DE RESUMEN */
+  #coach-main .dashboard-summary{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:20px !important;
+    margin:0 0 26px !important;
+    box-sizing:border-box !important;
+  }
+
+  #coach-main .dashboard-summary > *{
+    width:100% !important;
+    min-width:0 !important;
+    height:209px !important;
+    min-height:209px !important;
+    max-height:209px !important;
+    padding:24px !important;
+    margin:0 !important;
+    border-radius:20px !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+  }
+
+  /* ICONOS DE LAS 3 TARJETAS */
+  #coach-main .dashboard-summary svg{
+    width:30px !important;
+    height:30px !important;
+    max-width:30px !important;
+    max-height:30px !important;
+  }
+
+  /* NÚMEROS */
+  #coach-main .dashboard-summary b,
+  #coach-main .dashboard-summary strong{
+    font-size:40px !important;
+    line-height:1 !important;
+  }
+
+  /* TARJETA TAREAS */
+  #coach-main .dashboard-summary + .card{
+    width:100% !important;
+    height:214px !important;
+    min-height:214px !important;
+    max-height:214px !important;
+    margin:0 0 22px !important;
+    padding:28px 32px !important;
+    border-radius:20px !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+  }
+
+  /* ACTIVIDAD RECIENTE */
+  #coach-main .card{
+    box-sizing:border-box !important;
+  }
+
+  #coach-main .card[style*="padding:20px"]{
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  /* FILAS DE ACTIVIDAD */
+  #coach-main .card[style*="padding:20px"] > div{
+    min-width:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* ESPACIO FINAL PARA NAV */
+  #coach-main > div:first-child{
+    padding-bottom:110px !important;
+  }
+
+  /* NAV INFERIOR */
+  #coach-nav{
+    left:33px !important;
+    right:33px !important;
+    bottom:10px !important;
+    width:auto !important;
+    height:101px !important;
+    max-width:none !important;
+    box-sizing:border-box !important;
+  }
+
+}
 </style>
 </head>
 
