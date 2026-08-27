@@ -3316,7 +3316,50 @@ label{
 .diet-list .meal-card:nth-child(6) summary b::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='%23e9b94f' stroke-width='1.7' stroke-linecap='round'%3E%3Cpath d='M25 20.5A10.5 10.5 0 0 1 11.5 7 11 11 0 1 0 25 20.5Z'/%3E%3C/svg%3E") !important;
 }
+/* =========================================================
+   AJUSTE FINAL NAV MÓVIL
+   ========================================================= */
 
+@media (max-width:700px){
+
+  #coach-nav{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    padding:6px 2px !important;
+  }
+
+  #coach-nav button{
+    min-width:0 !important;
+    max-width:none !important;
+    width:100% !important;
+    height:64px !important;
+    padding:4px 0 !important;
+    margin:0 !important;
+    gap:3px !important;
+    overflow:hidden !important;
+    transform:none !important;
+  }
+
+  #coach-nav button svg{
+    width:21px !important;
+    height:21px !important;
+    min-width:21px !important;
+    min-height:21px !important;
+    max-width:21px !important;
+    max-height:21px !important;
+    flex:0 0 21px !important;
+  }
+
+  #coach-nav button span{
+    width:100% !important;
+    font-size:9px !important;
+    line-height:1 !important;
+    letter-spacing:-0.1px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+}
 </style>
 </head>
 
