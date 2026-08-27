@@ -2554,406 +2554,260 @@ label{
   }
 
 }
-/*/* =========================================================
-   MÓVIL DEFINITIVO — DANIEL CAMPINS
-   UN SOLO BLOQUE LIMPIO
+/* =========================================================
+   NUEVO DISEÑO MÓVIL — PROTOTIPO DANIEL CAMPINS
    ========================================================= */
 
 @media (max-width:700px){
 
-  /* ===== BASE ===== */
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  body{
+    margin:0;
+    padding:0;
+    background:#08090d;
+  }
 
   #client{
-    width:100% !important;
-    max-width:100% !important;
-    overflow-x:hidden !important;
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
   }
 
   #client .dc-home{
-    width:100% !important;
-    max-width:100% !important;
-    box-sizing:border-box !important;
-    padding:18px 16px 110px !important;
-    overflow:visible !important;
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    padding:22px 18px 125px !important;
+    margin:0 auto;
   }
 
-  /* ===== CABECERA ===== */
+  /* CABECERA */
 
-  #client .dc-home-header{
-    width:100% !important;
-    margin-bottom:22px !important;
+  #client .dc-header{
+    width:100%;
+    box-sizing:border-box;
+    margin-bottom:28px !important;
   }
 
-  #client .dc-brand-name{
-    font-size:14px !important;
-    letter-spacing:2.2px !important;
+  #client .dc-header-left{
+    min-width:0;
   }
 
-  #client .dc-brand-sub{
-    font-size:11px !important;
+  #client .dc-header-right{
+    flex-shrink:0;
   }
+
+  /* BIENVENIDA */
 
   #client .dc-welcome{
-    width:100% !important;
+    width:100%;
+    box-sizing:border-box;
+    margin-bottom:30px !important;
   }
 
   #client .dc-welcome h1{
-    font-size:42px !important;
-    line-height:1 !important;
     margin:0 !important;
+    font-size:46px !important;
+    line-height:1.02 !important;
   }
 
   #client .dc-tagline{
-    font-size:16px !important;
-    margin-top:10px !important;
+    font-size:18px !important;
+    line-height:1.35 !important;
+    max-width:330px;
   }
 
-  /* ===== CONTENEDOR DE TARJETAS ===== */
-
-  #coach-main{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
+  #client .dc-week{
+    flex-shrink:0;
+    white-space:nowrap;
   }
 
-  #coach-main .dashboard-summary{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    gap:16px !important;
-    box-sizing:border-box !important;
-  }
+  /* PESO + PROGRESO */
 
-  #coach-main .dashboard-summary > *{
-    min-width:0 !important;
-    max-width:100% !important;
-    box-sizing:border-box !important;
-  }
-
-  /* =====================================================
-     PESO + PROGRESO
-     DEBE SER UNA SOLA TARJETA HORIZONTAL
-     ===================================================== */
-
-  #coach-main .dashboard-summary > *:first-child{
-    width:100% !important;
-    min-width:0 !important;
-    min-height:0 !important;
-    height:auto !important;
-    box-sizing:border-box !important;
-  }
-
-  #coach-main .dashboard-summary > *:first-child > *{
-    min-width:0 !important;
-    box-sizing:border-box !important;
-  }
-
-  /* Evita que las columnas internas se apilen */
-
-  #coach-main .dashboard-summary > *:first-child{
+  #client .dc-stats{
+    width:100%;
     display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-    align-items:stretch !important;
+    grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr) !important;
+    min-height:190px !important;
+    height:190px !important;
+    box-sizing:border-box;
+    overflow:hidden;
   }
 
-  /* ===== VALORES ===== */
+  #client .dc-stat{
+    min-width:0 !important;
+    width:auto !important;
+    box-sizing:border-box;
+    padding:24px 20px !important;
+  }
+
+  #client .dc-divider{
+    width:1px !important;
+    height:auto !important;
+    margin:24px 0 !important;
+  }
+
+  #client .dc-stat-icon{
+    width:52px !important;
+    height:52px !important;
+    min-width:52px !important;
+    margin-bottom:14px !important;
+  }
+
+  #client .dc-stat-label{
+    font-size:11px !important;
+    letter-spacing:2px !important;
+    margin-bottom:7px !important;
+  }
 
   #client .dc-weight{
-    font-size:38px !important;
+    font-size:40px !important;
     line-height:1 !important;
+    white-space:nowrap !important;
   }
 
   #client .dc-weight span{
-    font-size:19px !important;
+    font-size:18px !important;
+  }
+
+  #client .dc-stat-sub{
+    font-size:14px !important;
+    line-height:1.2 !important;
+    margin-top:8px !important;
+    white-space:nowrap;
+  }
+
+  #client .dc-change{
+    font-size:15px !important;
+    white-space:nowrap;
+    margin-top:10px !important;
   }
 
   #client .dc-progress-value{
-    font-size:27px !important;
+    font-size:28px !important;
     line-height:1 !important;
+    white-space:nowrap;
   }
 
   #client .dc-progress-sub{
-    font-size:13px !important;
+    font-size:14px !important;
+    margin-top:8px !important;
+    white-space:nowrap;
   }
 
   #client .dc-chart{
     width:100% !important;
-    max-width:100% !important;
-    height:58px !important;
-    margin-top:10px !important;
-    overflow:hidden !important;
+    height:55px !important;
+    margin-top:8px !important;
+    overflow:hidden;
   }
 
-  #client .dc-chart svg,
-  #client .dc-chart canvas{
-    width:100% !important;
-    max-width:100% !important;
-  }
+  /* ENTRENAMIENTOS */
 
-  /* =====================================================
-     ENTRENAMIENTOS + SEMANA COMPLETADA
-     ===================================================== */
-
-  #coach-main .dashboard-summary > *:nth-child(2){
-    width:100% !important;
-    min-width:0 !important;
-    min-height:0 !important;
-    height:auto !important;
-    box-sizing:border-box !important;
-  }
-
-  #coach-main .dashboard-summary > *:nth-child(2){
+  #client .dc-training{
+    width:100%;
+    min-height:138px !important;
+    height:138px !important;
+    box-sizing:border-box;
     display:grid !important;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
-    align-items:stretch !important;
+    grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr) !important;
+    overflow:hidden;
   }
 
   #client .dc-training-left,
   #client .dc-training-right{
     min-width:0 !important;
-    width:100% !important;
-    box-sizing:border-box !important;
-  }
-
-  #client .dc-training-left{
-    padding:22px 18px !important;
-  }
-
-  #client .dc-training-right{
-    padding:22px 18px !important;
+    box-sizing:border-box;
+    padding:20px !important;
   }
 
   #client .dc-training-count{
-    font-size:36px !important;
+    font-size:40px !important;
     line-height:1 !important;
   }
 
-  #client .dc-training-sub{
-    font-size:14px !important;
-  }
-
-  #client .dc-checks{
-    display:flex !important;
-    flex-wrap:wrap !important;
-    gap:8px !important;
-  }
-
-  #client .dc-check{
-    width:34px !important;
-    height:34px !important;
-    font-size:15px !important;
-  }
-
-  #client .dc-complete{
-    min-width:0 !important;
-    min-height:0 !important;
-    gap:12px !important;
-  }
-
-  #client .dc-trophy{
-    width:50px !important;
-    height:50px !important;
-    flex:none !important;
-  }
-
-  #client .dc-trophy svg{
-    width:26px !important;
-    height:26px !important;
-  }
-
-  #client .dc-complete h2{
-    font-size:18px !important;
-    line-height:1.15 !important;
-  }
-
-  #client .dc-complete p{
-    font-size:12px !important;
-    line-height:1.35 !important;
-  }
-
-  /* =====================================================
-     PRÓXIMO ENTRENAMIENTO
-     ===================================================== */
-
-  #client .dc-next,
-  #client .next-training,
-  #client .next-workout{
-    width:100% !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    box-sizing:border-box !important;
-  }
+  /* PRÓXIMO ENTRENAMIENTO */
 
   #client .dc-next{
-    padding:18px !important;
+    width:100%;
+    min-height:122px !important;
+    height:122px !important;
+    box-sizing:border-box;
+    overflow:hidden;
   }
 
-  #client .dc-next-head{
-    width:100% !important;
-    min-width:0 !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:space-between !important;
-    gap:10px !important;
-  }
-
-  #client .dc-start{
-    max-width:100% !important;
-    box-sizing:border-box !important;
-  }
-
-  /* ===== FRASE ===== */
+  /* FRASE */
 
   #client .dc-quote{
-    width:100% !important;
-    max-width:100% !important;
-    box-sizing:border-box !important;
-    padding:18px 20px !important;
-    margin-top:0 !important;
+    width:100%;
+    min-height:58px !important;
+    height:58px !important;
+    box-sizing:border-box;
+    overflow:hidden;
   }
 
-  #client .dc-quote-text{
-    font-size:14px !important;
-    line-height:1.4 !important;
-  }
+  /* BARRA INFERIOR */
 
-  /* =====================================================
-     BARRA INFERIOR
-     ===================================================== */
-
-  #client .side{
+  #client-nav{
     position:fixed !important;
-    z-index:9999 !important;
-    left:10px !important;
-    right:10px !important;
-    bottom:8px !important;
+    left:12px !important;
+    right:12px !important;
+    bottom:12px !important;
+
     width:auto !important;
-    height:78px !important;
-    min-height:78px !important;
-    padding:4px !important;
-    box-sizing:border-box !important;
-    border-radius:20px !important;
+    max-width:none !important;
+    height:82px !important;
+
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+
+    box-sizing:border-box;
+    padding:7px 4px !important;
+
+    z-index:9999 !important;
   }
 
-  #client .nav{
-    width:100% !important;
-    height:100% !important;
-    display:flex !important;
-    align-items:stretch !important;
-    justify-content:space-between !important;
-    gap:0 !important;
-  }
-
-  #client .nav button{
-    position:relative !important;
-    flex:1 1 0 !important;
-    width:16.666% !important;
+  #client-nav button{
     min-width:0 !important;
-    height:70px !important;
-    min-height:70px !important;
-    margin:0 !important;
-    padding:5px 2px 4px !important;
-    box-sizing:border-box !important;
+    width:100% !important;
+    height:68px !important;
+
     display:flex !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
-    gap:4px !important;
-    border:0 !important;
-    background:transparent !important;
-    overflow:visible !important;
+
+    padding:5px 2px !important;
+    margin:0 !important;
+    box-sizing:border-box;
   }
 
-  #client .nav button::before{
-    left:50% !important;
-    top:3px !important;
-    width:42px !important;
-    height:42px !important;
-    transform:translateX(-50%) scale(.65) !important;
-    opacity:0 !important;
-    z-index:0 !important;
+  #client-nav button svg{
+    width:24px !important;
+    height:24px !important;
+    flex-shrink:0;
   }
 
-  #client .nav button.active::before{
-    transform:translateX(-50%) scale(1) !important;
-    opacity:1 !important;
-  }
-
-  #client .nav button svg{
-    position:relative !important;
-    z-index:2 !important;
-    width:22px !important;
-    height:22px !important;
-    flex:none !important;
-    margin-top:5px !important;
-  }
-
-  #client .nav button span{
-    position:relative !important;
-    z-index:2 !important;
+  #client-nav button span{
     display:block !important;
     width:100% !important;
-    margin:0 !important;
-    padding:0 !important;
+    margin-top:4px !important;
+
+    font-size:10px !important;
+    line-height:1.1 !important;
+
     text-align:center !important;
     white-space:nowrap !important;
     overflow:hidden !important;
-    text-overflow:clip !important;
-    font-size:10px !important;
-    line-height:1 !important;
-  }
-
-  /* ===== EVITAR QUE EL CONTENIDO QUEDE BAJO LA BARRA ===== */
-
-  #client .dc-home{
-    padding-bottom:105px !important;
+    text-overflow:ellipsis !important;
   }
 }
-
-
-/* =========================================================
-   MÓVIL MUY PEQUEÑO
-   ========================================================= */
-
-@media (max-width:380px){
-
-  #client .dc-home{
-    padding-left:12px !important;
-    padding-right:12px !important;
-  }
-
-  #client .dc-welcome h1{
-    font-size:36px !important;
-  }
-
-  #client .dc-tagline{
-    font-size:14px !important;
-  }
-
-  #client .dc-weight{
-    font-size:34px !important;
-  }
-
-  #client .dc-progress-value{
-    font-size:24px !important;
-  }
-
-  #client .dc-training-count{
-    font-size:32px !important;
-  }
-
-  #client .dc-training-left,
-  #client .dc-training-right{
-    padding:18px 14px !important;
-  }
-
-  #client .nav button span{
-    font-size:9px !important;
-  }
-}
-
 </style>
 </head>
 
