@@ -2556,281 +2556,172 @@ label{
 }
 /* =========================================================
    NUEVO DISEÑO MÓVIL — PROTOTIPO DANIEL CAMPINS
+   BLOQUE ÚNICO Y DEFINITIVO
    ========================================================= */
 
-@media (max-width:700px){
+@media (max-width: 768px) {
 
-  html,
-  body{
-    width:100%;
-    max-width:100%;
-    overflow-x:hidden;
+  /* ---------- BASE ---------- */
+
+  body {
+    overflow-x: hidden;
   }
 
-  body{
-    margin:0;
-    padding:0;
-    background:#08090d;
+  .dc-home {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 16px 16px 110px;
+    box-sizing: border-box;
   }
 
-  #client{
-    width:100%;
-    max-width:100%;
-    overflow-x:hidden;
+  /* ---------- CABECERA ---------- */
+
+  .dc-home > header,
+  .dc-home .dc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 18px;
   }
 
-  #client .dc-home{
-    width:100%;
-    max-width:100%;
-    box-sizing:border-box;
-    padding:22px 18px 125px !important;
-    margin:0 auto;
+  /* ---------- ESTADÍSTICAS ---------- */
+
+  .dc-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 16px;
   }
 
-  /* CABECERA */
-
-  #client .dc-header{
-    width:100%;
-    box-sizing:border-box;
-    margin-bottom:28px !important;
+  .dc-stats > * {
+    min-width: 0;
   }
 
-  #client .dc-header-left{
-    min-width:0;
+  /* ---------- ENTRENAMIENTO ---------- */
+
+  .dc-training {
+    width: 100%;
+    margin-bottom: 16px;
+    box-sizing: border-box;
   }
 
-  #client .dc-header-right{
-    flex-shrink:0;
+  .dc-training > * {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  /* BIENVENIDA */
+  /* ---------- PRÓXIMO ENTRENAMIENTO ---------- */
 
-  #client .dc-welcome{
-    width:100%;
-    box-sizing:border-box;
-    margin-bottom:30px !important;
+  .dc-next {
+    width: 100%;
+    margin-bottom: 16px;
+    box-sizing: border-box;
   }
 
-  #client .dc-welcome h1{
-    margin:0 !important;
-    font-size:46px !important;
-    line-height:1.02 !important;
+  /* ---------- ACCESOS RÁPIDOS ---------- */
+
+  .dc-home .dc-quick,
+  .dc-home .dc-quick-actions,
+  .dc-home .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    margin: 0 0 16px;
   }
 
-  #client .dc-tagline{
-    font-size:18px !important;
-    line-height:1.35 !important;
-    max-width:330px;
+  .dc-home .dc-quick > *,
+  .dc-home .dc-quick-actions > *,
+  .dc-home .quick-actions > * {
+    width: 100%;
+    min-width: 0;
+    min-height: 86px;
+    box-sizing: border-box;
   }
 
-  #client .dc-week{
-    flex-shrink:0;
-    white-space:nowrap;
+  /* ---------- FRASE ---------- */
+
+  .dc-quote {
+    width: 100%;
+    margin: 0 0 16px;
+    box-sizing: border-box;
   }
 
-  /* PESO + PROGRESO */
+  /* ---------- NAVEGACIÓN INFERIOR ---------- */
 
-  #client .dc-stats{
-    width:100%;
-    display:grid !important;
-    grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr) !important;
-    min-height:190px !important;
-    box-sizing:border-box;
-    overflow:hidden;
-}
+  #client-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
 
- #client .dc-stat{
-    min-width:0 !important;
-    width:auto !important;
-    box-sizing:border-box;
-    padding:18px 18px !important;
-}
+    width: 100%;
+    box-sizing: border-box;
 
-  #client .dc-divider{
-    width:1px !important;
-    height:auto !important;
-    margin:24px 0 !important;
+    padding:
+      8px
+      max(8px, env(safe-area-inset-right))
+      calc(8px + env(safe-area-inset-bottom))
+      max(8px, env(safe-area-inset-left));
+
+    margin: 0;
   }
 
- #client .dc-stat-icon{
-    width:46px !important;
-    height:46px !important;
-    min-width:46px !important;
-    margin-bottom:10px !important;
-}
-
-  #client .dc-stat-label{
-    font-size:11px !important;
-    letter-spacing:2px !important;
-    margin-bottom:7px !important;
+  #client-nav > * {
+    min-width: 0;
   }
 
-  #client .dc-weight{
-    font-size:34px !important;
-    line-height:.95 !important;
-    white-space:nowrap !important;
-}
-
-  #client .dc-weight span{
-    font-size:18px !important;
+  /* Evita que el contenido quede escondido
+     detrás de la navegación inferior */
+  .dc-home {
+    padding-bottom: 115px;
   }
 
-  #client .dc-stat-sub{
-    font-size:14px !important;
-    line-height:1.2 !important;
-    margin-top:8px !important;
-    white-space:nowrap;
+  /* ---------- AJUSTES DE TARJETAS ---------- */
+
+  .dc-home .card,
+  .dc-home .dc-card {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  #client .dc-change{
-    font-size:15px !important;
-    white-space:nowrap;
-    margin-top:10px !important;
+  /* ---------- TIPOGRAFÍA ---------- */
+
+  .dc-home h1,
+  .dc-home h2,
+  .dc-home h3,
+  .dc-home p {
+    max-width: 100%;
   }
-
-  #client .dc-progress-value{
-    font-size:25px !important;
-    line-height:1 !important;
-    white-space:nowrap;
-}
-
-  #client .dc-progress-sub{
-    font-size:14px !important;
-    margin-top:8px !important;
-    white-space:nowrap;
-  }
-
- #client .dc-chart{
-    width:100% !important;
-    height:42px !important;
-    margin-top:8px !important;
-    overflow:hidden;
-}
-
-  /* ENTRENAMIENTOS */
-
-  #client .dc-training{
-
-    width:100% !important;
-
-    min-height:145px !important;
-
-    height:145px !important;
-
-    box-sizing:border-box !important;
-
-    display:grid !important;
-
-    grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr) !important;
-
-    overflow:hidden !important;
 
 }
 
-#client .dc-training-left,
+/* =========================================================
+   TELÉFONOS PEQUEÑOS
+   ========================================================= */
 
-#client .dc-training-right{
+@media (max-width: 390px) {
 
-    min-width:0 !important;
-
-    box-sizing:border-box !important;
-
-    padding:17px 18px !important;
-
-}
-
-#client .dc-training-right{
-
-    display:flex !important;
-
-    align-items:center !important;
-
-}
-
-#client .dc-training-count{
-
-    font-size:36px !important;
-
-    line-height:.9 !important;
-
-    margin-top:2px !important;
+  .dc-home {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
-  /* PRÓXIMO ENTRENAMIENTO */
-
- #client .dc-next{
-    width:100% !important;
-    min-height:235px !important;
-    height:235px !important;
-    box-sizing:border-box !important;
-    overflow:hidden !important;
-}
-
-  /* FRASE */
-
-  #client .dc-quote{
-    width:100%;
-    min-height:58px !important;
-    height:58px !important;
-    box-sizing:border-box;
-    overflow:hidden;
+  .dc-stats {
+    gap: 8px;
   }
 
-  /* BARRA INFERIOR */
-
-  #client-nav{
-    position:fixed !important;
-    left:12px !important;
-    right:12px !important;
-    bottom:12px !important;
-
-    width:auto !important;
-    max-width:none !important;
-    height:76px !important;
-
-    display:grid !important;
-    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-
-    box-sizing:border-box;
-    padding:7px 4px !important;
-
-    z-index:9999 !important;
+  .dc-home .dc-quick,
+  .dc-home .dc-quick-actions,
+  .dc-home .quick-actions {
+    gap: 8px;
   }
 
-  #client-nav button{
-    min-width:0 !important;
-    width:100% !important;
-    height:68px !important;
-
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-
-    padding:5px 2px !important;
-    margin:0 !important;
-    box-sizing:border-box;
-  }
-
-  #client-nav button svg{
-    width:24px !important;
-    height:24px !important;
-    flex-shrink:0;
-  }
-
-  #client-nav button span{
-    display:block !important;
-    width:100% !important;
-    margin-top:4px !important;
-
-    font-size:10px !important;
-    line-height:1.1 !important;
-
-    text-align:center !important;
-    white-space:nowrap !important;
-    overflow:hidden !important;
-    text-overflow:ellipsis !important;
-  }
 }
 </style>
 </head>
