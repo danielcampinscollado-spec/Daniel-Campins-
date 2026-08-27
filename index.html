@@ -829,7 +829,71 @@ label{
 .nav button:active{
   transform:scale(.94);
 }
+/* ===== NAV COACH — VERSIÓN ANTERIOR ===== */
 
+#coach-nav{
+  position:fixed !important;
+  left:12px !important;
+  right:12px !important;
+  bottom:12px !important;
+  width:auto !important;
+  max-width:none !important;
+  height:76px !important;
+
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+
+  box-sizing:border-box !important;
+  padding:7px 4px !important;
+
+  z-index:9999 !important;
+}
+
+#coach-nav button{
+  min-width:0 !important;
+  width:100% !important;
+  height:68px !important;
+
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+
+  padding:5px 2px !important;
+  margin:0 !important;
+
+  box-sizing:border-box !important;
+}
+
+#coach-nav button svg{
+  width:24px !important;
+  height:24px !important;
+  flex-shrink:0 !important;
+}
+
+#coach-nav button span{
+  display:block !important;
+  width:100% !important;
+
+  font-size:10px !important;
+  line-height:1 !important;
+
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+
+  box-sizing:border-box !important;
+}
+
+#coach-nav button.active{
+  color:#f0c96b !important;
+  background:rgba(217,170,74,.09) !important;
+  border-color:rgba(217,170,74,.08) !important;
+}
+
+#coach-nav button.active svg{
+  filter:drop-shadow(0 0 7px rgba(217,170,74,.35)) !important;
+}
  
 
   .top h1,
