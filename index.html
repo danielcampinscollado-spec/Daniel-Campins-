@@ -3203,7 +3203,43 @@ label{
 .diet-list .meal-card:nth-child(6) summary b::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='%23e9b94f' stroke-width='1.7' stroke-linecap='round'%3E%3Cpath d='M25 20.5A10.5 10.5 0 0 1 11.5 7 11 11 0 1 0 25 20.5Z'/%3E%3C/svg%3E") !important;
 }
+/* AJUSTE FINAL — TARJETA PDF */
+.diet-summary{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    width:100%;
+    box-sizing:border-box;
 
+    margin-bottom:18px;
+    padding:16px 18px;
+
+    background:#111217;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    overflow:hidden;
+}
+
+.diet-summary > div{
+    flex:1;
+    min-width:0;
+}
+
+.diet-summary strong{
+    font-size:20px;
+    line-height:1.15;
+}
+
+.diet-summary span{
+    display:block;
+    margin-bottom:5px;
+}
+
+.diet-summary button{
+    flex-shrink:0;
+}
 </style>
 </head>
 
