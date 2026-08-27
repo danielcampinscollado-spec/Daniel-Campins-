@@ -1340,112 +1340,405 @@ label{
   font-size:13px;
 }
 
+/* =========================================================
+   ALIMENTACIÓN CLIENTE — DISEÑO PREMIUM OSCURO
+   ========================================================= */
+
 .diet-switch{
   display:flex;
-  gap:6px;
+  gap:5px;
   padding:4px;
-  margin-bottom:14px;
-  background:#f1f2f4;
-  border-radius:13px;
+  margin-bottom:24px;
+  background:#15161b;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
 }
 
 .diet-switch button{
   flex:1;
+  min-height:46px;
   padding:10px 12px;
-  border:0;
-  border-radius:10px;
+  border:1px solid transparent;
+  border-radius:13px;
   background:transparent;
-  color:#737a84;
-  font-size:13px;
-  font-weight:700;
+  color:#8f949e;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s ease;
 }
 
 .diet-switch button.active{
-  background:#fff;
-  color:#956b18;
-  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(217,170,74,.10),
+      rgba(217,170,74,.025)
+    );
+  border-color:rgba(217,170,74,.18);
+  color:#f0c96b;
+  box-shadow:
+    0 0 18px rgba(217,170,74,.05),
+    inset 0 1px 0 rgba(255,255,255,.025);
 }
+
+
+/* =========================================================
+   RESUMEN
+   ========================================================= */
 
 .diet-summary{
   display:flex;
-  gap:1px;
-  margin-bottom:14px;
+  gap:0;
+  margin-bottom:18px;
   overflow:hidden;
-  border:1px solid #e5e8ec;
-  border-radius:15px;
-  background:#e5e8ec;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+
+  background:#111217;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.18);
 }
 
 .diet-summary div{
   flex:1;
-  padding:13px;
-  background:#fff;
+  min-width:0;
+  padding:16px 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.025),
+      rgba(255,255,255,.008)
+    );
 }
 
 .diet-summary span{
   display:block;
-  color:#858c95;
+  margin-bottom:5px;
+  color:#858b96;
   font-size:11px;
-  margin-bottom:4px;
+  font-weight:500;
+  letter-spacing:.5px;
 }
 
 .diet-summary strong{
-  font-size:15px;
+  color:#f3f3ef;
+  font-size:20px;
+  font-weight:600;
 }
+
+
+/* =========================================================
+   LISTA DE COMIDAS
+   ========================================================= */
 
 .diet-list{
   display:grid;
-  gap:8px;
+  gap:10px;
 }
 
 .meal-card{
-  background:#fff;
-  border:1px solid #e5e8ec;
-  border-radius:15px;
   overflow:hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24,25,30,.98),
+      rgba(15,16,20,.98)
+    );
+
+  border:1px solid rgba(255,255,255,.085);
+  border-radius:18px;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,.16);
+
+  transition:
+    border-color .2s ease,
+    transform .2s ease;
+}
+
+.meal-card:hover{
+  border-color:rgba(217,170,74,.20);
 }
 
 .meal-card summary{
   list-style:none;
   cursor:pointer;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  padding:15px 16px;
+
+  gap:14px;
+  min-height:76px;
+  padding:11px 16px;
+
+  box-sizing:border-box;
 }
 
 .meal-card summary::-webkit-details-marker{
   display:none;
 }
 
+
+/* Parte izquierda */
+
 .meal-card summary > div{
   display:flex;
   align-items:center;
-  gap:11px;
+  min-width:0;
+  gap:12px;
 }
 
+
+/* Número */
+
 .meal-number{
-  width:31px;
-  height:31px;
+  flex:none;
+
+  width:46px;
+  height:46px;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  border-radius:9px;
-  background:#f7f0e1;
-  color:#956b18;
-  font-size:10px;
-  font-weight:800;
+
+  box-sizing:border-box;
+
+  border:1px solid rgba(217,170,74,.55);
+  border-radius:10px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(217,170,74,.10),
+      rgba(217,170,74,.015)
+    );
+
+  color:#f0c96b;
+
+  font-size:14px;
+  font-weight:700;
+
+  box-shadow:
+    0 0 14px rgba(217,170,74,.05);
 }
+
+
+/* Nombre + icono */
+
+.meal-card summary b{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  min-width:0;
+
+  color:#f2f1ec;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:18px;
+  font-weight:500;
+  line-height:1.2;
+}
+
+.meal-card summary b::before{
+  flex:none;
+
+  width:25px;
+
+  color:#e9b94f;
+
+  font-family:Arial,sans-serif;
+  font-size:22px;
+  line-height:1;
+  text-align:center;
+}
+
+
+/* Icono diferente para cada comida */
+
+.diet-list .meal-card:nth-child(1) summary b::before{
+  content:"☼";
+}
+
+.diet-list .meal-card:nth-child(2) summary b::before{
+  content:"♧";
+}
+
+.diet-list .meal-card:nth-child(3) summary b::before{
+  content:"♨";
+}
+
+.diet-list .meal-card:nth-child(4) summary b::before{
+  content:"ϟ";
+}
+
+.diet-list .meal-card:nth-child(5) summary b::before{
+  content:"♢";
+}
+
+.diet-list .meal-card:nth-child(6) summary b::before{
+  content:"☾";
+}
+
+
+/* Parte derecha */
 
 .meal-count{
-  color:#8a919a;
-  font-size:11px;
+  flex:none;
+
+  display:flex;
+  align-items:center;
+  gap:5px;
+
+  color:#9298a2;
+  font-size:12px;
+  white-space:nowrap;
 }
 
+.meal-count::first-letter{
+  color:#9298a2;
+}
+
+
+/* Flecha */
+
+.meal-card summary .meal-count{
+  font-size:0;
+}
+
+.meal-card summary .meal-count::after{
+  content:"›";
+
+  color:#e9b94f;
+  font-size:28px;
+  font-weight:300;
+  line-height:1;
+}
+
+
+/* =========================================================
+   CONTENIDO AL ABRIR UNA COMIDA
+   ========================================================= */
+
 .meal-content{
-  padding:0 16px 13px;
-  border-top:1px solid #eceef1;
+  padding:0 16px 15px;
+
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+.food-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:15px;
+
+  padding:11px 4px;
+
+  border-bottom:1px solid rgba(255,255,255,.06);
+
+  color:#d9dbe0;
+  font-size:13px;
+}
+
+.food-row:last-child{
+  border-bottom:0;
+}
+
+.food-row b{
+  color:#f0c96b;
+  font-size:12px;
+  font-weight:600;
+}
+
+
+/* =========================================================
+   MÓVIL
+   ========================================================= */
+
+@media(max-width:700px){
+
+  .diet-switch{
+    margin-bottom:20px;
+  }
+
+  .diet-switch button{
+    min-height:44px;
+    padding:9px 8px;
+    font-size:13px;
+  }
+
+  .diet-summary{
+    margin-bottom:16px;
+    border-radius:16px;
+  }
+
+  .diet-summary div{
+    padding:13px 15px;
+  }
+
+  .diet-summary strong{
+    font-size:18px;
+  }
+
+  .diet-list{
+    gap:10px;
+  }
+
+  .meal-card{
+    border-radius:17px;
+  }
+
+  .meal-card summary{
+    min-height:74px;
+    padding:10px 14px;
+  }
+
+  .meal-number{
+    width:46px;
+    height:46px;
+  }
+
+  .meal-card summary b{
+    font-size:17px;
+  }
+
+  .meal-card summary b::before{
+    width:22px;
+    font-size:20px;
+  }
+
+  .meal-card summary .meal-count::after{
+    font-size:27px;
+  }
+
+}
+
+@media(max-width:390px){
+
+  .meal-card summary{
+    padding-left:12px;
+    padding-right:12px;
+  }
+
+  .meal-card summary > div{
+    gap:9px;
+  }
+
+  .meal-number{
+    width:43px;
+    height:43px;
+  }
+
+  .meal-card summary b{
+    font-size:16px;
+  }
+
 }
 
 .food-row{
