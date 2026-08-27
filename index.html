@@ -2639,12 +2639,12 @@ label{
     overflow:hidden;
 }
 
-  #client .dc-stat{
+ #client .dc-stat{
     min-width:0 !important;
     width:auto !important;
     box-sizing:border-box;
-    padding:24px 20px !important;
-  }
+    padding:18px 18px !important;
+}
 
   #client .dc-divider{
     width:1px !important;
@@ -2652,12 +2652,12 @@ label{
     margin:24px 0 !important;
   }
 
-  #client .dc-stat-icon{
-    width:52px !important;
-    height:52px !important;
-    min-width:52px !important;
-    margin-bottom:14px !important;
-  }
+ #client .dc-stat-icon{
+    width:46px !important;
+    height:46px !important;
+    min-width:46px !important;
+    margin-bottom:10px !important;
+}
 
   #client .dc-stat-label{
     font-size:11px !important;
@@ -2666,10 +2666,10 @@ label{
   }
 
   #client .dc-weight{
-    font-size:40px !important;
-    line-height:1 !important;
+    font-size:34px !important;
+    line-height:.95 !important;
     white-space:nowrap !important;
-  }
+}
 
   #client .dc-weight span{
     font-size:18px !important;
@@ -2689,10 +2689,10 @@ label{
   }
 
   #client .dc-progress-value{
-    font-size:28px !important;
+    font-size:25px !important;
     line-height:1 !important;
     white-space:nowrap;
-  }
+}
 
   #client .dc-progress-sub{
     font-size:14px !important;
@@ -2700,35 +2700,60 @@ label{
     white-space:nowrap;
   }
 
-  #client .dc-chart{
+ #client .dc-chart{
     width:100% !important;
-    height:55px !important;
+    height:42px !important;
     margin-top:8px !important;
     overflow:hidden;
-  }
+}
 
   /* ENTRENAMIENTOS */
 
   #client .dc-training{
-    width:100%;
-    min-height:138px !important;
-    height:138px !important;
-    box-sizing:border-box;
+
+    width:100% !important;
+
+    min-height:145px !important;
+
+    height:145px !important;
+
+    box-sizing:border-box !important;
+
     display:grid !important;
+
     grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr) !important;
-    overflow:hidden;
-  }
 
-  #client .dc-training-left,
-  #client .dc-training-right{
+    overflow:hidden !important;
+
+}
+
+#client .dc-training-left,
+
+#client .dc-training-right{
+
     min-width:0 !important;
-    box-sizing:border-box;
-    padding:20px !important;
-  }
 
-  #client .dc-training-count{
-    font-size:40px !important;
-    line-height:1 !important;
+    box-sizing:border-box !important;
+
+    padding:17px 18px !important;
+
+}
+
+#client .dc-training-right{
+
+    display:flex !important;
+
+    align-items:center !important;
+
+}
+
+#client .dc-training-count{
+
+    font-size:36px !important;
+
+    line-height:.9 !important;
+
+    margin-top:2px !important;
   }
 
   /* PRÓXIMO ENTRENAMIENTO */
@@ -4282,12 +4307,27 @@ if(screen==="home"){
 
           </div>
 
-        <div class="dc-alerts-content">
-          <div class="dc-alert">
-          <div class="dc-alert-title">Actualización de rutina</div>
-          <div class="dc-alert-text">Daniel ha añadido una nueva rutina para ti.</div>
-        </div>
-</div>
+          <div>
+
+            <h2>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "Semana completada"
+                  : "Tu semana"
+              }
+            </h2>
+
+            <p>
+              ${
+                totalWorkouts &&
+                weeklyWorkouts >= totalWorkouts
+                  ? "¡Enhorabuena! Has completado todos los entrenamientos."
+                  : `${weeklyWorkouts} de ${totalWorkouts || "—"} entrenamientos completados esta semana.`
+              }
+            </p>
+
+          </div>
 
         </div>
 
