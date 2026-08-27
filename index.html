@@ -5034,32 +5034,61 @@ if(screen==="food"){
   </div>
 
 
-  <div class="diet-summary">
+  <div class="diet-pdf-card">
 
-    <div>
-      <span>Comidas</span>
-      <strong>${meals.length}</strong>
-    </div>
+  <div class="diet-pdf-icon">
 
-    ${
-      diet.calories
-      ? `
-        <div>
-          <span>Objetivo</span>
-          <strong>${esc(diet.calories)}</strong>
-        </div>
-      `
-      : ""
-    }
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      aria-hidden="true"
+    >
+      <path d="M6 3.5h8l4 4V20.5H6z"/>
+      <path d="M14 3.5v5h4"/>
+      <path d="M8.5 13h7"/>
+      <path d="M8.5 16h5"/>
+    </svg>
 
-    ${
-      diet.protein
-      ? `
-        <div>
-          <span>Proteína</span>
-          <strong>${esc(diet.protein)}</strong>
-        </div>
-      `
+  </div>
+
+  <div class="diet-pdf-text">
+
+    <strong>
+      Tu dieta completa
+    </strong>
+
+    <span>
+      Descarga tu plan de alimentación
+      en formato PDF.
+    </span>
+
+  </div>
+
+  <button
+    type="button"
+    class="diet-pdf-button"
+    onclick="window.print()"
+  >
+
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      aria-hidden="true"
+    >
+      <path d="M12 3v11"/>
+      <path d="m7.5 10 4.5 4.5 4.5-4.5"/>
+      <path d="M5 17v3h14v-3"/>
+    </svg>
+
+    <span>DESCARGAR PDF</span>
+
+  </button>
+
+</div>
       : ""
     }
 
