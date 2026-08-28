@@ -4286,156 +4286,37 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2200);
 }
 
-async function openApp(app){
+function openApp(app){
 
-    console.log("ABRIENDO APLICACIÓN:", app);
+    console.log("ENTRANDO:", app);
 
-    if(app !== "client" && app !== "coach"){
-        console.error("Aplicación no válida:", app);
+    var login = document.getElementById("login");
+    var client = document.getElementById("client");
+    var coach = document.getElementById("coach");
+
+    if(!login || !client || !coach){
+
+        alert("ERROR: no encuentro login, client o coach");
         return;
+
     }
-
-    currentApp = app;
-
-    const login = document.getElementById("login");
-    const clientApp = document.getElementById("client");
-    const coachApp = document.getElementById("coach");
-
-    if(!login || !clientApp || !coachApp){
-        console.error("No se encontraron las pantallas principales");
-        return;
-    }
-
-    /* =========================
-       1. ENTRAR EN LA APLICACIÓN
-       ========================= */
 
     login.style.display = "none";
 
-    clientApp.style.display =
-        app === "client" ? "block" : "none";
+    if(app === "client"){
 
-    coachApp.style.display =
-        app === "coach" ? "block" : "none";
-
-
-    /* =========================
-       2. MOSTRAR PANTALLA INICIAL
-       ========================= */
-
-    try{
-
-        if(app === "client"){
-
-            showClient("home");
-
-        }else{
-
-            showCoach("dashboard");
-
-        }
-
-    }catch(error){
-
-        console.error(
-            "Error mostrando pantalla inicial:",
-            error
-        );
+        client.style.display = "block";
+        coach.style.display = "none";
 
     }
 
+    if(app === "coach"){
 
-    /* =========================
-       3. NAVEGACIÓN
-       ========================= */
-
-    try{
-
-        if(app === "client"){
-
-            buildClientNav();
-            resetWeeklyCheckInIfNeeded();
-
-        }else{
-
-            buildCoachNav();
-
-        }
-
-    }catch(error){
-
-        console.error(
-            "Error creando navegación:",
-            error
-        );
+        client.style.display = "none";
+        coach.style.display = "block";
 
     }
 
-
-    /* =========================
-       4. CARGAR DATOS SIN BLOQUEAR
-       ========================= */
-
-    Promise.allSettled([
-
-        loadDietsFromSupabase(),
-
-        loadClientsFromSupabase(),
-
-        loadRoutinesFromSupabase(),
-
-        loadWorkoutHistoryFromSupabase(),
-
-        loadWeightsFromSupabase()
-
-    ]).then(results => {
-
-        console.log(
-            "Datos cargados:",
-            results
-        );
-
-        /* Actualizamos la pantalla
-           cuando los datos estén listos */
-
-        try{
-
-            if(app === "client"){
-
-                showClient(currentScreen || "home");
-
-            }else{
-
-                showCoach(currentScreen || "dashboard");
-
-            }
-
-        }catch(error){
-
-            console.error(
-                "Error actualizando la pantalla:",
-                error
-            );
-
-        }
-
-    }).catch(error => {
-
-        console.error(
-            "Error cargando datos:",
-            error
-        );
-
-    });
-
-
-    /* =========================
-       5. ARRIBA DEL TODO
-       ========================= */
-
-    window.scrollTo(0,0);
-
-    console.log("APLICACIÓN ABIERTA:", app);
 }
 function logout(){
 document.getElementById("login").style.display="grid";
