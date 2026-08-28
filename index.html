@@ -11679,26 +11679,37 @@ async function sendClientCheckin(){
     return;
   }
 
-  const weightText =
+  const weight = parseFloat(
     String(checkin.weight || "")
       .replace(" kg","")
       .replace(",",".")
-      .trim();
+      .trim()
+  );
 
-  const weight =
-    parseFloat(weightText);
+  let bodyFat = null;
 
-  const bodyFat =
+  if(
     checkin.bodyFat !== undefined &&
     checkin.bodyFat !== null &&
     checkin.bodyFat !== ""
-      ? Number(
-          String(checkin.bodyFat)
-            .replace(",",".")
-            .replace("%","")
-            .trim()
-        )
-      : null;
+  ){
+
+    bodyFat = Number(
+      String(checkin.bodyFat)
+        .replace("%","")
+        .replace(",",".")
+        .trim()
+    );
+
+    if(
+      !Number.isFinite(bodyFat) ||
+      bodyFat < 0 ||
+      bodyFat > 100
+    ){
+      toast("Introduce un % de grasa válido");
+      return;
+    }
+  }
 
   if(
     !Number.isFinite(weight) ||
@@ -11708,65 +11719,39 @@ async function sendClientCheckin(){
     return;
   }
 
-  if(
-    bodyFat !== null &&
-    (
-      !Number.isFinite(bodyFat) ||
-      bodyFat < 0 ||
-      bodyFat > 100
-    )
-  ){
-    toast("Introduce un % de grasa válido");
-    return;
-  }
-
-  /*
-   * Calculamos el lunes de la semana actual.
-   */
-
   const now = new Date();
 
-  const day =
-    now.getDay();
+  const day = now.getDay();
 
   const diff =
     day === 0 ? -6 : 1 - day;
 
-  const weekStart =
-    new Date(now);
+  const weekStart = new Date(now);
 
   weekStart.setDate(
     now.getDate() + diff
   );
 
   const weekStartText =
-    weekStart
-      .toISOString()
-      .slice(0,10);
-
-  /*
-   * Guardamos el check-in en Supabase.
-   * Si ya existe para esa semana,
-   * lo actualizamos.
-   */
+    weekStart.toISOString().slice(0,10);
 
   const payload = {
-    client_id:id,
-    week_start:weekStartText,
-    weight_kg:weight,
-    body_fat:bodyFat,
-    food_score:null,
-    training_score:null,
-    energy_score:null,
-    notes:checkin.comment || null
+    client_id: id,
+    week_start: weekStartText,
+    weight_kg: weight,
+    body_fat: bodyFat,
+    food_score: null,
+    training_score: null,
+    energy_score: null,
+    notes: checkin.comment || null
   };
 
-  const { data:existing, error:findError } =
+  const { data: existing, error: findError } =
     await supabaseClient
       .from("checkins")
       .select("id")
-      .eq("client_id",id)
-      .eq("week_start",weekStartText)
+      .eq("client_id", id)
+      .eq("week_start", weekStartText)
       .maybeSingle();
 
   if(findError){
@@ -11788,10 +11773,9 @@ async function sendClientCheckin(){
       await supabaseClient
         .from("checkins")
         .update(payload)
-        .eq("id",existing.id);
+        .eq("id", existing.id);
 
-    saveError =
-      result.error;
+    saveError = result.error;
 
   }else{
 
@@ -11800,8 +11784,7 @@ async function sendClientCheckin(){
         .from("checkins")
         .insert(payload);
 
-    saveError =
-      result.error;
+    saveError = result.error;
   }
 
   if(saveError){
@@ -11815,11 +11798,6 @@ async function sendClientCheckin(){
     return;
   }
 
-  /*
-   * Mantenemos también el estado local
-   * para que la interfaz siga funcionando.
-   */
-
   checkin.sentAt =
     new Date().toISOString();
 
@@ -11831,13 +11809,9 @@ async function sendClientCheckin(){
 
   saveData();
 
-  toast(
-    "Check-in enviado correctamente ✓"
-  );
+  toast("Check-in enviado correctamente ✓");
 
-  showClient(
-    "checkin"
-  );
+  showClient("checkin");
 }
 </script>
 
