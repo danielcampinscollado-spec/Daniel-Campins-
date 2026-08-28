@@ -5576,212 +5576,349 @@ if(screen==="food"){
 
 if(screen==="training"){
 
-  const routine = data.routines[currentClientId] || [];
+  const routine = data.routines?.[currentClientId] || [];
   const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);
 
   const weekCompleted =
     routine.length > 0 &&
     weeklyWorkouts >= routine.length;
 
+  const firstDay = routine[0];
+
   html = `
-      <div class="top">
+
+    <div class="top">
+
       <div>
-        <p class="muted">Área cliente</p>
-        <h1>Entrenamiento</h1>
-        <p class="muted">Tu rutina personalizada</p>
+
+        <span style="
+          display:block;
+          margin-bottom:10px;
+          color:#d9aa4a;
+          font-size:12px;
+          font-weight:700;
+          letter-spacing:2.2px;
+          text-transform:uppercase;
+        ">
+          ENTRENAMIENTO
+        </span>
+
+        <h1 style="
+          margin:0;
+          font-size:32px;
+          line-height:1.1;
+          font-weight:700;
+        ">
+          ${
+            firstDay
+              ? `${esc(firstDay.muscle || "Entrenamiento")} · Día 1`
+              : "Entrenamiento"
+          }
+        </h1>
+
+        <p class="muted" style="
+          margin:12px 0 0;
+          font-size:16px;
+        ">
+          Tu rutina personalizada
+        </p>
+
       </div>
 
-      <span class="pill">
+
+      <span class="pill" style="
+        border-color:#d9aa4a;
+        color:#d9aa4a;
+      ">
         ${routine.length}
         ${routine.length===1 ? "día" : "días"}
       </span>
+
     </div>
+
 
     ${
       routine.length
+
       ? routine.map((day,dayIndex)=>{
 
-            const completed =
-  dayIndex < weeklyWorkouts;  
+          const completed =
+            dayIndex < weeklyWorkouts;
+
+          const exercises =
+            day.exercises || [];
+
           return `
 
-        <div class="card">
-
-          <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:12px;
-            margin-bottom:18px;
-          ">
-
-            <div>
-
-              <span class="pill">
-                DÍA ${dayIndex+1}
-              </span>
-
-              <h2 style="margin:10px 0 4px">
-                ${esc(day.muscle || "Entrenamiento")}
-              </h2>
-
-              <p class="muted" style="margin:0">
-                ${(day.exercises||[]).length}
-                ${(day.exercises||[]).length===1
-                  ? "ejercicio"
-                  : "ejercicios"}
-              </p>
-
-            </div>
-
-            <div style="
-              width:48px;
-              height:48px;
-              border-radius:15px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              background:rgba(217,170,74,.10);
-              color:#d9aa4a;
-              font-size:23px;
+            <div class="card" style="
+              margin-bottom:24px;
+              padding:26px;
+              border-radius:22px;
             ">
-              🏋️
-            </div>
 
-          </div>
 
-          ${
-            day.exercises && day.exercises.length
-            ? `
+              <!-- CABECERA DEL DÍA -->
 
-              <div>
-
-                ${day.exercises.map((ex,exerciseIndex)=>`
-
-                  <div style="
-                    padding:16px 0;
-                    border-top:1px solid #eceef1;
-                  ">
-
-                    <div style="
-                      display:flex;
-                      align-items:center;
-                      gap:12px;
-                    ">
-
-                      <div style="
-                        width:38px;
-                        height:38px;
-                        flex:none;
-                        border-radius:12px;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        background:#f5ead2;
-                        color:#956b18;
-                        font-weight:800;
-                      ">
-                        ${exerciseIndex+1}
-                      </div>
-
-                      <div style="flex:1">
-
-                        <b style="
-                          display:block;
-                          font-size:17px;
-                        ">
-                          ${esc(ex.name || "Ejercicio")}
-                        </b>
-
-                        <span class="muted">
-                          ${esc(ex.sets || "")} series
-                          ${ex.reps
-                            ? ` · ${esc(ex.reps)} repeticiones`
-                            : ""}
-                        </span>
-
-                        
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                `).join("")}
-
-              </div>
-
-              ${
-                completed
-                ? `
-
-                  <div style="
-                    margin-top:18px;
-                    padding:16px;
-                    border-radius:15px;
-                    background:#eef8f3;
-                    color:#267a55;
-                    text-align:center;
-                    font-weight:700;
-                  ">
-                    ✓ Entrenamiento completado
-                  </div>
-
-                  <p class="muted" style="
-                    text-align:center;
-                    margin:10px 0 0;
-                    font-size:13px;
-                  ">
-                    Completa los demás días para comenzar un nuevo ciclo.
-                  </p>
-
-                `
-                : `
-
-                  <button
-                    class="btn"
-                    style="
-                      width:100%;
-                      margin-top:8px;
-                    "
-                    onclick="startWorkout('${dayIndex}')">
-                    ▶ Empezar entrenamiento
-                  </button>
-
-                `
-              }
-
-            `
-            : `
-              <div class="empty">
+              <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:16px;
+                margin-bottom:22px;
+              ">
 
                 <div style="
-                  font-size:38px;
-                  margin-bottom:10px;
+                  min-width:0;
+                  flex:1;
+                ">
+
+                  <span class="pill" style="
+                    color:#d9aa4a;
+                    border-color:#d9aa4a;
+                  ">
+                    DÍA ${dayIndex+1}
+                  </span>
+
+                  <h2 style="
+                    margin:12px 0 5px;
+                    font-size:25px;
+                    line-height:1.1;
+                  ">
+                    ${esc(day.muscle || "Entrenamiento")}
+                  </h2>
+
+                  <p class="muted" style="
+                    margin:0;
+                    font-size:15px;
+                  ">
+                    ${exercises.length}
+                    ${exercises.length===1
+                      ? "ejercicio"
+                      : "ejercicios"}
+                  </p>
+
+                </div>
+
+
+                <div style="
+                  width:58px;
+                  height:58px;
+                  flex:none;
+                  border:1px solid rgba(217,170,74,.35);
+                  border-radius:17px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  background:rgba(217,170,74,.06);
+                  font-size:27px;
                 ">
                   🏋️
                 </div>
 
-                <h3>No hay ejercicios todavía</h3>
-
-                <p>
-                  Daniel todavía no ha añadido ejercicios
-                  a este día.
-                </p>
-
               </div>
-            `
-          }
 
-        </div>
 
-      `}).join("")
+              ${
+                exercises.length
+
+                ? `
+
+                  <div>
+
+                    ${
+                      exercises.map((ex,exerciseIndex)=>`
+
+                        <div style="
+                          display:flex;
+                          align-items:center;
+                          gap:14px;
+                          min-height:76px;
+                          padding:12px 0;
+                          border-top:1px solid rgba(255,255,255,.10);
+                        ">
+
+
+                          <div style="
+                            width:48px;
+                            height:48px;
+                            flex:none;
+                            border:1px solid #d9aa4a;
+                            border-radius:13px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            color:#d9aa4a;
+                            font-size:17px;
+                            font-weight:800;
+                          ">
+                            ${String(exerciseIndex+1).padStart(2,"0")}
+                          </div>
+
+
+                          <div style="
+                            flex:1;
+                            min-width:0;
+                          ">
+
+                            <b style="
+                              display:block;
+                              margin-bottom:5px;
+                              font-size:17px;
+                              line-height:1.2;
+                            ">
+                              ${esc(ex.name || "Ejercicio")}
+                            </b>
+
+                            <span class="muted" style="
+                              font-size:14px;
+                            ">
+                              ${esc(ex.sets || "")} series
+                              ${
+                                ex.reps
+                                  ? ` · ${esc(ex.reps)} repeticiones`
+                                  : ""
+                              }
+                            </span>
+
+                          </div>
+
+
+                          <span style="
+                            flex:none;
+                            color:#d9aa4a;
+                            font-size:28px;
+                            line-height:1;
+                          ">
+                            ›
+                          </span>
+
+                        </div>
+
+                      `).join("")
+                    }
+
+                  </div>
+
+
+                  ${
+                    completed
+
+                    ? `
+
+                      <div style="
+                        margin-top:22px;
+                        padding:18px;
+                        border-radius:17px;
+                        border:1px solid rgba(38,122,85,.35);
+                        background:rgba(38,122,85,.10);
+                        color:#4fc487;
+                      ">
+
+                        <div style="
+                          display:flex;
+                          align-items:center;
+                          gap:12px;
+                          font-size:16px;
+                          font-weight:700;
+                        ">
+
+                          <span style="
+                            width:32px;
+                            height:32px;
+                            border-radius:50%;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            border:1px solid #4fc487;
+                            font-size:17px;
+                          ">
+                            ✓
+                          </span>
+
+                          Entrenamiento completado
+
+                        </div>
+
+                        <p class="muted" style="
+                          margin:10px 0 0 44px;
+                          font-size:13px;
+                        ">
+                          Completa los demás días para comenzar un nuevo ciclo.
+                        </p>
+
+                      </div>
+
+                    `
+
+                    : `
+
+                      <button
+                        class="btn"
+                        style="
+                          width:100%;
+                          margin-top:22px;
+                          padding:14px 18px;
+                        "
+                        onclick="startWorkout('${dayIndex}')"
+                      >
+                        Empezar entrenamiento
+                        <span style="
+                          margin-left:8px;
+                          font-size:20px;
+                          vertical-align:-1px;
+                        ">
+                          →
+                        </span>
+                      </button>
+
+                    `
+                  }
+
+
+                `
+
+                : `
+
+                  <div class="empty" style="
+                    padding:24px 8px;
+                    text-align:center;
+                  ">
+
+                    <div style="
+                      font-size:34px;
+                      margin-bottom:10px;
+                    ">
+                      🏋️
+                    </div>
+
+                    <h3>
+                      No hay ejercicios todavía
+                    </h3>
+
+                    <p class="muted">
+                      Daniel todavía no ha añadido ejercicios
+                      a este día.
+                    </p>
+
+                  </div>
+
+                `
+              }
+
+            </div>
+
+          `;
+
+        }).join("")
+
       : `
 
         <div class="card">
 
-          <div class="empty">
+          <div class="empty" style="
+            padding:35px 15px;
+            text-align:center;
+          ">
 
             <div style="
               width:64px;
@@ -5798,9 +5935,11 @@ if(screen==="training"){
               🏋️
             </div>
 
-            <h2>No hay rutina asignada</h2>
+            <h2>
+              No hay rutina asignada
+            </h2>
 
-            <p>
+            <p class="muted">
               Daniel todavía no ha asignado una rutina
               de entrenamiento.
             </p>
@@ -5811,6 +5950,7 @@ if(screen==="training"){
 
       `
     }
+
   `;
 
 }
