@@ -3275,51 +3275,28 @@ margin:0 !important;
 .diet-list .meal-card:nth-child(6) summary b::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='%23e9b94f' stroke-width='1.7' stroke-linecap='round'%3E%3Cpath d='M25 20.5A10.5 10.5 0 0 1 11.5 7 11 11 0 1 0 25 20.5Z'/%3E%3C/svg%3E") !important;
 }
-/* =====================================================
-   NAV MÓVIL — CORRECCIÓN DEFINITIVA
-   ===================================================== */
+/* =========================================================
+   AJUSTE FINAL NAV MÓVIL
+   ========================================================= */
 
 @media (max-width:700px){
 
   #coach-nav{
-    position:fixed !important;
-    left:16px !important;
-    right:16px !important;
-    bottom:12px !important;
-    top:auto !important;
-
-    width:auto !important;
-    max-width:none !important;
-    height:76px !important;
-
     display:grid !important;
     grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-
     padding:6px 2px !important;
-    margin:0 !important;
-    box-sizing:border-box !important;
-
-    z-index:99999 !important;
   }
 
   #coach-nav button{
-    width:100% !important;
     min-width:0 !important;
     max-width:none !important;
+    width:100% !important;
     height:64px !important;
-
     padding:4px 0 !important;
     margin:0 !important;
-
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-
     gap:3px !important;
-    transform:none !important;
     overflow:hidden !important;
-    box-sizing:border-box !important;
+    transform:none !important;
   }
 
   #coach-nav button svg{
@@ -3341,17 +3318,14 @@ margin:0 !important;
     overflow:hidden !important;
     text-overflow:ellipsis !important;
   }
-
-  #coach-nav button:nth-child(4) span{
-    font-size:8px !important;
-    letter-spacing:-0.35px !important;
-  }
+}
+@media (max-width:700px){
 
   #coach-nav button.active{
     color:#f0c96b !important;
-    background:rgba(217,170,74,.06) !important;
+    background:rgba(217,170,74,.10) !important;
     border-radius:18px !important;
-    box-shadow:none !important;
+    box-shadow:0 0 18px rgba(217,170,74,.08) !important;
   }
 
   #coach-nav button.active svg{
@@ -3359,9 +3333,87 @@ margin:0 !important;
     stroke:#f0c96b !important;
   }
 
+  #coach-nav button span{
+    font-size:9px !important;
+    letter-spacing:-0.25px !important;
+  }
+
+  #coach-nav button:nth-child(4) span{
+    font-size:8px !important;
+    letter-spacing:-0.35px !important;
+  }
+}
+@media (max-width:700px){
+
+  #coach-nav button.active{
+    background:rgba(217,170,74,.06) !important;
+    box-shadow:none !important;
+  }
+
   #coach-nav button.active::before{
     display:none !important;
   }
+}
+/* =========================================================
+   CORRECCIÓN DEFINITIVA — CONTENIDO MÓVIL
+   ========================================================= */
+
+@media (max-width:700px){
+
+  html,
+  body{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+  }
+
+  .app{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    overflow-x:hidden !important;
+  }
+
+  #client,
+  #coach{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    overflow-x:hidden !important;
+  }
+
+  #client-main,
+  #coach-main{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    margin:0 0 80px 0 !important;
+    padding:20px 15px !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+  }
+
+  #client-main > *,
+  #coach-main > *{
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  /* El menú lateral deja de participar
+     en el ancho del contenido */
+  #client .side,
+#coach .side{
+    position:fixed !important;
+    left:10px !important;
+    right:10px !important;
+    bottom:10px !important;
+    top:auto !important;
+    width:auto !important;
+    height:68px !important;
+    z-index:9999 !important;
+}
+
+}
 
 }
 </style>
