@@ -1974,12 +1974,13 @@ margin:0 !important;
     margin-bottom:18px;
   }
 
-  .profile-grid{
-    grid-template-columns:1fr 1fr;
+    .profile-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
   }
 
   .profile-stat:last-child{
-    grid-column:1 / -1;
+    grid-column:auto;
   }
 
   .profile-stat strong{
