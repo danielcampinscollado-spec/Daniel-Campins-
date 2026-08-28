@@ -4288,95 +4288,146 @@ setTimeout(()=>t.style.display="none",2200);
 
 async function openApp(app){
 
-  console.log("openApp funciona", app);
+    console.log("openApp funciona:", app);
 
-  if(app !== "client" && app !== "coach"){
-    console.error("Aplicación no válida:", app);
-    return;
-  }
-
-  currentApp = app;
-
-  const login = document.getElementById("login");
-  const clientApp = document.getElementById("client");
-  const coachApp = document.getElementById("coach");
-
-  try{
-
-    /*
-      Primero preparamos la aplicación.
-      NO ocultamos el login hasta que todo esté listo.
-    */
-
-    if(app === "client"){
-
-      buildClientNav();
-      resetWeeklyCheckinIfNeeded();
-
-    }else{
-
-      buildCoachNav();
-
+    if(app !== "client" && app !== "coach"){
+        console.error("Aplicación no válida:", app);
+        return;
     }
 
-    /*
-      Las cargas de Supabase se ejecutan de forma segura.
-      Si una tabla falla, la aplicación sigue pudiendo abrirse.
-    */
+    currentApp = app;
 
-    await Promise.allSettled([
+    const login = document.getElementById("login");
+    const clientApp = document.getElementById("client");
+    const coachApp = document.getElementById("coach");
 
-      loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase()
+    try{
 
-    ]);
+        /* =========================
+           1. MOSTRAR LA APP YA
+           ========================= */
 
-    /*
-      Ahora sí mostramos el panel.
-    */
+        login.style.display = "none";
 
-    login.style.display = "none";
+        clientApp.style.display =
+            app === "client" ? "block" : "none";
 
-    clientApp.style.display =
-      app === "client" ? "block" : "none";
+        coachApp.style.display =
+            app === "coach" ? "block" : "none";
 
-    coachApp.style.display =
-      app === "coach" ? "block" : "none";
 
-    /*
-      Mostramos la pantalla inicial.
-    */
+        /* =========================
+           2. CREAR LA NAVEGACIÓN
+           ========================= */
 
-    if(app === "client"){
+        if(app === "client"){
 
-      showClient("home");
+            buildClientNav();
+            resetWeeklyCheckInIfNeeded();
 
-    }else{
+        }else{
 
-      showCoach("dashboard");
+            buildCoachNav();
+
+        }
+
+
+        /* =========================
+           3. MOSTRAR PANTALLA INICIAL
+           ========================= */
+
+        if(app === "client"){
+
+            showClient("home");
+
+        }else{
+
+            showCoach("dashboard");
+
+        }
+
+
+        /* =========================
+           4. CARGAR DATOS DESPUÉS
+           =========================
+           
+           La app YA está visible.
+           Si Supabase tarda o falla,
+           no bloquea la entrada.
+        */
+
+        const results = await Promise.allSettled([
+
+            loadDietsFromSupabase(),
+
+            loadClientsFromSupabase(),
+
+            loadRoutinesFromSupabase(),
+
+            loadWorkoutHistoryFromSupabase(),
+
+            loadWeightsFromSupabase()
+
+        ]);
+
+        console.log("Carga de datos terminada:", results);
+
+
+        /* =========================
+           5. ACTUALIZAR LA PANTALLA
+           ========================= */
+
+        if(app === "client"){
+
+            showClient(currentScreen || "home");
+
+        }else{
+
+            showCoach(currentScreen || "dashboard");
+
+        }
+
+    }catch(error){
+
+        console.error("Error abriendo la aplicación:", error);
+
+        /*
+         * La app no vuelve al login.
+         * Intentamos mantener abierta la pantalla.
+         */
+
+        login.style.display = "none";
+
+        clientApp.style.display =
+            app === "client" ? "block" : "none";
+
+        coachApp.style.display =
+            app === "coach" ? "block" : "none";
+
+        try{
+
+            if(app === "client"){
+
+                showClient("home");
+
+            }else{
+
+                showCoach("dashboard");
+
+            }
+
+        }catch(renderError){
+
+            console.error(
+                "Error mostrando la aplicación:",
+                renderError
+            );
+
+            toast("No se pudo cargar la aplicación");
+
+        }
 
     }
-
-  }catch(error){
-
-    console.error("Error abriendo la aplicación:", error);
-
-    /*
-      Si algo inesperado falla, nunca dejamos
-      al usuario atrapado en una pantalla vacía.
-    */
-
-    login.style.display = "grid";
-    clientApp.style.display = "none";
-    coachApp.style.display = "none";
-
-    toast("No se pudo abrir la aplicación");
-
-  }
-
 }
 function logout(){
 document.getElementById("login").style.display="grid";
