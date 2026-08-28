@@ -4068,7 +4068,6 @@ async function loadRoutinesFromSupabase(){
       );
 
       return;
-
     }
 
     if(!routines) return;
@@ -4093,19 +4092,6 @@ async function loadRoutinesFromSupabase(){
     console.error(
       "Error conectando con Supabase para rutinas:",
       e
-    );
-
-  }
-
-}
-
-    saveData();
-
-  }catch(error){
-
-    console.error(
-      "Error conectando con Supabase para rutinas:",
-      error
     );
 
   }
