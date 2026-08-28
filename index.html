@@ -4179,6 +4179,76 @@ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
 function client(id){
 return data.clients.find(c=>c.id===id);
 }
+async function deleteClient(id){
+
+  const c = client(id);
+
+  if(!c){
+    toast("No se encontró el cliente");
+    return;
+  }
+
+  const confirmed = confirm(
+    "¿Seguro que quieres eliminar a " +
+    c.name +
+    "?\n\nSe eliminarán también sus datos asociados."
+  );
+
+  if(!confirmed) return;
+
+  try{
+
+    const { error:clientError } = await supabaseClient
+      .from("clients")
+      .delete()
+      .eq("id",id);
+
+    if(clientError){
+
+      console.error(
+        "Error eliminando cliente:",
+        clientError
+      );
+
+      toast("No se pudo eliminar el cliente");
+      return;
+    }
+
+    data.clients =
+      data.clients.filter(c => c.id !== id);
+
+    if(data.weights) delete data.weights[id];
+    if(data.checkins) delete data.checkins[id];
+    if(data.messages) delete data.messages[id];
+    if(data.routines) delete data.routines[id];
+    if(data.diets) delete data.diets[id];
+    if(data.workoutHistory) delete data.workoutHistory[id];
+    if(data.completedTrainingDays){
+      delete data.completedTrainingDays[id];
+    }
+
+    saveData();
+
+    currentClientId = null;
+
+    closeModal();
+
+    showCoach("clients");
+
+    toast("Cliente eliminado correctamente");
+
+  }catch(e){
+
+    console.error(
+      "Error eliminando cliente:",
+      e
+    );
+
+    toast("No se pudo eliminar el cliente");
+
+  }
+}
+}
 function getClientManagementStatus(id){
 
   const diet = data.diets?.[id];
@@ -10838,7 +10908,18 @@ function showClientAdmin(id){
           onclick="reviewCheckin('${id}')">
           ✓ Check-in
         </button>
-
+<button
+  class="ghost"
+  style="
+    margin-top:10px;
+    width:100%;
+    border-color:#b84a4a;
+    color:#b84a4a;
+  "
+  onclick="deleteClient('${id}')"
+>
+  🗑 Eliminar cliente
+</button>
       </div>
 
     </div>
