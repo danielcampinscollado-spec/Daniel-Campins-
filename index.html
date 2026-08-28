@@ -11106,37 +11106,81 @@ toast("Cliente creado correctamente");
 }
 
 function addWeight(id){
-const c=client(id);
-if(!c)return;
 
-const text=prompt("Nuevo peso (kg):","0");
-if(text===null)return;
+  const c=client(id);
 
-const value=parseFloat(text.replace(",","."));
-if(!Number.isFinite(value)||value<=0){
-toast("Introduce un peso válido");
-return;
-}
+  if(!c)return;
 
-c.weight=value;
-if(!data.weights[id])data.weights[id]=[c.initial];
-data.weights[id].push(value);
-supabaseClient
-  .from("client_weights")
-  .insert({
-    client_id:id,
-    weight:value
-  })
-  .then(({error})=>{
-    if(error){
-      console.error("Error guardando peso en Supabase:",error);
-      toast("Peso guardado localmente, pero no en Supabase");
-    }
-  });
-saveData();
+  const text=prompt("Nuevo peso (kg):","");
 
-if(currentApp==="coach")showClientAdmin(id);
-toast("Peso actualizado");
+  if(text===null)return;
+
+  const value=parseFloat(
+    text.replace(",",".")
+  );
+
+  if(!Number.isFinite(value) || value<=0){
+    toast("Introduce un peso válido");
+    return;
+  }
+
+  c.weight=value;
+
+  /*
+   * El historial siempre empieza con
+   * el peso inicial real del cliente.
+   */
+
+  const initialWeight =
+    Number(c.initial_weight ?? c.initial);
+
+  if(!data.weights[id]){
+    data.weights[id]=[];
+  }
+
+  if(
+    Number.isFinite(initialWeight) &&
+    data.weights[id].length===0
+  ){
+    data.weights[id].push(initialWeight);
+  }
+
+  data.weights[id].push(value);
+
+  supabaseClient
+    .from("client_weights")
+    .insert({
+      client_id:id,
+      weight:value
+    })
+    .then(({error})=>{
+
+      if(error){
+
+        console.error(
+          "Error guardando peso en Supabase:",
+          error
+        );
+
+        toast(
+          "Peso guardado localmente, pero no en Supabase"
+        );
+
+        return;
+      }
+
+      saveData();
+
+      if(currentApp==="coach"){
+        showClientAdmin(id);
+      }
+
+      toast("Peso actualizado");
+
+    });
+
+  saveData();
+
 }
 
 function editDietMarcos(id,type){
@@ -11619,55 +11663,181 @@ function selectCheckinOption(type,option){
 }
 
 
-function sendClientCheckin(){
+async function sendClientCheckin(){
 
-  const c = client(currentClientId);
+  const id = currentClientId;
 
-  if(!c){
+  if(!id){
     toast("No se encontró el cliente");
     return;
   }
 
-  if(!data.checkins[currentClientId]){
-    data.checkins[currentClientId] = {
-        weight:money(c.weight) + " kg",
-        bodyFat:"",
-        diet:"",
-        training:"",
-        comment:"",
-        reviewed:false
-    };
-}
+  const checkin = data.checkins[id];
 
-  const checkin = data.checkins[currentClientId];
-
-  const commentBox =
-    document.getElementById("checkin-comment");
-
-  if(commentBox){
-    checkin.comment = commentBox.value.trim();
+  if(!checkin){
+    toast("No hay datos del check-in");
+    return;
   }
 
-  checkin.weight =
-    money(c.weight) + " kg";
-if(
-  checkin.bodyFat !== undefined &&
-  checkin.bodyFat !== null &&
-  checkin.bodyFat !== ""
-){
-  checkin.bodyFat = Number(checkin.bodyFat);
-}
-  checkin.reviewed = false;
-checkin.status = "Nuevo check-in";
+  const weightText =
+    String(checkin.weight || "")
+      .replace(" kg","")
+      .replace(",",".")
+      .trim();
 
-c.status = "Pendiente";
-  checkin.sentAt = new Date().toISOString();
-checkin.weekKey = getCurrentWeekKey();
+  const weight =
+    parseFloat(weightText);
+
+  const bodyFat =
+    checkin.bodyFat !== undefined &&
+    checkin.bodyFat !== null &&
+    checkin.bodyFat !== ""
+      ? Number(
+          String(checkin.bodyFat)
+            .replace(",",".")
+            .replace("%","")
+            .trim()
+        )
+      : null;
+
+  if(
+    !Number.isFinite(weight) ||
+    weight <= 0
+  ){
+    toast("Introduce un peso válido");
+    return;
+  }
+
+  if(
+    bodyFat !== null &&
+    (
+      !Number.isFinite(bodyFat) ||
+      bodyFat < 0 ||
+      bodyFat > 100
+    )
+  ){
+    toast("Introduce un % de grasa válido");
+    return;
+  }
+
+  /*
+   * Calculamos el lunes de la semana actual.
+   */
+
+  const now = new Date();
+
+  const day =
+    now.getDay();
+
+  const diff =
+    day === 0 ? -6 : 1 - day;
+
+  const weekStart =
+    new Date(now);
+
+  weekStart.setDate(
+    now.getDate() + diff
+  );
+
+  const weekStartText =
+    weekStart
+      .toISOString()
+      .slice(0,10);
+
+  /*
+   * Guardamos el check-in en Supabase.
+   * Si ya existe para esa semana,
+   * lo actualizamos.
+   */
+
+  const payload = {
+    client_id:id,
+    week_start:weekStartText,
+    weight_kg:weight,
+    body_fat:bodyFat,
+    food_score:null,
+    training_score:null,
+    energy_score:null,
+    notes:checkin.comment || null
+  };
+
+  const { data:existing, error:findError } =
+    await supabaseClient
+      .from("checkins")
+      .select("id")
+      .eq("client_id",id)
+      .eq("week_start",weekStartText)
+      .maybeSingle();
+
+  if(findError){
+
+    console.error(
+      "Error buscando check-in:",
+      findError
+    );
+
+    toast("No se pudo guardar el check-in");
+    return;
+  }
+
+  let saveError = null;
+
+  if(existing){
+
+    const result =
+      await supabaseClient
+        .from("checkins")
+        .update(payload)
+        .eq("id",existing.id);
+
+    saveError =
+      result.error;
+
+  }else{
+
+    const result =
+      await supabaseClient
+        .from("checkins")
+        .insert(payload);
+
+    saveError =
+      result.error;
+  }
+
+  if(saveError){
+
+    console.error(
+      "Error guardando check-in:",
+      saveError
+    );
+
+    toast("No se pudo guardar el check-in");
+    return;
+  }
+
+  /*
+   * Mantenemos también el estado local
+   * para que la interfaz siga funcionando.
+   */
+
+  checkin.sentAt =
+    new Date().toISOString();
+
+  checkin.weekKey =
+    weekStartText;
+
+  checkin.status =
+    "pending";
+
   saveData();
 
-  toast("Check-in enviado a Daniel");
+  toast(
+    "Check-in enviado correctamente ✓"
+  );
 
-  showClient("checkin");
+  showClient(
+    "checkin"
+  );
 }
 </script>
 
