@@ -6788,7 +6788,7 @@ html=`
 
 <div class="card">
 
-  <div style="
+ <div style="
     padding-bottom:20px;
     border-bottom:1px solid #eceef1;
   ">
@@ -6819,8 +6819,48 @@ html=`
 
     </div>
 
-  </div>
 
+    <div style="
+      margin-top:20px;
+      padding-top:20px;
+      border-top:1px solid #eceef1;
+    ">
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+      ">
+
+        <div>
+          <small class="muted">% DE GRASA ACTUAL</small>
+
+          <h2 style="
+            margin:5px 0 0;
+            font-size:28px;
+          ">
+            ${
+              x.bodyFat !== undefined &&
+              x.bodyFat !== null &&
+              x.bodyFat !== ""
+                ? String(x.bodyFat).replace(".",",") + " %"
+                : "—"
+            }
+          </h2>
+        </div>
+
+        <button
+          class="ghost"
+          onclick="updateClientBodyFat()">
+          ✏️ Actualizar % de grasa
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
   <div style="margin-top:22px">
 
     <b style="
@@ -11222,7 +11262,7 @@ document.getElementById("modal").style.display="none";
 document.getElementById("modal").addEventListener("click",function(e){
 if(e.target===this)closeModal();
 });
-function updateClientWeight(){
+function updateClientBodyFat(){
 
   const c = client(currentClientId);
 
@@ -11231,11 +11271,23 @@ function updateClientWeight(){
     return;
   }
 
-  const current = c.weight || "";
+  if(!data.checkins[currentClientId]){
+    data.checkins[currentClientId] = {
+      weight:money(c.weight) + " kg",
+      bodyFat:"",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
+    };
+  }
+
+  const current =
+    data.checkins[currentClientId].bodyFat || "";
 
   const text = prompt(
-    "Introduce tu peso actual (kg):",
-    String(current).replace(".",",")
+    "Introduce tu % de grasa actual:",
+    current ? String(current).replace(".",",") : ""
   );
 
   if(text === null) return;
@@ -11247,75 +11299,21 @@ function updateClientWeight(){
   if(
     !Number.isFinite(value) ||
     value <= 0 ||
-    value > 500
+    value >= 70
   ){
-    toast("Introduce un peso válido");
+    toast("Introduce un % de grasa válido");
     return;
   }
 
-  /* Actualizar cliente */
-
-  c.weight = value;
-
-  /* Actualizar historial local */
-
-  if(!data.weights[currentClientId]){
-    data.weights[currentClientId] = [];
-  }
-
-  data.weights[currentClientId].push(value);
-
-  /* Actualizar check-in */
-
-  if(!data.checkins[currentClientId]){
-    data.checkins[currentClientId] = {
-      weight:"",
-      diet:"",
-      training:"",
-      comment:"",
-      reviewed:false
-    };
-  }
-
-  data.checkins[currentClientId].weight =
-    money(value) + " kg";
+  data.checkins[currentClientId].bodyFat = value;
 
   data.checkins[currentClientId].reviewed = false;
 
-  /* Guardar localmente */
+  c.status = "Pendiente";
 
   saveData();
 
-  /* Guardar peso en Supabase */
-
-  supabaseClient
-    .from("client_weights")
-    .insert({
-      client_id:currentClientId,
-      weight:value,
-      recorded_at:new Date().toISOString()
-    })
-    .then(({error})=>{
-
-      if(error){
-
-        console.error(
-          "Error guardando peso en Supabase:",
-          error
-        );
-
-        toast(
-          "Peso actualizado, pero no se pudo sincronizar"
-        );
-
-        return;
-      }
-
-      toast("Peso actualizado correctamente");
-
-    });
-
-  /* Refrescar pantalla */
+  toast("% de grasa actualizado correctamente");
 
   showClient("checkin");
 }
@@ -11363,13 +11361,14 @@ function sendClientCheckin(){
 
   if(!data.checkins[currentClientId]){
     data.checkins[currentClientId] = {
-      weight:money(c.weight) + " kg",
-      diet:"",
-      training:"",
-      comment:"",
-      reviewed:false
+        weight:money(c.weight) + " kg",
+        bodyFat:"",
+        diet:"",
+        training:"",
+        comment:"",
+        reviewed:false
     };
-  }
+}
 
   const checkin = data.checkins[currentClientId];
 
@@ -11382,7 +11381,13 @@ function sendClientCheckin(){
 
   checkin.weight =
     money(c.weight) + " kg";
-
+if(
+  checkin.bodyFat !== undefined &&
+  checkin.bodyFat !== null &&
+  checkin.bodyFat !== ""
+){
+  checkin.bodyFat = Number(checkin.bodyFat);
+}
   checkin.reviewed = false;
 checkin.status = "Nuevo check-in";
 
