@@ -5955,15 +5955,594 @@ if(screen==="training"){
 
 }
 if(screen==="progress"){
-const history=data.weights[c.id]||[c.initial,c.weight];const change=c.weight-c.initial;
-html=`
-<h1>Progreso</h1><p class="muted">Seguimiento de tu proceso.</p>
-<div class="grid g3">
-<div class="card"><small>Peso inicial</small><h2>${money(c.initial)} kg</h2></div>
-<div class="card"><small>Peso actual</small><h2>${money(c.weight)} kg</h2></div>
-<div class="card"><small>Cambio</small><h2>${change>=0?"+":""}${money(change)} kg</h2></div>
-</div>
-<div class="card"><h2>Historial de peso</h2>${history.map((w,i)=>`<div class="item">Registro ${i+1}<br><b>${money(w)} kg</b></div>`).join("")}</div>`;
+
+  const weightHistory =
+    data.weights?.[c.id] || [c.initial,c.weight];
+
+  const initialWeight =
+    Number(c.initial)||0;
+
+  const currentWeight =
+    Number(c.weight)||0;
+
+  const weightChange =
+    currentWeight-initialWeight;
+
+  const weightPercent =
+    initialWeight
+      ? (weightChange/initialWeight)*100
+      : 0;
+
+  /*
+    % DE GRASA
+
+    Todavía no existe este dato en el modelo actual.
+    Lo dejamos preparado para añadirlo posteriormente.
+  */
+
+  const initialBodyFat =
+    c.bodyFatInitial != null
+      ? Number(c.bodyFatInitial)
+      : null;
+
+  const currentBodyFat =
+    c.bodyFat != null
+      ? Number(c.bodyFat)
+      : null;
+
+  const bodyFatChange =
+    initialBodyFat !== null &&
+    currentBodyFat !== null
+      ? currentBodyFat-initialBodyFat
+      : null;
+
+
+  /*
+    FUERZA
+
+    Comparamos los dos últimos entrenamientos
+    registrados del cliente.
+
+    El historial real de la app guarda:
+    ejercicio + series + kg + repeticiones.
+  */
+
+  const workoutHistory =
+    (data.workoutHistory?.[c.id] || [])
+      .slice()
+      .sort(
+        (a,b)=>
+          new Date(a.date)-new Date(b.date)
+      );
+
+
+  let strengthRows=[];
+
+  if(workoutHistory.length>=2){
+
+    const currentWorkout =
+      workoutHistory[workoutHistory.length-1];
+
+    const previousWorkout =
+      workoutHistory[workoutHistory.length-2];
+
+
+    (currentWorkout.exercises || []).forEach(ex=>{
+
+      const previousExercise =
+        (previousWorkout.exercises || []).find(
+          previous =>
+            previous.name === ex.name
+        );
+
+      if(!previousExercise){
+        return;
+      }
+
+
+      const currentSets =
+        Array.isArray(ex.sets)
+          ? ex.sets
+          : [];
+
+      const previousSets =
+        Array.isArray(previousExercise.sets)
+          ? previousExercise.sets
+          : [];
+
+
+      if(
+        !currentSets.length ||
+        !previousSets.length
+      ){
+        return;
+      }
+
+
+      /*
+        Usamos kg × repeticiones como referencia
+        de rendimiento de la mejor serie.
+      */
+
+      const currentBest =
+        currentSets.reduce(
+          (best,set)=>{
+
+            const kg =
+              Number(set.kg)||0;
+
+            const reps =
+              Number(set.reps)||0;
+
+            const score =
+              kg*reps;
+
+            return score>best.score
+              ? {
+                  kg:kg,
+                  reps:reps,
+                  score:score
+                }
+              : best;
+
+          },
+          {
+            kg:0,
+            reps:0,
+            score:0
+          }
+        );
+
+
+      const previousBest =
+        previousSets.reduce(
+          (best,set)=>{
+
+            const kg =
+              Number(set.kg)||0;
+
+            const reps =
+              Number(set.reps)||0;
+
+            const score =
+              kg*reps;
+
+            return score>best.score
+              ? {
+                  kg:kg,
+                  reps:reps,
+                  score:score
+                }
+              : best;
+
+          },
+          {
+            kg:0,
+            reps:0,
+            score:0
+          }
+        );
+
+
+      if(
+        previousBest.score>0 &&
+        currentBest.score>0
+      ){
+
+        const improvement =
+          (
+            (
+              currentBest.score-
+              previousBest.score
+            ) /
+            previousBest.score
+          )*100;
+
+
+        strengthRows.push({
+
+          name:ex.name || "Ejercicio",
+
+          previous:previousBest,
+
+          current:currentBest,
+
+          improvement:improvement
+
+        });
+
+      }
+
+    });
+
+  }
+
+
+  const strengthAverage =
+    strengthRows.length
+      ? strengthRows.reduce(
+          (total,row)=>
+            total+row.improvement,
+          0
+        )/strengthRows.length
+      : null;
+
+
+  /*
+    GRÁFICA DE PESO
+
+    Utilizamos la clase weight-chart
+    que ya existe en el proyecto.
+  */
+
+  const chartValues =
+    weightHistory
+      .map(Number)
+      .filter(Number.isFinite);
+
+
+  const chartPoints =
+    chartValues.length>1
+
+      ? (()=>{
+
+          const min =
+            Math.min(...chartValues);
+
+          const max =
+            Math.max(...chartValues);
+
+          const range =
+            max-min || 1;
+
+          return chartValues
+            .map((value,index)=>{
+
+              const x =
+                (index/(chartValues.length-1))*100;
+
+              const y =
+                92-
+                ((value-min)/range)*72;
+
+              return `${x},${y}`;
+
+            })
+            .join(" ");
+
+        })()
+
+      : "";
+
+
+  html=`
+
+  <div class="client-header">
+
+    <div>
+
+      <span class="section-eyebrow">
+        PROGRESO
+      </span>
+
+      <h1>
+        Tu progreso
+      </h1>
+
+      <p class="muted">
+        Así evolucionas semana a semana.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- PESO -->
+
+  <div class="profile-grid">
+
+    <div class="profile-stat">
+
+      <span>
+        Peso inicial
+      </span>
+
+      <strong>
+        ${money(initialWeight)} kg
+      </strong>
+
+    </div>
+
+
+    <div class="profile-stat">
+
+      <span>
+        Peso actual
+      </span>
+
+      <strong>
+        ${money(currentWeight)} kg
+      </strong>
+
+    </div>
+
+
+    <div class="profile-stat">
+
+      <span>
+        Cambio total
+      </span>
+
+      <strong style="
+        color:${weightChange<=0?"#39b982":"#d9aa4a"};
+      ">
+        ${weightChange>=0?"+":""}${money(weightChange)} kg
+      </strong>
+
+      <span style="
+        margin-top:4px;
+      ">
+        ${weightPercent>=0?"+":""}${weightPercent.toFixed(1).replace(".",",")}%
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- % GRASA -->
+
+  <div class="card profile-card">
+
+    <div class="section-title-row">
+
+      <div>
+
+        <span class="section-eyebrow">
+          COMPOSICIÓN CORPORAL
+        </span>
+
+        <h2>
+          % de grasa
+        </h2>
+
+      </div>
+
+    </div>
+
+
+    <div class="profile-grid">
+
+      <div class="profile-stat">
+
+        <span>
+          % grasa inicial
+        </span>
+
+        <strong>
+          ${
+            initialBodyFat !== null
+              ? initialBodyFat.toFixed(1).replace(".",",")+"%"
+              : "—"
+          }
+        </strong>
+
+      </div>
+
+
+      <div class="profile-stat">
+
+        <span>
+          % grasa actual
+        </span>
+
+        <strong>
+          ${
+            currentBodyFat !== null
+              ? currentBodyFat.toFixed(1).replace(".",",")+"%"
+              : "—"
+          }
+        </strong>
+
+      </div>
+
+
+      <div class="profile-stat">
+
+        <span>
+          Cambio total
+        </span>
+
+        <strong style="
+          color:${
+            bodyFatChange !== null &&
+            bodyFatChange<=0
+              ? "#39b982"
+              : "#d9aa4a"
+          };
+        ">
+          ${
+            bodyFatChange !== null
+              ? (bodyFatChange>=0?"+":"")+
+                bodyFatChange.toFixed(1).replace(".",",")+"%"
+              : "—"
+          }
+        </strong>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- GRÁFICA DE PESO -->
+
+  <div class="card profile-card">
+
+    <div class="section-title-row">
+
+      <div>
+
+        <span class="section-eyebrow">
+          EVOLUCIÓN
+        </span>
+
+        <h2>
+          Peso
+        </h2>
+
+      </div>
+
+
+      <strong class="progress-value">
+        ${weightChange>=0?"+":""}${money(weightChange)} kg
+      </strong>
+
+    </div>
+
+
+    <div class="weight-chart">
+
+      ${
+        chartPoints
+
+        ? `
+
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+
+            <polyline
+              points="${chartPoints}"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              vector-effect="non-scaling-stroke"
+            />
+
+          </svg>
+
+        `
+
+        : `
+
+          <div class="chart-empty">
+            Necesitamos más registros para mostrar tu evolución.
+          </div>
+
+        `
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- MEJORA DE FUERZA -->
+
+  <div class="card profile-card">
+
+    <div class="section-title-row">
+
+      <div>
+
+        <span class="section-eyebrow">
+          RENDIMIENTO
+        </span>
+
+        <h2>
+          Mejora de fuerza esta semana
+        </h2>
+
+      </div>
+
+      ${
+        strengthAverage !== null
+
+        ? `
+
+          <strong
+            class="progress-value"
+            style="
+              color:${strengthAverage>=0?"#39b982":"#d9aa4a"};
+            "
+          >
+            ${strengthAverage>=0?"+":""}${strengthAverage.toFixed(1).replace(".",",")}%
+          </strong>
+
+        `
+
+        : ""
+      }
+
+    </div>
+
+
+    <p class="muted">
+      Comparado con tu entrenamiento anterior.
+    </p>
+
+
+    ${
+      strengthRows.length
+
+      ? strengthRows
+          .slice(0,4)
+          .map(row=>`
+
+            <div class="history-exercise">
+
+              <b>
+                ${esc(row.name)}
+              </b>
+
+              <div class="muted">
+
+                ${row.previous.kg} kg ×
+                ${row.previous.reps}
+
+                →
+
+                ${row.current.kg} kg ×
+                ${row.current.reps}
+
+                ·
+
+                <strong
+                  style="
+                    color:${row.improvement>=0?"#39b982":"#d9aa4a"};
+                  "
+                >
+                  ${row.improvement>=0?"+":""}${row.improvement.toFixed(1).replace(".",",")}%
+                </strong>
+
+              </div>
+
+            </div>
+
+          `)
+          .join("")
+
+      : `
+
+        <div class="empty compact-empty">
+
+          Todavía no hay suficientes entrenamientos
+          registrados para comparar tu fuerza.
+
+        </div>
+
+      `
+    }
+
+  </div>
+
+
+  `;
+
 }
 
 if(screen==="checkin"){
