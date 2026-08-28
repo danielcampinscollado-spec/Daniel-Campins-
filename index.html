@@ -5965,19 +5965,21 @@ if(screen==="progress"){
   const currentWeight =
     Number(c.weight)||0;
 
-  const weightChange =
+  const totalChange =
     currentWeight-initialWeight;
 
-  const weightPercent =
+  const totalPercent =
     initialWeight
-      ? (weightChange/initialWeight)*100
+      ? (totalChange/initialWeight)*100
       : 0;
+
 
   /*
     % DE GRASA
 
-    Todavía no existe este dato en el modelo actual.
-    Lo dejamos preparado para añadirlo posteriormente.
+    El proyecto todavía no guarda este dato.
+    Por eso queda preparado y muestra — hasta
+    que añadamos las mediciones reales.
   */
 
   const initialBodyFat =
@@ -5998,13 +6000,58 @@ if(screen==="progress"){
 
 
   /*
-    FUERZA
+    GRÁFICA DE PESO
+  */
+
+  const chartValues =
+    weightHistory
+      .map(Number)
+      .filter(Number.isFinite);
+
+
+  const chartPoints =
+    chartValues.length > 1
+
+      ? (()=>{
+
+          const min =
+            Math.min(...chartValues);
+
+          const max =
+            Math.max(...chartValues);
+
+          const range =
+            max-min || 1;
+
+          return chartValues
+            .map((value,index)=>{
+
+              const x =
+                chartValues.length===1
+                  ? 50
+                  : (index/(chartValues.length-1))*100;
+
+              const y =
+                88 -
+                ((value-min)/range)*68;
+
+              return `${x},${y}`;
+
+            })
+            .join(" ");
+
+        })()
+
+      : "";
+
+
+  /*
+    MEJORA DE FUERZA
 
     Comparamos los dos últimos entrenamientos
-    registrados del cliente.
+    reales guardados para el cliente.
 
-    El historial real de la app guarda:
-    ejercicio + series + kg + repeticiones.
+    Cada serie utiliza kg × repeticiones.
   */
 
   const workoutHistory =
@@ -6016,24 +6063,30 @@ if(screen==="progress"){
       );
 
 
-  let strengthRows=[];
+  const currentWorkout =
+    workoutHistory.length >= 1
+      ? workoutHistory[workoutHistory.length-1]
+      : null;
 
-  if(workoutHistory.length>=2){
+  const previousWorkout =
+    workoutHistory.length >= 2
+      ? workoutHistory[workoutHistory.length-2]
+      : null;
 
-    const currentWorkout =
-      workoutHistory[workoutHistory.length-1];
 
-    const previousWorkout =
-      workoutHistory[workoutHistory.length-2];
+  const strengthRows=[];
 
+
+  if(currentWorkout && previousWorkout){
 
     (currentWorkout.exercises || []).forEach(ex=>{
 
       const previousExercise =
         (previousWorkout.exercises || []).find(
-          previous =>
-            previous.name === ex.name
+          item =>
+            item.name === ex.name
         );
+
 
       if(!previousExercise){
         return;
@@ -6059,12 +6112,7 @@ if(screen==="progress"){
       }
 
 
-      /*
-        Usamos kg × repeticiones como referencia
-        de rendimiento de la mejor serie.
-      */
-
-      const currentBest =
+      const bestCurrent =
         currentSets.reduce(
           (best,set)=>{
 
@@ -6074,14 +6122,14 @@ if(screen==="progress"){
             const reps =
               Number(set.reps)||0;
 
-            const score =
+            const value =
               kg*reps;
 
-            return score>best.score
+            return value>best.value
               ? {
                   kg:kg,
                   reps:reps,
-                  score:score
+                  value:value
                 }
               : best;
 
@@ -6089,12 +6137,12 @@ if(screen==="progress"){
           {
             kg:0,
             reps:0,
-            score:0
+            value:0
           }
         );
 
 
-      const previousBest =
+      const bestPrevious =
         previousSets.reduce(
           (best,set)=>{
 
@@ -6104,14 +6152,14 @@ if(screen==="progress"){
             const reps =
               Number(set.reps)||0;
 
-            const score =
+            const value =
               kg*reps;
 
-            return score>best.score
+            return value>best.value
               ? {
                   kg:kg,
                   reps:reps,
-                  score:score
+                  value:value
                 }
               : best;
 
@@ -6119,23 +6167,23 @@ if(screen==="progress"){
           {
             kg:0,
             reps:0,
-            score:0
+            value:0
           }
         );
 
 
       if(
-        previousBest.score>0 &&
-        currentBest.score>0
+        bestPrevious.value>0 &&
+        bestCurrent.value>0
       ){
 
         const improvement =
           (
             (
-              currentBest.score-
-              previousBest.score
+              bestCurrent.value-
+              bestPrevious.value
             ) /
-            previousBest.score
+            bestPrevious.value
           )*100;
 
 
@@ -6143,9 +6191,9 @@ if(screen==="progress"){
 
           name:ex.name || "Ejercicio",
 
-          previous:previousBest,
+          previous:bestPrevious,
 
-          current:currentBest,
+          current:bestCurrent,
 
           improvement:improvement
 
@@ -6158,64 +6206,21 @@ if(screen==="progress"){
   }
 
 
-  const strengthAverage =
+  const averageStrength =
     strengthRows.length
+
       ? strengthRows.reduce(
           (total,row)=>
             total+row.improvement,
           0
         )/strengthRows.length
+
       : null;
 
 
-  /*
-    GRÁFICA DE PESO
-
-    Utilizamos la clase weight-chart
-    que ya existe en el proyecto.
-  */
-
-  const chartValues =
-    weightHistory
-      .map(Number)
-      .filter(Number.isFinite);
-
-
-  const chartPoints =
-    chartValues.length>1
-
-      ? (()=>{
-
-          const min =
-            Math.min(...chartValues);
-
-          const max =
-            Math.max(...chartValues);
-
-          const range =
-            max-min || 1;
-
-          return chartValues
-            .map((value,index)=>{
-
-              const x =
-                (index/(chartValues.length-1))*100;
-
-              const y =
-                92-
-                ((value-min)/range)*72;
-
-              return `${x},${y}`;
-
-            })
-            .join(" ");
-
-        })()
-
-      : "";
-
-
   html=`
+
+  <!-- CABECERA -->
 
   <div class="client-header">
 
@@ -6238,155 +6243,323 @@ if(screen==="progress"){
   </div>
 
 
-  <!-- PESO -->
+  <!-- =========================
+       PESO
+  ========================== -->
+
+  <div style="
+    margin-bottom:8px;
+  ">
+
+    <span class="section-eyebrow">
+      PESO
+    </span>
+
+  </div>
+
 
   <div class="profile-grid">
 
-    <div class="profile-stat">
 
-      <span>
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
+
+      <span style="
+        color:#8b929c;
+      ">
         Peso inicial
       </span>
 
-      <strong>
+      <strong style="
+        color:#f5f5f2;
+        font-size:20px;
+      ">
         ${money(initialWeight)} kg
       </strong>
 
     </div>
 
 
-    <div class="profile-stat">
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
 
-      <span>
+      <span style="
+        color:#8b929c;
+      ">
         Peso actual
       </span>
 
-      <strong>
+      <strong style="
+        color:#f5f5f2;
+        font-size:20px;
+      ">
         ${money(currentWeight)} kg
       </strong>
 
     </div>
 
 
-    <div class="profile-stat">
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
 
-      <span>
+      <span style="
+        color:#8b929c;
+      ">
         Cambio total
       </span>
 
       <strong style="
-        color:${weightChange<=0?"#39b982":"#d9aa4a"};
+        color:${totalChange<=0?"#39b982":"#d9aa4a"};
+        font-size:20px;
       ">
-        ${weightChange>=0?"+":""}${money(weightChange)} kg
+        ${totalChange>=0?"+":""}${money(totalChange)} kg
       </strong>
 
       <span style="
+        color:#8b929c;
         margin-top:4px;
       ">
-        ${weightPercent>=0?"+":""}${weightPercent.toFixed(1).replace(".",",")}%
+        ${totalPercent>=0?"+":""}${totalPercent.toFixed(1).replace(".",",")}%
       </span>
 
     </div>
 
+
   </div>
 
 
-  <!-- % GRASA -->
+  <!-- =========================
+       % DE GRASA
+  ========================== -->
 
-  <div class="card profile-card">
+  <div style="
+    margin-top:4px;
+    margin-bottom:8px;
+  ">
+
+    <span class="section-eyebrow">
+      % DE GRASA
+    </span>
+
+  </div>
+
+
+  <div class="profile-grid">
+
+
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
+
+      <span style="
+        color:#8b929c;
+      ">
+        % grasa inicial
+      </span>
+
+      <strong style="
+        color:#f5f5f2;
+        font-size:20px;
+      ">
+        ${
+          initialBodyFat !== null
+            ? initialBodyFat.toFixed(1).replace(".",",")+"%"
+            : "—"
+        }
+      </strong>
+
+    </div>
+
+
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
+
+      <span style="
+        color:#8b929c;
+      ">
+        % grasa actual
+      </span>
+
+      <strong style="
+        color:#f5f5f2;
+        font-size:20px;
+      ">
+        ${
+          currentBodyFat !== null
+            ? currentBodyFat.toFixed(1).replace(".",",")+"%"
+            : "—"
+        }
+      </strong>
+
+    </div>
+
+
+    <div
+      class="profile-stat"
+      style="
+        background:
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(217,170,74,.08),
+            transparent 60%
+          ),
+          linear-gradient(
+            145deg,
+            #181b23,
+            #101218
+          );
+        color:#f5f5f2;
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:
+          0 14px 35px rgba(0,0,0,.20),
+          inset 0 1px 0 rgba(255,255,255,.04);
+      "
+    >
+
+      <span style="
+        color:#8b929c;
+      ">
+        Cambio total
+      </span>
+
+      <strong style="
+        color:${
+          bodyFatChange !== null &&
+          bodyFatChange<=0
+            ? "#39b982"
+            : "#d9aa4a"
+        };
+        font-size:20px;
+      ">
+        ${
+          bodyFatChange !== null
+            ? (
+                bodyFatChange>=0
+                  ? "+"
+                  : ""
+              )+
+              bodyFatChange.toFixed(1).replace(".",",")+"%"
+            : "—"
+        }
+      </strong>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =========================
+       EVOLUCIÓN DEL PESO
+  ========================== -->
+
+  <div
+    class="card profile-card"
+    style="
+      margin-top:16px;
+    "
+  >
 
     <div class="section-title-row">
 
       <div>
 
         <span class="section-eyebrow">
-          COMPOSICIÓN CORPORAL
-        </span>
-
-        <h2>
-          % de grasa
-        </h2>
-
-      </div>
-
-    </div>
-
-
-    <div class="profile-grid">
-
-      <div class="profile-stat">
-
-        <span>
-          % grasa inicial
-        </span>
-
-        <strong>
-          ${
-            initialBodyFat !== null
-              ? initialBodyFat.toFixed(1).replace(".",",")+"%"
-              : "—"
-          }
-        </strong>
-
-      </div>
-
-
-      <div class="profile-stat">
-
-        <span>
-          % grasa actual
-        </span>
-
-        <strong>
-          ${
-            currentBodyFat !== null
-              ? currentBodyFat.toFixed(1).replace(".",",")+"%"
-              : "—"
-          }
-        </strong>
-
-      </div>
-
-
-      <div class="profile-stat">
-
-        <span>
-          Cambio total
-        </span>
-
-        <strong style="
-          color:${
-            bodyFatChange !== null &&
-            bodyFatChange<=0
-              ? "#39b982"
-              : "#d9aa4a"
-          };
-        ">
-          ${
-            bodyFatChange !== null
-              ? (bodyFatChange>=0?"+":"")+
-                bodyFatChange.toFixed(1).replace(".",",")+"%"
-              : "—"
-          }
-        </strong>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- GRÁFICA DE PESO -->
-
-  <div class="card profile-card">
-
-    <div class="section-title-row">
-
-      <div>
-
-        <span class="section-eyebrow">
-          EVOLUCIÓN
+          EVOLUCIÓN DEL PESO
         </span>
 
         <h2>
@@ -6396,8 +6569,13 @@ if(screen==="progress"){
       </div>
 
 
-      <strong class="progress-value">
-        ${weightChange>=0?"+":""}${money(weightChange)} kg
+      <strong
+        class="progress-value"
+        style="
+          font-size:18px;
+        "
+      >
+        ${totalChange>=0?"+":""}${money(totalChange)} kg
       </strong>
 
     </div>
@@ -6441,9 +6619,16 @@ if(screen==="progress"){
   </div>
 
 
-  <!-- MEJORA DE FUERZA -->
+  <!-- =========================
+       MEJORA DE FUERZA
+  ========================== -->
 
-  <div class="card profile-card">
+  <div
+    class="card profile-card"
+    style="
+      margin-top:16px;
+    "
+  >
 
     <div class="section-title-row">
 
@@ -6459,23 +6644,26 @@ if(screen==="progress"){
 
       </div>
 
+
       ${
-        strengthAverage !== null
+        averageStrength !== null
 
         ? `
 
           <strong
-            class="progress-value"
             style="
-              color:${strengthAverage>=0?"#39b982":"#d9aa4a"};
+              color:${averageStrength>=0?"#39b982":"#d9aa4a"};
+              font-size:18px;
+              white-space:nowrap;
             "
           >
-            ${strengthAverage>=0?"+":""}${strengthAverage.toFixed(1).replace(".",",")}%
+            ${averageStrength>=0?"+":""}${averageStrength.toFixed(1).replace(".",",")}%
           </strong>
 
         `
 
         : ""
+
       }
 
     </div>
@@ -6493,13 +6681,45 @@ if(screen==="progress"){
           .slice(0,4)
           .map(row=>`
 
-            <div class="history-exercise">
+            <div
+              class="history-exercise"
+              style="
+                border-left:0;
+                border-bottom:1px solid rgba(255,255,255,.08);
+                padding-left:0;
+              "
+            >
 
-              <b>
-                ${esc(row.name)}
-              </b>
+              <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:12px;
+              ">
 
-              <div class="muted">
+                <b>
+                  ${esc(row.name)}
+                </b>
+
+                <strong
+                  style="
+                    color:${row.improvement>=0?"#39b982":"#d9aa4a"};
+                    white-space:nowrap;
+                  "
+                >
+                  ${row.improvement>=0?"+":""}${row.improvement.toFixed(1).replace(".",",")}%
+                </strong>
+
+              </div>
+
+
+              <div
+                class="muted"
+                style="
+                  margin-top:5px;
+                  font-size:12px;
+                "
+              >
 
                 ${row.previous.kg} kg ×
                 ${row.previous.reps}
@@ -6508,16 +6728,6 @@ if(screen==="progress"){
 
                 ${row.current.kg} kg ×
                 ${row.current.reps}
-
-                ·
-
-                <strong
-                  style="
-                    color:${row.improvement>=0?"#39b982":"#d9aa4a"};
-                  "
-                >
-                  ${row.improvement>=0?"+":""}${row.improvement.toFixed(1).replace(".",",")}%
-                </strong>
 
               </div>
 
