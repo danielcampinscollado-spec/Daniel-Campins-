@@ -10933,24 +10933,35 @@ openModal(`
 }
 
 async function createClient(){
+
 const name=document.getElementById("new-name").value.trim();
 const weightText=document.getElementById("new-weight").value.trim();
 const bodyFatText=document.getElementById("new-body-fat").value.trim();
 const goal=document.getElementById("new-goal").value.trim();
 
-if(!name||!weightText||!bodyFatText||!goal){
+if(!name || !weightText || !bodyFatText || !goal){
 toast("Completa todos los campos");
 return;
 }
 
-const weight=parseFloat(weightText.replace(",","."));
-if(!Number.isFinite(weight)||weight<=0){
+const weight=parseFloat(
+  weightText.replace(",",".")
+);
+
+if(!Number.isFinite(weight) || weight<=0){
 toast("Introduce un peso válido");
 return;
 }
 
-const bodyFat=parseFloat(bodyFatText.replace(",","."));
-if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=100){
+const bodyFat=parseFloat(
+  bodyFatText.replace(",",".")
+);
+
+if(
+  !Number.isFinite(bodyFat) ||
+  bodyFat<=0 ||
+  bodyFat>=70
+){
 toast("Introduce un % de grasa válido");
 return;
 }
@@ -10960,64 +10971,83 @@ const id="client_"+Date.now();
 const { error } = await supabaseClient
   .from("clients")
   .insert({
-    id,
-    name,
-    goal,
-    weight,
+    id:id,
+    name:name,
+    goal:goal,
+    weight:weight,
     initial_weight:weight,
-    initial_body_fat:bodyFat,
     plan:"",
     status:"Pendiente"
   });
 
 if(error){
-  console.error(error);
-  toast("No se pudo guardar el cliente");
-  return;
+
+console.error(
+  "Error creando cliente en Supabase:",
+  error
+);
+
+toast("No se pudo guardar el cliente");
+return;
+
 }
 
 data.clients.push({
-  id,
-  name,
-  goal,
-  weight,
-  initial:weight,
-  initialBodyFat:bodyFat,
-  plan:"",
-  status:"Pendiente"
+
+id:id,
+name:name,
+goal:goal,
+weight:weight,
+initial:weight,
+
+bodyFatInitial:bodyFat,
+initialBodyFat:bodyFat,
+
+plan:"",
+status:"Pendiente"
+
 });
 
 data.weights[id]=[weight];
 
 data.checkins[id]={
-  weight:money(weight)+" kg",
-  bodyFat:bodyFat,
-  diet:"Pendiente",
-  training:"Pendiente",
-  comment:"Pendiente de revisión.",
-  reviewed:false
+
+weight:money(weight)+" kg",
+bodyFat:bodyFat,
+diet:"Pendiente",
+training:"Pendiente",
+comment:"Pendiente de revisión.",
+reviewed:false
+
 };
 
 data.diets[id]={
-  training:{
-    calories:"",
-    protein:"",
-    meals:[]
-  },
-  rest:{
-    calories:"",
-    protein:"",
-    meals:[]
-  }
+
+training:{
+calories:"",
+protein:"",
+meals:[]
+},
+
+rest:{
+calories:"",
+protein:"",
+meals:[]
+}
+
 };
 
 data.routines[id]=[];
 data.messages[id]=[];
 
 saveData();
+
 closeModal();
+
 showCoach("clients");
+
 toast("Cliente creado correctamente");
+
 }
 
 function addWeight(id){
