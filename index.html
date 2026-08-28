@@ -11295,19 +11295,51 @@ async function markReviewed(id){
 }
 
 function openMessages(id){
-const c=client(id);
-const msgs=data.messages[id]||[];
 
-openModal(`
-<div class="modal-head"><h2>${esc(c.name)}</h2><button class="ghost" onclick="closeModal()">✕</button></div>
-<div id="conversation">
-${msgs.length?msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><p>${esc(m[1])}</p></div>`).join(""):"<div class='empty'>Sin mensajes.</div>"}
-</div>
-<textarea id="coach-message" placeholder="Escribe un mensaje..."></textarea>
-<button class="btn" style="margin-top:10px" onclick="sendCoachMessage('${id}')">Enviar</button>
-`);
-}
+  const c = client(id);
+  const msgs = data.messages[id] || [];
 
+  if(!c){
+    toast("No se encontró el cliente");
+    return;
+  }
+
+  const initials = String(c.name || "")
+    .split(" ")
+    .map(x => x[0])
+    .slice(0,2)
+    .join("")
+    .toUpperCase();
+
+  openModal(`
+  
+    <div style="
+      display:flex;
+      flex-direction:column;
+      height:80vh;
+      max-height:760px;
+    ">
+
+      <!-- CABECERA -->
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding-bottom:16px;
+        border-bottom:1px solid #292d35;
+      ">
+
+        <div style="
+          width:46px;
+          height:46px;
+          border-radius:50%;
+          border:1px solid #73591e;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color:#e9b94f;
+          font-size:
 function sendCoachMessage(id){
 const box=document.getElementById("coach-message");
 const text=box.value.trim();
