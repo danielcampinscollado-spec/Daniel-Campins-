@@ -3402,16 +3402,17 @@ margin:0 !important;
   /* El menú lateral deja de participar
      en el ancho del contenido */
   #client .side,
-  #coach .side{
-    position:fixed !important;
-    left:10px !important;
-    right:10px !important;
-    bottom:10px !important;
+ #coach .side{
+    position:static !important;
+    left:auto !important;
+    right:auto !important;
     top:auto !important;
-    width:auto !important;
-    height:68px !important;
-    z-index:9999 !important;
-  }
+    bottom:auto !important;
+    width:100% !important;
+    height:auto !important;
+    z-index:auto !important;
+    overflow:visible !important;
+}
 
 }
 
