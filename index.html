@@ -8361,33 +8361,99 @@ return `<div class="item">
 if(screen==="diets"){
   if(!window.selectedClient){
 
-  html=`
-    <div class="top">
-      <div>
-        <h1>Dietas</h1>
-        <p class="muted">Selecciona un cliente para gestionar su alimentación.</p>
+    html=`
+      <div class="top">
+        <div>
+          <h1>Dietas</h1>
+          <p class="muted">Selecciona un cliente para gestionar su alimentación.</p>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
+      <div style="
+        display:flex;
+        gap:10px;
+        align-items:center;
+        margin-bottom:18px;
+      ">
 
-      <h2>Seleccionar cliente</h2>
+        <div style="
+          flex:1;
+          height:62px;
+          display:flex;
+          align-items:center;
+          gap:12px;
+          padding:0 18px;
+          border:1px solid #292d35;
+          border-radius:18px;
+          background:#101217;
+          box-sizing:border-box;
+        ">
+
+          <span style="
+            font-size:25px;
+            color:#9299a8;
+          ">⌕</span>
+
+          <input
+            type="text"
+            placeholder="Buscar cliente..."
+            oninput="
+              const q=this.value.toLowerCase().trim();
+              document.querySelectorAll('.client-row').forEach(row=>{
+                row.style.display=
+                  row.dataset.name.includes(q) ? '' : 'none';
+              });
+            "
+            style="
+              width:100%;
+              height:100%;
+              border:0;
+              outline:0;
+              background:transparent;
+              color:#f5f5f5;
+              font-size:18px;
+            "
+          >
+
+        </div>
+
+        <button
+          class="ghost"
+          type="button"
+          style="
+            width:62px;
+            height:62px;
+            padding:0;
+            border:1px solid #292d35;
+            border-radius:18px;
+            background:#101217;
+            color:#d9aa4a;
+            font-size:25px;
+          "
+        >▽</button>
+
+      </div>
 
       <div style="
         display:grid;
-        gap:10px;
-        margin-top:16px;
+        gap:18px;
       ">
 
         ${data.clients.map(clientItem=>`
 
           <button
             class="client-row"
+            data-name="${esc(clientItem.name).toLowerCase()}"
             style="
               width:100%;
-              background:#fafbfc;
-              border:1px solid #e5e8ec;
+              min-height:150px;
+              padding:24px;
+              background:#101217;
+              border:1px solid #292d35;
+              border-radius:20px;
               text-align:left;
+              color:#f5f5f5;
+              box-sizing:border-box;
             "
             onclick="
               window.selectedClient='${clientItem.id}';
@@ -8399,26 +8465,75 @@ if(screen==="diets"){
               display:flex;
               align-items:center;
               justify-content:space-between;
-              gap:12px;
+              gap:18px;
             ">
 
-              <div>
-                <b style="font-size:17px">
-                  ${esc(clientItem.name)}
-                </b>
+              <div style="
+                display:flex;
+                align-items:center;
+                gap:18px;
+                min-width:0;
+              ">
 
-                <div class="muted" style="margin-top:5px">
-                  ${esc(clientItem.goal||"Sin objetivo")}
-                  · ${money(clientItem.weight)} kg
+                <div style="
+                  width:70px;
+                  height:70px;
+                  flex:0 0 70px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  border:1px solid #5c4a24;
+                  border-radius:50%;
+                  color:#f0c96b;
+                  font-size:22px;
+                  font-weight:700;
+                  box-sizing:border-box;
+                ">
+                  ${esc(clientItem.name.split(" ").map(n=>n[0]).slice(0,2).join("").toUpperCase())}
                 </div>
+
+                <div style="
+                  min-width:0;
+                ">
+
+                  <b style="
+                    display:block;
+                    font-size:22px;
+                    line-height:1.15;
+                    margin-bottom:7px;
+                  ">
+                    ${esc(clientItem.name)}
+                  </b>
+
+                  <div class="muted" style="
+                    font-size:17px;
+                    line-height:1.3;
+                    margin-bottom:10px;
+                  ">
+                    ${esc(clientItem.goal||"Sin objetivo")}
+                  </div>
+
+                  <span style="
+                    display:inline-block;
+                    padding:6px 10px;
+                    border-radius:8px;
+                    background:#151d2b;
+                    color:#79aef5;
+                    font-size:15px;
+                  ">
+                    ${money(clientItem.weight)} kg
+                  </span>
+
+                </div>
+
               </div>
 
               <span style="
-                font-size:22px;
+                flex:0 0 auto;
+                font-size:34px;
+                line-height:1;
                 color:#d9aa4a;
-              ">
-                →
-              </span>
+              ">›</span>
 
             </div>
 
@@ -8427,42 +8542,12 @@ if(screen==="diets"){
         `).join("")}
 
       </div>
+    `;
 
-    </div>
-  `;
-
-  main.innerHTML=html;
-  window.scrollTo(0,0);
-  return;
-}
-const selected=window.selectedClient||"carlos";
-const c=client(selected);
-
-const mealNamesTraining=[
-"Desayuno",
-"Merienda mañana",
-"Comida",
-"Pre-entreno",
-"Merienda tarde",
-"Cena"
-];
-
-const mealNamesRest=[
-"Desayuno",
-"Merienda mañana",
-"Comida",
-"Merienda tarde",
-"Cena"
-];
-
-if(!data.diets[selected])data.diets[selected]={};
-
-if(!data.diets[selected].training){
-data.diets[selected].training={
-meals:mealNamesTraining.map(name=>({name,foods:[]}))
-};
-}
-
+    main.innerHTML=html;
+    window.scrollTo(0,0);
+    return;
+  }
 if(!data.diets[selected].rest){
 data.diets[selected].rest={
 meals:mealNamesRest.map(name=>({name,foods:[]}))
