@@ -4288,7 +4288,7 @@ setTimeout(()=>t.style.display="none",2200);
 
 async function openApp(app){
 
-    console.log("openApp funciona:", app);
+    console.log("ABRIENDO APLICACIÓN:", app);
 
     if(app !== "client" && app !== "coach"){
         console.error("Aplicación no válida:", app);
@@ -4301,24 +4301,55 @@ async function openApp(app){
     const clientApp = document.getElementById("client");
     const coachApp = document.getElementById("coach");
 
+    if(!login || !clientApp || !coachApp){
+        console.error("No se encontraron las pantallas principales");
+        return;
+    }
+
+    /* =========================
+       1. ENTRAR EN LA APLICACIÓN
+       ========================= */
+
+    login.style.display = "none";
+
+    clientApp.style.display =
+        app === "client" ? "block" : "none";
+
+    coachApp.style.display =
+        app === "coach" ? "block" : "none";
+
+
+    /* =========================
+       2. MOSTRAR PANTALLA INICIAL
+       ========================= */
+
     try{
 
-        /* =========================
-           1. MOSTRAR LA APP YA
-           ========================= */
+        if(app === "client"){
 
-        login.style.display = "none";
+            showClient("home");
 
-        clientApp.style.display =
-            app === "client" ? "block" : "none";
+        }else{
 
-        coachApp.style.display =
-            app === "coach" ? "block" : "none";
+            showCoach("dashboard");
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Error mostrando pantalla inicial:",
+            error
+        );
+
+    }
 
 
-        /* =========================
-           2. CREAR LA NAVEGACIÓN
-           ========================= */
+    /* =========================
+       3. NAVEGACIÓN
+       ========================= */
+
+    try{
 
         if(app === "client"){
 
@@ -4331,103 +4362,80 @@ async function openApp(app){
 
         }
 
-
-        /* =========================
-           3. MOSTRAR PANTALLA INICIAL
-           ========================= */
-
-        if(app === "client"){
-
-            showClient("home");
-
-        }else{
-
-            showCoach("dashboard");
-
-        }
-
-
-        /* =========================
-           4. CARGAR DATOS DESPUÉS
-           =========================
-           
-           La app YA está visible.
-           Si Supabase tarda o falla,
-           no bloquea la entrada.
-        */
-
-        const results = await Promise.allSettled([
-
-            loadDietsFromSupabase(),
-
-            loadClientsFromSupabase(),
-
-            loadRoutinesFromSupabase(),
-
-            loadWorkoutHistoryFromSupabase(),
-
-            loadWeightsFromSupabase()
-
-        ]);
-
-        console.log("Carga de datos terminada:", results);
-
-
-        /* =========================
-           5. ACTUALIZAR LA PANTALLA
-           ========================= */
-
-        if(app === "client"){
-
-            showClient(currentScreen || "home");
-
-        }else{
-
-            showCoach(currentScreen || "dashboard");
-
-        }
-
     }catch(error){
 
-        console.error("Error abriendo la aplicación:", error);
+        console.error(
+            "Error creando navegación:",
+            error
+        );
 
-        /*
-         * La app no vuelve al login.
-         * Intentamos mantener abierta la pantalla.
-         */
+    }
 
-        login.style.display = "none";
 
-        clientApp.style.display =
-            app === "client" ? "block" : "none";
+    /* =========================
+       4. CARGAR DATOS SIN BLOQUEAR
+       ========================= */
 
-        coachApp.style.display =
-            app === "coach" ? "block" : "none";
+    Promise.allSettled([
+
+        loadDietsFromSupabase(),
+
+        loadClientsFromSupabase(),
+
+        loadRoutinesFromSupabase(),
+
+        loadWorkoutHistoryFromSupabase(),
+
+        loadWeightsFromSupabase()
+
+    ]).then(results => {
+
+        console.log(
+            "Datos cargados:",
+            results
+        );
+
+        /* Actualizamos la pantalla
+           cuando los datos estén listos */
 
         try{
 
             if(app === "client"){
 
-                showClient("home");
+                showClient(currentScreen || "home");
 
             }else{
 
-                showCoach("dashboard");
+                showCoach(currentScreen || "dashboard");
 
             }
 
-        }catch(renderError){
+        }catch(error){
 
             console.error(
-                "Error mostrando la aplicación:",
-                renderError
+                "Error actualizando la pantalla:",
+                error
             );
-
-            toast("No se pudo cargar la aplicación");
 
         }
 
-    }
+    }).catch(error => {
+
+        console.error(
+            "Error cargando datos:",
+            error
+        );
+
+    });
+
+
+    /* =========================
+       5. ARRIBA DEL TODO
+       ========================= */
+
+    window.scrollTo(0,0);
+
+    console.log("APLICACIÓN ABIERTA:", app);
 }
 function logout(){
 document.getElementById("login").style.display="grid";
