@@ -10304,261 +10304,331 @@ if(screen==="routines"){
 }
 if(screen==="messages"){
 
-html=`
+  const messageClients = data.clients || [];
+
+  html = `
 
   <div style="
-    margin-bottom:26px;
+    padding:4px 4px 120px;
   ">
 
-    <div style="
-      color:#d9aa4a;
-      font-size:13px;
-      font-weight:600;
-      letter-spacing:2px;
-      margin-bottom:10px;
-    ">
-      MENSAJES
-    </div>
-
-    <h1 style="
-      margin:0;
-      font-size:36px;
-      line-height:1.05;
-    ">
-      Conversaciones
-    </h1>
-
-    <p class="muted" style="
-      margin:12px 0 0;
-      font-size:16px;
-    ">
-      Comunícate con tus clientes de forma rápida.
-    </p>
-
-  </div>
-
-
-  <div style="
-    display:flex;
-    gap:10px;
-    margin-bottom:24px;
-  ">
+    <!-- CABECERA -->
 
     <div style="
-      flex:1;
-      height:58px;
-      box-sizing:border-box;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:0 18px;
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      background:#101319;
-      color:#9da4ae;
-      font-size:16px;
+      margin-bottom:28px;
     ">
 
-      <span style="
-        font-size:25px;
-        line-height:1;
+      <div style="
+        color:#d9aa4a;
+        font-size:13px;
+        font-weight:600;
+        letter-spacing:2px;
+        margin-bottom:10px;
       ">
-        ⌕
-      </span>
+        MENSAJES
+      </div>
 
-      <span>
-        Buscar conversación...
-      </span>
+      <h1 style="
+        margin:0;
+        font-size:36px;
+        line-height:1.05;
+        letter-spacing:-1px;
+      ">
+        Conversaciones
+      </h1>
+
+      <p class="muted" style="
+        margin:12px 0 0;
+        font-size:16px;
+      ">
+        Comunícate con tus clientes de forma rápida.
+      </p>
 
     </div>
 
 
-    <button
-      class="ghost"
-      style="
-        width:78px;
-        height:58px;
-        padding:0;
-        border-radius:18px;
-        border:1px solid rgba(255,255,255,.14);
-        color:#f0c96b;
-        font-size:25px;
-      "
-    >
-      ▽
-    </button>
+    <!-- BUSCADOR + FILTRO -->
 
-  </div>
+    <div style="
+      display:flex;
+      gap:10px;
+      margin-bottom:24px;
+    ">
 
+      <div style="
+        flex:1;
+        min-width:0;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding:0 16px;
+        height:56px;
+        border:1px solid #30333b;
+        border-radius:14px;
+        background:#111318;
+      ">
 
-  <div style="
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-    padding-bottom:110px;
-  ">
-
-    ${data.clients.map(c=>{
-
-      const msgs=data.messages[c.id]||[];
-      const last=msgs.slice(-1)[0];
-
-      const messageText=
-        last?.[1] || "Sin mensajes";
-
-      const hasMessage=!!last;
-
-      return `
-
-        <div style="
-          width:100%;
-          box-sizing:border-box;
-          padding:18px 20px;
-          border:1px solid rgba(255,255,255,.10);
-          border-radius:20px;
-          background:#101319;
+        <span style="
+          font-size:22px;
+          color:#9298a5;
         ">
+          ⌕
+        </span>
 
-          <div style="
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:14px;
-          ">
+        <input
+          id="messages-search"
+          type="text"
+          placeholder="Buscar conversación..."
+          oninput="
+            const q=this.value.toLowerCase().trim();
+            document.querySelectorAll('[data-message-client]').forEach(el=>{
+              el.style.display=
+                el.dataset.messageClient.includes(q)
+                ? ''
+                : 'none';
+            });
+          "
+          style="
+            width:100%;
+            border:0;
+            outline:0;
+            background:transparent;
+            color:#f4f4f5;
+            font-size:16px;
+          "
+        >
 
-            <div style="
-              display:flex;
-              align-items:center;
-              gap:16px;
-              min-width:0;
-              flex:1;
-            ">
+      </div>
+
+
+      <button
+        class="ghost"
+        style="
+          width:56px;
+          height:56px;
+          padding:0;
+          border-radius:14px;
+          font-size:22px;
+          color:#e9b94f;
+          flex:none;
+        "
+      >
+        ▽
+      </button>
+
+    </div>
+
+
+    <!-- CONVERSACIONES -->
+
+    <div style="
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    ">
+
+      ${
+        messageClients.length
+
+        ? messageClients.map(c=>{
+
+            const msgs =
+              data.messages?.[c.id] || [];
+
+            const last =
+              msgs.length
+                ? msgs[msgs.length-1]
+                : null;
+
+            const lastText =
+              last
+                ? last[1]
+                : "Sin mensajes";
+
+            const isUnread =
+              last &&
+              last[0] !== "Daniel";
+
+            const lastTime =
+              last && last[2]
+                ? last[2]
+                : "";
+
+            const initials =
+              String(c.name || "")
+                .split(" ")
+                .map(x=>x[0])
+                .slice(0,2)
+                .join("")
+                .toUpperCase();
+
+            return `
+
+            <div
+              data-message-client="${esc(
+                String(c.name || "").toLowerCase()
+              )}"
+              style="
+                background:#111318;
+                border:1px solid #292d35;
+                border-radius:18px;
+                padding:18px;
+              "
+            >
 
               <div style="
-                width:66px;
-                height:66px;
-                flex:none;
-                border-radius:50%;
-                border:1px solid rgba(217,170,74,.45);
                 display:flex;
                 align-items:center;
-                justify-content:center;
-                color:#f0c96b;
-                font-size:22px;
-                font-weight:600;
+                gap:14px;
               ">
-                ${esc(
-                  c.name
-                    .split(" ")
-                    .map(n=>n[0])
-                    .join("")
-                    .slice(0,2)
-                    .toUpperCase()
-                )}
-              </div>
 
-
-              <div style="
-                min-width:0;
-              ">
+                <!-- AVATAR -->
 
                 <div style="
-                  color:#f5f5f2;
-                  font-size:22px;
+                  width:58px;
+                  height:58px;
+                  flex:none;
+                  border-radius:50%;
+                  border:1px solid #73591e;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  color:#e9b94f;
+                  font-size:17px;
                   font-weight:600;
                 ">
-                  ${esc(c.name)}
+                  ${esc(initials)}
                 </div>
 
-                <div class="muted" style="
-                  margin-top:8px;
-                  font-size:15px;
-                  white-space:nowrap;
-                  overflow:hidden;
-                  text-overflow:ellipsis;
+
+                <!-- INFO -->
+
+                <div style="
+                  flex:1;
+                  min-width:0;
                 ">
-                  ${esc(messageText)}
-                </div>
 
-                ${
-                  hasMessage
-                  ? `
-                    <div style="
-                      margin-top:9px;
-                      color:#f0c96b;
-                      font-size:14px;
+                  <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:10px;
+                  ">
+
+                    <b style="
+                      font-size:17px;
+                      white-space:nowrap;
+                      overflow:hidden;
+                      text-overflow:ellipsis;
                     ">
-                      ● Sin leer
-                    </div>
-                  `
-                  : ""
-                }
+                      ${esc(c.name)}
+                    </b>
+
+                    ${
+                      lastTime
+                      ? `
+                        <span class="muted" style="
+                          font-size:13px;
+                          flex:none;
+                        ">
+                          ${esc(lastTime)}
+                        </span>
+                      `
+                      : ""
+                    }
+
+                  </div>
+
+
+                  <div class="muted" style="
+                    margin-top:6px;
+                    font-size:14px;
+                    white-space:nowrap;
+                    overflow:hidden;
+                    text-overflow:ellipsis;
+                  ">
+                    ${esc(lastText)}
+                  </div>
+
+
+                  ${
+                    isUnread
+                    ? `
+                      <div style="
+                        margin-top:7px;
+                        display:flex;
+                        align-items:center;
+                        gap:7px;
+                        color:#d9aa4a;
+                        font-size:13px;
+                      ">
+                        <span style="
+                          width:7px;
+                          height:7px;
+                          border-radius:50%;
+                          background:#d9aa4a;
+                        "></span>
+
+                        Sin leer
+                      </div>
+                    `
+                    : ""
+                  }
+
+                </div>
 
               </div>
 
+
+              <!-- BOTÓN -->
+
+              <button
+                class="ghost"
+                onclick="openMessages('${c.id}')"
+                style="
+                  width:100%;
+                  margin-top:16px;
+                  height:48px;
+                  border-color:${isUnread ? "#9b7725" : "#30343c"};
+                  color:${isUnread ? "#e9b94f" : "#aeb3bd"};
+                  font-size:14px;
+                  font-weight:600;
+                  border-radius:11px;
+                "
+              >
+                Abrir conversación
+                <span style="
+                  margin-left:8px;
+                  font-size:20px;
+                ">
+                  ›
+                </span>
+              </button>
+
             </div>
 
+            `;
 
-            <div class="muted" style="
-              flex:none;
-              font-size:14px;
-              white-space:nowrap;
-            ">
-              ${hasMessage ? "14:58" : "Ayer"}
+          }).join("")
+
+        : `
+
+          <div class="card">
+            <div class="empty">
+              Todavía no tienes conversaciones.
             </div>
-
           </div>
 
+        `
+      }
 
-          <button
-            class="ghost"
-            style="
-              width:100%;
-              margin-top:16px;
-              padding:12px 14px;
-              border-radius:13px;
-              border:1px solid ${
-                hasMessage
-                  ? "rgba(217,170,74,.70)"
-                  : "rgba(255,255,255,.12)"
-              };
-              color:${
-                hasMessage
-                  ? "#f0c96b"
-                  : "#9da4ae"
-              };
-              background:transparent;
-              text-align:left;
-              font-size:15px;
-              font-weight:600;
-            "
-            onclick="openMessages('${c.id}')"
-          >
-
-            Abrir conversación
-
-            <span style="
-              float:right;
-              font-size:22px;
-              line-height:16px;
-            ">
-              ›
-            </span>
-
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("")}
+    </div>
 
   </div>
 
-`;
+  `;
 
 }
-
 main.innerHTML=html;
 window.scrollTo(0,0);
 }
