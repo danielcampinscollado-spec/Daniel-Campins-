@@ -3839,113 +3839,62 @@ async function loadClientsFromSupabase(){
 
     const { data:clients,error } = await supabaseClient
       .from("clients")
-      .select("id,name,goal,weight,initial_weight,plan,status")
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,plan,status")
       .order("created_at",{ascending:true});
 
     if(error){
-      console.error("Error cargando clientes:",error);
+
+      console.error(
+        "Error cargando clientes:",
+        error
+      );
+
       return;
     }
 
     const supabaseClients = clients || [];
 
     /*
-      1. Actualizar los clientes que ya existen en Supabase.
+      Supabase es la fuente principal de clientes.
+      Reemplazamos la lista local con los clientes
+      que realmente existen en Supabase.
     */
 
-    supabaseClients.forEach(row=>{
+    data.clients = supabaseClients.map(row => {
 
-      const existing = data.clients.find(
-        c => c.id === row.id
-      );
+      const localCheckin =
+        data.checkins?.[row.id];
 
-      const clientData = {
+      return {
+
         id:row.id,
-        name:row.name,
-        goal:row.goal,
-        weight:Number(row.weight)||0,
-        initial:Number(row.initial_weight)||Number(row.weight)||0,
-        plan:row.plan || "",
-        status:row.status || "Pendiente"
+
+        name:row.name || "",
+
+        goal:row.goal || "",
+
+        weight:
+          Number(row.weight) || 0,
+
+        initial:
+          Number(row.initial_weight) ||
+          Number(row.weight) ||
+          0,
+
+        initial_body_fat:
+          Number(row.initial_body_fat) || 0,
+
+        plan:
+          row.plan || "",
+
+        status:
+          localCheckin?.reviewed
+            ? "Revisado"
+            : (row.status || "Pendiente")
+
       };
 
-      if(existing){
-
-        Object.assign(existing,clientData);
-
-      }else{
-
-        data.clients.push(clientData);
-
-      }
-const localCheckin = data.checkins?.[row.id];
-
-if(localCheckin?.reviewed){
-  const savedClient = data.clients.find(
-    c => c.id === row.id
-  );
-
-  if(savedClient){
-    savedClient.status="Revisado";
-  }
-}
     });
-
-
-    /*
-      2. Buscar clientes que están en localStorage
-         pero todavía no existen en Supabase.
-    */
-
-    const supabaseIds = new Set(
-      supabaseClients.map(c => c.id)
-    );
-
-    const localOnlyClients = data.clients.filter(
-      c => !supabaseIds.has(c.id)
-    );
-
-
-    /*
-      3. Crear esos clientes en Supabase.
-    */
-
-    for(const c of localOnlyClients){
-
-      const { error:insertError } = await supabaseClient
-        .from("clients")
-        .insert({
-          id:c.id,
-          name:c.name,
-          goal:c.goal || "",
-          weight:Number(c.weight)||0,
-          initial_weight:Number(c.initial)||Number(c.weight)||0,
-          plan:c.plan || "",
-          status:c.status || "Pendiente"
-        });
-
-      if(insertError){
-
-        console.error(
-          "Error sincronizando cliente con Supabase:",
-          c.name,
-          insertError
-        );
-
-        toast(
-          "No se pudo sincronizar a " + c.name
-        );
-
-      }else{
-
-        console.log(
-          "Cliente sincronizado con Supabase:",
-          c.name
-        );
-
-      }
-
-    }
 
     saveData();
 
