@@ -4074,7 +4074,7 @@ async function loadRoutinesFromSupabase(){
     if(!routines) return;
 
     if(!data.routines){
-      data.routines = {};
+      data.routines={};
     }
 
     routines.forEach(row=>{
@@ -4085,6 +4085,19 @@ async function loadRoutinesFromSupabase(){
           : [];
 
     });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para rutinas:",
+      e
+    );
+
+  }
+
+}
 
     saveData();
 
@@ -10902,9 +10915,19 @@ function showClientAdmin(id){
 function newClient(){
 openModal(`
 <div class="modal-head"><h2>Nuevo cliente</h2><button class="ghost" onclick="closeModal()">✕</button></div>
-<label>Nombre</label><input id="new-name" placeholder="Nombre y apellidos">
-<label>Peso actual</label><input id="new-weight" placeholder="Ej. 75,5">
-<label>Objetivo</label><input id="new-goal" placeholder="Ej. Pérdida de grasa">
+
+<label>Nombre</label>
+<input id="new-name" placeholder="Nombre y apellidos">
+
+<label>Peso actual</label>
+<input id="new-weight" placeholder="Ej. 75,5">
+
+<label>% de grasa inicial</label>
+<input id="new-body-fat" placeholder="Ej. 18,5" inputmode="decimal">
+
+<label>Objetivo</label>
+<input id="new-goal" placeholder="Ej. Pérdida de grasa">
+
 <button class="btn" style="margin-top:18px" onclick="createClient()">Crear cliente</button>
 `);
 }
@@ -10912,9 +10935,10 @@ openModal(`
 async function createClient(){
 const name=document.getElementById("new-name").value.trim();
 const weightText=document.getElementById("new-weight").value.trim();
+const bodyFatText=document.getElementById("new-body-fat").value.trim();
 const goal=document.getElementById("new-goal").value.trim();
 
-if(!name||!weightText||!goal){
+if(!name||!weightText||!bodyFatText||!goal){
 toast("Completa todos los campos");
 return;
 }
@@ -10922,6 +10946,12 @@ return;
 const weight=parseFloat(weightText.replace(",","."));
 if(!Number.isFinite(weight)||weight<=0){
 toast("Introduce un peso válido");
+return;
+}
+
+const bodyFat=parseFloat(bodyFatText.replace(",","."));
+if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=100){
+toast("Introduce un % de grasa válido");
 return;
 }
 
@@ -10935,6 +10965,7 @@ const { error } = await supabaseClient
     goal,
     weight,
     initial_weight:weight,
+    initial_body_fat:bodyFat,
     plan:"",
     status:"Pendiente"
   });
@@ -10951,17 +10982,22 @@ data.clients.push({
   goal,
   weight,
   initial:weight,
+  initialBodyFat:bodyFat,
   plan:"",
   status:"Pendiente"
 });
+
 data.weights[id]=[weight];
+
 data.checkins[id]={
   weight:money(weight)+" kg",
+  bodyFat:bodyFat,
   diet:"Pendiente",
   training:"Pendiente",
   comment:"Pendiente de revisión.",
   reviewed:false
 };
+
 data.diets[id]={
   training:{
     calories:"",
@@ -10974,6 +11010,7 @@ data.diets[id]={
     meals:[]
   }
 };
+
 data.routines[id]=[];
 data.messages[id]=[];
 
