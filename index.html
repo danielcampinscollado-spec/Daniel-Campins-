@@ -9333,15 +9333,260 @@ if(screen==="routines"){
   }
 }
 if(screen==="messages"){
+
 html=`
-<h1>Mensajes</h1>
-<div class="card">
-${data.clients.map(c=>`
-<div class="item"><b>${esc(c.name)}</b><br>
-<span class="muted">${esc((data.messages[c.id]||[]).slice(-1)[0]?.[1]||"Sin mensajes")}</span>
-<br><button class="ghost" style="margin-top:8px" onclick="openMessages('${c.id}')">Abrir conversación</button>
-</div>`).join("")}
-</div>`;
+
+  <div style="
+    margin-bottom:26px;
+  ">
+
+    <div style="
+      color:#d9aa4a;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:2px;
+      margin-bottom:10px;
+    ">
+      MENSAJES
+    </div>
+
+    <h1 style="
+      margin:0;
+      font-size:36px;
+      line-height:1.05;
+    ">
+      Conversaciones
+    </h1>
+
+    <p class="muted" style="
+      margin:12px 0 0;
+      font-size:16px;
+    ">
+      Comunícate con tus clientes de forma rápida.
+    </p>
+
+  </div>
+
+
+  <div style="
+    display:flex;
+    gap:10px;
+    margin-bottom:24px;
+  ">
+
+    <div style="
+      flex:1;
+      height:58px;
+      box-sizing:border-box;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:0 18px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      background:#101319;
+      color:#9da4ae;
+      font-size:16px;
+    ">
+
+      <span style="
+        font-size:25px;
+        line-height:1;
+      ">
+        ⌕
+      </span>
+
+      <span>
+        Buscar conversación...
+      </span>
+
+    </div>
+
+
+    <button
+      class="ghost"
+      style="
+        width:78px;
+        height:58px;
+        padding:0;
+        border-radius:18px;
+        border:1px solid rgba(255,255,255,.14);
+        color:#f0c96b;
+        font-size:25px;
+      "
+    >
+      ▽
+    </button>
+
+  </div>
+
+
+  <div style="
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding-bottom:110px;
+  ">
+
+    ${data.clients.map(c=>{
+
+      const msgs=data.messages[c.id]||[];
+      const last=msgs.slice(-1)[0];
+
+      const messageText=
+        last?.[1] || "Sin mensajes";
+
+      const hasMessage=!!last;
+
+      return `
+
+        <div style="
+          width:100%;
+          box-sizing:border-box;
+          padding:18px 20px;
+          border:1px solid rgba(255,255,255,.10);
+          border-radius:20px;
+          background:#101319;
+        ">
+
+          <div style="
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:14px;
+          ">
+
+            <div style="
+              display:flex;
+              align-items:center;
+              gap:16px;
+              min-width:0;
+              flex:1;
+            ">
+
+              <div style="
+                width:66px;
+                height:66px;
+                flex:none;
+                border-radius:50%;
+                border:1px solid rgba(217,170,74,.45);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#f0c96b;
+                font-size:22px;
+                font-weight:600;
+              ">
+                ${esc(
+                  c.name
+                    .split(" ")
+                    .map(n=>n[0])
+                    .join("")
+                    .slice(0,2)
+                    .toUpperCase()
+                )}
+              </div>
+
+
+              <div style="
+                min-width:0;
+              ">
+
+                <div style="
+                  color:#f5f5f2;
+                  font-size:22px;
+                  font-weight:600;
+                ">
+                  ${esc(c.name)}
+                </div>
+
+                <div class="muted" style="
+                  margin-top:8px;
+                  font-size:15px;
+                  white-space:nowrap;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                ">
+                  ${esc(messageText)}
+                </div>
+
+                ${
+                  hasMessage
+                  ? `
+                    <div style="
+                      margin-top:9px;
+                      color:#f0c96b;
+                      font-size:14px;
+                    ">
+                      ● Sin leer
+                    </div>
+                  `
+                  : ""
+                }
+
+              </div>
+
+            </div>
+
+
+            <div class="muted" style="
+              flex:none;
+              font-size:14px;
+              white-space:nowrap;
+            ">
+              ${hasMessage ? "14:58" : "Ayer"}
+            </div>
+
+          </div>
+
+
+          <button
+            class="ghost"
+            style="
+              width:100%;
+              margin-top:16px;
+              padding:12px 14px;
+              border-radius:13px;
+              border:1px solid ${
+                hasMessage
+                  ? "rgba(217,170,74,.70)"
+                  : "rgba(255,255,255,.12)"
+              };
+              color:${
+                hasMessage
+                  ? "#f0c96b"
+                  : "#9da4ae"
+              };
+              background:transparent;
+              text-align:left;
+              font-size:15px;
+              font-weight:600;
+            "
+            onclick="openMessages('${c.id}')"
+          >
+
+            Abrir conversación
+
+            <span style="
+              float:right;
+              font-size:22px;
+              line-height:16px;
+            ">
+              ›
+            </span>
+
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("")}
+
+  </div>
+
+`;
+
 }
 
 main.innerHTML=html;
