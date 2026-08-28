@@ -10926,8 +10926,8 @@ const bodyFatText=document.getElementById("new-body-fat").value.trim();
 const goal=document.getElementById("new-goal").value.trim();
 
 if(!name || !weightText || !bodyFatText || !goal){
-toast("Completa todos los campos");
-return;
+  toast("Completa todos los campos");
+  return;
 }
 
 const weight=parseFloat(
@@ -10935,8 +10935,8 @@ const weight=parseFloat(
 );
 
 if(!Number.isFinite(weight) || weight<=0){
-toast("Introduce un peso válido");
-return;
+  toast("Introduce un peso válido");
+  return;
 }
 
 const bodyFat=parseFloat(
@@ -10948,8 +10948,8 @@ if(
   bodyFat<=0 ||
   bodyFat>=70
 ){
-toast("Introduce un % de grasa válido");
-return;
+  toast("Introduce un % de grasa válido");
+  return;
 }
 
 const id="client_"+Date.now();
@@ -10962,65 +10962,47 @@ const { error } = await supabaseClient
     goal:goal,
     weight:weight,
     initial_weight:weight,
+    initial_body_fat:bodyFat,
     plan:"",
     status:"Pendiente"
   });
 
 if(error){
 
-console.error(
-  "Error creando cliente en Supabase:",
-  error
-);
+  console.error(
+    "Error creando cliente:",
+    error
+  );
 
-toast("No se pudo guardar el cliente");
-return;
+  toast("No se pudo guardar el cliente");
+  return;
 
 }
 
-data.clients.push({
-
-id:id,
-name:name,
-goal:goal,
-weight:weight,
-initial:weight,
-
-bodyFatInitial:bodyFat,
-initialBodyFat:bodyFat,
-
-plan:"",
-status:"Pendiente"
-
-});
+/* Guardamos los datos auxiliares solamente en local */
 
 data.weights[id]=[weight];
 
 data.checkins[id]={
-
-weight:money(weight)+" kg",
-bodyFat:bodyFat,
-diet:"Pendiente",
-training:"Pendiente",
-comment:"Pendiente de revisión.",
-reviewed:false
-
+  weight:money(weight)+" kg",
+  bodyFat:bodyFat,
+  diet:"Pendiente",
+  training:"Pendiente",
+  comment:"Pendiente de revisión.",
+  reviewed:false
 };
 
 data.diets[id]={
-
-training:{
-calories:"",
-protein:"",
-meals:[]
-},
-
-rest:{
-calories:"",
-protein:"",
-meals:[]
-}
-
+  training:{
+    calories:"",
+    protein:"",
+    meals:[]
+  },
+  rest:{
+    calories:"",
+    protein:"",
+    meals:[]
+  }
 };
 
 data.routines[id]=[];
@@ -11029,6 +11011,12 @@ data.messages[id]=[];
 saveData();
 
 closeModal();
+
+/* Recargamos clientes desde Supabase.
+   Así evitamos tener el mismo cliente
+   en local y en Supabase al mismo tiempo. */
+
+await loadClientsFromSupabase();
 
 showCoach("clients");
 
