@@ -8343,19 +8343,296 @@ return `
 }
 
 if(screen==="checkins"){
-html=`
-<h1>Check-ins</h1>
-<p class="muted">Revisa el seguimiento de tus clientes.</p>
-<div class="card">
-${data.clients.map(c=>{
-const x=data.checkins[c.id]||{weight:money(c.weight)+" kg",diet:"Pendiente",training:"Pendiente",comment:"Pendiente",reviewed:false};
-return `<div class="item">
-<b>${esc(c.name)}</b><br>
-<span class="muted">${x.reviewed?"✓ Revisado":"Pendiente de revisión"}</span><br>
-<button class="btn" style="margin-top:8px" onclick="reviewCheckin('${c.id}')">${x.reviewed?"Ver check-in":"Revisar check-in"}</button>
-</div>`;
-}).join("")}
-</div>`;
+
+  const clients = data.clients || [];
+
+  const pendingClients = clients.filter(c=>{
+    const checkin = data.checkins?.[c.id];
+    return !checkin?.reviewed;
+  });
+
+  const reviewedClients = clients.filter(c=>{
+    const checkin = data.checkins?.[c.id];
+    return checkin?.reviewed;
+  });
+
+  html=`
+
+    <div style="
+      margin-bottom:24px;
+    ">
+
+      <div style="
+        color:#d9aa4a;
+        font-size:13px;
+        font-weight:600;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        margin-bottom:10px;
+      ">
+        CHECK-INS
+      </div>
+
+      <h1 style="
+        margin:0;
+        font-size:36px;
+        line-height:1.05;
+      ">
+        Seguimiento de clientes
+      </h1>
+
+      <p class="muted" style="
+        margin:12px 0 0;
+        font-size:16px;
+      ">
+        Revisa el progreso y las respuestas de tus clientes.
+      </p>
+
+    </div>
+
+
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:4px;
+      padding:4px;
+      margin-bottom:24px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:22px;
+      background:rgba(255,255,255,.025);
+    ">
+
+      <div style="
+        min-height:54px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        border-radius:18px;
+        background:rgba(217,170,74,.10);
+        color:#f0c96b;
+        font-weight:600;
+      ">
+        <span style="font-size:20px;">♧</span>
+        <span>Pendientes</span>
+        <span style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          min-width:30px;
+          height:30px;
+          border-radius:50%;
+          background:rgba(217,170,74,.16);
+          font-size:13px;
+        ">
+          ${pendingClients.length}
+        </span>
+      </div>
+
+      <div style="
+        min-height:54px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        color:#9da4ae;
+        font-weight:600;
+      ">
+        <span style="font-size:20px;">✓</span>
+        <span>Revisados</span>
+        <span style="
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          min-width:30px;
+          height:30px;
+          border-radius:50%;
+          background:rgba(255,255,255,.07);
+          font-size:13px;
+        ">
+          ${reviewedClients.length}
+        </span>
+      </div>
+
+    </div>
+
+
+    <div style="
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      padding-bottom:110px;
+    ">
+
+      ${clients.map(c=>{
+
+        const x=data.checkins?.[c.id] || {
+          weight:money(c.weight)+" kg",
+          diet:"Pendiente",
+          training:"Pendiente",
+          comment:"Pendiente",
+          reviewed:false
+        };
+
+        const reviewed=!!x.reviewed;
+
+        return `
+
+          <div style="
+            width:100%;
+            box-sizing:border-box;
+            padding:18px;
+            border:1px solid ${
+              reviewed
+                ? "rgba(255,255,255,.09)"
+                : "rgba(217,170,74,.55)"
+            };
+            border-radius:20px;
+            background:#101319;
+          ">
+
+            <div style="
+              display:flex;
+              align-items:flex-start;
+              justify-content:space-between;
+              gap:14px;
+            ">
+
+              <div style="
+                display:flex;
+                align-items:center;
+                gap:16px;
+                min-width:0;
+              ">
+
+                <div style="
+                  width:66px;
+                  height:66px;
+                  flex:none;
+                  border-radius:50%;
+                  border:1px solid rgba(217,170,74,.45);
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  color:#f0c96b;
+                  font-size:22px;
+                  font-weight:600;
+                ">
+                  ${esc(
+                    c.name
+                      .split(" ")
+                      .map(n=>n[0])
+                      .join("")
+                      .slice(0,2)
+                      .toUpperCase()
+                  )}
+                </div>
+
+                <div style="
+                  min-width:0;
+                ">
+
+                  <div style="
+                    color:#f5f5f2;
+                    font-family:Georgia,serif;
+                    font-size:22px;
+                    font-weight:600;
+                  ">
+                    ${esc(c.name)}
+                  </div>
+
+                  <div style="
+                    margin-top:6px;
+                    color:${
+                      reviewed
+                        ? "#69b66d"
+                        : "#c2c7cf"
+                    };
+                    font-size:14px;
+                  ">
+                    ${
+                      reviewed
+                        ? "✓ Revisado"
+                        : "● Pendiente de revisión"
+                    }
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div style="
+                flex:none;
+                color:${
+                  reviewed
+                    ? "#9da4ae"
+                    : "#f0c96b"
+                };
+                font-size:14px;
+                white-space:nowrap;
+              ">
+                ${reviewed ? "Ayer" : "Hoy"}
+              </div>
+
+            </div>
+
+
+            <button
+              class="btn"
+              style="
+                width:100%;
+                margin-top:16px;
+                padding:12px 14px;
+                border:1px solid ${
+                  reviewed
+                    ? "rgba(70,160,95,.55)"
+                    : "rgba(217,170,74,.70)"
+                };
+                background:transparent;
+                color:${
+                  reviewed
+                    ? "#69b66d"
+                    : "#f0c96b"
+                };
+                border-radius:13px;
+                font-size:15px;
+                font-weight:700;
+              "
+              onclick="reviewCheckin('${c.id}')"
+            >
+
+              <span style="
+                margin-right:8px;
+              ">
+                ${reviewed ? "◉" : "▣"}
+              </span>
+
+              ${
+                reviewed
+                  ? "Ver check-in"
+                  : "Revisar check-in"
+              }
+
+              <span style="
+                float:right;
+                font-size:22px;
+                line-height:16px;
+              ">
+                ›
+              </span>
+
+            </button>
+
+          </div>
+
+        `;
+
+      }).join("")}
+
+    </div>
+  `;
+
 }
 
 if(screen==="diets"){
