@@ -4054,27 +4054,49 @@ async function loadWeightsFromSupabase(){
 }
 async function loadRoutinesFromSupabase(){
 
-  const { data:routines, error } = await supabaseClient
-    .from("client_routines")
-    .select("client_id,routine");
+  try{
 
-  if(error){
-    console.error("Error cargando rutinas:",error);
-    return;
+    const { data:routines, error } = await supabaseClient
+      .from("client_routines")
+      .select("client_id,routine");
+
+    if(error){
+
+      console.error(
+        "Error cargando rutinas:",
+        error
+      );
+
+      return;
+
+    }
+
+    if(!routines) return;
+
+    if(!data.routines){
+      data.routines = {};
+    }
+
+    routines.forEach(row=>{
+
+      data.routines[row.client_id] =
+        Array.isArray(row.routine)
+          ? row.routine
+          : [];
+
+    });
+
+    saveData();
+
+  }catch(error){
+
+    console.error(
+      "Error conectando con Supabase para rutinas:",
+      error
+    );
+
   }
 
-  if(!routines) return;
-
-  routines.forEach(row=>{
-
-    data.routines[row.client_id] =
-      Array.isArray(row.routine)
-        ? row.routine
-        : [];
-
-  });
-
-  saveData();
 }
 function saveData(){
   try{
@@ -4247,40 +4269,96 @@ setTimeout(()=>t.style.display="none",2200);
 }
 
 async function openApp(app){
-console.log("openApp funciona", app);
-  currentApp=app;
 
-  document.getElementById("login").style.display="none";
-  document.getElementById("client").style.display=app==="client"?"block":"none";
-  document.getElementById("coach").style.display=app==="coach"?"block":"none";
+  console.log("openApp funciona", app);
 
-  if(app==="client"){
+  if(app !== "client" && app !== "coach"){
+    console.error("Aplicación no válida:", app);
+    return;
+  }
 
-    buildClientNav();
+  currentApp = app;
 
-resetWeeklyCheckinIfNeeded();
+  const login = document.getElementById("login");
+  const clientApp = document.getElementById("client");
+  const coachApp = document.getElementById("coach");
 
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
+  try{
 
-    showClient("home");
+    /*
+      Primero preparamos la aplicación.
+      NO ocultamos el login hasta que todo esté listo.
+    */
+
+    if(app === "client"){
+
+      buildClientNav();
+      resetWeeklyCheckinIfNeeded();
 
     }else{
 
-    buildCoachNav();
+      buildCoachNav();
 
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
+    }
 
-    showCoach("dashboard");
+    /*
+      Las cargas de Supabase se ejecutan de forma segura.
+      Si una tabla falla, la aplicación sigue pudiendo abrirse.
+    */
+
+    await Promise.allSettled([
+
+      loadDietsFromSupabase(),
+      loadClientsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase()
+
+    ]);
+
+    /*
+      Ahora sí mostramos el panel.
+    */
+
+    login.style.display = "none";
+
+    clientApp.style.display =
+      app === "client" ? "block" : "none";
+
+    coachApp.style.display =
+      app === "coach" ? "block" : "none";
+
+    /*
+      Mostramos la pantalla inicial.
+    */
+
+    if(app === "client"){
+
+      showClient("home");
+
+    }else{
+
+      showCoach("dashboard");
+
+    }
+
+  }catch(error){
+
+    console.error("Error abriendo la aplicación:", error);
+
+    /*
+      Si algo inesperado falla, nunca dejamos
+      al usuario atrapado en una pantalla vacía.
+    */
+
+    login.style.display = "grid";
+    clientApp.style.display = "none";
+    coachApp.style.display = "none";
+
+    toast("No se pudo abrir la aplicación");
 
   }
+
 }
 function logout(){
 document.getElementById("login").style.display="grid";
