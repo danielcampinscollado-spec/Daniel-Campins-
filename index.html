@@ -11722,14 +11722,18 @@ async function sendClientCheckin(){
     return;
   }
 
+  if(!data.checkins){
+    data.checkins = {};
+  }
+
   if(!data.checkins[currentClientId]){
     data.checkins[currentClientId] = {
-      weight: money(c.weight) + " kg",
-      bodyFat: "",
-      diet: "",
-      training: "",
-      comment: "",
-      reviewed: false
+      weight:"",
+      bodyFat:"",
+      diet:"",
+      training:"",
+      comment:"",
+      reviewed:false
     };
   }
 
@@ -11770,15 +11774,14 @@ async function sendClientCheckin(){
   if(error){
 
     console.error(
-      "Error guardando check-in en Supabase:",
+      "ERROR ENVIANDO CHECK-IN:",
       error
     );
 
     toast(
-      "Check-in guardado localmente, pero no se pudo sincronizar"
+      "No se pudo enviar el check-in"
     );
 
-    showClient("checkin");
     return;
   }
 
