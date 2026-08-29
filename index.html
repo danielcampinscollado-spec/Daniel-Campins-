@@ -3584,182 +3584,190 @@ margin:0 !important;
 
 <div id="login" class="login">
 
-<div class="login-box">
+  <div class="login-box">
 
-  <!-- LOGO ELEVATE -->
-  <div class="brand-logo">
-    <svg viewBox="0 0 260 220"
-         xmlns="http://www.w3.org/2000/svg"
-         aria-label="ELEVATE">
+    <div class="brand-logo">
 
-      <defs>
-        <linearGradient id="elevateGold"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="100%">
-          <stop offset="0%" stop-color="#f8d77f"/>
-          <stop offset="45%" stop-color="#e5b94f"/>
-          <stop offset="100%" stop-color="#b98227"/>
-        </linearGradient>
+      <svg viewBox="0 0 260 220"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-label="ELEVATE">
 
-        <filter id="goldGlow"
-                x="-50%"
-                y="-50%"
-                width="200%"
-                height="200%">
-          <feGaussianBlur stdDeviation="4"
-                          result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
+        <defs>
 
-      <!-- A SUPERIOR -->
-      <path
-        d="M55 135 L130 28 L205 135"
-        fill="none"
-        stroke="url(#elevateGold)"
-        stroke-width="18"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        filter="url(#goldGlow)"/>
+          <linearGradient id="elevateGold"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="100%">
 
-      <!-- A INTERIOR -->
-      <path
-        d="M94 135 L130 82 L166 135"
-        fill="none"
-        stroke="url(#elevateGold)"
-        stroke-width="15"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
+            <stop offset="0%" stop-color="#f8d77f"/>
+            <stop offset="45%" stop-color="#e5b94f"/>
+            <stop offset="100%" stop-color="#b98227"/>
 
-      <!-- BARRA -->
-      <rect
-        x="67"
-        y="113"
-        width="126"
-        height="10"
-        rx="5"
-        fill="url(#elevateGold)"/>
+          </linearGradient>
 
-      <!-- DISCO IZQUIERDO -->
-      <rect
-        x="48"
-        y="91"
-        width="15"
-        height="54"
-        rx="5"
-        fill="url(#elevateGold)"/>
+          <filter id="goldGlow"
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%">
 
-      <rect
-        x="30"
-        y="101"
-        width="12"
-        height="34"
-        rx="4"
-        fill="url(#elevateGold)"/>
+            <feGaussianBlur stdDeviation="4"
+                            result="blur"/>
 
-      <!-- DISCO DERECHO -->
-      <rect
-        x="197"
-        y="91"
-        width="15"
-        height="54"
-        rx="5"
-        fill="url(#elevateGold)"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
 
-      <rect
-        x="218"
-        y="101"
-        width="12"
-        height="34"
-        rx="4"
-        fill="url(#elevateGold)"/>
+          </filter>
 
-    </svg>
+        </defs>
+
+
+        <path
+          d="M55 135 L130 28 L205 135"
+          fill="none"
+          stroke="url(#elevateGold)"
+          stroke-width="18"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          filter="url(#goldGlow)"/>
+
+
+        <path
+          d="M94 135 L130 82 L166 135"
+          fill="none"
+          stroke="url(#elevateGold)"
+          stroke-width="15"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+
+        <rect
+          x="67"
+          y="113"
+          width="126"
+          height="10"
+          rx="5"
+          fill="url(#elevateGold)"/>
+
+
+        <rect
+          x="48"
+          y="91"
+          width="15"
+          height="54"
+          rx="5"
+          fill="url(#elevateGold)"/>
+
+        <rect
+          x="30"
+          y="101"
+          width="12"
+          height="34"
+          rx="4"
+          fill="url(#elevateGold)"/>
+
+
+        <rect
+          x="197"
+          y="91"
+          width="15"
+          height="54"
+          rx="5"
+          fill="url(#elevateGold)"/>
+
+        <rect
+          x="218"
+          y="101"
+          width="12"
+          height="34"
+          rx="4"
+          fill="url(#elevateGold)"/>
+
+      </svg>
+
+    </div>
+
+
+    <div class="brand-name">
+      ELEVATE
+    </div>
+
+
+    <div class="brand-subtitle">
+      COACHING · PERFORMANCE
+    </div>
+
+
+    <div class="brand-line"></div>
+
+
+    <div class="choices">
+
+
+      <button
+        class="choice choice-client"
+        type="button"
+        onclick="openApp('client')">
+
+        <div class="choice-icon">
+          <span>♙</span>
+        </div>
+
+        <b>ÁREA CLIENTE</b>
+
+        <div class="choice-line"></div>
+
+        <div class="choice-icons">
+          <span>⚑</span>
+          <span>⚖</span>
+          <span>↗</span>
+          <span>✓</span>
+          <span>💬</span>
+        </div>
+
+        <span class="choice-description">
+          Alimentación, entrenamiento,<br>
+          progreso, check-in y mensajes.
+        </span>
+
+      </button>
+
+
+      <button
+        class="choice choice-admin"
+        type="button"
+        onclick="openApp('coach')">
+
+        <div class="choice-icon admin-icon">
+          <span>▥</span>
+        </div>
+
+        <b>PANEL ENTRENADOR</b>
+
+        <div class="choice-line"></div>
+
+        <div class="choice-icons">
+          <span>♙♙</span>
+          <span>▤</span>
+          <span>⚊</span>
+          <span>✓</span>
+          <span>💬</span>
+        </div>
+
+        <span class="choice-description">
+          Clientes, dietas, rutinas,<br>
+          check-ins y mensajes.
+        </span>
+
+      </button>
+
+
+    </div>
+
   </div>
-
-
-  <!-- MARCA -->
-  <div class="brand-name">
-    ELEVATE
-  </div>
-
-  <div class="brand-subtitle">
-    COACHING · PERFORMANCE
-  </div>
-
-  <div class="brand-line"></div>
-
-
-  <!-- OPCIONES -->
-  <div class="choices">
-
-    <!-- CLIENTE -->
-    <button
-      class="choice choice-client"
-      type="button"
-      onclick="openApp('client')">
-
-      <div class="choice-icon">
-        <span>♙</span>
-      </div>
-
-      <b>ÁREA CLIENTE</b>
-
-      <div class="choice-line"></div>
-
-      <div class="choice-icons">
-        <span>⚑</span>
-        <span>⚖</span>
-        <span>↗</span>
-        <span>✓</span>
-        <span>💬</span>
-      </div>
-
-      <span class="choice-description">
-        Alimentación, entrenamiento,<br>
-        progreso, check-in y mensajes.
-      </span>
-
-    </button>
-
-
-    <!-- ENTRENADOR -->
-    <button
-      class="choice choice-admin"
-      type="button"
-      onclick="openApp('coach')">
-
-      <div class="choice-icon admin-icon">
-        <span>▥</span>
-      </div>
-
-      <b>PANEL ENTRENADOR</b>
-
-      <div class="choice-line"></div>
-
-      <div class="choice-icons">
-        <span>♙♙</span>
-        <span>▤</span>
-        <span>⚊</span>
-        <span>✓</span>
-        <span>💬</span>
-      </div>
-
-      <span class="choice-description">
-        Clientes, dietas, rutinas,<br>
-        check-ins y mensajes.
-      </span>
-
-    </button>
-
-  </div>
-
-</div>
 
 </div>
 
