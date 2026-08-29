@@ -11106,37 +11106,67 @@ toast("Cliente creado correctamente");
 }
 
 function addWeight(id){
-const c=client(id);
-if(!c)return;
 
-const text=prompt("Nuevo peso (kg):","0");
-if(text===null)return;
+    const c = client(id);
 
-const value=parseFloat(text.replace(",","."));
-if(!Number.isFinite(value)||value<=0){
-toast("Introduce un peso válido");
-return;
-}
-
-c.weight=value;
-if(!data.weights[id])data.weights[id]=[c.initial];
-data.weights[id].push(value);
-supabaseClient
-  .from("client_weights")
-  .insert({
-    client_id:id,
-    weight:value
-  })
-  .then(({error})=>{
-    if(error){
-      console.error("Error guardando peso en Supabase:",error);
-      toast("Peso guardado localmente, pero no en Supabase");
+    if(!c){
+        toast("No se encontró el cliente");
+        return;
     }
-  });
-saveData();
 
-if(currentApp==="coach")showClientAdmin(id);
-toast("Peso actualizado");
+    const text = prompt("Nuevo peso (kg):");
+
+    if(text === null) return;
+
+    const value = parseFloat(
+        text.trim().replace(",", ".")
+    );
+
+    if(
+        !Number.isFinite(value) ||
+        value <= 0 ||
+        value >= 500
+    ){
+        toast("Introduce un peso válido");
+        return;
+    }
+
+    c.weight = value;
+
+    if(!data.weights[id]){
+        data.weights[id] = [];
+    }
+
+    data.weights[id].push(value);
+
+    saveData();
+
+    supabaseClient
+        .from("client_weights")
+        .insert({
+            client_id:id,
+            weight:value
+        })
+        .then(({error}) => {
+
+            if(error){
+                console.error(
+                    "Error guardando peso en Supabase:",
+                    error
+                );
+
+                toast(
+                    "Peso guardado localmente, pero no se pudo sincronizar"
+                );
+            }
+
+        });
+
+    if(currentApp === "coach"){
+        showClientAdmin(id);
+    }
+
+    toast("Peso actualizado");
 }
 
 function editDietMarcos(id,type){
