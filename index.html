@@ -1248,7 +1248,132 @@ margin:0 !important;
 /* ===== FIN ELEVATE ===== */
 
 /* ===== MÓVIL ===== */
+/* =====================================================
+   ELEVATE — PANTALLA INICIAL MÓVIL
+   AJUSTE VISUAL PROTOTIPO
+===================================================== */
 
+@media (max-width:600px){
+
+  .login{
+    min-height:100dvh;
+    width:100%;
+    padding:18px 0 24px;
+    background:#050608;
+    box-sizing:border-box;
+  }
+
+  .login-box{
+    width:100%;
+    max-width:390px;
+    margin:0 auto;
+    padding:18px 18px 22px;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    box-sizing:border-box;
+  }
+
+  .brand-logo{
+    width:128px;
+    height:88px;
+    margin:0 auto 2px;
+  }
+
+  .brand-logo svg{
+    width:128px;
+    height:88px;
+    display:block;
+  }
+
+  .brand-name{
+    font-size:25px;
+    line-height:1.1;
+    letter-spacing:4px;
+    margin-top:2px;
+  }
+
+  .brand-subtitle{
+    font-size:11px;
+    line-height:1.2;
+    letter-spacing:2.7px;
+    margin-top:8px;
+  }
+
+  .brand-line{
+    width:52px;
+    height:2px;
+    margin:14px auto 18px;
+  }
+
+  .choices{
+    width:100%;
+    gap:12px;
+  }
+
+  .login .choices .choice{
+    width:100%;
+    min-height:0;
+    height:auto;
+    padding:15px 14px 14px;
+    border-radius:18px;
+    box-sizing:border-box;
+  }
+
+  .login .choices .choice-icon{
+    width:48px;
+    height:48px;
+    min-height:48px;
+    margin:0 auto 8px;
+  }
+
+  .login .choices .choice-icon span{
+    font-size:23px;
+  }
+
+  .login .choices .choice b{
+    font-size:17px;
+    line-height:1.1;
+    letter-spacing:1.5px;
+  }
+
+  .login .choices .choice-line{
+    width:30px;
+    height:2px;
+    margin:8px auto 9px;
+  }
+
+  .login .choices .choice-icons{
+    gap:13px;
+    margin-bottom:8px;
+  }
+
+  .login .choices .choice-icons span{
+    font-size:16px;
+  }
+
+  .login .choices .choice-description{
+    max-width:280px;
+    font-size:11px;
+    line-height:1.3;
+  }
+
+  .login .choices .choice::before{
+    width:130px;
+    height:130px;
+    right:-70px;
+    top:-65px;
+  }
+
+  .login .choices .choice::after{
+    width:120px;
+    height:120px;
+    left:-70px;
+    bottom:-70px;
+  }
+
+}
 @media(max-width:600px){
 
   .login{
