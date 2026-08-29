@@ -4339,6 +4339,8 @@ setTimeout(()=>t.style.display="none",2200);
 
 async function openApp(app){
 
+  console.log("openApp funciona", app);
+
   if(app !== "client" && app !== "coach"){
     console.error("Aplicación no válida:", app);
     return;
@@ -4351,10 +4353,8 @@ async function openApp(app){
   const coachApp = document.getElementById("coach");
 
   /*
-   * Mostramos la aplicación inmediatamente.
-   * No esperamos a Supabase para entrar.
+   * Mostrar la aplicación inmediatamente.
    */
-
   login.style.display = "none";
 
   clientApp.style.display =
@@ -4363,12 +4363,9 @@ async function openApp(app){
   coachApp.style.display =
     app === "coach" ? "block" : "none";
 
-
   /*
-   * Construimos la navegación antes de cargar
-   * los datos.
+   * Construir navegación.
    */
-
   if(app === "client"){
 
     buildClientNav();
@@ -4382,13 +4379,9 @@ async function openApp(app){
 
   }
 
-
   /*
-   * Cargamos los datos en segundo plano.
-   * Si una carga falla, no bloquea la entrada
-   * en la aplicación.
+   * Cargar datos después de entrar.
    */
-
   Promise.allSettled([
 
     loadDietsFromSupabase(),
