@@ -11774,81 +11774,86 @@ function selectCheckinOption(type,option){
 
 async function sendClientCheckin(){
 
-  const c = client(currentClientId);
+    try{
 
-  if(!c){
-    toast("No se encontró el cliente");
-    return;
-  }
+        const c = client(currentClientId);
 
-  if(!data.checkins[currentClientId]){
-    data.checkins[currentClientId] = {
-      weight:money(c.weight) + " kg",
-      diet:"",
-      training:"",
-      comment:"",
-      reviewed:false
-    };
-  }
+        if(!c){
+            toast("No se encontró el cliente");
+            return;
+        }
 
-  const checkin = data.checkins[currentClientId];
+        if(!data.checkins){
+            data.checkins = {};
+        }
 
-  const commentBox =
-    document.getElementById("checkin-comment");
+        if(!data.checkins[currentClientId]){
+            data.checkins[currentClientId] = {
+                weight: money(c.weight) + " kg",
+                bodyFat: "",
+                diet: "",
+                training: "",
+                comment: "",
+                reviewed: false
+            };
+        }
 
-  if(commentBox){
-    checkin.comment = commentBox.value.trim();
-  }
+        const checkin = data.checkins[currentClientId];
 
-  checkin.weight =
-    money(c.weight) + " kg";
+        const commentBox = document.getElementById("checkin-comment");
 
-  checkin.reviewed = false;
-  checkin.status = "Nuevo check-in";
+        if(commentBox){
+            checkin.comment = commentBox.value.trim();
+        }
 
-  c.status = "Pendiente";
+        checkin.weight = money(c.weight) + " kg";
+        checkin.reviewed = false;
+        checkin.status = "Nuevo check-in";
+        c.status = "Pendiente";
+        checkin.sentAt = new Date().toISOString();
+        checkin.weekKey = getCurrentWeekKey();
 
-  checkin.sentAt = new Date().toISOString();
-  checkin.weekKey = getCurrentWeekKey();
+        saveData();
 
-  /*
-    GUARDAR CHECK-IN EN SUPABASE
-  */
+        const { error } = await supabaseClient
+            .from("client_checkins")
+            .upsert({
+                client_id: currentClientId,
+                weight: checkin.weight,
+                diet: checkin.diet || "Pendiente",
+                training: checkin.training || "Pendiente",
+                comment: checkin.comment || "",
+                reviewed: false,
+                updated_at: new Date().toISOString()
+            }, {
+                onConflict: "client_id"
+            });
 
-  const { error } = await supabaseClient
-    .from("client_checkins")
-    .upsert({
-      client_id: currentClientId,
-      weight: checkin.weight,
-      diet: checkin.diet || "Pendiente",
-      training: checkin.training || "Pendiente",
-      comment: checkin.comment || "",
-      reviewed: false,
-      updated_at: new Date().toISOString()
-    }, {
-      onConflict: "client_id"
-    });
+        if(error){
 
-  if(error){
+            console.error("ERROR ENVIANDO CHECK-IN:", error);
 
-    console.error(
-      "Error enviando check-in a Supabase:",
-      error
-    );
+            toast(
+                "ERROR al enviar: " +
+                (error.message || error.code || "Error desconocido")
+            );
 
-    toast("No se pudo enviar el check-in");
-    return;
-  }
+            return;
+        }
 
-  /*
-    GUARDAR TAMBIÉN EN LOCAL
-  */
+        toast("Check-in enviado a Daniel");
 
-  saveData();
+        showClient("checkin");
 
-  toast("Check-in enviado a Daniel");
+    }catch(error){
 
-  showClient("checkin");
+        console.error("ERROR GENERAL CHECK-IN:", error);
+
+        toast(
+            "No se pudo enviar el check-in: " +
+            (error.message || "Error desconocido")
+        );
+    }
 }
 </script>
 
