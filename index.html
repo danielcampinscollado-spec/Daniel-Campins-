@@ -11619,7 +11619,7 @@ function selectCheckinOption(type,option){
 }
 
 
-function sendClientCheckin(){
+async function sendClientCheckin(){
 
   const c = client(currentClientId);
 
@@ -11630,14 +11630,14 @@ function sendClientCheckin(){
 
   if(!data.checkins[currentClientId]){
     data.checkins[currentClientId] = {
-        weight:money(c.weight) + " kg",
-        bodyFat:"",
-        diet:"",
-        training:"",
-        comment:"",
-        reviewed:false
+      weight: money(c.weight) + " kg",
+      bodyFat: "",
+      diet: "",
+      training: "",
+      comment: "",
+      reviewed: false
     };
-}
+  }
 
   const checkin = data.checkins[currentClientId];
 
@@ -11650,20 +11650,43 @@ function sendClientCheckin(){
 
   checkin.weight =
     money(c.weight) + " kg";
-if(
-  checkin.bodyFat !== undefined &&
-  checkin.bodyFat !== null &&
-  checkin.bodyFat !== ""
-){
-  checkin.bodyFat = Number(checkin.bodyFat);
-}
-  checkin.reviewed = false;
-checkin.status = "Nuevo check-in";
 
-c.status = "Pendiente";
+  checkin.reviewed = false;
+  checkin.status = "Nuevo check-in";
+  c.status = "Pendiente";
   checkin.sentAt = new Date().toISOString();
-checkin.weekKey = getCurrentWeekKey();
+  checkin.weekKey = getCurrentWeekKey();
+
   saveData();
+
+  const { error } = await supabaseClient
+    .from("client_checkins")
+    .upsert({
+      client_id: currentClientId,
+      weight: checkin.weight,
+      diet: checkin.diet || "Pendiente",
+      training: checkin.training || "Pendiente",
+      comment: checkin.comment || "",
+      reviewed: false,
+      updated_at: new Date().toISOString()
+    }, {
+      onConflict: "client_id"
+    });
+
+  if(error){
+
+    console.error(
+      "Error guardando check-in en Supabase:",
+      error
+    );
+
+    toast(
+      "Check-in guardado localmente, pero no se pudo sincronizar"
+    );
+
+    showClient("checkin");
+    return;
+  }
 
   toast("Check-in enviado a Daniel");
 
