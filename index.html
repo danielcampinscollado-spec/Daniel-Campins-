@@ -11533,58 +11533,54 @@ if(e.target===this)closeModal();
 });
 function updateClientBodyFat(){
 
-  const c = client(currentClientId);
+    const c = client(currentClientId);
 
-  if(!c){
-    toast("No se encontró el cliente");
-    return;
-  }
+    if(!c){
+        toast("No se encontró el cliente");
+        return;
+    }
 
-  if(!data.checkins[currentClientId]){
-    data.checkins[currentClientId] = {
-      weight:money(c.weight) + " kg",
-      bodyFat:"",
-      diet:"",
-      training:"",
-      comment:"",
-      reviewed:false
-    };
-  }
+    if(!data.checkins[currentClientId]){
+        data.checkins[currentClientId] = {
+            weight:money(c.weight) + " kg",
+            bodyFat:"",
+            diet:"",
+            training:"",
+            comment:"",
+            reviewed:false
+        };
+    }
 
-  const current =
-    data.checkins[currentClientId].bodyFat || "";
+    const text = prompt(
+        "Introduce tu % de grasa actual:"
+    );
 
-  const text = prompt(
-    "Introduce tu % de grasa actual:",
-    current ? String(current).replace(".",",") : ""
-  );
+    if(text === null) return;
 
-  if(text === null) return;
+    const value = parseFloat(
+        text.trim().replace(",", ".")
+    );
 
-  const value = parseFloat(
-    text.trim().replace(",",".")
-  );
+    if(
+        !Number.isFinite(value) ||
+        value <= 0 ||
+        value >= 70
+    ){
+        toast("Introduce un % de grasa válido");
+        return;
+    }
 
-  if(
-    !Number.isFinite(value) ||
-    value <= 0 ||
-    value >= 70
-  ){
-    toast("Introduce un % de grasa válido");
-    return;
-  }
+    data.checkins[currentClientId].bodyFat = value;
 
-  data.checkins[currentClientId].bodyFat = value;
+    data.checkins[currentClientId].reviewed = false;
 
-  data.checkins[currentClientId].reviewed = false;
+    c.status = "Pendiente";
 
-  c.status = "Pendiente";
+    saveData();
 
-  saveData();
+    toast("% de grasa actualizado correctamente");
 
-  toast("% de grasa actualizado correctamente");
-
-  showClient("checkin");
+    showClient("checkin");
 }
 
 
