@@ -11561,7 +11561,7 @@ document.getElementById("modal").style.display="none";
 document.getElementById("modal").addEventListener("click",function(e){
 if(e.target===this)closeModal();
 });
-function updateClientWeight(){
+async function updateClientWeight(){
 
   const c = client(currentClientId);
 
@@ -11570,14 +11570,12 @@ function updateClientWeight(){
     return;
   }
 
-  const text = prompt(
-    "Introduce tu peso actual (kg):"
-  );
+  const text = prompt("Introduce tu peso actual (kg):");
 
   if(text === null) return;
 
   const value = parseFloat(
-    text.trim().replace(",",".")
+    text.trim().replace(",", ".")
   );
 
   if(
@@ -11589,8 +11587,36 @@ function updateClientWeight(){
     return;
   }
 
+  /*
+   * 1. Actualizar el peso del cliente
+   *    en la aplicación
+   */
   c.weight = value;
 
+  /*
+   * 2. Guardar el peso actual en Supabase
+   */
+  const { error: clientError } = await supabaseClient
+    .from("clients")
+    .update({
+      weight: value
+    })
+    .eq("id", currentClientId);
+
+  if(clientError){
+
+    console.error(
+      "Error actualizando peso del cliente:",
+      clientError
+    );
+
+    toast("No se pudo guardar el peso");
+    return;
+  }
+
+  /*
+   * 3. Guardar histórico del peso
+   */
   if(!data.weights){
     data.weights = {};
   }
@@ -11601,6 +11627,34 @@ function updateClientWeight(){
 
   data.weights[currentClientId].push(value);
 
+  const { error: weightError } = await supabaseClient
+    .from("client_weights")
+    .insert({
+      client_id: currentClientId,
+      weight: value
+    });
+
+  if(weightError){
+
+    console.error(
+      "Error guardando histórico del peso:",
+      weightError
+    );
+
+    /*
+     * El peso principal ya se ha guardado.
+     * Solo avisamos del histórico.
+     */
+    toast("Peso actualizado, pero no se pudo guardar el histórico");
+
+  }else{
+
+    toast("Peso actualizado correctamente");
+  }
+
+  /*
+   * 4. Actualizar también el check-in local
+   */
   if(!data.checkins){
     data.checkins = {};
   }
@@ -11623,11 +11677,16 @@ function updateClientWeight(){
 
   c.status = "Pendiente";
 
+  /*
+   * 5. Guardar los datos locales
+   */
   saveData();
 
-  toast("Peso actualizado correctamente");
-
+  /*
+   * 6. Volver al check-in sin hacer scroll arriba
+   */
   showClient("checkin");
+}
 }
 function updateClientBodyFat(){
 
