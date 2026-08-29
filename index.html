@@ -11722,14 +11722,9 @@ async function sendClientCheckin(){
     return;
   }
 
-  if(!data.checkins){
-    data.checkins = {};
-  }
-
   if(!data.checkins[currentClientId]){
     data.checkins[currentClientId] = {
-      weight:"",
-      bodyFat:"",
+      weight:money(c.weight) + " kg",
       diet:"",
       training:"",
       comment:"",
@@ -11751,11 +11746,15 @@ async function sendClientCheckin(){
 
   checkin.reviewed = false;
   checkin.status = "Nuevo check-in";
+
   c.status = "Pendiente";
+
   checkin.sentAt = new Date().toISOString();
   checkin.weekKey = getCurrentWeekKey();
 
-  saveData();
+  /*
+    GUARDAR CHECK-IN EN SUPABASE
+  */
 
   const { error } = await supabaseClient
     .from("client_checkins")
@@ -11774,16 +11773,19 @@ async function sendClientCheckin(){
   if(error){
 
     console.error(
-      "ERROR ENVIANDO CHECK-IN:",
+      "Error enviando check-in a Supabase:",
       error
     );
 
-    toast(
-      "No se pudo enviar el check-in"
-    );
-
+    toast("No se pudo enviar el check-in");
     return;
   }
+
+  /*
+    GUARDAR TAMBIÉN EN LOCAL
+  */
+
+  saveData();
 
   toast("Check-in enviado a Daniel");
 
