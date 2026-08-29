@@ -928,38 +928,84 @@ margin:0 !important;
     white-space:nowrap;
   }
 }
-/* ===== DISEÑO FINAL PANTALLA DE INICIO ===== */
+/* ===== ELEVATE — PANTALLA DE INICIO ===== */
 
 .login{
   min-height:100vh;
   min-height:100dvh;
+  width:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:32px 20px;
+  box-sizing:border-box;
   background:
-    radial-gradient(circle at 50% 15%,rgba(218,170,70,.08),transparent 35%),
-    #080a0e;
+    radial-gradient(circle at 50% 12%,rgba(217,170,74,.10),transparent 32%),
+    radial-gradient(circle at 15% 85%,rgba(217,170,74,.045),transparent 30%),
+    #07090d;
+  position:relative;
+  overflow:auto;
 }
 
 .login-box{
   width:100%;
   max-width:620px;
-  padding:28px 24px 26px;
-  background:rgba(14,17,23,.92);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:28px;
-  box-shadow:0 25px 80px rgba(0,0,0,.45);
+  box-sizing:border-box;
+  padding:38px 30px 32px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,35,43,.96),
+      rgba(17,20,26,.97)
+    );
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:30px;
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.58),
+    inset 0 1px 0 rgba(255,255,255,.035);
   text-align:center;
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
 }
+
+/* brillo decorativo superior */
+.login-box::before{
+  content:"";
+  position:absolute;
+  width:230px;
+  height:230px;
+  right:-110px;
+  top:-105px;
+  border-radius:50%;
+  background:rgba(217,170,74,.07);
+  pointer-events:none;
+}
+
+.login-box::after{
+  content:"";
+  position:absolute;
+  width:190px;
+  height:190px;
+  left:-105px;
+  bottom:-105px;
+  border-radius:50%;
+  background:rgba(255,255,255,.025);
+  pointer-events:none;
+}
+
+/* ===== LOGO ===== */
 
 .brand-logo{
   width:150px;
   height:105px;
-  margin:0 auto 4px;
+  margin:0 auto 5px;
   display:flex;
   align-items:center;
   justify-content:center;
+  position:relative;
+  z-index:1;
 }
 
 .brand-logo svg{
@@ -968,48 +1014,74 @@ margin:0 !important;
   display:block;
 }
 
+/* ===== NOMBRE ===== */
+
 .brand-name{
-  color:#f5f5f2;
-  font-size:27px;
+  color:#f7f7f5;
+  font-size:34px;
   font-weight:500;
-  letter-spacing:4px;
-  line-height:1.2;
-  margin-top:2px;
+  letter-spacing:7px;
+  line-height:1.15;
+  margin:0;
+  position:relative;
+  z-index:1;
 }
+
+/* ===== SUBTÍTULO ===== */
 
 .brand-subtitle{
   color:#d9aa4a;
   font-size:13px;
   font-weight:500;
-  letter-spacing:3px;
-  margin-top:9px;
+  letter-spacing:4px;
+  margin-top:10px;
+  position:relative;
+  z-index:1;
 }
+
+/* ===== LÍNEA DORADA ===== */
 
 .brand-line{
   width:70px;
   height:2px;
-  background:#d9aa4a;
-  margin:14px auto 20px;
+  margin:18px auto 25px;
+  background:linear-gradient(
+    90deg,
+    #b98227,
+    #f5d27a,
+    #b98227
+  );
+  border-radius:999px;
+  box-shadow:0 0 14px rgba(217,170,74,.25);
+  position:relative;
+  z-index:1;
 }
+
+/* ===== TARJETAS ===== */
 
 .choices{
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:16px;
+  width:100%;
   text-align:left;
+  position:relative;
+  z-index:1;
 }
 
 .login .choices .choice{
   width:100%;
   min-height:0;
   height:auto;
-  padding:24px 20px 22px;
-  border-radius:22px;
-  background:linear-gradient(
-    145deg,
-    rgba(31,35,43,.95),
-    rgba(17,20,26,.95)
-  );
+  box-sizing:border-box;
+  padding:27px 22px 25px;
+  border-radius:23px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,35,43,.96),
+      rgba(17,20,26,.97)
+    );
   border:1px solid rgba(255,255,255,.16);
   color:#f5f5f2;
   position:relative;
@@ -1019,73 +1091,161 @@ margin:0 !important;
   align-items:center;
   justify-content:flex-start;
   text-align:center;
+  cursor:pointer;
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease;
+  font-family:inherit;
 }
 
-.login .choices .choice:hover{
-  transform:translateY(-2px);
-  border-color:rgba(217,170,74,.55);
+/* decoración de las tarjetas */
+.login .choices .choice::before{
+  content:"";
+  position:absolute;
+  width:160px;
+  height:160px;
+  right:-80px;
+  top:-75px;
+  border-radius:50%;
+  background:rgba(217,170,74,.065);
+  pointer-events:none;
 }
 
-.choice-admin{
-  border-color:rgba(217,170,74,.7) !important;
+.login .choices .choice::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  left:-85px;
+  bottom:-85px;
+  border-radius:50%;
+  background:rgba(255,255,255,.025);
+  pointer-events:none;
 }
+
+/* ===== ICONO PRINCIPAL DE CADA TARJETA ===== */
 
 .login .choices .choice-icon{
   width:64px;
   height:64px;
   min-height:64px;
-  margin:0 auto 13px;
+  margin:0 auto 14px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(20,24,32,.95);
-  box-shadow:0 0 28px rgba(218,170,74,.20);
+  background:
+    radial-gradient(
+      circle,
+      rgba(217,170,74,.10),
+      rgba(15,19,27,.96) 68%
+    );
+  box-shadow:
+    0 0 28px rgba(217,170,74,.17),
+    inset 0 1px 0 rgba(255,255,255,.025);
+  position:relative;
+  z-index:2;
 }
 
 .login .choices .choice-icon span{
   font-size:29px;
+  line-height:1;
   color:#f5d27a;
 }
+
+/* ===== TÍTULO TARJETA ===== */
 
 .login .choices .choice b{
   display:block;
   font-size:24px;
   line-height:1.15;
-  letter-spacing:.3px;
+  letter-spacing:2px;
   margin:0;
   color:#f7f7f4;
+  font-weight:600;
+  position:relative;
+  z-index:2;
 }
+
+/* ===== LÍNEA TARJETA ===== */
 
 .login .choices .choice-line{
   width:50px;
   height:2px;
-  background:#d9aa4a;
-  margin:13px auto 15px;
+  margin:13px auto 16px;
+  background:linear-gradient(
+    90deg,
+    #b98227,
+    #f5d27a,
+    #b98227
+  );
+  border-radius:999px;
+  position:relative;
+  z-index:2;
 }
+
+/* ===== ICONOS SECUNDARIOS ===== */
 
 .login .choices .choice-icons{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:17px;
+  gap:19px;
   width:100%;
-  margin-bottom:13px;
+  margin-bottom:15px;
+  position:relative;
+  z-index:2;
 }
 
 .login .choices .choice-icons span{
   font-size:21px;
   line-height:1;
+  color:rgba(255,255,255,.72);
 }
+
+/* ===== DESCRIPCIÓN ===== */
 
 .login .choices .choice-description{
   display:block;
-  max-width:330px;
-  color:rgba(255,255,255,.62);
+  max-width:340px;
+  color:rgba(255,255,255,.64);
   font-size:15px;
-  line-height:1.4;
+  line-height:1.45;
   text-align:center;
+  position:relative;
+  z-index:2;
 }
+
+/* ===== PANEL ENTRENADOR ===== */
+
+.choice-admin{
+  border-color:rgba(217,170,74,.70) !important;
+}
+
+.choice-admin .choice-icon span{
+  color:#f5d27a;
+}
+
+/* ===== INTERACCIÓN ===== */
+
+.login .choices .choice:hover{
+  transform:translateY(-2px);
+  border-color:rgba(217,170,74,.58);
+  box-shadow:
+    0 14px 38px rgba(0,0,0,.35),
+    0 0 25px rgba(217,170,74,.06);
+}
+
+.choice-admin:hover{
+  border-color:rgba(217,170,74,.90) !important;
+}
+
+.login .choices .choice:active{
+  transform:translateY(0);
+}
+
+/* ===== FIN ELEVATE ===== */
 
 /* ===== MÓVIL ===== */
 
