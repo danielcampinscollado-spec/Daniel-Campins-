@@ -3878,53 +3878,19 @@ margin:0 !important;
   }
 
 }
-/* =========================================================
-   TARJETAS RESUMEN — MÁS COMPACTAS EN MÓVIL
-   ========================================================= */
+/* =====================================================
+   TARJETAS RESUMEN — MÓVIL
+===================================================== */
 
 @media (max-width:700px){
 
-  #coach-main .dashboard-summary{
-    gap:12px !important;
-    margin-bottom:20px !important;
-  }
-
-  #coach-main .dashboard-summary > *{
-    height:155px !important;
-    min-height:155px !important;
-    max-height:155px !important;
-
-    padding:16px !important;
-
-    border-radius:18px !important;
-  }
-
-  /* ICONOS */
-  #coach-main .dashboard-summary > * > div:first-child{
-    margin-bottom:10px !important;
-  }
-
-  #coach-main .dashboard-summary svg{
-    width:25px !important;
-    height:25px !important;
-  }
-
-  /* TÍTULOS */
-  #coach-main .dashboard-summary small{
-    font-size:10px !important;
-    letter-spacing:1.4px !important;
-  }
-
-  /* NÚMEROS */
-  #coach-main .dashboard-summary b,
-  #coach-main .dashboard-summary strong{
-    font-size:32px !important;
-    line-height:1 !important;
-  }
-
-  /* TEXTO INFERIOR */
-  #coach-main .dashboard-summary > * div:last-child{
-    font-size:12px !important;
+  #coach-main > div > div[onclick="showCoach('clients')"],
+  #coach-main > div > div[onclick="showCoach('checkins')"],
+  #coach-main > div > div[onclick="showCoach('messages')"]{
+    height:118px !important;
+    min-height:118px !important;
+    padding:12px !important;
+    border-radius:16px !important;
   }
 
 }
