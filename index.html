@@ -8942,126 +8942,155 @@ if(screen==="dashboard"){
 
       <!-- CHECK-INS -->
 
-      <div
-        onclick="showCoach('checkins')"
-        style="
-          position:relative;
-          min-height:170px;
-          padding:18px;
-          box-sizing:border-box;
-          border-radius:19px;
-          border:1px solid rgba(255,255,255,.13);
-          background:
-            linear-gradient(
-              145deg,
-              #151921,
-              #0b0e13
-            );
-          box-shadow:
-            0 16px 40px rgba(0,0,0,.24);
-          cursor:pointer;
-          overflow:hidden;
-        ">
+<div
+  onclick="showCoach('checkins')"
+  style="
+    position:relative;
+    min-height:150px;
+    padding:18px;
+    box-sizing:border-box;
+    border-radius:19px;
+    border:1px solid rgba(255,255,255,.13);
+    background:
+      linear-gradient(
+        145deg,
+        #151921,
+        #0b0e13
+      );
+    box-shadow:
+      0 16px 40px rgba(0,0,0,.24);
+    cursor:pointer;
+    overflow:hidden;
+  ">
 
-        <div style="
-          color:#d9aa4a;
-          font-size:25px;
-          margin-bottom:18px;
-        ">
-          ✓
-        </div>
+  <div style="
+    color:#d9aa4a;
+    font-size:25px;
+    margin-bottom:18px;
+  ">
+    ✓
+  </div>
 
-        <div style="
-          color:#9da4ae;
-          font-size:11px;
-          letter-spacing:1.7px;
-          text-transform:uppercase;
-        ">
-          Check-ins
-        </div>
+  <div style="
+    color:#9da4ae;
+    font-size:11px;
+    letter-spacing:1.7px;
+    text-transform:uppercase;
+  ">
+    Check-ins
+  </div>
 
-        <div style="
-          margin-top:10px;
-          color:${pendingCheckins.length ? "#49b879" : "#f5f5f2"};
-          font-size:38px;
-          line-height:1;
-          font-weight:500;
-        ">
-          ${pendingCheckins.length}
-        </div>
+  <div style="
+    margin-top:10px;
+    color:${pendingCheckins.length ? "#49b879" : "#f5f5f2"};
+    font-size:38px;
+    line-height:1;
+    font-weight:500;
+  ">
+    ${pendingCheckins.length}
+  </div>
 
-        <div style="
-          margin-top:10px;
-          color:#858b95;
-          font-size:13px;
-        ">
-          Pendientes
-        </div>
+  <div style="
+    margin-top:10px;
+    color:#858b95;
+    font-size:13px;
+  ">
+    Pendientes
+  </div>
 
-      </div>
+</div>
 
 
-      <!-- MENSAJES -->
+<!-- MENSAJES -->
 
-      <div
-        onclick="showCoach('messages')"
-        style="
-          position:relative;
-          min-height:170px;
-          padding:18px;
-          box-sizing:border-box;
-          border-radius:19px;
-          border:1px solid rgba(255,255,255,.13);
-          background:
-            linear-gradient(
-              145deg,
-              #151921,
-              #0b0e13
-            );
-          box-shadow:
-            0 16px 40px rgba(0,0,0,.24);
-          cursor:pointer;
-          overflow:hidden;
-        ">
+<div
+  onclick="showCoach('messages')"
+  style="
+    position:relative;
+    min-height:150px;
+    padding:18px;
+    box-sizing:border-box;
+    border-radius:19px;
+    border:1px solid rgba(255,255,255,.13);
+    background:
+      linear-gradient(
+        145deg,
+        #151921,
+        #0b0e13
+      );
+    box-shadow:
+      0 16px 40px rgba(0,0,0,.24);
+    cursor:pointer;
+    overflow:hidden;
+  ">
 
-        <div style="
-          color:#d9aa4a;
-          font-size:25px;
-          margin-bottom:18px;
-        ">
-          ▢
-        </div>
+  <div style="
+    color:#d9aa4a;
+    margin-bottom:18px;
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
 
-        <div style="
-          color:#9da4ae;
-          font-size:11px;
-          letter-spacing:1.7px;
-          text-transform:uppercase;
-        ">
-          Mensajes
-        </div>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      style="
+        width:25px;
+        height:25px;
+      ">
 
-        <div style="
-          margin-top:10px;
-          color:${newMessages.length ? "#d9aa4a" : "#f5f5f2"};
-          font-size:38px;
-          line-height:1;
-          font-weight:500;
-        ">
-          ${newMessages.length}
-        </div>
+      <path
+        d="M4 5.5h16v11H8l-4 3v-14z"
+        stroke-linejoin="round"/>
 
-        <div style="
-          margin-top:10px;
-          color:#858b95;
-          font-size:13px;
-        ">
-          Nuevos
-        </div>
+      <circle cx="9" cy="11" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="12" cy="11" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="15" cy="11" r="1" fill="currentColor" stroke="none"/>
 
-      </div>
+    </svg>
 
-    </div>
+  </div>
+
+  <div style="
+    color:#9da4ae;
+    font-size:11px;
+    letter-spacing:1.7px;
+    text-transform:uppercase;
+  ">
+    Mensajes
+  </div>
+
+  <div style="
+    margin-top:10px;
+    color:${newMessages.length ? "#d9aa4a" : "#f5f5f2"};
+    font-size:38px;
+    line-height:1;
+    font-weight:500;
+  ">
+    ${newMessages.length}
+  </div>
+
+  <div style="
+    margin-top:10px;
+    color:#858b95;
+    font-size:13px;
+  ">
+    Nuevos
+  </div>
+
+</div>
+
+</div>
+
+
+<!-- =================================================
+     TAREAS PENDIENTES
+     ================================================== -->
 
 
     <!-- =================================================
