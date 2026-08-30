@@ -3701,7 +3701,41 @@ margin:0 !important;
 }
 
 }
+/* =========================================================
+   TARJETAS RESUMEN — MÓVIL
+   ========================================================= */
 
+@media (max-width:700px){
+
+  #coach-main > div:first-of-type{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:18px !important;
+    width:100% !important;
+  }
+
+  #coach-main > div:first-of-type > div{
+    min-height:0 !important;
+    height:205px !important;
+    padding:18px !important;
+    box-sizing:border-box !important;
+    border-radius:20px !important;
+    overflow:hidden !important;
+  }
+
+  #coach-main > div:first-of-type > div > div:first-child{
+    margin-bottom:14px !important;
+  }
+
+  #coach-main > div:first-of-type svg{
+    width:30px !important;
+    height:30px !important;
+  }
+
+  #coach-main > div:first-of-type > div > div{
+    max-width:100% !important;
+  }
+}
 </style>
 </head>
 
