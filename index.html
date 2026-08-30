@@ -8669,90 +8669,151 @@ if(screen==="dashboard"){
   ">
 
 
-    <!-- LOGO -->
+    <!-- LOGO ELEVATE -->
+
+<div style="
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:28px;
+">
+
+  <div style="
+    width:78px;
+    height:78px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
+
+    <svg
+      viewBox="0 0 260 220"
+      width="78"
+      height="66"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="ELEVATE">
+
+      <defs>
+
+        <linearGradient
+          id="coachElevateGold"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="100%">
+
+          <stop offset="0%" stop-color="#f8d77f"/>
+          <stop offset="45%" stop-color="#e5b94f"/>
+          <stop offset="100%" stop-color="#b98227"/>
+
+        </linearGradient>
+
+        <filter
+          id="coachGoldGlow"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%">
+
+          <feGaussianBlur
+            stdDeviation="4"
+            result="blur"/>
+
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+
+        </filter>
+
+      </defs>
+
+      <path
+        d="M55 135 L130 28 L205 135"
+        fill="none"
+        stroke="url(#coachElevateGold)"
+        stroke-width="18"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#coachGoldGlow)"/>
+
+      <path
+        d="M94 135 L130 82 L166 135"
+        fill="none"
+        stroke="url(#coachElevateGold)"
+        stroke-width="15"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+      <rect
+        x="67"
+        y="113"
+        width="126"
+        height="10"
+        rx="5"
+        fill="url(#coachElevateGold)"/>
+
+      <rect
+        x="48"
+        y="91"
+        width="15"
+        height="54"
+        rx="5"
+        fill="url(#coachElevateGold)"/>
+
+      <rect
+        x="30"
+        y="101"
+        width="12"
+        height="34"
+        rx="4"
+        fill="url(#coachElevateGold)"/>
+
+      <rect
+        x="197"
+        y="91"
+        width="15"
+        height="54"
+        rx="5"
+        fill="url(#coachElevateGold)"/>
+
+      <rect
+        x="218"
+        y="101"
+        width="12"
+        height="34"
+        rx="4"
+        fill="url(#coachElevateGold)"/>
+
+    </svg>
+
+  </div>
+
+
+  <div>
 
     <div style="
-      display:flex;
-      align-items:center;
-      gap:15px;
-      margin-bottom:28px;
+      color:#f3f3ef;
+      font-size:17px;
+      font-weight:700;
+      letter-spacing:5px;
     ">
-
-      <svg
-        width="78"
-        height="78"
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-
-        <defs>
-
-          <linearGradient
-            id="dashboardGold"
-            x1="15"
-            y1="10"
-            x2="85"
-            y2="90"
-            gradientUnits="userSpaceOnUse">
-
-            <stop stop-color="#F5D17A"/>
-            <stop offset=".5" stop-color="#D9AA4A"/>
-            <stop offset="1" stop-color="#B77E22"/>
-
-          </linearGradient>
-
-        </defs>
-
-        <path
-          d="M25 20h28c13 0 23 10 23 23v6"
-          stroke="url(#dashboardGold)"
-          stroke-width="7"
-          stroke-linecap="round"/>
-
-        <path
-          d="M25 20v59"
-          stroke="url(#dashboardGold)"
-          stroke-width="7"
-          stroke-linecap="round"/>
-
-        <path
-          d="M25 79h27"
-          stroke="url(#dashboardGold)"
-          stroke-width="7"
-          stroke-linecap="round"/>
-
-        <path
-          d="M67 34c-16 0-28 12-28 28s12 28 28 28c10 0 18-5 23-13"
-          stroke="url(#dashboardGold)"
-          stroke-width="7"
-          stroke-linecap="round"/>
-
-      </svg>
-
-
-      <div>
-
-        <div style="
-          color:#f3f3ef;
-          font-size:17px;
-          font-weight:700;
-          letter-spacing:5px;
-        ">
-          DANIEL CAMPINS
-        </div>
-
-        <div style="
-          margin-top:6px;
-          color:#d9aa4a;
-          font-size:10px;
-          letter-spacing:3px;
-        ">
-          COACHING · PERFORMANCE
-        </div>
-
-      </div>
-
+      ELEVATE
     </div>
+
+    <div style="
+      margin-top:6px;
+      color:#d9aa4a;
+      font-size:10px;
+      letter-spacing:3px;
+    ">
+      COACHING · PERFORMANCE
+    </div>
+
+  </div>
+
+</div>
 
 
     <!-- CABECERA -->
