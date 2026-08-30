@@ -3710,6 +3710,173 @@ margin:0 !important;
     max-width:100% !important;
   }
 }
+/* =========================================================
+   BARRA INFERIOR — CORRECCIÓN DEFINITIVA
+   SIN AURA AMARILLA
+   ========================================================= */
+
+@media (max-width:700px){
+
+  /* BARRA */
+  #client .side,
+  #coach .side{
+    position:fixed !important;
+    left:10px !important;
+    right:10px !important;
+    bottom:10px !important;
+    top:auto !important;
+
+    width:auto !important;
+    height:68px !important;
+    min-height:68px !important;
+
+    padding:4px !important;
+    margin:0 !important;
+
+    box-sizing:border-box !important;
+
+    z-index:99999 !important;
+  }
+
+  /* CONTENEDOR DE LOS 6 BOTONES */
+  #client .nav,
+  #coach .nav{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    gap:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+
+    align-items:stretch !important;
+    justify-items:stretch !important;
+  }
+
+  /* BOTONES */
+  #client .nav button,
+  #coach .nav button{
+    position:relative !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    height:60px !important;
+
+    margin:0 !important;
+    padding:4px 1px !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    gap:4px !important;
+
+    border:0 !important;
+    border-radius:12px !important;
+
+    background:transparent !important;
+
+    color:#7f8792 !important;
+
+    box-shadow:none !important;
+    filter:none !important;
+
+    transform:none !important;
+
+    box-sizing:border-box !important;
+  }
+
+  /* QUITAR COMPLETAMENTE EL CÍRCULO/AURA */
+  #client .nav button::before,
+  #client .nav button::after,
+  #coach .nav button::before,
+  #coach .nav button::after{
+    display:none !important;
+    content:none !important;
+    opacity:0 !important;
+    background:none !important;
+    box-shadow:none !important;
+    filter:none !important;
+  }
+
+  /* ESTADO ACTIVO: SOLO TEXTO/ICONO DORADO */
+  #client .nav button.active,
+  #coach .nav button.active{
+    color:#f0c96b !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
+    transform:none !important;
+  }
+
+  /* ICONOS SIN BRILLO */
+  #client .nav button svg,
+  #coach .nav button svg{
+    width:22px !important;
+    height:22px !important;
+
+    flex:none !important;
+
+    filter:none !important;
+    box-shadow:none !important;
+
+    margin:0 !important;
+  }
+
+  #client .nav button.active svg,
+  #coach .nav button.active svg{
+    filter:none !important;
+    box-shadow:none !important;
+  }
+
+  /* TEXTOS */
+  #client .nav button span,
+  #coach .nav button span{
+    display:block !important;
+
+    width:100% !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    text-align:center !important;
+
+    font-size:10px !important;
+    line-height:1 !important;
+
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:clip !important;
+
+    box-sizing:border-box !important;
+  }
+
+  /* AL PASAR EL DEDO/MOUSE NO CREA CUADRO */
+  #client .nav button:hover,
+  #client .nav button:focus,
+  #client .nav button:focus-visible,
+  #coach .nav button:hover,
+  #coach .nav button:focus,
+  #coach .nav button:focus-visible{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    filter:none !important;
+    outline:none !important;
+  }
+
+  /* SOLO EL COLOR DORADO EN ACTIVO */
+  #client .nav button.active:hover,
+  #coach .nav button.active:hover{
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+}
 </style>
 </head>
 
