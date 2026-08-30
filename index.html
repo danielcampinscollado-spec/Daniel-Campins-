@@ -8804,8 +8804,15 @@ if(screen==="dashboard"){
         0
       );
 
-    if(trainingFoods === 0 && restFoods === 0){
+    const incompleteTraining =
+  trainingMeals.length === 0 ||
+  trainingMeals.some(meal => !meal.foods?.length);
 
+const incompleteRest =
+  restMeals.length === 0 ||
+  restMeals.some(meal => !meal.foods?.length);
+
+if(incompleteTraining || incompleteRest){
       attention.push({
         type:"diet",
         icon:"🍴",
