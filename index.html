@@ -10542,6 +10542,7 @@ if(screen==="diets"){
     
     return;
   }
+  const selected=window.selectedClient||"";
 if(!data.diets[selected].rest){
 data.diets[selected].rest={
 meals:mealNamesRest.map(name=>({name,foods:[]}))
