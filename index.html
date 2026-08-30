@@ -3712,105 +3712,93 @@ margin:0 !important;
 
     <div class="brand-logo">
 
-      <svg viewBox="0 0 260 220"
-           xmlns="http://www.w3.org/2000/svg"
-           aria-label="ELEVATE">
+     <svg viewBox="0 0 260 220"
+     xmlns="http://www.w3.org/2000/svg"
+     aria-label="ELEVATE">
 
-        <defs>
+  <defs>
+    <linearGradient id="elevateGold"
+                    x1="0%" y1="0%"
+                    x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8d98a"/>
+      <stop offset="45%" stop-color="#e5ad45"/>
+      <stop offset="100%" stop-color="#f8cf72"/>
+    </linearGradient>
 
-          <linearGradient id="elevateGold"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="100%">
+    <filter id="goldGlow"
+            x="-50%" y="-50%"
+            width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
 
-            <stop offset="0%" stop-color="#f8d77f"/>
-            <stop offset="45%" stop-color="#e5b94f"/>
-            <stop offset="100%" stop-color="#b98227"/>
+  <!-- A superior -->
+  <path
+    d="M55 135 L130 28 L205 135"
+    fill="none"
+    stroke="url(#elevateGold)"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#goldGlow)"/>
 
-          </linearGradient>
+  <!-- A interior -->
+  <path
+    d="M94 135 L130 82 L166 135"
+    fill="none"
+    stroke="url(#elevateGold)"
+    stroke-width="15"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
 
-          <filter id="goldGlow"
-                  x="-50%"
-                  y="-50%"
-                  width="200%"
-                  height="200%">
+  <!-- barra central -->
+  <rect
+    x="67"
+    y="113"
+    width="126"
+    height="10"
+    rx="5"
+    fill="url(#elevateGold)"/>
 
-            <feGaussianBlur stdDeviation="4"
-                            result="blur"/>
+  <!-- discos / pesas izquierda -->
+  <rect
+    x="48"
+    y="91"
+    width="15"
+    height="54"
+    rx="5"
+    fill="url(#elevateGold)"/>
 
-            <feMerge>
-              <feMergeNode in="blur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+  <rect
+    x="30"
+    y="101"
+    width="12"
+    height="34"
+    rx="4"
+    fill="url(#elevateGold)"/>
 
-          </filter>
+  <!-- discos / pesas derecha -->
+  <rect
+    x="197"
+    y="91"
+    width="15"
+    height="54"
+    rx="5"
+    fill="url(#elevateGold)"/>
 
-        </defs>
+  <rect
+    x="218"
+    y="101"
+    width="12"
+    height="34"
+    rx="4"
+    fill="url(#elevateGold)"/>
 
-
-        <path
-          d="M55 135 L130 28 L205 135"
-          fill="none"
-          stroke="url(#elevateGold)"
-          stroke-width="18"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          filter="url(#goldGlow)"/>
-
-
-        <path
-          d="M94 135 L130 82 L166 135"
-          fill="none"
-          stroke="url(#elevateGold)"
-          stroke-width="15"
-          stroke-linecap="round"
-          stroke-linejoin="round"/>
-
-
-        <rect
-          x="67"
-          y="113"
-          width="126"
-          height="10"
-          rx="5"
-          fill="url(#elevateGold)"/>
-
-
-        <rect
-          x="48"
-          y="91"
-          width="15"
-          height="54"
-          rx="5"
-          fill="url(#elevateGold)"/>
-
-        <rect
-          x="30"
-          y="101"
-          width="12"
-          height="34"
-          rx="4"
-          fill="url(#elevateGold)"/>
-
-
-        <rect
-          x="197"
-          y="91"
-          width="15"
-          height="54"
-          rx="5"
-          fill="url(#elevateGold)"/>
-
-        <rect
-          x="218"
-          y="101"
-          width="12"
-          height="34"
-          rx="4"
-          fill="url(#elevateGold)"/>
-
-      </svg>
+</svg>
 
     </div>
 
