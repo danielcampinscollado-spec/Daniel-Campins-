@@ -315,28 +315,23 @@ button{
   pointer-events:none;
 }
 
-.nav button:hover,
-.nav button.active{
-  background:rgba(217,170,74,.08);
-  color:var(--gold);
-  box-shadow:0 4px 18px rgba(217,170,74,.08);
+.nav button:hover{
+    color:var(--gold-light);
 }
 
-.nav button:hover::before,
-.nav button.active::before{
-  transform:translateY(-50%) scale(1);
-  opacity:1;
+.nav button.active{
+    background:transparent;
+    border-color:transparent;
+    box-shadow:none;
+    color:var(--gold);
 }
 
 .nav button:active{
   transform:scale(.97);
 }
 
-.nav button:hover,
-.nav button.active{
-  background:rgba(217,170,74,.09);
-  border-color:rgba(217,170,74,.08);
-  color:var(--gold-light);
+.nav button:hover{
+    color:var(--gold-light);
 }
 
 .out{
