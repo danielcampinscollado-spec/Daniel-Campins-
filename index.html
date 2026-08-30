@@ -3701,6 +3701,108 @@ margin:0 !important;
 }
 
 }
+/* =========================================================
+   ELEVATE — DASHBOARD MÓVIL
+   CABECERA SEGÚN PROTOTIPO
+   ========================================================= */
+
+@media (max-width:700px){
+
+  /* Contenedor del dashboard */
+  #coach-main{
+    padding:0 35px 105px !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Contenedor general que genera showCoach */
+  #coach-main > div:first-child{
+    padding:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* ===== LOGO + NOMBRE ===== */
+
+  #coach-main > div:first-child > div:first-child{
+    display:flex !important;
+    align-items:center !important;
+    gap:14px !important;
+    margin:0 0 28px !important;
+    padding:0 !important;
+  }
+
+  /* Caja del logo */
+  #coach-main > div:first-child > div:first-child > div:first-child{
+    width:78px !important;
+    height:66px !important;
+    flex:0 0 78px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  /* Logo */
+  #coach-main > div:first-child > div:first-child svg{
+    width:78px !important;
+    height:66px !important;
+    display:block !important;
+  }
+
+  /* Nombre ELEVATE */
+  #coach-main > div:first-child > div:first-child > div:last-child > div:first-child{
+    color:#f3f3ef !important;
+    font-size:17px !important;
+    line-height:1 !important;
+    font-weight:700 !important;
+    letter-spacing:5px !important;
+    white-space:nowrap !important;
+  }
+
+  /* Coaching · Performance */
+  #coach-main > div:first-child > div:first-child > div:last-child > div:last-child{
+    margin-top:7px !important;
+    color:#d9aa4a !important;
+    font-size:10px !important;
+    line-height:1 !important;
+    letter-spacing:3px !important;
+    white-space:nowrap !important;
+  }
+
+  /* ===== CABECERA ===== */
+
+  #coach-main > div:first-child > div:nth-child(2){
+    margin:0 0 27px !important;
+    padding:0 !important;
+  }
+
+  #coach-main > div:first-child > div:nth-child(2) > div:first-child{
+    margin:0 0 8px !important;
+    color:#d9aa4a !important;
+    font-size:12px !important;
+    line-height:1.2 !important;
+    font-weight:600 !important;
+    letter-spacing:2.2px !important;
+    text-transform:uppercase !important;
+  }
+
+  #coach-main > div:first-child > div:nth-child(2) h1{
+    margin:0 !important;
+    color:#f5f5f2 !important;
+    font-family:Georgia,"Times New Roman",serif !important;
+    font-size:37px !important;
+    line-height:1.08 !important;
+    font-weight:500 !important;
+    letter-spacing:-1.2px !important;
+    white-space:nowrap !important;
+  }
+
+  #coach-main > div:first-child > div:nth-child(2) p{
+    margin:10px 0 0 !important;
+    color:#aeb4bd !important;
+    font-size:15px !important;
+    line-height:1.35 !important;
+  }
+
+}
 </style>
 </head>
 
@@ -4187,8 +4289,7 @@ async function loadClientsFromSupabase(){
 
     const { data:clients,error } = await supabaseClient
       .from("clients")
-      .select("id,name,goal,weight,initial_weight,plan,status")
-      .order("created_at",{ascending:true});
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,plan,status")      .order("created_at",{ascending:true});
 
     if(error){
       console.error("Error cargando clientes:",error);
@@ -4213,6 +4314,12 @@ async function loadClientsFromSupabase(){
         goal:row.goal,
         weight:Number(row.weight)||0,
         initial:Number(row.initial_weight)||Number(row.weight)||0,
+        
+        bodyFatInitial:
+  row.initial_body_fat != null
+    ? Number(row.initial_body_fat)
+    : null,
+        
         plan:row.plan || "",
         status:row.status || "Pendiente"
       };
