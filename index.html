@@ -6360,415 +6360,815 @@ if(screen==="food"){
 
 if(screen==="training"){
 
-  const routine = data.routines?.[currentClientId] || [];
-  const weeklyWorkouts = getWeeklyWorkoutCount(currentClientId);
+  const routine = data.routines?.[c.id] || [];
 
-  const weekCompleted =
-    routine.length > 0 &&
-    weeklyWorkouts >= routine.length;
+  /*
+   * Día seleccionado.
+   * Si no existe todavía, empieza por el primer día.
+   */
+  if(
+    typeof window.trainingDayTab !== "number" ||
+    window.trainingDayTab >= routine.length
+  ){
+    window.trainingDayTab = 0;
+  }
 
-  const firstDay = routine[0];
+  const selectedDayIndex = window.trainingDayTab;
+  const selectedDay = routine[selectedDayIndex];
 
-  html = `
+  /*
+   * Genera una pequeña ilustración visual según el ejercicio.
+   * No usamos emojis grandes.
+   */
+  const exerciseVisual = (name="") => {
 
-    <div class="top">
+    const n = String(name).toLowerCase();
 
-      <div>
+    let accent = "#d9aa4a";
+    let type = "upper";
 
-        <span style="
-          display:block;
-          margin-bottom:10px;
-          color:#d9aa4a;
-          font-size:12px;
-          font-weight:700;
-          letter-spacing:2.2px;
-          text-transform:uppercase;
-        ">
-          ENTRENAMIENTO
-        </span>
+    if(
+      n.includes("sentadilla") ||
+      n.includes("prensa") ||
+      n.includes("cuádriceps") ||
+      n.includes("cuadriceps") ||
+      n.includes("femoral") ||
+      n.includes("peso muerto") ||
+      n.includes("zancada") ||
+      n.includes("gemelo") ||
+      n.includes("pierna")
+    ){
+      type = "legs";
+    }
 
-        <h1 style="
-          margin:0;
-          font-size:32px;
-          line-height:1.1;
-          font-weight:700;
-        ">
-          ${
-            firstDay
-              ? `${esc(firstDay.muscle || "Entrenamiento")} · Día 1`
-              : "Entrenamiento"
-          }
-        </h1>
+    if(
+      n.includes("curl") ||
+      n.includes("bíceps") ||
+      n.includes("biceps") ||
+      n.includes("tríceps") ||
+      n.includes("triceps")
+    ){
+      type = "arms";
+    }
 
-        <p class="muted" style="
-          margin:12px 0 0;
-          font-size:16px;
-        ">
-          Tu rutina personalizada
-        </p>
+    if(
+      n.includes("remo") ||
+      n.includes("jalón") ||
+      n.includes("jalon") ||
+      n.includes("dominada") ||
+      n.includes("espalda")
+    ){
+      type = "back";
+    }
 
-      </div>
+    if(
+      n.includes("press banca") ||
+      n.includes("press inclinado") ||
+      n.includes("pecho") ||
+      n.includes("pectoral")
+    ){
+      type = "chest";
+    }
 
+    if(
+      n.includes("elevaciones laterales") ||
+      n.includes("hombro") ||
+      n.includes("militar")
+    ){
+      type = "shoulders";
+    }
 
-      <span class="pill" style="
-        border-color:#d9aa4a;
-        color:#d9aa4a;
-      ">
-        ${routine.length}
-        ${routine.length===1 ? "día" : "días"}
-      </span>
+    let body="";
 
-    </div>
+    if(type==="legs"){
 
+      body=`
+        <path d="M48 25c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9Z"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
 
-    ${
-      routine.length
+        <path d="M48 43v18"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-      ? routine.map((day,dayIndex)=>{
+        <path d="M48 48 31 55M48 48 65 55"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-          const completed =
-            dayIndex < weeklyWorkouts;
+        <path d="M48 61 39 79M48 61 57 79"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-          const exercises =
-            day.exercises || [];
+        <path d="M34 53h28"
+          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
+      `;
 
-          return `
+    }else if(type==="arms"){
 
-            <div class="card" style="
-              margin-bottom:24px;
-              padding:26px;
-              border-radius:22px;
-            ">
+      body=`
+        <circle cx="48" cy="25" r="8"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
 
+        <path d="M48 34v27"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-              <!-- CABECERA DEL DÍA -->
+        <path d="M48 39 28 51 20 43"
+          fill="none" stroke="${accent}" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
-              <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                gap:16px;
-                margin-bottom:22px;
-              ">
+        <path d="M48 39 68 51 76 43"
+          fill="none" stroke="${accent}" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
 
-                <div style="
-                  min-width:0;
-                  flex:1;
-                ">
+        <path d="M48 61 38 80M48 61 58 80"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-                  <span class="pill" style="
-                    color:#d9aa4a;
-                    border-color:#d9aa4a;
-                  ">
-                    DÍA ${dayIndex+1}
-                  </span>
+        <circle cx="20" cy="43" r="3"
+          fill="none" stroke="#f5d17a" stroke-width="2"/>
+        <circle cx="76" cy="43" r="3"
+          fill="none" stroke="#f5d17a" stroke-width="2"/>
+      `;
 
-                  <h2 style="
-                    margin:12px 0 5px;
-                    font-size:25px;
-                    line-height:1.1;
-                  ">
-                    ${esc(day.muscle || "Entrenamiento")}
-                  </h2>
+    }else if(type==="chest"){
 
-                  <p class="muted" style="
-                    margin:0;
-                    font-size:15px;
-                  ">
-                    ${exercises.length}
-                    ${exercises.length===1
-                      ? "ejercicio"
-                      : "ejercicios"}
-                  </p>
+      body=`
+        <circle cx="48" cy="25" r="8"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
 
-                </div>
+        <path d="M48 34v28"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
+        <path d="M48 39 27 34M48 39 69 34"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-                <div style="
-                  width:58px;
-                  height:58px;
-                  flex:none;
-                  border:1px solid rgba(217,170,74,.35);
-                  border-radius:17px;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  background:rgba(217,170,74,.06);
-                  font-size:27px;
-                ">
-                  🏋️
-                </div>
+        <path d="M27 34h42"
+          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
 
-              </div>
+        <path d="M48 62 39 80M48 62 57 80"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
+        <path d="M35 46h26"
+          stroke="#f5d17a" stroke-width="2.5"
+          stroke-linecap="round"/>
+      `;
 
-              ${
-                exercises.length
+    }else if(type==="back"){
 
-                ? `
+      body=`
+        <circle cx="48" cy="25" r="8"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
 
-                  <div>
+        <path d="M48 34v28"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
 
-                    ${
-                      exercises.map((ex, exerciseIndex) => {
-    const exerciseImage =
-        ex.image ||
-        ex.imageUrl ||
-        ex.photo ||
-        ex.img ||
-        "";
+        <path d="M48 40 28 51M48 40 68 51"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <path d="M48 62 39 80M48 62 57 80"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <path d="M31 51h-7M65 51h7"
+          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
+      `;
+
+    }else if(type==="shoulders"){
+
+      body=`
+        <circle cx="48" cy="25" r="8"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
+
+        <path d="M48 34v28"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <path d="M48 40 26 22M48 40 70 22"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <circle cx="25" cy="21" r="4"
+          fill="none" stroke="#f5d17a" stroke-width="2"/>
+
+        <circle cx="71" cy="21" r="4"
+          fill="none" stroke="#f5d17a" stroke-width="2"/>
+
+        <path d="M48 62 39 80M48 62 57 80"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+      `;
+
+    }else{
+
+      body=`
+        <circle cx="48" cy="25" r="8"
+          fill="none" stroke="${accent}" stroke-width="2.5"/>
+
+        <path d="M48 34v28"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <path d="M48 40 29 52M48 40 67 52"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <path d="M48 62 39 80M48 62 57 80"
+          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+
+        <circle cx="29" cy="52" r="3"
+          fill="#f5d17a"/>
+        <circle cx="67" cy="52" r="3"
+          fill="#f5d17a"/>
+      `;
+    }
 
     return `
+      <svg
+        viewBox="0 0 96 96"
+        width="58"
+        height="58"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+
+        <rect
+          x="1"
+          y="1"
+          width="94"
+          height="94"
+          rx="18"
+          fill="rgba(217,170,74,.055)"
+          stroke="rgba(217,170,74,.28)"/>
+
+        ${body}
+
+      </svg>
+    `;
+  };
+
+
+  /*
+   * Imagen/figura del grupo muscular del día.
+   */
+  const muscleVisual = (muscle="") => {
+
+    const m = String(muscle).toLowerCase();
+
+    const parts = [];
+
+    if(
+      m.includes("pecho") ||
+      m.includes("pectoral")
+    ){
+      parts.push("Pecho");
+    }
+
+    if(
+      m.includes("hombro")
+    ){
+      parts.push("Hombro");
+    }
+
+    if(
+      m.includes("tríceps") ||
+      m.includes("triceps")
+    ){
+      parts.push("Tríceps");
+    }
+
+    if(
+      m.includes("espalda")
+    ){
+      parts.push("Espalda");
+    }
+
+    if(
+      m.includes("bíceps") ||
+      m.includes("biceps")
+    ){
+      parts.push("Bíceps");
+    }
+
+    if(
+      m.includes("cuádriceps") ||
+      m.includes("cuadriceps")
+    ){
+      parts.push("Cuádriceps");
+    }
+
+    if(
+      m.includes("femoral")
+    ){
+      parts.push("Femoral");
+    }
+
+    if(
+      m.includes("glúteo") ||
+      m.includes("gluteo")
+    ){
+      parts.push("Glúteos");
+    }
+
+    if(
+      m.includes("gemelo")
+    ){
+      parts.push("Gemelos");
+    }
+
+    /*
+     * Si aparecen dos grupos diferentes,
+     * mostramos dos pequeños recuadros.
+     */
+    const visualParts =
+      parts.length
+        ? parts.slice(0,2)
+        : ["Entrenamiento"];
+
+    return visualParts.map(label=>{
+
+      return `
         <div style="
+          width:46px;
+          height:46px;
+          border:1px solid rgba(217,170,74,.28);
+          border-radius:14px;
+          background:rgba(217,170,74,.045);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          flex:none;
+          overflow:hidden;
+        ">
+
+          <svg
+            viewBox="0 0 60 60"
+            width="36"
+            height="36"
+            fill="none">
+
+            <circle
+              cx="30"
+              cy="14"
+              r="6"
+              stroke="#d9aa4a"
+              stroke-width="2"/>
+
+            <path
+              d="M30 22v18M30 25 17 33M30 25 43 33M30 40 23 52M30 40 37 52"
+              stroke="#d9aa4a"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+
+            <circle
+              cx="30"
+              cy="28"
+              r="4"
+              fill="rgba(217,170,74,.16)"
+              stroke="#f5d17a"
+              stroke-width="1.5"/>
+
+          </svg>
+
+        </div>
+      `;
+
+    }).join("");
+  };
+
+
+  /*
+   * Sin rutina
+   */
+  if(!routine.length){
+
+    html = `
+
+      <div style="
+        padding:18px 2px 100px;
+      ">
+
+        <div style="
+          margin-bottom:22px;
+        ">
+
+          <div style="
+            color:#d9aa4a;
+            font-size:11px;
+            font-weight:700;
+            letter-spacing:2.4px;
+            text-transform:uppercase;
+            margin-bottom:8px;
+          ">
+            ENTRENAMIENTO
+          </div>
+
+          <h1 style="
+            margin:0;
+            font-size:30px;
+            line-height:1.1;
+          ">
+            Tu rutina
+          </h1>
+
+          <p class="muted" style="
+            margin:8px 0 0;
+            font-size:15px;
+          ">
+            Todavía no tienes una rutina asignada.
+          </p>
+
+        </div>
+
+        <div class="card" style="
+          padding:28px 18px;
+          text-align:center;
+        ">
+
+          <div style="
+            margin:0 auto 14px;
+            width:58px;
+            height:58px;
+            border-radius:17px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(217,170,74,.06);
+            border:1px solid rgba(217,170,74,.22);
+          ">
+
+            <svg viewBox="0 0 60 60" width="38" height="38" fill="none">
+
+              <circle
+                cx="30"
+                cy="14"
+                r="6"
+                stroke="#d9aa4a"
+                stroke-width="2"/>
+
+              <path
+                d="M30 22v18M30 25 17 33M30 25 43 33M30 40 23 52M30 40 37 52"
+                stroke="#d9aa4a"
+                stroke-width="2.5"
+                stroke-linecap="round"/>
+
+            </svg>
+
+          </div>
+
+          <h3 style="
+            margin:0 0 7px;
+            font-size:18px;
+          ">
+            No hay rutina asignada
+          </h3>
+
+          <p class="muted" style="
+            margin:0;
+            font-size:14px;
+            line-height:1.5;
+          ">
+            Tu entrenador todavía no ha configurado tus días de entrenamiento.
+          </p>
+
+        </div>
+
+      </div>
+    `;
+
+  }else{
+
+    const dayTabs = routine.map((day,index)=>{
+
+      const active = index === selectedDayIndex;
+
+      return `
+        <button
+          onclick="
+            window.trainingDayTab=${index};
+            showClient('training');
+          "
+          style="
+            flex:0 0 72px;
+            height:58px;
+            border-radius:16px;
+            border:1px solid ${active ? "#d9aa4a" : "#2d323a"};
+            background:${active ? "rgba(217,170,74,.13)" : "#111318"};
+            color:${active ? "#f5d17a" : "#9298a4"};
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:3px;
+            padding:0;
+            cursor:pointer;
+          "
+        >
+
+          <span style="
+            font-size:10px;
+            font-weight:700;
+            letter-spacing:1.4px;
+            text-transform:uppercase;
+          ">
+            DÍA
+          </span>
+
+          <strong style="
+            font-size:18px;
+            line-height:1;
+          ">
+            ${index+1}
+          </strong>
+
+        </button>
+      `;
+
+    }).join("");
+
+
+    const exercises = selectedDay?.exercises || [];
+
+    const exerciseRows = exercises.map((ex,index)=>{
+
+      const reps = ex.reps || "";
+
+      return `
+        <div
+          style="
             display:flex;
             align-items:center;
             gap:12px;
-            min-height:66px;
-            padding:9px 0;
-            border-top:1px solid rgba(255,255,255,.10);
-        ">
+            min-height:78px;
+            padding:10px 0;
+            border-top:1px solid #292d35;
+          "
+        >
 
-            <div style="
-                width:48px;
-                height:48px;
-                flex:none;
-                border:1px solid rgba(217,170,74,.75);
-                border-radius:12px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
+          <div style="
+            width:38px;
+            height:38px;
+            flex:none;
+            border:1px solid #8b6c28;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#d9aa4a;
+            font-size:13px;
+            font-weight:800;
+          ">
+            ${String(index+1).padStart(2,"0")}
+          </div>
+
+          ${exerciseVisual(ex.name)}
+
+          <div style="
+            flex:1;
+            min-width:0;
+          ">
+
+            <b style="
+              display:block;
+              font-size:16px;
+              line-height:1.2;
+              margin-bottom:5px;
+              white-space:nowrap;
+              overflow:hidden;
+              text-overflow:ellipsis;
+            ">
+              ${esc(ex.name || "Ejercicio")}
+            </b>
+
+            <div class="muted" style="
+              font-size:13px;
+              line-height:1.25;
+            ">
+              ${esc(String(ex.sets || ""))} series
+              <span style="
                 color:#d9aa4a;
-                font-size:16px;
-                font-weight:800;
-            ">
-                ${String(exerciseIndex + 1).padStart(2,"0")}
+                margin:0 4px;
+              ">•</span>
+              ${esc(String(reps))} repeticiones
             </div>
 
-            <div style="
-                width:48px;
-                height:48px;
-                flex:none;
-                border-radius:11px;
-                overflow:hidden;
-                background:rgba(255,255,255,.06);
-                border:1px solid rgba(255,255,255,.08);
-                display:flex;
-                align-items:center;
-                justify-content:center;
-            ">
-                ${
-                    exerciseImage
-                    ? `<img
-                        src="${esc(exerciseImage)}"
-                        alt=""
-                        style="
-                            width:100%;
-                            height:100%;
-                            object-fit:cover;
-                            display:block;
-                        "
-                    >`
-                    : `<span style="font-size:22px;">🏋️</span>`
-                }
-            </div>
+          </div>
 
-            <div style="
-                flex:1;
-                min-width:0;
-            ">
-                <b style="
-                    display:block;
-                    margin-bottom:3px;
-                    font-size:17px;
-                    line-height:1.2;
-                    font-weight:700;
-                    color:#f5f5f5;
-                ">
-                    ${esc(ex.name || "Ejercicio")}
-                </b>
-
-                <span class="muted" style="
-                    font-size:14px;
-                    line-height:1.2;
-                ">
-                    ${esc(ex.sets || "")}
-                    ${ex.sets ? " series" : ""}
-                    ${ex.sets && ex.reps ? " · " : ""}
-                    ${
-                        ex.reps
-                        ? `${esc(ex.reps)} repeticiones`
-                        : ""
-                    }
-                </span>
-            </div>
-
-            <span style="
-                flex:none;
-                color:#d9aa4a;
-                font-size:28px;
-                line-height:1;
-            ">
-                ›
-            </span>
+          <span style="
+            flex:none;
+            color:#d9aa4a;
+            font-size:24px;
+            line-height:1;
+          ">
+            ›
+          </span>
 
         </div>
-    `;
-}).join("")}
+      `;
+
+    }).join("");
 
 
-                  ${
-                    completed
+    html = `
 
-                    ? `
+      <div style="
+        padding:4px 0 110px;
+      ">
 
-                      <div style="
-                        margin-top:22px;
-                        padding:18px;
-                        border-radius:17px;
-                        border:1px solid rgba(38,122,85,.35);
-                        background:rgba(38,122,85,.10);
-                        color:#4fc487;
-                      ">
+        <!-- CABECERA -->
 
-                        <div style="
-                          display:flex;
-                          align-items:center;
-                          gap:12px;
-                          font-size:16px;
-                          font-weight:700;
-                        ">
+        <div style="
+          margin-bottom:18px;
+        ">
 
-                          <span style="
-                            width:32px;
-                            height:32px;
-                            border-radius:50%;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            border:1px solid #4fc487;
-                            font-size:17px;
-                          ">
-                            ✓
-                          </span>
+          <div style="
+            color:#d9aa4a;
+            font-size:11px;
+            font-weight:700;
+            letter-spacing:2.4px;
+            text-transform:uppercase;
+            margin-bottom:8px;
+          ">
+            ENTRENAMIENTO
+          </div>
 
-                          Entrenamiento completado
-
-                        </div>
-
-                        <p class="muted" style="
-                          margin:10px 0 0 44px;
-                          font-size:13px;
-                        ">
-                          Completa los demás días para comenzar un nuevo ciclo.
-                        </p>
-
-                      </div>
-
-                    `
-
-                    : `
-
-                      <button
-                        class="btn"
-                        style="
-                          width:100%;
-                          margin-top:22px;
-                          padding:14px 18px;
-                        "
-                        onclick="startWorkout('${dayIndex}')"
-                      >
-                        Empezar entrenamiento
-                        <span style="
-                          margin-left:8px;
-                          font-size:20px;
-                          vertical-align:-1px;
-                        ">
-                          →
-                        </span>
-                      </button>
-
-                    `
-                  }
-
-
-                `
-
-                : `
-
-                  <div class="empty" style="
-                    padding:24px 8px;
-                    text-align:center;
-                  ">
-
-                    <div style="
-                      font-size:34px;
-                      margin-bottom:10px;
-                    ">
-                      🏋️
-                    </div>
-
-                    <h3>
-                      No hay ejercicios todavía
-                    </h3>
-
-                    <p class="muted">
-                      Daniel todavía no ha añadido ejercicios
-                      a este día.
-                    </p>
-
-                  </div>
-
-                `
-              }
-
-            </div>
-
-          `;
-
-        }).join("")
-
-      : `
-
-        <div class="card">
-
-          <div class="empty" style="
-            padding:35px 15px;
-            text-align:center;
+          <div style="
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap:12px;
           ">
 
             <div style="
-              width:64px;
-              height:64px;
-              margin:0 auto 16px;
-              border-radius:20px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              background:rgba(217,170,74,.10);
-              color:#d9aa4a;
-              font-size:30px;
+              min-width:0;
+              flex:1;
             ">
-              🏋️
+
+              <h1 style="
+                margin:0;
+                font-size:28px;
+                line-height:1.1;
+                font-weight:700;
+              ">
+                ${esc(selectedDay?.muscle || "Entrenamiento")}
+                · Día ${selectedDayIndex+1}
+              </h1>
+
+              <p class="muted" style="
+                margin:8px 0 0;
+                font-size:15px;
+              ">
+                Tu rutina personalizada
+              </p>
+
             </div>
 
-            <h2>
-              No hay rutina asignada
-            </h2>
-
-            <p class="muted">
-              Daniel todavía no ha asignado una rutina
-              de entrenamiento.
-            </p>
+            <div style="
+              flex:none;
+              display:flex;
+              align-items:center;
+              gap:5px;
+              color:#d9aa4a;
+              border:1px solid #765c22;
+              border-radius:18px;
+              padding:8px 12px;
+              font-size:12px;
+              font-weight:700;
+              white-space:nowrap;
+            ">
+              ${routine.length} ${routine.length===1 ? "día" : "días"}
+            </div>
 
           </div>
 
         </div>
 
-      `
-    }
 
-  `;
+        <!-- PESTAÑAS DE DÍAS -->
 
+        <div
+          style="
+            display:flex;
+            gap:8px;
+            overflow-x:auto;
+            padding:2px 2px 10px;
+            margin-bottom:8px;
+            scrollbar-width:none;
+          "
+        >
+          ${dayTabs}
+        </div>
+
+
+        <!-- TARJETA DEL DÍA -->
+
+        <div class="card" style="
+          padding:18px;
+          margin-bottom:18px;
+          border-radius:20px;
+        ">
+
+          <!-- CABECERA DEL GRUPO MUSCULAR -->
+
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            margin-bottom:16px;
+          ">
+
+            <div style="
+              min-width:0;
+              flex:1;
+            ">
+
+              <span class="pill" style="
+                color:#d9aa4a;
+                border-color:#806524;
+                font-size:10px;
+                padding:6px 10px;
+              ">
+                DÍA ${selectedDayIndex+1}
+              </span>
+
+              <h2 style="
+                margin:10px 0 4px;
+                font-size:23px;
+                line-height:1.1;
+              ">
+                ${esc(selectedDay?.muscle || "Entrenamiento")}
+              </h2>
+
+              <p class="muted" style="
+                margin:0;
+                font-size:14px;
+              ">
+                ${exercises.length}
+                ${exercises.length===1 ? "ejercicio" : "ejercicios"}
+              </p>
+
+            </div>
+
+            <div style="
+              display:flex;
+              gap:6px;
+              flex:none;
+            ">
+              ${muscleVisual(selectedDay?.muscle || "")}
+            </div>
+
+          </div>
+
+
+          <!-- EJERCICIOS -->
+
+          ${
+            exercises.length
+              ? `
+                <div>
+                  ${exerciseRows}
+                </div>
+              `
+              : `
+                <div style="
+                  padding:22px 8px;
+                  text-align:center;
+                  border-top:1px solid #292d35;
+                ">
+
+                  <p class="muted" style="
+                    margin:0;
+                    font-size:14px;
+                  ">
+                    Todavía no hay ejercicios para este día.
+                  </p>
+
+                </div>
+              `
+          }
+
+
+          ${
+            exercises.length
+              ? `
+                <button
+                  class="btn"
+                  style="
+                    width:100%;
+                    margin-top:18px;
+                    padding:14px 16px;
+                    font-size:15px;
+                    border-radius:15px;
+                  "
+                  onclick="startWorkout(${selectedDayIndex})"
+                >
+                  Empezar entrenamiento
+                  <span style="
+                    margin-left:8px;
+                    font-size:20px;
+                    vertical-align:-1px;
+                  ">
+                    →
+                  </span>
+                </button>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+    `;
+  }
 }
 if(screen==="progress"){
 
