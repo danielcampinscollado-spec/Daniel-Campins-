@@ -5115,612 +5115,657 @@ function showClient(screen){
 if(screen==="home"){
 
   const routine = data.routines?.[c.id] || [];
-  const weeklyWorkouts = getWeeklyWorkoutCount(c.id);
-  const totalWorkouts = routine.length;
+
+  const checkin = data.checkins?.[c.id] || {};
+
+  const currentWeight = Number(c.weight || 0);
+  const initialWeight = Number(c.initial || c.initial_weight || 0);
+
+  const weightLost = initialWeight - currentWeight;
+
+  const initialBodyFat =
+    c.bodyFatInitial != null
+      ? Number(c.bodyFatInitial)
+      : (
+          c.initialBodyFat != null
+            ? Number(c.initialBodyFat)
+            : (
+                c.initial_body_fat != null
+                  ? Number(c.initial_body_fat)
+                  : null
+              )
+        );
+
+  const currentBodyFat =
+    checkin.bodyFat !== undefined &&
+    checkin.bodyFat !== null &&
+    checkin.bodyFat !== ""
+      ? Number(checkin.bodyFat)
+      : null;
+
+  const bodyFatLost =
+    initialBodyFat !== null &&
+    currentBodyFat !== null
+      ? initialBodyFat - currentBodyFat
+      : null;
+
+
+  /* =====================================================
+     PRÓXIMO ENTRENAMIENTO
+  ====================================================== */
+
+  const weeklyWorkouts =
+    getWeeklyWorkoutCount(c.id);
 
   const nextWorkout =
-    totalWorkouts > 0 && weeklyWorkouts < totalWorkouts
+    routine.length > 0 &&
+    weeklyWorkouts < routine.length
       ? routine[weeklyWorkouts]
       : null;
 
-  const change =
-    Number(c.weight || 0) - Number(c.initial || 0);
 
-  const completedCount =
-    Math.min(
-      weeklyWorkouts,
-      totalWorkouts || weeklyWorkouts
+  /* =====================================================
+     TAREAS PENDIENTES
+  ====================================================== */
+
+  const tasks = [];
+
+
+  /* DIETA */
+
+  const diet =
+    data.diets?.[c.id];
+
+  const trainingMeals =
+    diet?.training?.meals || [];
+
+  const restMeals =
+    diet?.rest?.meals || [];
+
+  const trainingFoods =
+    trainingMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
     );
 
-  const lastMessage =
-    (data.messages?.[c.id] || []).slice(-1)[0];
+  const restFoods =
+    restMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
+    );
 
-  const messageText =
-    lastMessage
-      ? lastMessage[1]
-      : "La constancia convierte lo invisible en imparable.";
+  const hasDiet =
+    trainingFoods > 0 ||
+    restFoods > 0;
+
+
+  if(hasDiet){
+
+    tasks.push({
+      icon:"🍴",
+      title:"Ver dieta nueva",
+      action:"showClient('food')"
+    });
+
+  }
+
+
+  /* RUTINA */
+
+  if(routine.length > 0){
+
+    tasks.push({
+      icon:"🏋️",
+      title:"Ver nueva rutina",
+      action:"showClient('training')"
+    });
+
+  }
+
+
+  /* CHECK-IN SEMANAL */
+
+  const currentWeekKey =
+    typeof getCurrentWeekKey === "function"
+      ? getCurrentWeekKey()
+      : "";
+
+  const checkinSentThisWeek =
+    checkin.weekKey &&
+    currentWeekKey &&
+    checkin.weekKey === currentWeekKey &&
+    checkin.sentAt;
+
+  if(!checkinSentThisWeek){
+
+    tasks.push({
+      icon:"✓",
+      title:"Enviar check-in semanal",
+      action:"showClient('checkin')"
+    });
+
+  }
+
+
+  /* MENSAJES SIN LEER */
+
+  const messages =
+    data.messages?.[c.id] || [];
+
+  const lastMessage =
+    messages.length
+      ? messages[messages.length - 1]
+      : null;
+
+  const unreadMessages =
+    lastMessage &&
+    lastMessage[0] !== "Daniel";
+
+  if(unreadMessages){
+
+    tasks.push({
+      icon:"💬",
+      title:"Mensajes sin leer",
+      action:"showClient('coach')"
+    });
+
+  }
+
+
+  /* =====================================================
+     HTML
+  ====================================================== */
 
   html = `
 
-  <div class="dc-home">
+  <div style="
+    max-width:1180px;
+    margin:0 auto;
+    padding:4px 0 30px;
+  ">
 
-    <!-- =====================================================
-         CABECERA
-    ====================================================== -->
 
-    <header class="dc-home-header">
+    <!-- =================================================
+         LOGO ELEVATE
+    ================================================== -->
 
-      <div class="dc-brand">
+    <div style="
+      text-align:center;
+      margin-bottom:24px;
+    ">
 
-        <svg
-          class="dc-logo"
-          viewBox="0 0 100 100"
+      <svg
+        viewBox="0 0 260 220"
+        width="145"
+        height="123"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-label="ELEVATE"
+        style="
+          display:block;
+          margin:0 auto;
+          filter:drop-shadow(0 0 18px rgba(217,170,74,.18));
+        "
+      >
+
+        <defs>
+
+          <linearGradient
+            id="clientElevateGold"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop
+              offset="0%"
+              stop-color="#f8d98a"
+            />
+
+            <stop
+              offset="45%"
+              stop-color="#e5ad45"
+            />
+
+            <stop
+              offset="100%"
+              stop-color="#f8cf72"
+            />
+          </linearGradient>
+
+          <filter
+            id="clientGoldGlow"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+          >
+            <feGaussianBlur
+              stdDeviation="4"
+              result="blur"
+            />
+
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+
+          </filter>
+
+        </defs>
+
+
+        <!-- A SUPERIOR -->
+
+        <path
+          d="M55 135 L130 28 L205 135"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          stroke="url(#clientElevateGold)"
+          stroke-width="18"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          filter="url(#clientGoldGlow)"
+        />
 
-          <defs>
-            <linearGradient
-              id="dcGoldHome"
-              x1="15"
-              y1="10"
-              x2="85"
-              y2="90"
-              gradientUnits="userSpaceOnUse">
 
-              <stop stop-color="#F5D17A"/>
-              <stop offset=".5" stop-color="#D9AA4A"/>
-              <stop offset="1" stop-color="#B77E22"/>
+        <!-- A INTERIOR -->
 
-            </linearGradient>
-          </defs>
+        <path
+          d="M94 135 L130 82 L166 135"
+          fill="none"
+          stroke="url(#clientElevateGold)"
+          stroke-width="15"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
 
-          <path
-            d="M25 20h28c13 0 23 10 23 23v6"
-            stroke="url(#dcGoldHome)"
-            stroke-width="7"
-            stroke-linecap="round"/>
 
-          <path
-            d="M25 20v59"
-            stroke="url(#dcGoldHome)"
-            stroke-width="7"
-            stroke-linecap="round"/>
+        <!-- BARRA -->
 
-          <path
-            d="M25 79h27"
-            stroke="url(#dcGoldHome)"
-            stroke-width="7"
-            stroke-linecap="round"/>
+        <rect
+          x="67"
+          y="113"
+          width="126"
+          height="10"
+          rx="5"
+          fill="url(#clientElevateGold)"
+        />
 
-          <path
-            d="M67 34c-16 0-28 12-28 28s12 28 28 28c10 0 18-5 23-13"
-            stroke="url(#dcGoldHome)"
-            stroke-width="7"
-            stroke-linecap="round"/>
 
-        </svg>
+        <!-- PESAS IZQUIERDA -->
 
-        <div>
+        <rect
+          x="48"
+          y="91"
+          width="15"
+          height="54"
+          rx="5"
+          fill="url(#clientElevateGold)"
+        />
 
-          <div class="dc-brand-name">
-            DANIEL CAMPINS
-          </div>
+        <rect
+          x="30"
+          y="101"
+          width="12"
+          height="34"
+          rx="4"
+          fill="url(#clientElevateGold)"
+        />
 
-          <div class="dc-brand-sub">
-            COACHING · PERFORMANCE
-          </div>
 
-        </div>
+        <!-- PESAS DERECHA -->
 
+        <rect
+          x="197"
+          y="91"
+          width="15"
+          height="54"
+          rx="5"
+          fill="url(#clientElevateGold)"
+        />
+
+        <rect
+          x="218"
+          y="101"
+          width="12"
+          height="34"
+          rx="4"
+          fill="url(#clientElevateGold)"
+        />
+
+      </svg>
+
+
+      <div style="
+        margin-top:-12px;
+        color:#f5f5f2;
+        font-size:27px;
+        font-weight:500;
+        letter-spacing:8px;
+      ">
+        ELEVATE
       </div>
 
 
-      <div class="dc-header-actions">
-
-        <button
-          class="dc-circle-btn"
-          aria-label="Notificaciones">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7">
-
-            <path
-              d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
-
-            <path d="M10 21h4"/>
-
-          </svg>
-
-        </button>
-
-
-        <button
-          class="dc-avatar"
-          onclick="showClient('profile')"
-          aria-label="Mi perfil">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.4">
-
-            <circle
-              cx="12"
-              cy="7"
-              r="3.2"/>
-
-            <path
-              d="M5.5 20c.7-4.2 2.8-6.2 6.5-6.2s5.8 2 6.5 6.2"/>
-
-          </svg>
-
-        </button>
-
+      <div style="
+        margin-top:6px;
+        color:#d9aa4a;
+        font-size:10px;
+        letter-spacing:3px;
+      ">
+        COACHING · PERFORMANCE
       </div>
 
-    </header>
+    </div>
 
 
-    <!-- =====================================================
+    <!-- =================================================
          BIENVENIDA
-    ====================================================== -->
+    ================================================== -->
 
-    <section class="dc-welcome">
+    <div style="
+      margin-bottom:22px;
+    ">
 
-      <p class="dc-eyebrow">
+      <div style="
+        color:#d9aa4a;
+        font-size:12px;
+        font-weight:700;
+        letter-spacing:2px;
+        margin-bottom:7px;
+      ">
         BIENVENIDO
+      </div>
+
+      <h1 style="
+        margin:0;
+        color:#f5f5f2;
+        font-family:Georgia,'Times New Roman',serif;
+        font-size:38px;
+        line-height:1.05;
+        font-weight:500;
+        letter-spacing:-1px;
+      ">
+        ${esc(c.name)}
+      </h1>
+
+      <p style="
+        margin:9px 0 0;
+        color:#aeb4bd;
+        font-size:15px;
+      ">
+        Disciplina hoy. Resultados mañana.
       </p>
 
-      <div class="dc-welcome-row">
-
-        <div>
-
-          <h1>
-            ${esc(c.name)}
-          </h1>
-
-          <p class="dc-tagline">
-            Disciplina hoy. Resultados mañana.
-          </p>
-
-        </div>
-
-        <span class="dc-week">
-          SEMANA 3&nbsp;&nbsp;⌑
-        </span>
-
-      </div>
-
-    </section>
+    </div>
 
 
-    <!-- =====================================================
-         PESO + PROGRESO
-    ====================================================== -->
+    <!-- =================================================
+         PESO + GRASA
+    ================================================== -->
 
-    <section class="dc-card dc-stats">
+    <section style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:18px;
+    ">
+
 
       <!-- PESO -->
 
-      <div class="dc-stat">
+      <div style="
+        padding:18px;
+        border:1px solid #292d35;
+        border-radius:20px;
+        background:#101217;
+        box-sizing:border-box;
+      ">
 
-        <div class="dc-stat-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7">
-
-            <rect
-              x="4"
-              y="5"
-              width="16"
-              height="15"
-              rx="2"/>
-
-            <path d="M8 5V3h8v2"/>
-
-            <path d="M9 10c1.8-1.8 4.2-1.8 6 0"/>
-
-          </svg>
-
-        </div>
-
-        <div class="dc-stat-label">
+        <div style="
+          color:#aeb4bd;
+          font-size:11px;
+          letter-spacing:2px;
+          margin-bottom:10px;
+        ">
           PESO ACTUAL
         </div>
 
-        <div class="dc-weight">
-          ${money(c.weight)}
-          <span>kg</span>
+        <div style="
+          color:#f5f5f2;
+          font-size:30px;
+          font-weight:700;
+          line-height:1;
+        ">
+          ${currentWeight > 0 ? money(currentWeight) : "—"}
+          <span style="
+            font-size:15px;
+            font-weight:500;
+            color:#aeb4bd;
+          ">
+            kg
+          </span>
         </div>
 
-        <div class="dc-stat-sub">
-          Inicio ${money(c.initial)} kg
-        </div>
+        ${
+          initialWeight > 0
+          ? `
+            <div style="
+              margin-top:8px;
+              color:#aeb4bd;
+              font-size:13px;
+            ">
+              Inicio ${money(initialWeight)} kg
+            </div>
 
-        <div class="dc-change">
-          ↓
-          ${change > 0 ? "+" : ""}
-          ${money(change)} kg
-        </div>
+            ${
+              weightLost !== 0
+              ? `
+                <div style="
+                  display:inline-block;
+                  margin-top:10px;
+                  padding:6px 10px;
+                  border-radius:10px;
+                  background:rgba(217,170,74,.10);
+                  color:#d9aa4a;
+                  font-size:13px;
+                  font-weight:700;
+                ">
+                  ${
+                    weightLost > 0
+                      ? "↓ -"
+                      : "↑ +"
+                  }${money(Math.abs(weightLost))} kg
+                </div>
+              `
+              : ""
+            }
+          `
+          : ""
+        }
 
       </div>
 
 
-      <div class="dc-divider"></div>
+      <!-- GRASA -->
 
+      <div style="
+        padding:18px;
+        border:1px solid #292d35;
+        border-radius:20px;
+        background:#101217;
+        box-sizing:border-box;
+      ">
 
-      <!-- PROGRESO -->
-
-      <div class="dc-stat">
-
-        <div class="dc-stat-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7">
-
-            <path d="M4 19V10"/>
-            <path d="M10 19V6"/>
-            <path d="M16 19V3"/>
-            <path d="M22 19V8"/>
-
-          </svg>
-
+        <div style="
+          color:#aeb4bd;
+          font-size:11px;
+          letter-spacing:2px;
+          margin-bottom:10px;
+        ">
+          % DE GRASA ACTUAL
         </div>
 
-        <div class="dc-stat-label">
-          PROGRESO
-        </div>
-
-        <div class="dc-progress-value">
-          ${change > 0 ? "+" : ""}
-          ${money(change)} kg
-        </div>
-
-        <div class="dc-progress-sub">
-          desde el inicio
-        </div>
-
-        <div class="dc-chart">
-
-          <svg
-            viewBox="0 0 500 90"
-            preserveAspectRatio="none">
-
-            <defs>
-
-              <linearGradient
-                id="dcChartFill"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1">
-
-                <stop
-                  offset="0"
-                  stop-color="#d9aa4a"
-                  stop-opacity=".30"/>
-
-                <stop
-                  offset="1"
-                  stop-color="#d9aa4a"
-                  stop-opacity="0"/>
-
-              </linearGradient>
-
-              <filter id="dcGlow">
-
-                <feGaussianBlur
-                  stdDeviation="3"
-                  result="blur"/>
-
-                <feMerge>
-
-                  <feMergeNode in="blur"/>
-                  <feMergeNode in="SourceGraphic"/>
-
-                </feMerge>
-
-              </filter>
-
-            </defs>
-
-
-            <path
-              d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82 V90 H0Z"
-              fill="url(#dcChartFill)"/>
-
-
-            <path
-              d="M0 18 C60 25 90 22 135 35 S220 42 270 53 S360 60 410 72 S465 76 500 82"
-              fill="none"
-              stroke="#f0c96b"
-              stroke-width="3"
-              stroke-linecap="round"
-              filter="url(#dcGlow)"/>
-
-
-            <circle
-              cx="500"
-              cy="82"
-              r="7"
-              fill="#f0c96b"/>
-
-            <circle
-              cx="500"
-              cy="82"
-              r="12"
-              fill="none"
-              stroke="#d9aa4a"
-              stroke-opacity=".35"/>
-
-          </svg>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         ENTRENAMIENTOS
-    ====================================================== -->
-
-    <section class="dc-card dc-training">
-
-      <div class="dc-training-left">
-
-        <div class="dc-stat-icon">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7">
-
-            <path d="M3 10h3v4H3z"/>
-            <path d="M18 10h3v4h-3z"/>
-            <path d="M6 8h3v8H6z"/>
-            <path d="M15 8h3v8h-3z"/>
-            <path d="M9 11h6v2H9z"/>
-
-          </svg>
-
-        </div>
-
-        <div class="dc-stat-label">
-          ENTRENAMIENTOS
-        </div>
-
-        <div class="dc-training-count">
-          ${weeklyWorkouts} / ${totalWorkouts || "—"}
-        </div>
-
-        <div class="dc-training-sub">
-          Esta semana
-        </div>
-
-        <div class="dc-checks">
-
+        <div style="
+          color:#f5f5f2;
+          font-size:30px;
+          font-weight:700;
+          line-height:1;
+        ">
           ${
-            Array.from({
-              length:Math.max(totalWorkouts,3)
-            })
-            .slice(0,3)
-            .map((_,i)=>`
-
-              <span class="dc-check">
-                ${i < completedCount ? "✓" : ""}
-              </span>
-
-            `)
-            .join("")
+            currentBodyFat !== null &&
+            Number.isFinite(currentBodyFat)
+              ? money(currentBodyFat)
+              : "—"
           }
-
+          ${
+            currentBodyFat !== null
+              ? `<span style="
+                  font-size:15px;
+                  font-weight:500;
+                  color:#aeb4bd;
+                ">%</span>`
+              : ""
+          }
         </div>
 
-      </div>
+        ${
+          initialBodyFat !== null &&
+          Number.isFinite(initialBodyFat)
+          ? `
+            <div style="
+              margin-top:8px;
+              color:#aeb4bd;
+              font-size:13px;
+            ">
+              Inicio ${money(initialBodyFat)}%
+            </div>
 
-
-      <div class="dc-training-right">
-
-        <div class="dc-complete">
-
-          <div class="dc-trophy">
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5">
-
-              <path
-                d="M8 4h8v5c0 3-2 5-4 5s-4-2-4-5V4z"/>
-
-              <path
-                d="M8 6H5c0 4 2 6 5 6"/>
-
-              <path
-                d="M16 6h3c0 4-2 6-5 6"/>
-
-              <path d="M12 14v4"/>
-
-              <path d="M8 21h8"/>
-
-              <path d="M9 18h6"/>
-
-            </svg>
-
-          </div>
-
-          <div>
-
-            <h2>
-              ${
-                totalWorkouts &&
-                weeklyWorkouts >= totalWorkouts
-                  ? "Semana completada"
-                  : "Tu semana"
-              }
-            </h2>
-
-            <p>
-              ${
-                totalWorkouts &&
-                weeklyWorkouts >= totalWorkouts
-                  ? "¡Enhorabuena! Has completado todos los entrenamientos."
-                  : `${weeklyWorkouts} de ${totalWorkouts || "—"} entrenamientos completados esta semana.`
-              }
-            </p>
-
-          </div>
-
-        </div>
+            ${
+              bodyFatLost !== null &&
+              Number.isFinite(bodyFatLost) &&
+              bodyFatLost !== 0
+              ? `
+                <div style="
+                  display:inline-block;
+                  margin-top:10px;
+                  padding:6px 10px;
+                  border-radius:10px;
+                  background:rgba(217,170,74,.10);
+                  color:#d9aa4a;
+                  font-size:13px;
+                  font-weight:700;
+                ">
+                  ${
+                    bodyFatLost > 0
+                      ? "↓ -"
+                      : "↑ +"
+                  }${money(Math.abs(bodyFatLost))}%
+                </div>
+              `
+              : ""
+            }
+          `
+          : ""
+        }
 
       </div>
 
     </section>
 
 
-    <!-- =====================================================
-         PRÓXIMO ENTRENAMIENTO
-    ====================================================== -->
+    <!-- =================================================
+         TAREAS PENDIENTES
+    ================================================== -->
 
-    <section class="dc-card dc-next">
+    <section style="
+      border:1px solid #292d35;
+      border-radius:20px;
+      background:#101217;
+      padding:18px;
+      margin-bottom:18px;
+    ">
 
-      <div class="dc-next-head">
-
-        <div class="dc-next-title">
-
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.7">
-
-            <rect
-              x="4"
-              y="5"
-              width="16"
-              height="15"
-              rx="2"/>
-
-            <path d="M8 3v4"/>
-            <path d="M16 3v4"/>
-            <path d="M4 9h16"/>
-
-          </svg>
-
-          TU PRÓXIMO ENTRENAMIENTO
-
-        </div>
-
-
-        <button
-          class="dc-routine-btn"
-          onclick="showClient('training')">
-
-          Ver rutina&nbsp;&nbsp;→
-
-        </button>
-
+      <div style="
+        color:#d9aa4a;
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:2px;
+        margin-bottom:14px;
+      ">
+        TAREAS PENDIENTES
       </div>
 
 
       ${
-        nextWorkout
-        ? `
+        tasks.length
 
-        <div class="dc-next-inner">
-
-          <div class="dc-next-image">
-
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5">
-
-              <path d="M4 18h16"/>
-              <path d="M6 18v-7"/>
-              <path d="M9 18v-9"/>
-              <path d="M15 18v-9"/>
-              <path d="M18 18v-7"/>
-              <path d="M4 11h5"/>
-              <path d="M15 11h5"/>
-
-            </svg>
-          </div>
-
-
-          <div class="dc-next-info">
-
-            <h2>
-              ${esc(nextWorkout.muscle || "Entrenamiento")}
-              · Día ${weeklyWorkouts + 1}
-            </h2>
-
-            <p>
-              ${(nextWorkout.exercises || []).length}
-              ${
-                (nextWorkout.exercises || []).length === 1
-                  ? "ejercicio"
-                  : "ejercicios"
-              }
-              &nbsp; · &nbsp; ~45 min
-            </p>
-
-          </div>
-
+        ? tasks.map(task => `
 
           <button
-            class="dc-start"
-            onclick="showClient('training')">
+            type="button"
+            onclick="${task.action}"
+            style="
+              width:100%;
+              display:flex;
+              align-items:center;
+              gap:13px;
+              padding:14px 2px;
+              border:0;
+              border-top:1px solid #292d35;
+              background:transparent;
+              color:#f5f5f2;
+              text-align:left;
+              cursor:pointer;
+            "
+          >
 
-            EMPEZAR
+            <span style="
+              width:40px;
+              height:40px;
+              flex:none;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              border-radius:12px;
+              background:rgba(217,170,74,.10);
+              color:#d9aa4a;
+              font-size:18px;
+            ">
+              ${task.icon}
+            </span>
+
+
+            <span style="
+              flex:1;
+              font-size:15px;
+              font-weight:600;
+            ">
+              ${task.title}
+            </span>
+
+
+            <span style="
+              color:#d9aa4a;
+              font-size:22px;
+            ">
+              →
+            </span>
 
           </button>
 
-        </div>
+        `).join("")
 
-        `
         : `
 
-        <div class="dc-next-inner">
-
-          <div class="dc-next-info">
-
-            <h2>
-              ${
-                totalWorkouts &&
-                weeklyWorkouts >= totalWorkouts
-                  ? "Semana completada"
-                  : "Sin entrenamiento asignado"
-              }
-            </h2>
-
-            <p>
-              ${
-                totalWorkouts &&
-                weeklyWorkouts >= totalWorkouts
-                  ? "Has completado todos tus entrenamientos."
-                  : "Daniel todavía no ha asignado una rutina."
-              }
-            </p>
-
+          <div style="
+            padding:18px 4px 4px;
+            color:#aeb4bd;
+            font-size:14px;
+          ">
+            Todo al día.
           </div>
-
-        </div>
 
         `
       }
@@ -5728,29 +5773,95 @@ if(screen==="home"){
     </section>
 
 
-    <!-- =====================================================
-         FRASE
-    ====================================================== -->
+    <!-- =================================================
+         PRÓXIMO ENTRENAMIENTO
+    ================================================== -->
 
-    <section class="dc-card dc-quote">
+    ${
+      nextWorkout
 
-      <div class="dc-quote-mark">
-        “
-      </div>
+      ? `
 
-      <div class="dc-quote-text">
-        ${esc(messageText)}
-      </div>
+        <section style="
+          border:1px solid #292d35;
+          border-radius:20px;
+          background:#101217;
+          padding:18px;
+        ">
 
-      <div class="dc-quote-sign">
-        Daniel Campins
-      </div>
+          <div style="
+            color:#aeb4bd;
+            font-size:11px;
+            letter-spacing:2px;
+            margin-bottom:10px;
+          ">
+            TU PRÓXIMO ENTRENAMIENTO
+          </div>
 
-    </section>
+
+          <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+          ">
+
+            <div style="
+              min-width:0;
+            ">
+
+              <div style="
+                color:#f5f5f2;
+                font-size:21px;
+                font-weight:700;
+              ">
+                ${esc(nextWorkout.muscle || "Entrenamiento")}
+              </div>
+
+              <div style="
+                margin-top:5px;
+                color:#aeb4bd;
+                font-size:13px;
+              ">
+                Día ${weeklyWorkouts + 1}
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              onclick="showClient('training')"
+              style="
+                flex:none;
+                border:1px solid #d9aa4a;
+                border-radius:12px;
+                padding:10px 14px;
+                background:rgba(217,170,74,.10);
+                color:#f5d67e;
+                font-size:13px;
+                font-weight:700;
+              "
+            >
+              Ver rutina →
+            </button>
+
+          </div>
+
+        </section>
+
+      `
+
+      : ""
+    }
+
 
   </div>
-
   `;
+
+  main.innerHTML = html;
+
+  return;
 }
 
 if(screen==="profile"){
