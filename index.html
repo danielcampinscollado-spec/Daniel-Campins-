@@ -6510,78 +6510,110 @@ if(screen==="training"){
                   <div>
 
                     ${
-                      exercises.map((ex,exerciseIndex)=>`
+                      exercises.map((ex, exerciseIndex) => {
+    const exerciseImage =
+        ex.image ||
+        ex.imageUrl ||
+        ex.photo ||
+        ex.img ||
+        "";
 
-                        <div style="
-                          display:flex;
-                          align-items:center;
-                          gap:14px;
-                          min-height:76px;
-                          padding:12px 0;
-                          border-top:1px solid rgba(255,255,255,.10);
-                        ">
+    return `
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:12px;
+            min-height:66px;
+            padding:9px 0;
+            border-top:1px solid rgba(255,255,255,.10);
+        ">
 
+            <div style="
+                width:48px;
+                height:48px;
+                flex:none;
+                border:1px solid rgba(217,170,74,.75);
+                border-radius:12px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#d9aa4a;
+                font-size:16px;
+                font-weight:800;
+            ">
+                ${String(exerciseIndex + 1).padStart(2,"0")}
+            </div>
 
-                          <div style="
-                            width:48px;
-                            height:48px;
-                            flex:none;
-                            border:1px solid #d9aa4a;
-                            border-radius:13px;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:#d9aa4a;
-                            font-size:17px;
-                            font-weight:800;
-                          ">
-                            ${String(exerciseIndex+1).padStart(2,"0")}
-                          </div>
+            <div style="
+                width:48px;
+                height:48px;
+                flex:none;
+                border-radius:11px;
+                overflow:hidden;
+                background:rgba(255,255,255,.06);
+                border:1px solid rgba(255,255,255,.08);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            ">
+                ${
+                    exerciseImage
+                    ? `<img
+                        src="${esc(exerciseImage)}"
+                        alt=""
+                        style="
+                            width:100%;
+                            height:100%;
+                            object-fit:cover;
+                            display:block;
+                        "
+                    >`
+                    : `<span style="font-size:22px;">🏋️</span>`
+                }
+            </div>
 
+            <div style="
+                flex:1;
+                min-width:0;
+            ">
+                <b style="
+                    display:block;
+                    margin-bottom:3px;
+                    font-size:17px;
+                    line-height:1.2;
+                    font-weight:700;
+                    color:#f5f5f5;
+                ">
+                    ${esc(ex.name || "Ejercicio")}
+                </b>
 
-                          <div style="
-                            flex:1;
-                            min-width:0;
-                          ">
-
-                            <b style="
-                              display:block;
-                              margin-bottom:5px;
-                              font-size:17px;
-                              line-height:1.2;
-                            ">
-                              ${esc(ex.name || "Ejercicio")}
-                            </b>
-
-                            <span class="muted" style="
-                              font-size:14px;
-                            ">
-                              ${esc(ex.sets || "")} series
-                              ${
-                                ex.reps
-                                  ? ` · ${esc(ex.reps)} repeticiones`
-                                  : ""
-                              }
-                            </span>
-
-                          </div>
-
-
-                          <span style="
-                            flex:none;
-                            color:#d9aa4a;
-                            font-size:28px;
-                            line-height:1;
-                          ">
-                            ›
-                          </span>
-
-                        </div>
-
-                      `).join("")
+                <span class="muted" style="
+                    font-size:14px;
+                    line-height:1.2;
+                ">
+                    ${esc(ex.sets || "")}
+                    ${ex.sets ? " series" : ""}
+                    ${ex.sets && ex.reps ? " · " : ""}
+                    ${
+                        ex.reps
+                        ? `${esc(ex.reps)} repeticiones`
+                        : ""
                     }
+                </span>
+            </div>
 
-                  </div>
+            <span style="
+                flex:none;
+                color:#d9aa4a;
+                font-size:28px;
+                line-height:1;
+            ">
+                ›
+            </span>
+
+        </div>
+    `;
+}).join("")
 
 
                   ${
