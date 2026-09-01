@@ -4969,6 +4969,7 @@ navButton("🍴","Alimentación","showCoach('diets')")+
 navButton("🏋️","Entrenamiento","showCoach('routines')")+
 navButton("✓","Check-in","showCoach('checkins')")+
 navButton("💬","Mensajes","showCoach('messages')");
+document.querySelector("#coach-nav button")?.classList.add("active");
 }
 
 function getWeekStart(date=new Date()){
