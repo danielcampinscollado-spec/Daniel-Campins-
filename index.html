@@ -10504,271 +10504,381 @@ if(screen==="checkins"){
 }
 
 if(screen==="diets"){
- 
-  if(!window.selectedClient){
+
+  const selected = window.selectedClient || null;
+
+  /*
+   * SI NO HAY CLIENTE SELECCIONADO
+   * mostramos la lista de clientes.
+   */
+
+  if(!selected){
 
     html=`
       <div class="top">
         <div>
           <h1>Dietas</h1>
-          <p class="muted">Selecciona un cliente para gestionar su alimentación.</p>
+          <p class="muted">
+            Selecciona un cliente para gestionar su alimentación.
+          </p>
         </div>
       </div>
 
-      <div style="
-        display:flex;
-        gap:10px;
-        align-items:center;
-        margin-bottom:18px;
-      ">
+      <div class="card">
+
+        <h2>Seleccionar cliente</h2>
 
         <div style="
-          flex:1;
-          height:62px;
-          display:flex;
-          align-items:center;
-          gap:12px;
-          padding:0 18px;
-          border:1px solid #292d35;
-          border-radius:18px;
-          background:#101217;
-          box-sizing:border-box;
+          display:grid;
+          gap:10px;
+          margin-top:16px;
         ">
 
-          <span style="
-            font-size:25px;
-            color:#9299a8;
-          ">⌕</span>
+          ${data.clients.map(clientItem=>`
 
-          <input
-            type="text"
-            placeholder="Buscar cliente..."
-            oninput="
-              const q=this.value.toLowerCase().trim();
-              document.querySelectorAll('.client-row').forEach(row=>{
-                row.style.display=
-                  row.dataset.name.includes(q) ? '' : 'none';
-              });
-            "
-            style="
-              width:100%;
-              height:100%;
-              border:0;
-              outline:0;
-              background:transparent;
-              color:#f5f5f5;
-              font-size:18px;
-            "
-          >
-
-        </div>
-
-        <button
-          class="ghost"
-          type="button"
-          style="
-            width:62px;
-            height:62px;
-            padding:0;
-            border:1px solid #292d35;
-            border-radius:18px;
-            background:#101217;
-            color:#d9aa4a;
-            font-size:25px;
-          "
-        >▽</button>
-
-      </div>
-
-      <div style="
-        display:grid;
-        gap:18px;
-      ">
-
-        ${data.clients.map(clientItem=>`
-
-          <button
-            class="client-row"
-            data-name="${esc(clientItem.name).toLowerCase()}"
-            style="
-              width:100%;
-              min-height:150px;
-              padding:24px;
-              background:#101217;
-              border:1px solid #292d35;
-              border-radius:20px;
-              text-align:left;
-              color:#f5f5f5;
-              box-sizing:border-box;
-            "
-            onclick="
-              window.selectedClient='${clientItem.id}';
-              showCoach('diets');
-            "
-          >
-
-            <div style="
-              display:flex;
-              align-items:center;
-              justify-content:space-between;
-              gap:18px;
-            ">
+            <button
+              class="client-row"
+              type="button"
+              style="
+                width:100%;
+                background:#101217;
+                border:1px solid #292d35;
+                text-align:left;
+                color:#f5f5f5;
+              "
+              onclick="
+                window.selectedClient='${clientItem.id}';
+                window.coachDietType='training';
+                showCoach('diets');
+              "
+            >
 
               <div style="
                 display:flex;
                 align-items:center;
-                gap:18px;
-                min-width:0;
+                justify-content:space-between;
+                gap:12px;
               ">
 
-                <div style="
-                  width:70px;
-                  height:70px;
-                  flex:0 0 70px;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  border:1px solid #5c4a24;
-                  border-radius:50%;
-                  color:#f0c96b;
-                  font-size:22px;
-                  font-weight:700;
-                  box-sizing:border-box;
-                ">
-                  ${esc(clientItem.name.split(" ").map(n=>n[0]).slice(0,2).join("").toUpperCase())}
-                </div>
+                <div>
 
-                <div style="
-                  min-width:0;
-                ">
-
-                  <b style="
-                    display:block;
-                    font-size:22px;
-                    line-height:1.15;
-                    margin-bottom:7px;
-                  ">
+                  <b style="font-size:17px">
                     ${esc(clientItem.name)}
                   </b>
 
-                  <div class="muted" style="
-                    font-size:17px;
-                    line-height:1.3;
-                    margin-bottom:10px;
-                  ">
+                  <div
+                    class="muted"
+                    style="margin-top:5px"
+                  >
                     ${esc(clientItem.goal||"Sin objetivo")}
+                    · ${money(clientItem.weight)} kg
                   </div>
-
-                  <span style="
-                    display:inline-block;
-                    padding:6px 10px;
-                    border-radius:8px;
-                    background:#151d2b;
-                    color:#79aef5;
-                    font-size:15px;
-                  ">
-                    ${money(clientItem.weight)} kg
-                  </span>
 
                 </div>
 
+                <span style="
+                  font-size:22px;
+                  color:#d9aa4a;
+                ">
+                  →
+                </span>
+
               </div>
 
-              <span style="
-                flex:0 0 auto;
-                font-size:34px;
-                line-height:1;
-                color:#d9aa4a;
-              ">›</span>
+            </button>
 
-            </div>
+          `).join("")}
 
-          </button>
-
-        `).join("")}
+        </div>
 
       </div>
     `;
 
     main.innerHTML=html;
-    
+    window.scrollTo(0,0);
     return;
   }
-if(!data.diets[selected].rest){
-data.diets[selected].rest={
-meals:mealNamesRest.map(name=>({name,foods:[]}))
-};
-}
-
-data.diets[selected].training.meals.forEach((m,i)=>{
-m.name=mealNamesTraining[i];
-if(!m.foods)m.foods=[];
-});
-
-data.diets[selected].rest.meals.forEach((m,i)=>{
-m.name=mealNamesRest[i];
-if(!m.foods)m.foods=[];
-});
 
 
+  /*
+   * COMPROBAR QUE EL CLIENTE EXISTE
+   */
 
-const dietType=window.coachDietType||"training";
-const diet=data.diets[selected][dietType];
-html=`
-<div class="top">
-<div>
-<h1>Dietas</h1>
-<p class="muted">${esc(c?.name||"Cliente")}</p>
-</div>
-</div>
+  const c = client(selected);
 
-<div class="card">
-<h2>Tipo de día</h2>
+  if(!c){
 
-<div style="display:flex;gap:10px;flex-wrap:wrap">
+    window.selectedClient = null;
 
-<button class="${dietType==="training"?"btn":"ghost"}"
-onclick="window.coachDietType='training';showCoach('diets')">
-🏋️ Día de entrenamiento
-</button>
+    toast("No se encontró el cliente");
 
-<button class="${dietType==="rest"?"btn":"ghost"}"
-onclick="window.coachDietType='rest';showCoach('diets')">
-🛌 Día de descanso
-</button>
+    showCoach("diets");
 
-</div>
-</div>
+    return;
+  }
 
-<div class="card">
-<h2>${dietType==="training"?"🏋️ Día de entrenamiento":"🛌 Día de descanso"}</h2>
 
-${meals.map((m,mi)=>`
-<div class="item" data-diet-meal="${mi}">
-<h3>${esc(m.name)}</h3>
+  /*
+   * CREAR ESTRUCTURA DE DIETA SI NO EXISTE
+   */
 
-${m.foods?.length?m.foods.map((f,fi)=>`
-<div class="food">
-<b>${esc(f[0])}</b>
-<span>${esc(f[1])}</span>
+  const mealNamesTraining = [
+    "Desayuno",
+    "Merienda mañana",
+    "Comida",
+    "Pre-entreno",
+    "Merienda tarde",
+    "Cena"
+  ];
 
-<button class="ghost"
-onclick="removeFood('${selected}','${dietType}',${mi},${fi})">
-Eliminar
-</button>
-</div>
-`).join(""):`<p class="muted">Todavía no hay alimentos.</p>`}
+  const mealNamesRest = [
+    "Desayuno",
+    "Merienda mañana",
+    "Comida",
+    "Merienda tarde",
+    "Cena"
+  ];
 
-<button class="btn"
-onclick="addFood('${selected}','${dietType}',${mi})">
-+ Añadir alimento
-</button>
 
-</div>
-`).join("")}
+  if(!data.diets){
+    data.diets={};
+  }
 
-</div>
-`;
+
+  if(!data.diets[selected]){
+    data.diets[selected]={};
+  }
+
+
+  if(!data.diets[selected].training){
+
+    data.diets[selected].training={
+
+      meals:
+        mealNamesTraining.map(name=>({
+
+          name:name,
+          foods:[]
+
+        }))
+
+    };
+
+  }
+
+
+  if(!data.diets[selected].rest){
+
+    data.diets[selected].rest={
+
+      meals:
+        mealNamesRest.map(name=>({
+
+          name:name,
+          foods:[]
+
+        }))
+
+    };
+
+  }
+
+
+  /*
+   * ASEGURAR NOMBRES Y ALIMENTOS
+   */
+
+  data.diets[selected].training.meals.forEach((m,i)=>{
+
+    m.name =
+      mealNamesTraining[i] ||
+      `Comida ${i+1}`;
+
+    if(!m.foods){
+      m.foods=[];
+    }
+
+  });
+
+
+  data.diets[selected].rest.meals.forEach((m,i)=>{
+
+    m.name =
+      mealNamesRest[i] ||
+      `Comida ${i+1}`;
+
+    if(!m.foods){
+      m.foods=[];
+    }
+
+  });
+
+
+  /*
+   * TIPO DE DIETA
+   */
+
+  const dietType =
+    window.coachDietType || "training";
+
+
+  const diet =
+    data.diets[selected][dietType];
+
+
+  const meals =
+    diet.meals || [];
+
+
+  /*
+   * PANTALLA DE DIETA
+   */
+
+  html=`
+
+    <div class="top">
+
+      <div>
+
+        <h1>Dietas</h1>
+
+        <p class="muted">
+          ${esc(c.name)}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Tipo de día</h2>
+
+      <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+      ">
+
+        <button
+          type="button"
+          class="${dietType==="training"?"btn":"ghost"}"
+          onclick="
+            window.coachDietType='training';
+            showCoach('diets');
+          "
+        >
+          🏋️ Día de entrenamiento
+        </button>
+
+
+        <button
+          type="button"
+          class="${dietType==="rest"?"btn":"ghost"}"
+          onclick="
+            window.coachDietType='rest';
+            showCoach('diets');
+          "
+        >
+          🛌 Día de descanso
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>
+        ${
+          dietType==="training"
+          ? "🏋️ Día de entrenamiento"
+          : "🛌 Día de descanso"
+        }
+      </h2>
+
+
+      ${meals.map((m,mi)=>`
+
+        <div
+          class="item"
+          data-diet-meal="${mi}"
+        >
+
+          <h3>
+            ${esc(m.name)}
+          </h3>
+
+
+          ${
+            m.foods?.length
+
+            ?
+
+            m.foods.map((f,fi)=>`
+
+              <div class="food">
+
+                <b>
+                  ${esc(f[0])}
+                </b>
+
+                <span>
+                  ${esc(f[1])}
+                </span>
+
+                <button
+                  type="button"
+                  class="ghost"
+                  onclick="
+                    removeFood(
+                      '${selected}',
+                      '${dietType}',
+                      ${mi},
+                      ${fi}
+                    )
+                  "
+                >
+                  Eliminar
+                </button>
+
+              </div>
+
+            `).join("")
+
+            :
+
+            `<p class="muted">
+              Todavía no hay alimentos.
+            </p>`
+
+          }
+
+
+          <button
+            type="button"
+            class="btn"
+            onclick="
+              addFood(
+                '${selected}',
+                '${dietType}',
+                ${mi}
+              )
+            "
+          >
+            + Añadir alimento
+          </button>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+  `;
+
 }
 if(screen==="routines"){
   if(!window.selectedClient){
