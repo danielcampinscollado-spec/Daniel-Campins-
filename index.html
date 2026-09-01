@@ -10713,8 +10713,7 @@ if(!m.foods)m.foods=[];
 
 
 const dietType=window.coachDietType||"training";
-const diet=data.diets[selected][dietType];
-const meals=diet.meals;
+const diet=data.diets[window.selectedClient][dietType];const meals=diet.meals;
 
 html=`
 <div class="top">
