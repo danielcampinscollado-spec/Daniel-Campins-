@@ -4213,7 +4213,13 @@ function loadData(){
       if(parsed.checkins) result.checkins=parsed.checkins;
       if(parsed.messages) result.messages=parsed.messages;
       if(parsed.routines) result.routines=parsed.routines;
+if(parsed.notificationState){
+  result.notificationState=parsed.notificationState;
+}
 
+if(parsed.routineUpdatedAt){
+  result.routineUpdatedAt=parsed.routineUpdatedAt;
+}
 
 if(parsed.completedTrainingDays){
   result.completedTrainingDays=parsed.completedTrainingDays;
@@ -4238,11 +4244,13 @@ async function loadDietsFromSupabase(){
 
     const { data:diets,error } = await supabaseClient
       .from("client_diets")
-      .select("client_id,diet_type,calories,protein,meals");
+      .select("client_id,diet_type,calories,protein,meals,updated_at");
 
     if(error){
+
       console.error("Error cargando dietas:",error);
       return;
+
     }
 
     if(!diets) return;
@@ -4250,35 +4258,50 @@ async function loadDietsFromSupabase(){
     diets.forEach(row=>{
 
       if(!data.diets[row.client_id]){
+
         data.diets[row.client_id]={
           training:{
             calories:"",
             protein:"",
-            meals:[]
+            meals:[],
+            updated_at:null
           },
           rest:{
             calories:"",
             protein:"",
-            meals:[]
+            meals:[],
+            updated_at:null
           }
         };
+
       }
 
       data.diets[row.client_id][row.diet_type]={
+
         calories:row.calories||"",
         protein:row.protein||"",
-        meals:Array.isArray(row.meals)?row.meals:[]
+        meals:Array.isArray(row.meals)
+          ? row.meals
+          : [],
+
+        updated_at:row.updated_at || null
+
       };
 
     });
+
     saveData();
 
   }catch(e){
 
-    console.error("Error conectando con Supabase para dietas:",e);
-  }
-}
+    console.error(
+      "Error conectando con Supabase para dietas:",
+      e
+    );
 
+  }
+
+}
 async function loadClientsFromSupabase(){
 
   try{
@@ -4507,9 +4530,9 @@ async function loadRoutinesFromSupabase(){
 
   try{
 
-    const { data:routines, error } = await supabaseClient
+    const { data:routines,error } = await supabaseClient
       .from("client_routines")
-      .select("client_id,routine");
+      .select("client_id,routine,updated_at");
 
     if(error){
 
@@ -4519,6 +4542,7 @@ async function loadRoutinesFromSupabase(){
       );
 
       return;
+
     }
 
     if(!routines) return;
@@ -4527,12 +4551,19 @@ async function loadRoutinesFromSupabase(){
       data.routines={};
     }
 
+    if(!data.routineUpdatedAt){
+      data.routineUpdatedAt={};
+    }
+
     routines.forEach(row=>{
 
       data.routines[row.client_id] =
         Array.isArray(row.routine)
           ? row.routine
           : [];
+
+      data.routineUpdatedAt[row.client_id] =
+        row.updated_at || null;
 
     });
 
@@ -4548,21 +4579,43 @@ async function loadRoutinesFromSupabase(){
   }
 
 }
-async function loadNotificationStateFromSupabase(){
+async function markClientNotificationSeen(type, clientId){
+
+  if(!clientId) return;
+
+  const now = new Date().toISOString();
+
+  const payload = {
+    client_id: clientId,
+    updated_at: now
+  };
+
+  if(type === "diet"){
+    payload.diet_seen_at = now;
+  }
+
+  if(type === "routine"){
+    payload.routine_seen_at = now;
+  }
+
+  if(type === "message"){
+    payload.message_seen_at = now;
+  }
 
   try{
 
-    const { data:states, error } =
+    const { error } =
       await supabaseClient
         .from("client_notification_state")
-        .select(
-          "client_id,diet_seen_at,routine_seen_at,message_seen_at"
+        .upsert(
+          payload,
+          { onConflict:"client_id" }
         );
 
     if(error){
 
       console.error(
-        "Error cargando estado de notificaciones:",
+        "Error guardando aviso visto:",
         error
       );
 
@@ -4574,22 +4627,28 @@ async function loadNotificationStateFromSupabase(){
       data.notificationState={};
     }
 
-    (states || []).forEach(row=>{
+    if(!data.notificationState[clientId]){
+      data.notificationState[clientId]={};
+    }
 
-      data.notificationState[row.client_id]={
-        dietSeenAt:row.diet_seen_at,
-        routineSeenAt:row.routine_seen_at,
-        messageSeenAt:row.message_seen_at
-      };
+    if(type === "diet"){
+      data.notificationState[clientId].dietSeenAt=now;
+    }
 
-    });
+    if(type === "routine"){
+      data.notificationState[clientId].routineSeenAt=now;
+    }
+
+    if(type === "message"){
+      data.notificationState[clientId].messageSeenAt=now;
+    }
 
     saveData();
 
   }catch(e){
 
     console.error(
-      "Error conectando con Supabase para avisos:",
+      "Error marcando notificación como vista:",
       e
     );
 
@@ -5147,139 +5206,166 @@ if(screen==="home"){
    TAREAS PENDIENTES
 ===================================================== */
 
-const tasks = [];
+  /* =====================================================
+     TAREAS PENDIENTES
+     ===================================================== */
+
+  const tasks = [];
+
+  const notificationState =
+    data.notificationState?.[c.id] || {};
+
+  /* =========================
+     DIETA
+  ========================= */
+
+  const diet =
+    data.diets?.[c.id];
+
+  const trainingMeals =
+    diet?.training?.meals || [];
+
+  const restMeals =
+    diet?.rest?.meals || [];
+
+  const trainingFoods =
+    trainingMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
+    );
+
+  const restFoods =
+    restMeals.reduce(
+      (total,meal) =>
+        total + (meal.foods?.length || 0),
+      0
+    );
+
+  const hasDiet =
+    trainingFoods > 0 ||
+    restFoods > 0;
+
+  const dietUpdatedAt =
+    diet?.training?.updated_at ||
+    diet?.rest?.updated_at ||
+    null;
+
+  const dietSeenAt =
+    notificationState.dietSeenAt || null;
+
+  const newDiet =
+    hasDiet &&
+    dietUpdatedAt &&
+    (
+      !dietSeenAt ||
+      new Date(dietUpdatedAt) > new Date(dietSeenAt)
+    );
+
+  if(newDiet){
+
+    tasks.push({
+      icon:"🍴",
+      title:"Nueva alimentación",
+      action:"showClient('food')"
+    });
+
+  }
 
 
-/* =====================================================
-   CHECK-IN SEMANAL
-===================================================== */
+  /* =========================
+     ENTRENAMIENTO
+  ========================= */
 
-const currentWeekKey =
-  typeof getCurrentWeekKey === "function"
-    ? getCurrentWeekKey()
-    : "";
+  const routineUpdatedAt =
+    data.routineUpdatedAt?.[c.id] || null;
 
-const checkinSentThisWeek =
-  checkin.weekKey &&
-  currentWeekKey &&
-  checkin.weekKey === currentWeekKey &&
-  checkin.sentAt;
+  const routineSeenAt =
+    notificationState.routineSeenAt || null;
 
-if(!checkinSentThisWeek){
+  const newRoutine =
+    routine.length > 0 &&
+    routineUpdatedAt &&
+    (
+      !routineSeenAt ||
+      new Date(routineUpdatedAt) > new Date(routineSeenAt)
+    );
 
-  tasks.push({
-    icon:"✓",
-    title:"Check-in pendiente",
-    text:"Tienes que enviar tu check-in semanal.",
-    label:"Enviar",
-    action:"showClient('checkin')"
-  });
+  if(newRoutine){
 
-}
+    tasks.push({
+      icon:"🏋️",
+      title:"Nuevo entrenamiento",
+      action:"showClient('training')"
+    });
 
-
-/* =====================================================
-   MENSAJES NUEVOS
-===================================================== */
-
-const messages =
-  data.messages?.[c.id] || [];
-
-const lastMessage =
-  messages.length
-    ? messages[messages.length - 1]
-    : null;
-
-const unreadMessages =
-  lastMessage &&
-  lastMessage[0] !== "Daniel";
-
-if(unreadMessages){
-
-  tasks.push({
-    icon:"💬",
-    title:"Nuevo mensaje",
-    text:"Tienes un mensaje nuevo del entrenador.",
-    label:"Ver",
-    action:"showClient('coach')"
-  });
-
-}
+  }
 
 
-/* =====================================================
-   ALIMENTACIÓN
-   POR AHORA SOLO COMPROBAMOS QUE EXISTA.
-   EL ESTADO "NUEVA" LO CONECTAREMOS DESPUÉS.
-===================================================== */
+  /* =========================
+     CHECK-IN SEMANAL
+  ========================= */
 
-const diet =
-  data.diets?.[c.id];
+  const currentWeekKey =
+    typeof getCurrentWeekKey === "function"
+      ? getCurrentWeekKey()
+      : "";
 
-const trainingMeals =
-  diet?.training?.meals || [];
+  const checkinSentThisWeek =
+    checkin.weekKey &&
+    currentWeekKey &&
+    checkin.weekKey === currentWeekKey &&
+    checkin.sentAt;
 
-const restMeals =
-  diet?.rest?.meals || [];
+  if(!checkinSentThisWeek){
 
-const trainingFoods =
-  trainingMeals.reduce(
-    (total,meal) =>
-      total + (meal.foods?.length || 0),
-    0
-  );
+    tasks.push({
+      icon:"✓",
+      title:"Enviar check-in semanal",
+      action:"showClient('checkin')"
+    });
 
-const restFoods =
-  restMeals.reduce(
-    (total,meal) =>
-      total + (meal.foods?.length || 0),
-    0
-  );
-
-const hasDiet =
-  trainingFoods > 0 ||
-  restFoods > 0;
+  }
 
 
-/* =====================================================
-   ENTRENAMIENTO
-   POR AHORA SOLO COMPROBAMOS QUE EXISTA.
-   EL ESTADO "NUEVO" LO CONECTAREMOS DESPUÉS.
-===================================================== */
+  /* =========================
+     MENSAJES
+  ========================= */
 
-const hasRoutine =
-  routine.length > 0;
+  const messages =
+    data.messages?.[c.id] || [];
 
+  const lastMessage =
+    messages.length
+      ? messages[messages.length - 1]
+      : null;
 
-/* =====================================================
-   NUEVAS TAREAS
-   Se dejan preparadas para sincronizarlas
-   posteriormente con Supabase.
-===================================================== */
+  const messageSeenAt =
+    notificationState.messageSeenAt || null;
 
-if(hasDiet){
+  const messageDate =
+    lastMessage?.[2] || null;
 
-  tasks.push({
-    icon:"🍴",
-    title:"Nueva alimentación",
-    text:"Tu alimentación está disponible.",
-    label:"Ver",
-    action:"showClient('food')"
-  });
+  const unreadMessages =
+    lastMessage &&
+    lastMessage[0] !== "Daniel" &&
+    (
+      !messageSeenAt ||
+      (
+        messageDate &&
+        new Date(messageDate) > new Date(messageSeenAt)
+      )
+    );
 
-}
+  if(unreadMessages){
 
-if(hasRoutine){
+    tasks.push({
+      icon:"💬",
+      title:"Mensajes sin leer",
+      action:"showClient('coach')"
+    });
 
-  tasks.push({
-    icon:"🏋️",
-    title:"Nuevo entrenamiento",
-    text:"Tu entrenamiento está disponible.",
-    label:"Ver",
-    action:"showClient('training')"
-  });
-
-}
+  }
 
 
   /* =====================================================
