@@ -4906,13 +4906,15 @@ async function openApp(app){
 
   currentApp = app;
 
-  const login = document.getElementById("login");
-  const clientApp = document.getElementById("client");
-  const coachApp = document.getElementById("coach");
+  const login =
+    document.getElementById("login");
 
-  /*
-   * Mostrar la aplicación inmediatamente.
-   */
+  const clientApp =
+    document.getElementById("client");
+
+  const coachApp =
+    document.getElementById("coach");
+
   login.style.display = "none";
 
   clientApp.style.display =
@@ -4921,49 +4923,36 @@ async function openApp(app){
   coachApp.style.display =
     app === "coach" ? "block" : "none";
 
-  /*
-   * Construir navegación.
-   */
+
   if(app === "client"){
 
     buildClientNav();
+
     resetWeeklyCheckinIfNeeded();
+
+    await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
+    await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
+    await loadNotificationStateFromSupabase();
+
     showClient("home");
 
   }else{
 
     buildCoachNav();
+
+    await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
+    await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
+    await loadNotificationStateFromSupabase();
+
     showCoach("dashboard");
 
   }
-
-  /*
-   * Cargar datos después de entrar.
-   */
-  Promise.allSettled([
-
-    loadDietsFromSupabase(),
-    loadClientsFromSupabase(),
-    loadRoutinesFromSupabase(),
-    loadWorkoutHistoryFromSupabase(),
-    loadWeightsFromSupabase()
-
-  ]).then(results => {
-
-    results.forEach((result,index) => {
-
-      if(result.status === "rejected"){
-
-        console.error(
-          "Error cargando datos #" + (index + 1),
-          result.reason
-        );
-
-      }
-
-    });
-
-  });
 
 }
 function logout(){
@@ -5211,7 +5200,8 @@ if(screen==="home"){
      ===================================================== */
 
   const tasks = [];
-
+const notificationState =
+  data.notificationState?.[c.id] || {};
   const notificationState =
     data.notificationState?.[c.id] || {};
 
@@ -6086,7 +6076,10 @@ function saveDietData(){
   }
 }
 if(screen==="food"){
-
+  markClientNotificationSeen(
+    "diet",
+    currentClientId
+  );
   const dietType=window.clientDietType||"training";
 
   const diet=
@@ -6291,7 +6284,10 @@ if(screen==="food"){
 }
 
 if(screen==="training"){
-
+  markClientNotificationSeen(
+    "routine",
+    currentClientId
+  );
   const routine = data.routines?.[c.id] || [];
 
   /*
@@ -8161,6 +8157,10 @@ html=`
 }
 
 if(screen==="coach"){
+  markClientNotificationSeen(
+    "message",
+    currentClientId
+  );
 const msgs=data.messages[c.id]||[];
 html=`
 <h1>Coach</h1>
