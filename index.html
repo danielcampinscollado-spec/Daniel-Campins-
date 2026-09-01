@@ -4998,6 +4998,32 @@ function showClient(screen){
 
   currentScreen=screen;
 
+  /* Actualizar pestaña activa aunque se llegue desde una alerta */
+  const clientNav=document.getElementById("client-nav");
+
+  if(clientNav){
+
+    const buttons=clientNav.querySelectorAll("button");
+
+    buttons.forEach(b=>b.classList.remove("active"));
+
+    const navIndex={
+      home:0,
+      food:1,
+      training:2,
+      progress:3,
+      checkin:4,
+      coach:5
+    };
+
+    const index=navIndex[screen];
+
+    if(index!==undefined && buttons[index]){
+      buttons[index].classList.add("active");
+    }
+
+  }
+
   // Si hay un entrenamiento en curso,
   // conservarlo al cambiar de pestaña
   if(
