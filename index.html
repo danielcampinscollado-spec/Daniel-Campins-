@@ -4951,8 +4951,7 @@ const icons={
 
 const svg=icons[icon]||icons["⌂"];
 
-return `<button onclick="${fn};this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${svg}<span>${text}</span></button>`;}
-
+return `<button class="${text==="Inicio"||text==="Panel"?"active":""}" onclick="${fn};this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${svg}<span>${text}</span></button>`;}
 function buildClientNav(){
 document.getElementById("client-nav").innerHTML=
 navButton("⌂","Inicio","showClient('home')")+
@@ -4961,7 +4960,6 @@ navButton("🏋️","Entrenamiento","showClient('training')")+
 navButton("📈","Progreso","showClient('progress')")+
 navButton("✓","Check-in","showClient('checkin')")+
 navButton("💬","Mensajes","showClient('coach')")}
-document.querySelector("#client-nav button")?.classList.add("active");
 
 function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
