@@ -5096,113 +5096,139 @@ if(screen==="home"){
 
 
   /* =====================================================
-     TAREAS PENDIENTES
-  ====================================================== */
+   TAREAS PENDIENTES
+===================================================== */
 
-  const tasks = [];
-
-
-  /* DIETA */
-
-  const diet =
-    data.diets?.[c.id];
-
-  const trainingMeals =
-    diet?.training?.meals || [];
-
-  const restMeals =
-    diet?.rest?.meals || [];
-
-  const trainingFoods =
-    trainingMeals.reduce(
-      (total,meal) =>
-        total + (meal.foods?.length || 0),
-      0
-    );
-
-  const restFoods =
-    restMeals.reduce(
-      (total,meal) =>
-        total + (meal.foods?.length || 0),
-      0
-    );
-
-  const hasDiet =
-    trainingFoods > 0 ||
-    restFoods > 0;
+const tasks = [];
 
 
-  if(hasDiet){
+/* =====================================================
+   CHECK-IN
+===================================================== */
 
-    tasks.push({
-      icon:"🍴",
-      title:"Ver dieta nueva",
-      action:"showClient('food')"
-    });
+const currentWeekKey =
+  typeof getCurrentWeekKey === "function"
+    ? getCurrentWeekKey()
+    : "";
 
-  }
+const checkinSentThisWeek =
+  checkin &&
+  checkin.weekKey &&
+  currentWeekKey &&
+  checkin.weekKey === currentWeekKey &&
+  checkin.sentAt;
 
+if(!checkinSentThisWeek){
 
-  /* RUTINA */
+  tasks.push({
+    icon:"✓",
+    title:"Check-in pendiente",
+    action:"showClient('checkin')"
+  });
 
-  if(routine.length > 0){
-
-    tasks.push({
-      icon:"🏋️",
-      title:"Ver nueva rutina",
-      action:"showClient('training')"
-    });
-
-  }
-
-
-  /* CHECK-IN SEMANAL */
-
-  const currentWeekKey =
-    typeof getCurrentWeekKey === "function"
-      ? getCurrentWeekKey()
-      : "";
-
-  const checkinSentThisWeek =
-    checkin.weekKey &&
-    currentWeekKey &&
-    checkin.weekKey === currentWeekKey &&
-    checkin.sentAt;
-
-  if(!checkinSentThisWeek){
-
-    tasks.push({
-      icon:"✓",
-      title:"Enviar check-in semanal",
-      action:"showClient('checkin')"
-    });
-
-  }
+}
 
 
-  /* MENSAJES SIN LEER */
+/* =====================================================
+   MENSAJES DEL ENTRENADOR
+===================================================== */
 
-  const messages =
-    data.messages?.[c.id] || [];
+const messages =
+  data.messages?.[c.id] || [];
 
-  const lastMessage =
-    messages.length
-      ? messages[messages.length - 1]
-      : null;
+const lastMessage =
+  messages.length
+    ? messages[messages.length - 1]
+    : null;
 
-  const unreadMessages =
-    lastMessage &&
-    lastMessage[0] !== "Daniel";
+const unreadMessages =
+  lastMessage &&
+  lastMessage[0] !== "Daniel";
 
-  if(unreadMessages){
+if(unreadMessages){
 
-    tasks.push({
-      icon:"💬",
-      title:"Mensajes sin leer",
-      action:"showClient('coach')"
-    });
+  tasks.push({
+    icon:"💬",
+    title:"Nuevo mensaje",
+    action:"showClient('coach')"
+  });
 
-  }
+}
+
+
+/* =====================================================
+   NUEVA ALIMENTACIÓN
+   Se activa mediante el estado guardado localmente.
+   Más adelante lo sincronizamos con Supabase.
+===================================================== */
+
+const dietSeenKey =
+  `dcc_diet_seen_${c.id}`;
+
+const dietUpdatedKey =
+  diet?.training?.updated_at ||
+  diet?.rest?.updated_at ||
+  "";
+
+const lastDietSeen =
+  localStorage.getItem(dietSeenKey) || "";
+
+const hasNewDiet =
+  dietUpdatedKey &&
+  dietUpdatedKey !== lastDietSeen;
+
+if(hasNewDiet){
+
+  tasks.push({
+    icon:"🍴",
+    title:"Nueva alimentación",
+    action:`
+      localStorage.setItem(
+        '${dietSeenKey}',
+        '${dietUpdatedKey}'
+      );
+      showClient('food')
+    `
+  });
+
+}
+
+
+/* =====================================================
+   NUEVO ENTRENAMIENTO
+   Se activa mediante el estado guardado localmente.
+   Más adelante lo sincronizamos con Supabase.
+===================================================== */
+
+const routineUpdatedKey =
+  data.routineUpdatedAt?.[c.id] ||
+  "";
+
+const routineSeenKey =
+  `dcc_routine_seen_${c.id}`;
+
+const lastRoutineSeen =
+  localStorage.getItem(routineSeenKey) || "";
+
+const hasNewRoutine =
+  routineUpdatedKey &&
+  routineUpdatedKey !== lastRoutineSeen;
+
+if(hasNewRoutine){
+
+  tasks.push({
+    icon:"🏋️",
+    title:"Nuevo entrenamiento",
+    action:`
+      localStorage.setItem(
+        '${routineSeenKey}',
+        '${routineUpdatedKey}'
+      );
+      showClient('training')
+    `
+  });
+
+}
 
 
   /* =====================================================
