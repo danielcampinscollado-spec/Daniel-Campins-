@@ -3740,121 +3740,116 @@ margin:0 !important;
   }
 
   /* CONTENEDOR DE LOS 6 BOTONES */
-  #client .nav,
-  #coach .nav{
-    display:grid !important;
-    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+#client .nav,
+#coach .nav{
+  display:grid !important;
+  grid-template-columns:repeat(6,minmax(0,1fr)) !important;
 
-    width:100% !important;
-    height:100% !important;
+  width:100% !important;
+  height:100% !important;
 
-    gap:0 !important;
-    padding:0 !important;
-    margin:0 !important;
+  gap:0 !important;
+  padding:0 !important;
+  margin:0 !important;
 
-    align-items:stretch !important;
-    justify-items:stretch !important;
-  }
+  align-items:stretch !important;
+  justify-items:stretch !important;
+}
 
-  /* BOTONES */
-  #client .nav button,
-  #coach .nav button{
-    position:relative !important;
+/* BOTONES */
+#client .nav button,
+#coach .nav button{
+  position:relative !important;
 
-    width:100% !important;
-    min-width:0 !important;
-    height:60px !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:60px !important;
 
-    margin:0 !important;
-    padding:4px 1px !important;
+  margin:0 !important;
+  padding:3px 0 !important;
 
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
 
-    gap:4px !important;
+  gap:3px !important;
 
-    border:0 !important;
-    border-radius:12px !important;
+  border:0 !important;
+  border-radius:12px !important;
 
-    background:transparent !important;
+  background:transparent !important;
 
-    color:#7f8792 !important;
+  color:#7f8792 !important;
 
-    box-shadow:none !important;
-    filter:none !important;
+  box-shadow:none !important;
+  filter:none !important;
 
-    transform:none !important;
+  transform:none !important;
 
-    box-sizing:border-box !important;
-  }
+  box-sizing:border-box !important;
+}
 
-  /* QUITAR COMPLETAMENTE EL CÍRCULO/AURA */
-  #client .nav button::before,
-  #client .nav button::after,
-  #coach .nav button::before,
-  #coach .nav button::after{
-    display:none !important;
-    content:none !important;
-    opacity:0 !important;
-    background:none !important;
-    box-shadow:none !important;
-    filter:none !important;
-  }
+/* SIN CÍRCULO/AURA */
+#client .nav button::before,
+#client .nav button::after,
+#coach .nav button::before,
+#coach .nav button::after{
+  display:none !important;
+  content:none !important;
+}
 
-  /* ESTADO ACTIVO: SOLO TEXTO/ICONO DORADO */
-  #client .nav button.active,
-  #coach .nav button.active{
-    color:#f0c96b !important;
-    background:transparent !important;
-    border:0 !important;
-    box-shadow:none !important;
-    filter:none !important;
-    transform:none !important;
-  }
+/* ACTIVO */
+#client .nav button.active,
+#coach .nav button.active{
+  color:#f0c96b !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
 
-  /* ICONOS SIN BRILLO */
-  #client .nav button svg,
-  #coach .nav button svg{
-    width:22px !important;
-    height:22px !important;
+/* ICONOS */
+#client .nav button svg,
+#coach .nav button svg{
+  width:21px !important;
+  height:21px !important;
+  flex:0 0 21px !important;
+  margin:0 !important;
+}
 
-    flex:none !important;
+/* TEXTOS */
+#client .nav button span,
+#coach .nav button span{
+  display:block !important;
 
-    filter:none !important;
-    box-shadow:none !important;
+  width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
 
-    margin:0 !important;
-  }
+  text-align:center !important;
 
-  #client .nav button.active svg,
-  #coach .nav button.active svg{
-    filter:none !important;
-    box-shadow:none !important;
-  }
+  font-size:9px !important;
+  line-height:1 !important;
+  letter-spacing:-0.2px !important;
 
-  /* TEXTOS */
-  #client .nav button span,
-  #coach .nav button span{
-    display:block !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
 
-    width:100% !important;
+  box-sizing:border-box !important;
+}
 
-    margin:0 !important;
-    padding:0 !important;
+/* ENTRENAMIENTO */
+#client .nav button:nth-child(3) span{
+  font-size:8px !important;
+  letter-spacing:-0.35px !important;
+}
 
-    text-align:center !important;
-
-    font-size:10px !important;
-    line-height:1 !important;
-
-    white-space:nowrap !important;
-    overflow:hidden !important;
-    text-overflow:clip !important;
-
-    box-sizing:border-box !important;
-  }
+/* CHECK-IN */
+#client .nav button:nth-child(5) span{
+  font-size:8.5px !important;
+  letter-spacing:-0.3px !important;
+}
 
   /* AL PASAR EL DEDO/MOUSE NO CREA CUADRO */
   #client .nav button:hover,
