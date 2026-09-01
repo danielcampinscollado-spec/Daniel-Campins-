@@ -4961,7 +4961,8 @@ navButton("🏋️","Entrenamiento","showClient('training')")+
 navButton("📈","Progreso","showClient('progress')")+
 navButton("✓","Check-in","showClient('checkin')")+
 navButton("💬","Mensajes","showClient('coach')")}
-
+document.querySelector("#client-nav button")?.classList.add("active");
+}
 function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
 navButton("▦","Panel","showCoach('dashboard')")+navButton("👥","Clientes","showCoach('clients')")+
