@@ -4526,6 +4526,54 @@ async function loadWeightsFromSupabase(){
   }
 
 }
+async function loadNotificationStateFromSupabase(){
+
+  try{
+
+    const { data:states, error } =
+      await supabaseClient
+        .from("client_notification_state")
+        .select(
+          "client_id,diet_seen_at,routine_seen_at,message_seen_at"
+        );
+
+    if(error){
+
+      console.error(
+        "Error cargando estado de notificaciones:",
+        error
+      );
+
+      return;
+
+    }
+
+    if(!data.notificationState){
+      data.notificationState={};
+    }
+
+    (states || []).forEach(row=>{
+
+      data.notificationState[row.client_id]={
+        dietSeenAt:row.diet_seen_at,
+        routineSeenAt:row.routine_seen_at,
+        messageSeenAt:row.message_seen_at
+      };
+
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para avisos:",
+      e
+    );
+
+  }
+
+}
 async function loadRoutinesFromSupabase(){
 
   try{
