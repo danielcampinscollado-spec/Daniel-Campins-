@@ -11644,10 +11644,14 @@ function showClientAdmin(id){
         flex-wrap:wrap;
       ">
 
-        <button class="btn"
-          onclick="window.selectedClient='${id}';showCoach('diets')">
-          🍴 Editar alimentación
-        </button>
+<button class="btn"
+  onclick="
+    window.selectedClient='${id}';
+    window.coachDietType='training';
+    showCoach('diets');
+  ">
+  🍴 Editar alimentación
+</button>
 
         <button class="btn"
           onclick="window.selectedClient='${id}';showCoach('routines')">
