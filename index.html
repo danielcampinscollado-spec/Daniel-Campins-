@@ -5101,11 +5101,72 @@ if(screen==="home"){
 
 const tasks = [];
 
+
+/* =====================================================
+   CHECK-IN SEMANAL
+===================================================== */
+
+const currentWeekKey =
+  typeof getCurrentWeekKey === "function"
+    ? getCurrentWeekKey()
+    : "";
+
+const checkinSentThisWeek =
+  checkin.weekKey &&
+  currentWeekKey &&
+  checkin.weekKey === currentWeekKey &&
+  checkin.sentAt;
+
+if(!checkinSentThisWeek){
+
+  tasks.push({
+    icon:"✓",
+    title:"Check-in pendiente",
+    text:"Tienes que enviar tu check-in semanal.",
+    label:"Enviar",
+    action:"showClient('checkin')"
+  });
+
+}
+
+
+/* =====================================================
+   MENSAJES NUEVOS
+===================================================== */
+
+const messages =
+  data.messages?.[c.id] || [];
+
+const lastMessage =
+  messages.length
+    ? messages[messages.length - 1]
+    : null;
+
+const unreadMessages =
+  lastMessage &&
+  lastMessage[0] !== "Daniel";
+
+if(unreadMessages){
+
+  tasks.push({
+    icon:"💬",
+    title:"Nuevo mensaje",
+    text:"Tienes un mensaje nuevo del entrenador.",
+    label:"Ver",
+    action:"showClient('coach')"
+  });
+
+}
+
+
+/* =====================================================
+   ALIMENTACIÓN
+   POR AHORA SOLO COMPROBAMOS QUE EXISTA.
+   EL ESTADO "NUEVA" LO CONECTAREMOS DESPUÉS.
+===================================================== */
+
 const diet =
   data.diets?.[c.id];
-
-
-/* DIETA */
 
 const trainingMeals =
   diet?.training?.meals || [];
@@ -5131,74 +5192,43 @@ const hasDiet =
   trainingFoods > 0 ||
   restFoods > 0;
 
+
+/* =====================================================
+   ENTRENAMIENTO
+   POR AHORA SOLO COMPROBAMOS QUE EXISTA.
+   EL ESTADO "NUEVO" LO CONECTAREMOS DESPUÉS.
+===================================================== */
+
+const hasRoutine =
+  routine.length > 0;
+
+
+/* =====================================================
+   NUEVAS TAREAS
+   Se dejan preparadas para sincronizarlas
+   posteriormente con Supabase.
+===================================================== */
+
 if(hasDiet){
 
   tasks.push({
     icon:"🍴",
-    title:"Ver dieta nueva",
+    title:"Nueva alimentación",
+    text:"Tu alimentación está disponible.",
+    label:"Ver",
     action:"showClient('food')"
   });
 
 }
 
-
-/* RUTINA */
-
-if(routine.length > 0){
+if(hasRoutine){
 
   tasks.push({
     icon:"🏋️",
-    title:"Ver nueva rutina",
+    title:"Nuevo entrenamiento",
+    text:"Tu entrenamiento está disponible.",
+    label:"Ver",
     action:"showClient('training')"
-  });
-
-}
-
-
-/* CHECK-IN SEMANAL */
-
-const currentWeekKey =
-  typeof getCurrentWeekKey === "function"
-    ? getCurrentWeekKey()
-    : "";
-
-const checkinSentThisWeek =
-  checkin.weekKey &&
-  currentWeekKey &&
-  checkin.weekKey === currentWeekKey &&
-  checkin.sentAt;
-
-if(!checkinSentThisWeek){
-
-  tasks.push({
-    icon:"✓",
-    title:"Enviar check-in semanal",
-    action:"showClient('checkin')"
-  });
-
-}
-
-
-/* MENSAJES SIN LEER */
-
-const messages =
-  data.messages?.[c.id] || [];
-
-const lastMessage =
-  messages.length
-    ? messages[messages.length - 1]
-    : null;
-
-const unreadMessages =
-  lastMessage &&
-  lastMessage[0] !== "Daniel";
-
-if(unreadMessages){
-
-  tasks.push({
-    icon:"💬",
-    title:"Mensajes sin leer",
-    action:"showClient('coach')"
   });
 
 }
