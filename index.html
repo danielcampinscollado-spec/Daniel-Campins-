@@ -5102,9 +5102,57 @@ if(screen==="home"){
 const tasks = [];
 
 
-/* =====================================================
-   CHECK-IN
-===================================================== */
+/* DIETA */
+
+const trainingMeals =
+  diet?.training?.meals || [];
+
+const restMeals =
+  diet?.rest?.meals || [];
+
+const trainingFoods =
+  trainingMeals.reduce(
+    (total,meal) =>
+      total + (meal.foods?.length || 0),
+    0
+  );
+
+const restFoods =
+  restMeals.reduce(
+    (total,meal) =>
+      total + (meal.foods?.length || 0),
+    0
+  );
+
+const hasDiet =
+  trainingFoods > 0 ||
+  restFoods > 0;
+
+if(hasDiet){
+
+  tasks.push({
+    icon:"🍴",
+    title:"Ver dieta nueva",
+    action:"showClient('food')"
+  });
+
+}
+
+
+/* RUTINA */
+
+if(routine.length > 0){
+
+  tasks.push({
+    icon:"🏋️",
+    title:"Ver nueva rutina",
+    action:"showClient('training')"
+  });
+
+}
+
+
+/* CHECK-IN SEMANAL */
 
 const currentWeekKey =
   typeof getCurrentWeekKey === "function"
@@ -5112,7 +5160,6 @@ const currentWeekKey =
     : "";
 
 const checkinSentThisWeek =
-  checkin &&
   checkin.weekKey &&
   currentWeekKey &&
   checkin.weekKey === currentWeekKey &&
@@ -5122,16 +5169,14 @@ if(!checkinSentThisWeek){
 
   tasks.push({
     icon:"✓",
-    title:"Check-in pendiente",
+    title:"Enviar check-in semanal",
     action:"showClient('checkin')"
   });
 
 }
 
 
-/* =====================================================
-   MENSAJES DEL ENTRENADOR
-===================================================== */
+/* MENSAJES SIN LEER */
 
 const messages =
   data.messages?.[c.id] || [];
@@ -5149,83 +5194,8 @@ if(unreadMessages){
 
   tasks.push({
     icon:"💬",
-    title:"Nuevo mensaje",
+    title:"Mensajes sin leer",
     action:"showClient('coach')"
-  });
-
-}
-
-
-/* =====================================================
-   NUEVA ALIMENTACIÓN
-   Se activa mediante el estado guardado localmente.
-   Más adelante lo sincronizamos con Supabase.
-===================================================== */
-
-const dietSeenKey =
-  `dcc_diet_seen_${c.id}`;
-
-const dietUpdatedKey =
-  diet?.training?.updated_at ||
-  diet?.rest?.updated_at ||
-  "";
-
-const lastDietSeen =
-  localStorage.getItem(dietSeenKey) || "";
-
-const hasNewDiet =
-  dietUpdatedKey &&
-  dietUpdatedKey !== lastDietSeen;
-
-if(hasNewDiet){
-
-  tasks.push({
-    icon:"🍴",
-    title:"Nueva alimentación",
-    action:`
-      localStorage.setItem(
-        '${dietSeenKey}',
-        '${dietUpdatedKey}'
-      );
-      showClient('food')
-    `
-  });
-
-}
-
-
-/* =====================================================
-   NUEVO ENTRENAMIENTO
-   Se activa mediante el estado guardado localmente.
-   Más adelante lo sincronizamos con Supabase.
-===================================================== */
-
-const routineUpdatedKey =
-  data.routineUpdatedAt?.[c.id] ||
-  "";
-
-const routineSeenKey =
-  `dcc_routine_seen_${c.id}`;
-
-const lastRoutineSeen =
-  localStorage.getItem(routineSeenKey) || "";
-
-const hasNewRoutine =
-  routineUpdatedKey &&
-  routineUpdatedKey !== lastRoutineSeen;
-
-if(hasNewRoutine){
-
-  tasks.push({
-    icon:"🏋️",
-    title:"Nuevo entrenamiento",
-    action:`
-      localStorage.setItem(
-        '${routineSeenKey}',
-        '${routineUpdatedKey}'
-      );
-      showClient('training')
-    `
   });
 
 }
