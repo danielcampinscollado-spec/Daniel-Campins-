@@ -4976,14 +4976,16 @@ async function openApp(app){
 
     buildClientNav();
 
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
-    await loadNotificationStateFromSupabase();
+    await Promise.all([
+  loadDietsFromSupabase(),
+  loadClientsFromSupabase(),
+  loadRoutinesFromSupabase(),
+  loadWorkoutHistoryFromSupabase(),
+  loadWeightsFromSupabase(),
+  loadNotificationStateFromSupabase()
+]);
 
-    showClient("home");
+showClient("home");
 
   }else{
 
