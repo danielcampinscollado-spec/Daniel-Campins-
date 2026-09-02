@@ -5750,16 +5750,19 @@ const notificationState =
         Number.isFinite(bodyFatLost) &&
         bodyFatLost !== 0
         ? `
-          <div style="
-            flex:none;
-            padding:7px 10px;
-            border-radius:10px;
-            background:rgba(217,170,74,.10);
-            color:#d9aa4a;
-            font-size:13px;
-            font-weight:700;
-            text-align:center;
-          ">
+         <div style="
+  flex:none;
+  width:78px;
+  box-sizing:border-box;
+  padding:6px 5px;
+  border-radius:10px;
+  background:rgba(217,170,74,.10);
+  color:#d9aa4a;
+  font-size:12px;
+  line-height:1.15;
+  font-weight:700;
+  text-align:center;
+">
             ${
               bodyFatLost > 0
                 ? "↓ -"
