@@ -4507,7 +4507,246 @@ let data=loadData();
 let currentApp="";
 let currentScreen="";
 let currentClientId="carlos";
+/* =========================================================
+   CONSEJOS DE COACHING
+   ========================================================= */
 
+const COACH_TIPS = [
+
+  "La técnica correcta siempre está por encima de mover más peso.",
+  "No necesitas entrenar más. Necesitas ejecutar mejor cada serie.",
+  "Controla la fase de bajada. Ahí también estás construyendo músculo.",
+  "Si la última repetición sigue siendo perfecta, todavía tienes margen.",
+  "La constancia de muchas semanas vale más que una sesión perfecta.",
+  "Entrena con intención: cada serie debe tener un propósito.",
+  "No persigas el cansancio. Persigue una buena ejecución.",
+  "El progreso no siempre se ve en el espejo. También se nota en tu rendimiento.",
+  "Anota tus entrenamientos. Lo que se mide se puede mejorar.",
+  "No cambies un ejercicio porque una sesión haya sido difícil.",
+  "La fuerza también se construye aprendiendo a repetir una buena técnica.",
+  "Descansa lo suficiente para que la siguiente serie tenga calidad.",
+  "Más peso no siempre significa más estímulo.",
+  "La última repetición debe ser difícil, pero no descontrolada.",
+  "Haz que cada repetición se parezca a la anterior.",
+  "No necesitas motivación todos los días. Necesitas un sistema.",
+  "Los resultados llegan cuando haces bien lo básico durante suficiente tiempo.",
+  "Un mal día no arruina tu progreso. Abandonar sí puede hacerlo.",
+  "No compares tu proceso con el de otra persona.",
+  "Tu objetivo es mejorar respecto a tu propia versión anterior.",
+
+  "La alimentación no tiene que ser perfecta. Tiene que ser sostenible.",
+  "Una comida no cambia tu físico. Tus hábitos repetidos sí.",
+  "Prioriza las fuentes de proteína que puedas mantener fácilmente.",
+  "Planificar tus comidas reduce decisiones innecesarias durante el día.",
+  "No llegues a las comidas principales con hambre extrema si puedes evitarlo.",
+  "La hidratación también forma parte de tu rendimiento.",
+  "Come para poder entrenar, recuperarte y mantener tu plan.",
+  "No necesitas eliminar alimentos para conseguir resultados.",
+  "La regularidad en la alimentación importa más que hacerlo perfecto un día.",
+  "Si tu dieta es difícil de mantener, probablemente necesita simplificarse.",
+
+  "El músculo no se construye mientras entrenas. También necesitas recuperarte.",
+  "Dormir bien es parte del programa, no un extra.",
+  "Si llevas varios días muy cansado, revisa tu recuperación antes de añadir más trabajo.",
+  "El descanso entre sesiones permite que puedas volver a rendir.",
+  "Una semana más ligera también puede formar parte de una buena planificación.",
+  "No confundas estar agotado con haber entrenado bien.",
+  "La recuperación determina cuánto de bueno puede ser tu siguiente entrenamiento.",
+  "Tu cuerpo necesita tiempo para adaptarse al estímulo.",
+
+  "Antes de aumentar peso, asegúrate de dominar el recorrido.",
+  "Una repetición controlada vale más que una repetición rápida y desordenada.",
+  "Mantén estable la posición inicial antes de comenzar cada serie.",
+  "La técnica debe mantenerse incluso cuando aparece la fatiga.",
+  "Respira de forma consciente durante las series y no pierdas el control.",
+  "Aprende a sentir qué músculo estás intentando trabajar.",
+  "El rango de movimiento debe ser consistente entre sesiones.",
+  "No sacrifiques la técnica por completar una repetición más.",
+
+  "El progreso real suele ser más lento de lo que te gustaría y más rápido de lo que parece.",
+  "Mira tendencias, no días aislados.",
+  "Una semana complicada no borra las semanas anteriores.",
+  "Si hoy haces una repetición más con el mismo peso, también has progresado.",
+  "Si mantienes el rendimiento mientras mejoras tu composición corporal, estás avanzando.",
+  "La paciencia también es una habilidad que se entrena.",
+  "No cambies el plan cada vez que no veas resultados inmediatamente.",
+  "Dale tiempo al proceso para demostrar que funciona.",
+
+  "Haz hoy lo que tu yo de dentro de tres meses agradecerá.",
+  "La disciplina aparece cuando haces el trabajo aunque no tengas ganas.",
+  "No necesitas hacerlo perfecto. Necesitas volver a hacerlo mañana.",
+  "Tu mejor entrenamiento es el que puedes repetir semana tras semana.",
+  "Los pequeños hábitos terminan produciendo grandes diferencias.",
+  "No busques resultados rápidos. Construye resultados que puedas mantener.",
+  "La confianza aparece cuando cumples contigo mismo repetidamente.",
+  "Cada entrenamiento es una oportunidad para demostrarte que puedes mejorar."
+
+];
+
+
+/* =========================================================
+   SISTEMA AUTOMÁTICO DE CONSEJOS
+   ========================================================= */
+
+function shuffleCoachTips(){
+
+  const order =
+    COACH_TIPS.map((_,index)=>index);
+
+  for(let i=order.length-1;i>0;i--){
+
+    const j=Math.floor(Math.random()*(i+1));
+
+    [order[i],order[j]]=
+    [order[j],order[i]];
+
+  }
+
+  return order;
+}
+
+
+function getCoachTipState(clientId){
+
+  const key =
+    `dc_coach_tips_${clientId}`;
+
+  try{
+
+    const saved=
+      localStorage.getItem(key);
+
+    if(saved){
+
+      const state=
+        JSON.parse(saved);
+
+      if(
+        Array.isArray(state.order) &&
+        state.order.length===COACH_TIPS.length
+      ){
+
+        return state;
+
+      }
+
+    }
+
+  }catch(e){
+
+    console.error(
+      "Error leyendo consejos:",
+      e
+    );
+
+  }
+
+
+  const state={
+
+    order:shuffleCoachTips(),
+
+    position:0,
+
+    dayKey:new Date()
+      .toISOString()
+      .slice(0,10)
+
+  };
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(state)
+  );
+
+  return state;
+
+}
+
+
+function getTodayCoachTip(clientId){
+
+  const key =
+    `dc_coach_tips_${clientId}`;
+
+  const state=
+    getCoachTipState(clientId);
+
+  const today=
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+
+  /*
+   * Un consejo automático nuevo cada día.
+   */
+
+  if(state.dayKey!==today){
+
+    state.position++;
+
+    state.dayKey=today;
+
+    if(state.position>=state.order.length){
+
+      state.order=shuffleCoachTips();
+
+      state.position=0;
+
+    }
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(state)
+    );
+
+  }
+
+
+  return COACH_TIPS[
+    state.order[state.position]
+  ];
+
+}
+
+
+function nextCoachTip(clientId){
+
+  const key =
+    `dc_coach_tips_${clientId}`;
+
+  const state=
+    getCoachTipState(clientId);
+
+
+  state.position++;
+
+  if(state.position>=state.order.length){
+
+    state.order=shuffleCoachTips();
+
+    state.position=0;
+
+  }
+
+
+  state.dayKey=
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(state)
+  );
+
+
+  showClient("training");
+
+}
 function getCurrentWeekKey(){
 
   const now = new Date();
