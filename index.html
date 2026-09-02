@@ -6729,10 +6729,12 @@ function saveDietData(){
   }
 }
 if(screen==="food"){
+
   markClientNotificationSeen(
     "diet",
     currentClientId
   );
+
   const dietType=window.clientDietType||"training";
 
   const diet=
@@ -6747,31 +6749,28 @@ if(screen==="food"){
 
   html=`
 
-  <div style="
-  margin-bottom:26px;
-">
+  <div class="client-header">
 
-  <div style="
-    color:#d9aa4a;
-    font-size:12px;
-    font-weight:800;
-    letter-spacing:3px;
-    margin-bottom:8px;
-  ">
-    ALIMENTACIÓN
+    <div>
+
+      <span class="section-eyebrow">
+        ALIMENTACIÓN
+      </span>
+
+      <h1>
+        Tu alimentación
+      </h1>
+
+      <p class="muted">
+        ${dietType==="training"
+          ? "Día de entrenamiento"
+          : "Día de descanso"}
+      </p>
+
+    </div>
+
   </div>
 
-  <p style="
-    margin:8px 0 0;
-    color:#858b95;
-    font-size:16px;
-  ">
-    ${dietType==="training"
-      ? "Día de entrenamiento"
-      : "Día de descanso"}
-  </p>
-
-</div>
 
   <div class="diet-switch">
 
@@ -6800,132 +6799,220 @@ if(screen==="food"){
 
   <div class="diet-pdf-card">
 
-  <div class="diet-pdf-icon">
+    <div class="diet-pdf-icon">
 
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.6"
-      aria-hidden="true"
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+      >
+        <path d="M6 3.5h8l4 4V20.5H6z"/>
+        <path d="M14 3.5v5h4"/>
+        <path d="M8.5 13h7"/>
+        <path d="M8.5 16h5"/>
+      </svg>
+
+    </div>
+
+    <div class="diet-pdf-text">
+
+      <strong>
+        Tu dieta completa
+      </strong>
+
+      <span>
+        Descarga tu plan de alimentación
+        en formato PDF.
+      </span>
+
+    </div>
+
+    <button
+      type="button"
+      class="diet-pdf-button"
+      onclick="window.print()"
     >
-      <path d="M6 3.5h8l4 4V20.5H6z"/>
-      <path d="M14 3.5v5h4"/>
-      <path d="M8.5 13h7"/>
-      <path d="M8.5 16h5"/>
-    </svg>
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <path d="M12 3v11"/>
+        <path d="m7.5 10 4.5 4.5 4.5-4.5"/>
+        <path d="M5 17v3h14v-3"/>
+      </svg>
+
+      <span>
+        DESCARGAR PDF
+      </span>
+
+    </button>
 
   </div>
 
-  <div class="diet-pdf-text">
-
-    <strong>
-      Tu dieta completa
-    </strong>
-
-    <span>
-      Descarga tu plan de alimentación
-      en formato PDF.
-    </span>
-
-  </div>
-
-  <button
-    type="button"
-    class="diet-pdf-button"
-    onclick="window.print()"
-  >
-
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      aria-hidden="true"
-    >
-      <path d="M12 3v11"/>
-      <path d="m7.5 10 4.5 4.5 4.5-4.5"/>
-      <path d="M5 17v3h14v-3"/>
-    </svg>
-
-    <span>DESCARGAR PDF</span>
-
-  </button>
-
-</div>
-      
 
   <div class="diet-list">
 
     ${
       meals.length
 
-      ? meals.map((m,i)=>`
+      ? meals.map((m,i)=>{
 
-          <details class="meal-card">
+          const options =
+            typeof ensureMealOptions==="function"
+              ? ensureMealOptions(m)
+              : (
+                  Array.isArray(m.options)
+                    ? m.options
+                    : [{
+                        name:"Opción 1",
+                        foods:m.foods||[]
+                      }]
+                );
 
-            <summary>
+          const validOptions =
+            options.filter(
+              option =>
+                Array.isArray(option.foods) &&
+                option.foods.length
+            );
 
-              <div>
+          const selectedIndex =
+            window.clientDietOptionIndex?.[i] != null
+              ? window.clientDietOptionIndex[i]
+              : 0;
 
-                <b>
-                  ${esc(m.name)}
-                </b>
+          const activeIndex =
+            validOptions[selectedIndex]
+              ? selectedIndex
+              : 0;
 
-              </div>
+          const activeOption =
+            validOptions[activeIndex];
 
-              <span class="meal-count">
-                ${(m.foods||[]).length}
-                ${(m.foods||[]).length===1
-                  ? "alimento"
-                  : "alimentos"}
-                ·
-                ›
-              </span>
+          return `
 
-            </summary>
+            <details
+              class="meal-card"
+              ontoggle="
+                this.querySelector('.meal-arrow').textContent =
+                this.open ? '⌃' : '›';
+              "
+            >
+
+              <summary>
+
+                <div>
+
+                  <b>
+                    ${esc(m.name)}
+                  </b>
+
+                </div>
+
+                <span class="meal-arrow">
+                  ›
+                </span>
+
+              </summary>
 
 
-            <div class="meal-content">
+              <div class="meal-content">
 
-              ${
-                m.foods?.length
+                ${
+                  validOptions.length > 1
 
-                ? m.foods.map(f=>`
+                  ? `
 
-                    <div class="food-row">
+                    <div class="diet-options">
 
-                      <span>
-                        ${esc(f[0])}
-                      </span>
+                      ${
+                        validOptions.map((option,index)=>`
 
-                      <b>
-                        ${esc(f[1])}
-                      </b>
+                          <button
+                            type="button"
+                            class="diet-option ${
+                              index===activeIndex
+                                ? "active"
+                                : ""
+                            }"
+                            onclick="
+                              event.preventDefault();
+                              event.stopPropagation();
+
+                              if(!window.clientDietOptionIndex){
+                                window.clientDietOptionIndex={};
+                              }
+
+                              window.clientDietOptionIndex[${i}]=${index};
+
+                              showClient('food');
+                            "
+                          >
+                            ${esc(option.name)}
+                          </button>
+
+                        `).join("")
+                      }
 
                     </div>
 
-                  `).join("")
+                  `
 
-                : `
-                  <div class="empty compact-empty">
-                    Esta comida todavía no tiene alimentos.
-                  </div>
-                `
-              }
+                  : ""
 
-            </div>
+                }
 
-          </details>
 
-        `).join("")
+                ${
+                  activeOption?.foods?.length
+
+                  ? activeOption.foods.map(f=>`
+
+                      <div class="food-row">
+
+                        <span>
+                          ${esc(f[0])}
+                        </span>
+
+                        <b>
+                          ${esc(f[1])}
+                        </b>
+
+                      </div>
+
+                    `).join("")
+
+                  : `
+
+                    <div class="empty compact-empty">
+                      Esta comida todavía no tiene alimentos.
+                    </div>
+
+                  `
+                }
+
+              </div>
+
+            </details>
+
+          `;
+
+        }).join("")
 
       : `
+
         <div class="card">
+
           <div class="empty">
-            Daniel todavía no ha configurado tu alimentación.
+            Todavía no tienes una alimentación configurada.
           </div>
+
         </div>
+
       `
     }
 
@@ -13101,26 +13188,107 @@ saveData();
 window.coachDietType=type;
 showCoach("diets");
 }
-function addMeal(id,type){
-const name=prompt("Nombre de la comida:");
-if(!name)return;
+function ensureMealOptions(meal){
 
-if(!data.diets[id])data.diets[id]={};
-if(!data.diets[id][type])data.diets[id][type]={calories:"",protein:"",meals:[]};
-if(!data.diets[id][type].meals)data.diets[id][type].meals=[];
+  if(!meal.options || !Array.isArray(meal.options)){
 
-data.diets[id][type].meals.push({
-name:name,
-foods:[]
-});
+    meal.options = [
 
-saveData();
-window.coachDietType=type;
-showCoach("diets");
+      {
+        name:"Opción 1",
+        foods:Array.isArray(meal.foods)
+          ? meal.foods
+          : []
+      }
+
+    ];
+
+  }
+
+  meal.options = meal.options
+    .slice(0,3)
+    .map((option,index)=>({
+
+      name:`Opción ${index+1}`,
+
+      foods:Array.isArray(option.foods)
+        ? option.foods
+        : []
+
+    }));
+
+  delete meal.foods;
+
+  return meal.options;
 }
 
 
-async function addFood(id,type,mi){
+function saveDietToSupabase(id,type,diet){
+
+  return supabaseClient
+    .from("client_diets")
+    .upsert({
+
+      client_id:id,
+      diet_type:type,
+      calories:diet.calories||"",
+      protein:diet.protein||"",
+      meals:diet.meals
+
+    },{
+      onConflict:"client_id,diet_type"
+    });
+
+}
+
+
+function addMeal(id,type){
+
+  const name=prompt("Nombre de la comida:");
+
+  if(!name)return;
+
+  if(!data.diets[id]){
+    data.diets[id]={};
+  }
+
+  if(!data.diets[id][type]){
+
+    data.diets[id][type]={
+      calories:"",
+      protein:"",
+      meals:[]
+    };
+
+  }
+
+  if(!data.diets[id][type].meals){
+    data.diets[id][type].meals=[];
+  }
+
+  data.diets[id][type].meals.push({
+
+    name:name,
+
+    options:[
+      {
+        name:"Opción 1",
+        foods:[]
+      }
+    ]
+
+  });
+
+  saveData();
+
+  window.coachDietType=type;
+
+  showCoach("diets");
+
+}
+
+
+async function addDietOption(id,type,mi){
 
   const diet=data.diets[id]?.[type];
 
@@ -13129,37 +13297,41 @@ async function addFood(id,type,mi){
     return;
   }
 
-  const food=prompt("Alimento:");
-  if(!food) return;
+  const meal=diet.meals[mi];
 
-  const qty=prompt("Cantidad:");
-  if(!qty) return;
+  const options=ensureMealOptions(meal);
 
-  if(!diet.meals[mi].foods){
-    diet.meals[mi].foods=[];
+  if(options.length>=3){
+
+    toast("Máximo 3 opciones");
+
+    return;
   }
 
-  diet.meals[mi].foods.push([food,qty]);
+  options.push({
 
-  const { error } = await supabaseClient
-    .from("client_diets")
-    .upsert({
-      client_id:id,
-      diet_type:type,
-      calories:diet.calories||"",
-      protein:diet.protein||"",
-      meals:diet.meals
-    },{
-      onConflict:"client_id,diet_type"
-    });
+    name:`Opción ${options.length+1}`,
+
+    foods:[]
+
+  });
+
+  const {error}=await saveDietToSupabase(
+    id,
+    type,
+    diet
+  );
 
   if(error){
 
-    console.error("Error guardando dieta:",error);
+    console.error(
+      "Error guardando opción:",
+      error
+    );
 
-    diet.meals[mi].foods.pop();
+    options.pop();
 
-    toast("No se pudo guardar la dieta");
+    toast("No se pudo guardar la opción");
 
     return;
   }
@@ -13168,21 +13340,75 @@ async function addFood(id,type,mi){
 
   window.coachDietType=type;
 
-  /*
-    Guardamos la comida que acabamos de editar
-    para poder continuar desde la siguiente.
-  */
-  window.nextDietMealIndex = mi + 1;
+  showCoach("diets");
+
+  toast("Opción añadida");
+
+}
+
+
+async function addFood(id,type,mi,oi=0){
+
+  const diet=data.diets[id]?.[type];
+
+  if(!diet || !diet.meals || !diet.meals[mi]){
+    toast("No se encontró la comida");
+    return;
+  }
+
+  const meal=diet.meals[mi];
+
+  const options=ensureMealOptions(meal);
+
+  if(!options[oi]){
+    toast("No se encontró la opción");
+    return;
+  }
+
+  const food=prompt("Alimento:");
+
+  if(!food)return;
+
+  const qty=prompt("Cantidad:");
+
+  if(!qty)return;
+
+  options[oi].foods.push([
+    food,
+    qty
+  ]);
+
+  const {error}=await saveDietToSupabase(
+    id,
+    type,
+    diet
+  );
+
+  if(error){
+
+    console.error(
+      "Error guardando dieta:",
+      error
+    );
+
+    options[oi].foods.pop();
+
+    toast("No se pudo guardar el alimento");
+
+    return;
+  }
+
+  saveData();
+
+  window.coachDietType=type;
+
+  window.nextDietMealIndex=mi+1;
 
   showCoach("diets");
 
-  /*
-    Después de reconstruir la pantalla,
-    bajamos automáticamente hasta la siguiente comida.
-  */
   requestAnimationFrame(()=>{
 
-    const nextMeal =
+    const nextMeal=
       document.querySelector(
         `[data-diet-meal="${window.nextDietMealIndex}"]`
       );
@@ -13199,6 +13425,72 @@ async function addFood(id,type,mi){
   });
 
   toast("Alimento guardado");
+
+}
+
+
+async function removeFood(id,type,mi,fi,oi=0){
+
+  const diet=data.diets[id]?.[type];
+
+  if(
+    !diet ||
+    !diet.meals ||
+    !diet.meals[mi]
+  ){
+    return;
+  }
+
+  const meal=diet.meals[mi];
+
+  const options=ensureMealOptions(meal);
+
+  if(!options[oi]){
+    return;
+  }
+
+  if(
+    !options[oi].foods ||
+    !options[oi].foods[fi]
+  ){
+    return;
+  }
+
+  const removed=
+    options[oi].foods.splice(fi,1)[0];
+
+  const {error}=await saveDietToSupabase(
+    id,
+    type,
+    diet
+  );
+
+  if(error){
+
+    console.error(
+      "Error eliminando alimento:",
+      error
+    );
+
+    options[oi].foods.splice(
+      fi,
+      0,
+      removed
+    );
+
+    toast("No se pudo eliminar el alimento");
+
+    return;
+  }
+
+  saveData();
+
+  window.coachDietType=type;
+
+  showCoach("diets");
+
+  toast("Alimento eliminado");
+
 }
 
 async function removeFood(id,type,mi,fi){
