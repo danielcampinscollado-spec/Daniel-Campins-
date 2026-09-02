@@ -5229,16 +5229,26 @@ function getClientManagementStatus(id){
     diet?.rest?.meals || [];
 
   const trainingFoods = trainingMeals.reduce(
-    (total,meal) =>
-      total + (meal.foods?.length || 0),
-    0
-  );
+  (total,meal) =>
+    total +
+    ensureMealOptions(meal).reduce(
+      (sum,option) =>
+        sum + (option.foods?.length || 0),
+      0
+    ),
+  0
+);
 
-  const restFoods = restMeals.reduce(
-    (total,meal) =>
-      total + (meal.foods?.length || 0),
-    0
-  );
+const restFoods = restMeals.reduce(
+  (total,meal) =>
+    total +
+    ensureMealOptions(meal).reduce(
+      (sum,option) =>
+        sum + (option.foods?.length || 0),
+      0
+    ),
+  0
+);
 
   let dietStatus = "Falta gestionar dieta";
 
@@ -5247,13 +5257,19 @@ function getClientManagementStatus(id){
     const hasTrainingMeals =
       trainingMeals.length > 0 &&
       trainingMeals.every(
-        meal => (meal.foods?.length || 0) > 0
+        meal =>
+  ensureMealOptions(meal).some(
+    option => (option.foods?.length || 0) > 0
+  )
       );
 
     const hasRestMeals =
       restMeals.length > 0 &&
       restMeals.every(
-        meal => (meal.foods?.length || 0) > 0
+        meal =>
+  ensureMealOptions(meal).some(
+    option => (option.foods?.length || 0) > 0
+  )
       );
 
     if(hasTrainingMeals && hasRestMeals){
@@ -13428,9 +13444,6 @@ async function removeFood(id,type,mi,fi,oi=0){
   toast("Alimento eliminado");
 
 }
-
-
-async function addTrainingDay(id){
 
 
 async function addTrainingDay(id){
