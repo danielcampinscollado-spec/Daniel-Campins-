@@ -7962,6 +7962,59 @@ if(screen==="training"){
 ">
   ${dayTabs}
 </div>
+        <!-- CONSEJO DE HOY -->
+
+<div class="card" style="
+  padding:18px;
+  margin-bottom:18px;
+  border-radius:20px;
+">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+  ">
+
+    <div style="flex:1;min-width:0;">
+
+      <div style="
+        font-size:12px;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:.08em;
+        margin-bottom:7px;
+      ">
+        CONSEJO DE HOY
+      </div>
+
+      <div style="
+        font-size:15px;
+        line-height:1.5;
+      ">
+        ${esc(getTodayCoachTip(currentClientId))}
+      </div>
+
+    </div>
+
+    <button
+      class="ghost"
+      onclick="nextCoachTip('${currentClientId}');showClient('training')"
+      style="
+        width:40px;
+        height:40px;
+        min-width:40px;
+        padding:0;
+        border-radius:12px;
+        font-size:20px;
+      "
+      title="Otro consejo"
+    >↻</button>
+
+  </div>
+
+</div>
         <!-- TARJETA DEL DÍA -->
 
         <div class="card" style="
