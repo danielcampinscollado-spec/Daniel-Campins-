@@ -8412,7 +8412,7 @@ if(screen==="messages"){
   );
 const msgs=data.messages[c.id]||[];
 html=`
-<h1>Coach</h1>
+<h1>Mensajes</h1>
 <div class="card">
 ${msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><p>${esc(m[1])}</p></div>`).join("")}
 <textarea id="client-message" placeholder="Escribe un mensaje..."></textarea>
