@@ -6973,6 +6973,7 @@ if(screen==="food"){
 
             <details
               class="meal-card"
+              ${window.clientDietOptionIndex?.[i] != null ? 'open' : ''}
               ontoggle="
                 this.querySelector('.meal-arrow').textContent =
                 this.open ? '⌃' : '›';
@@ -7016,17 +7017,22 @@ if(screen==="food"){
                                 : ""
                             }"
                             onclick="
-                              event.preventDefault();
-                              event.stopPropagation();
+  event.preventDefault();
+  event.stopPropagation();
 
-                              if(!window.clientDietOptionIndex){
-                                window.clientDietOptionIndex={};
-                              }
+  if(!window.clientDietOptionIndex){
+    window.clientDietOptionIndex={};
+  }
 
-                              window.clientDietOptionIndex[${i}]=${index};
+  window.clientDietOptionIndex[${i}]=${index};
 
-                              showClient('food');
-                            "
+  const mealCard=this.closest('.meal-card');
+  if(mealCard){
+    mealCard.dataset.keepOpen='1';
+  }
+
+  showClient('food');
+"
                           >
                             ${esc(option.name)}
                           </button>
@@ -12748,8 +12754,10 @@ main.innerHTML=html;
 }
 
 function openClient(id){
-window.selectedClient=id;
-showClientAdmin(id);
+  window.selectedClient=id;
+  window.scrollTo(0,0);
+  showClientAdmin(id);
+  window.scrollTo(0,0);
 }
 
 function showClientAdmin(id){
