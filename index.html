@@ -4507,6 +4507,7 @@ let data=loadData();
 let currentApp="";
 let currentScreen="";
 let currentClientId="carlos";
+
 /* =========================================================
    CONSEJOS DE COACHING
    ========================================================= */
@@ -9503,7 +9504,60 @@ ${
 
 </div>
 
+<!-- CONSEJO DE HOY -->
 
+<div class="card" style="
+  margin-bottom:18px;
+  padding:20px;
+">
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  ">
+
+    <div>
+
+      <p class="muted" style="
+        margin:0 0 6px;
+        font-size:12px;
+        text-transform:uppercase;
+        letter-spacing:.06em;
+      ">
+        Consejo de hoy
+      </p>
+
+      <div style="
+        font-size:16px;
+        line-height:1.5;
+        font-weight:600;
+      ">
+        ${esc(getTodayCoachTip(workout.clientId))}
+      </div>
+
+    </div>
+
+    <button
+      class="ghost"
+      style="
+        flex:0 0 auto;
+        width:42px;
+        height:42px;
+        padding:0;
+        border-radius:12px;
+        font-size:18px;
+      "
+      onclick="nextCoachTip('${workout.clientId}')"
+      title="Otro consejo"
+    >
+      ↻
+    </button>
+
+  </div>
+
+</div>
 <!-- ÚLTIMA SESIÓN -->
 
 ${
