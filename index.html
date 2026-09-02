@@ -9748,12 +9748,13 @@ if(restSeconds > 0){
   workout.restUntil =
     Date.now() + (restSeconds * 1000);
 
+  workout.restMode="set";
+
   renderWorkoutSession();
 
   startRestTimer();
 
   toast(`Serie guardada · Descanso ${restSeconds} s`);
-
 }else{
 
   workout.restUntil = null;
