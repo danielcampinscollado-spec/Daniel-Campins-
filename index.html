@@ -13204,22 +13204,41 @@ async function addExercise(id,dayIndex){
     return;
   }
 
-  const name=prompt("Nombre del ejercicio:");
-  if(!name) return;
+const name=prompt("Nombre del ejercicio:");
+if(!name) return;
 
-  const sets=prompt("Series:");
-  if(!sets) return;
+const sets=prompt("Series:");
+if(!sets) return;
 
-  const reps=prompt("Repeticiones:");
-  if(!reps) return;
+const reps=prompt("Repeticiones:");
+if(!reps) return;
+
+const restBetweenSets=prompt(
+  "Descanso entre series (segundos):",
+  "90"
+);
+
+if(restBetweenSets===null) return;
+
+const restBetweenExercises=prompt(
+  "Descanso después del ejercicio (segundos):",
+  "120"
+);
+
+if(restBetweenExercises===null) return;
+
 const video=prompt(
   "Enlace al vídeo del ejercicio (opcional):"
 );
 
-  day.exercises.push({
-  name:name,
-  sets:sets,
-  reps:reps,
+day.exercises.push({
+  name:name.trim(),
+  sets:sets.trim(),
+  reps:reps.trim(),
+  restBetweenSets:
+    Math.max(0,parseInt(restBetweenSets)||0),
+  restBetweenExercises:
+    Math.max(0,parseInt(restBetweenExercises)||0),
   videoUrl:video.trim()
 });
   /* Guardado local */
