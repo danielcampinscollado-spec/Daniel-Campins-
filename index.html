@@ -9608,14 +9608,28 @@ function startRestTimer(){
 }
     if(remaining <= 0){
 
-      clearInterval(window.restTimerInterval);
+  clearInterval(window.restTimerInterval);
 
-      workout.restUntil = null;
+  workout.restUntil = null;
 
-      renderWorkoutSession();
+  const wasExerciseRest =
+    workout.restMode === "exercise";
 
-      toast("Descanso terminado · Siguiente serie");
-    }
+  workout.restMode = null;
+
+  renderWorkoutSession();
+
+  if(wasExerciseRest){
+
+    toast("Descanso terminado · Siguiente ejercicio");
+
+  }else{
+
+    toast("Descanso terminado · Siguiente serie");
+
+  }
+
+}
 
   },250);
 }
@@ -9629,11 +9643,23 @@ function skipRest(){
 
   clearInterval(window.restTimerInterval);
 
+  const wasExerciseRest =
+    workout.restMode === "exercise";
+
   workout.restUntil = null;
+  workout.restMode = null;
 
   renderWorkoutSession();
 
-  toast("Descanso terminado");
+  if(wasExerciseRest){
+
+    toast("Descanso omitido · Siguiente ejercicio");
+
+  }else{
+
+    toast("Descanso omitido · Siguiente serie");
+
+  }
 }
 
 
@@ -9709,18 +9735,37 @@ function saveWorkoutSet(){
     reps:repsValue
   });
 
-  /* Descanso obligatorio de 90 segundos */
+/* Descanso configurado por el entrenador */
+
+const exercise =
+  workout.exercises[workout.currentExercise];
+
+const restSeconds =
+  Math.max(
+    0,
+    parseInt(exercise?.restBetweenSets) || 0
+  );
+
+if(restSeconds > 0){
 
   workout.restUntil =
-    Date.now() + 90000;
+    Date.now() + (restSeconds * 1000);
 
   renderWorkoutSession();
 
   startRestTimer();
 
-  toast("Serie guardada · Descanso 90 s");
-}
+  toast(`Serie guardada · Descanso ${restSeconds} s`);
 
+}else{
+
+  workout.restUntil = null;
+
+  renderWorkoutSession();
+
+  toast("Serie guardada");
+}
+}
 function editWorkoutSet(index){
 
   const workout=window.activeWorkout;
@@ -9820,6 +9865,8 @@ function nextWorkoutExercise(){
 
   workout.sets=[];
 
+  /* Último ejercicio: terminar directamente */
+
   if(workout.currentExercise >= workout.exercises.length){
 
     finishWorkout();
@@ -9827,6 +9874,38 @@ function nextWorkoutExercise(){
     return;
 
   }
+
+  /* Descanso entre ejercicios configurado por el entrenador */
+
+  const restSeconds=
+    Math.max(
+      0,
+      parseInt(exercise.restBetweenExercises) || 0
+    );
+
+  if(restSeconds > 0){
+
+    workout.restUntil=
+      Date.now() + (restSeconds * 1000);
+
+    workout.restMode="exercise";
+
+    renderWorkoutSession();
+
+    startRestTimer();
+
+    toast(
+      `Ejercicio completado · Descanso ${restSeconds} s`
+    );
+
+    return;
+
+  }
+
+  /* Sin descanso: pasar directamente */
+
+  workout.restUntil=null;
+  workout.restMode=null;
 
   renderWorkoutSession();
 }
@@ -13215,14 +13294,14 @@ if(!reps) return;
 
 const restBetweenSets=prompt(
   "Descanso entre series (segundos):",
-  "90"
+  "0"
 );
 
 if(restBetweenSets===null) return;
 
 const restBetweenExercises=prompt(
   "Descanso después del ejercicio (segundos):",
-  "120"
+  "0"
 );
 
 if(restBetweenExercises===null) return;
