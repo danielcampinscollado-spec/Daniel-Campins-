@@ -6747,28 +6747,42 @@ if(screen==="food"){
 
   html=`
 
-  <div class="client-header">
+  <div style="
+  margin-bottom:26px;
+">
 
-    <div>
-
-      <span class="section-eyebrow">
-        ALIMENTACIÓN
-      </span>
-
-      <h1>
-        Tu alimentación
-      </h1>
-
-      <p class="muted">
-        ${dietType==="training"
-          ? "Día de entrenamiento"
-          : "Día de descanso"}
-      </p>
-
-    </div>
-
+  <div style="
+    color:#d9aa4a;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:3px;
+    margin-bottom:8px;
+  ">
+    ALIMENTACIÓN
   </div>
 
+  <h1 style="
+    margin:0;
+    color:#f5f5f2;
+    font-size:34px;
+    line-height:1.1;
+    font-weight:750;
+    letter-spacing:-1px;
+  ">
+    Tu alimentación
+  </h1>
+
+  <p style="
+    margin:8px 0 0;
+    color:#858b95;
+    font-size:16px;
+  ">
+    ${dietType==="training"
+      ? "Día de entrenamiento"
+      : "Día de descanso"}
+  </p>
+
+</div>
 
   <div class="diet-switch">
 
