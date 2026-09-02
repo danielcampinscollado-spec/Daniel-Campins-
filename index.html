@@ -5095,8 +5095,7 @@ function buildClientNav(){
 document.getElementById("client-nav").innerHTML=
 navButton("⌂","Inicio","showClient('home')")+
 navButton("🍴","Alimentación","showClient('food')")+
-navButton("🏋️","Entrenamiento","showClient('training')")+
-navButton("📈","Progreso","showClient('progress')")+
+navButton("","Entrenamiento","showClient('training')")navButton("📈","Progreso","showClient('progress')")+
 navButton("✓","Check-in","showClient('checkin')")+
 navButton("💬","Mensajes","showClient('coach')")}
 
@@ -5104,8 +5103,7 @@ function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
 navButton("▦","Panel","showCoach('dashboard')")+navButton("👥","Clientes","showCoach('clients')")+
 navButton("🍴","Alimentación","showCoach('diets')")+
-navButton("🏋️","Entrenamiento","showCoach('routines')")+
-navButton("✓","Check-in","showCoach('checkins')")+
+navButton("","Entrenamiento","showCoach('routines')")navButton("✓","Check-in","showCoach('checkins')")+
 navButton("💬","Mensajes","showCoach('messages')");
 document.querySelector("#coach-nav button")?.classList.add("active");
 }
