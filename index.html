@@ -5098,8 +5098,7 @@ navButton("🍴","Alimentación","showClient('food')")+
 navButton("🏋️","Entrenamiento","showClient('training')")+
 navButton("📈","Progreso","showClient('progress')")+
 navButton("✓","Check-in","showClient('checkin')")+
-navButton("💬","Mensajes","showClient('coach')");
-}
+navButton("💬","Mensajes","showClient('messages')")}
 
 function buildCoachNav(){
 document.getElementById("coach-nav").innerHTML=
@@ -5158,7 +5157,7 @@ function showClient(screen){
       training:2,
       progress:3,
       checkin:4,
-      coach:5
+      messages:5
     };
 
     const index=navIndex[screen];
