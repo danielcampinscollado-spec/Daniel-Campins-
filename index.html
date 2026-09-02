@@ -5215,7 +5215,7 @@ if(screen==="home"){
       ? Number(checkin.bodyFat)
       : null;
 
-  const bodyFatLost =
+    const bodyFatLost =
     initialBodyFat !== null &&
     currentBodyFat !== null
       ? initialBodyFat - currentBodyFat
@@ -5223,9 +5223,125 @@ if(screen==="home"){
 
 
   /* =====================================================
-     PRÓXIMO ENTRENAMIENTO
+     PROGRESO DE FUERZA
   ====================================================== */
 
+  const workoutHistory =
+    (data.workoutHistory?.[c.id] || [])
+      .slice()
+      .sort(
+        (a,b)=>
+          new Date(a.date)-new Date(b.date)
+      );
+
+  const strengthRows = [];
+
+  if(workoutHistory.length >= 2){
+
+    const currentWorkout =
+      workoutHistory[workoutHistory.length-1];
+
+    (currentWorkout.exercises || []).forEach(ex=>{
+
+      let previousExercise = null;
+
+      for(
+        let i = workoutHistory.length - 2;
+        i >= 0;
+        i--
+      ){
+
+        const found =
+          (workoutHistory[i].exercises || [])
+            .find(item => item.name === ex.name);
+
+        if(found){
+          previousExercise = found;
+          break;
+        }
+
+      }
+
+      if(!previousExercise) return;
+
+      const currentSets =
+        Array.isArray(ex.sets)
+          ? ex.sets
+          : [];
+
+      const previousSets =
+        Array.isArray(previousExercise.sets)
+          ? previousExercise.sets
+          : [];
+
+      if(!currentSets.length || !previousSets.length){
+        return;
+      }
+
+      const bestCurrent =
+        currentSets.reduce(
+          (best,set)=>{
+
+            const kg = Number(set.kg) || 0;
+            const reps = Number(set.reps) || 0;
+            const value = kg * reps;
+
+            return value > best.value
+              ? {kg,reps,value}
+              : best;
+
+          },
+          {kg:0,reps:0,value:0}
+        );
+
+      const bestPrevious =
+        previousSets.reduce(
+          (best,set)=>{
+
+            const kg = Number(set.kg) || 0;
+            const reps = Number(set.reps) || 0;
+            const value = kg * reps;
+
+            return value > best.value
+              ? {kg,reps,value}
+              : best;
+
+          },
+          {kg:0,reps:0,value:0}
+        );
+
+      if(
+        bestPrevious.value > 0 &&
+        bestCurrent.value > bestPrevious.value
+      ){
+
+        const improvement =
+          (
+            (bestCurrent.value - bestPrevious.value) /
+            bestPrevious.value
+          ) * 100;
+
+        strengthRows.push({
+          name: ex.name || "Ejercicio",
+          previous: bestPrevious,
+          current: bestCurrent,
+          improvement
+        });
+
+      }
+
+    });
+
+    strengthRows.sort(
+      (a,b)=>b.improvement-a.improvement
+    );
+
+  }
+
+
+  /* =====================================================
+     PRÓXIMO ENTRENAMIENTO
+  ====================================================== */
   const weeklyWorkouts =
     getWeeklyWorkoutCount(c.id);
 
@@ -5734,7 +5850,153 @@ const notificationState =
       }
 
     </section>
+    <!-- =================================================
+         PROGRESO DE FUERZA
+    ================================================== -->
 
+    <section style="
+      border:1px solid #292d35;
+      border-radius:20px;
+      background:#101217;
+      padding:18px;
+      margin-bottom:18px;
+    ">
+
+      <div style="
+        color:#39b982;
+        font-size:11px;
+        font-weight:700;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        margin-bottom:12px;
+      ">
+        PROGRESO DE FUERZA
+      </div>
+
+
+      ${
+        strengthRows.length
+
+        ? `
+
+          <div style="
+            color:#f5f5f2;
+            font-size:20px;
+            font-weight:700;
+            margin-bottom:12px;
+          ">
+            Has mejorado en
+            ${strengthRows.length}
+            ${strengthRows.length === 1 ? "ejercicio" : "ejercicios"}
+          </div>
+
+
+          ${
+            strengthRows
+              .slice(0,3)
+              .map(row=>`
+
+                <div style="
+                  display:flex;
+                  align-items:center;
+                  justify-content:space-between;
+                  gap:12px;
+                  padding:9px 0;
+                  border-top:1px solid rgba(255,255,255,.07);
+                ">
+
+                  <div style="
+                    min-width:0;
+                  ">
+
+                    <div style="
+                      color:#f5f5f2;
+                      font-size:14px;
+                      font-weight:600;
+                      white-space:nowrap;
+                      overflow:hidden;
+                      text-overflow:ellipsis;
+                    ">
+                      ${esc(row.name)}
+                    </div>
+
+                    <div style="
+                      margin-top:4px;
+                      color:#858b95;
+                      font-size:12px;
+                    ">
+                      ${row.previous.kg} kg
+                      →
+                      ${row.current.kg} kg
+                    </div>
+
+                  </div>
+
+
+                  <strong style="
+                    flex:none;
+                    color:#39b982;
+                    font-size:15px;
+                    white-space:nowrap;
+                  ">
+                    +${row.improvement.toFixed(1).replace(".",",")}%
+                  </strong>
+
+                </div>
+
+              `)
+              .join("")
+          }
+
+
+          ${
+            strengthRows.length > 3
+
+            ? `
+              <div style="
+                margin-top:10px;
+                color:#39b982;
+                font-size:12px;
+                font-weight:700;
+                text-align:right;
+              ">
+                Ver todos mis progresos →
+              </div>
+            `
+            : ""
+          }
+
+        `
+
+        : `
+
+          <div style="
+            color:#f5f5f2;
+            font-size:18px;
+            font-weight:600;
+          ">
+            Sigue dándolo todo 💪
+          </div>
+
+          <div style="
+            margin-top:7px;
+            color:#858b95;
+            font-size:13px;
+            line-height:1.45;
+          ">
+            Todavía no hay mejoras registradas.
+            Cada entrenamiento te acerca a tu mejor versión.
+          </div>
+
+        `
+      }
+
+    </section>
+
+
+    <!-- =================================================
+         PRÓXIMO ENTRENAMIENTO
+    ================================================== -->
 
     <!-- =================================================
          PRÓXIMO ENTRENAMIENTO
