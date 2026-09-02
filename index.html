@@ -3889,6 +3889,309 @@ margin:0 !important;
   }
 
 }
+/* =========================================================
+
+   DCC — SISTEMA VISUAL GLOBAL
+
+   ========================================================= */
+
+:root{
+
+  --dcc-bg:#080a0e;
+
+  --dcc-panel:#11151c;
+
+  --dcc-panel-2:#151a22;
+
+  --dcc-text:#f5f5f2;
+
+  --dcc-muted:#9299a5;
+
+  --dcc-line:rgba(255,255,255,.09);
+
+  --dcc-gold:#d9aa4a;
+
+  --dcc-gold-light:#f0c96b;
+
+  --dcc-green:#39b982;
+
+  --dcc-red:#e05a5a;
+
+  --dcc-radius:22px;
+
+}
+
+/* ===== BASE ===== */
+
+body{
+
+  background:var(--dcc-bg) !important;
+
+  color:var(--dcc-text) !important;
+
+  font-family:-apple-system,BlinkMacSystemFont,
+
+    "SF Pro Display","SF Pro Text",
+
+    "Segoe UI",Arial,sans-serif !important;
+
+}
+
+/* ===== TÍTULOS ===== */
+
+#client-main h1,
+
+#coach-main h1{
+
+  font-family:inherit !important;
+
+  color:var(--dcc-text) !important;
+
+  font-weight:700 !important;
+
+  letter-spacing:-.5px !important;
+
+  line-height:1.1 !important;
+
+}
+
+#client-main h2,
+
+#coach-main h2{
+
+  font-family:inherit !important;
+
+  color:var(--dcc-text) !important;
+
+  font-weight:700 !important;
+
+  line-height:1.2 !important;
+
+}
+
+#client-main h3,
+
+#coach-main h3{
+
+  font-family:inherit !important;
+
+  color:var(--dcc-text) !important;
+
+  font-weight:600 !important;
+
+}
+
+/* ===== TEXTO SECUNDARIO ===== */
+
+#client-main .muted,
+
+#coach-main .muted{
+
+  color:var(--dcc-muted) !important;
+
+}
+
+/* ===== TARJETAS ===== */
+
+#client-main .card,
+
+#coach-main .card{
+
+  background:var(--dcc-panel) !important;
+
+  color:var(--dcc-text) !important;
+
+  border:1px solid var(--dcc-line) !important;
+
+  border-radius:var(--dcc-radius) !important;
+
+  box-shadow:0 18px 50px rgba(0,0,0,.20) !important;
+
+}
+
+/* ===== ELEMENTOS INTERNOS ===== */
+
+#client-main .item,
+
+#coach-main .item{
+
+  border-color:var(--dcc-line) !important;
+
+}
+
+/* ===== BOTÓN PRINCIPAL ===== */
+
+#client-main .btn,
+
+#coach-main .btn{
+
+  background:var(--dcc-gold) !important;
+
+  color:#0b0d10 !important;
+
+  border:1px solid var(--dcc-gold) !important;
+
+  border-radius:15px !important;
+
+  font-weight:700 !important;
+
+  box-shadow:none !important;
+
+}
+
+#client-main .btn:hover,
+
+#coach-main .btn:hover{
+
+  background:var(--dcc-gold-light) !important;
+
+  border-color:var(--dcc-gold-light) !important;
+
+}
+
+/* ===== BOTÓN SECUNDARIO ===== */
+
+#client-main .ghost,
+
+#coach-main .ghost{
+
+  background:rgba(255,255,255,.035) !important;
+
+  color:var(--dcc-text) !important;
+
+  border:1px solid rgba(255,255,255,.12) !important;
+
+  border-radius:15px !important;
+
+  font-weight:600 !important;
+
+}
+
+/* ===== PILLS ===== */
+
+#client-main .pill,
+
+#coach-main .pill{
+
+  background:rgba(217,170,74,.08) !important;
+
+  color:var(--dcc-gold-light) !important;
+
+  border:1px solid rgba(217,170,74,.22) !important;
+
+  border-radius:999px !important;
+
+}
+
+/* ===== CAMPOS ===== */
+
+#client-main input,
+
+#client-main textarea,
+
+#client-main select,
+
+#coach-main input,
+
+#coach-main textarea,
+
+#coach-main select{
+
+  background:var(--dcc-panel-2) !important;
+
+  color:var(--dcc-text) !important;
+
+  border:1px solid var(--dcc-line) !important;
+
+  border-radius:14px !important;
+
+}
+
+#client-main input::placeholder,
+
+#client-main textarea::placeholder,
+
+#coach-main input::placeholder,
+
+#coach-main textarea::placeholder{
+
+  color:#6f7680 !important;
+
+}
+
+/* ===== ACENTO DCC ===== */
+
+#client-main strong,
+
+#coach-main strong{
+
+  color:inherit;
+
+}
+
+/* ===== LINKS / ACCIONES ===== */
+
+#client-main a,
+
+#coach-main a{
+
+  color:var(--dcc-gold-light);
+
+}
+
+/* ===== HOME: MISMA TIPOGRAFÍA ===== */
+
+#client-main .dc-home h1,
+
+#client-main .dc-home h2,
+
+#client-main .dc-home h3{
+
+  font-family:inherit !important;
+
+}
+
+/* ===== CONSISTENCIA MÓVIL ===== */
+
+@media(max-width:700px){
+
+  #client-main h1,
+
+  #coach-main h1{
+
+    font-size:28px !important;
+
+  }
+
+  #client-main h2,
+
+  #coach-main h2{
+
+    font-size:20px !important;
+
+  }
+
+  #client-main .card,
+
+  #coach-main .card{
+
+    border-radius:20px !important;
+
+  }
+
+  #client-main .btn,
+
+  #client-main .ghost,
+
+  #coach-main .btn,
+
+  #coach-main .ghost{
+
+    min-height:46px;
+
+  }
+
+}
 </style>
 </head>
 
