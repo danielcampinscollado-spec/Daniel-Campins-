@@ -4192,6 +4192,66 @@ body{
   }
 
 }
+/* =====================================================
+   OPCIONES DE ALIMENTACIÓN — ESTILO DCC
+===================================================== */
+
+.diet-options{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin:0 0 16px;
+  padding:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.diet-options::-webkit-scrollbar{
+  display:none;
+}
+
+.diet-option{
+  flex:0 0 auto;
+
+  min-width:88px;
+  height:38px;
+
+  padding:0 15px;
+
+  border:1px solid #dfe3e8;
+  border-radius:11px;
+
+  background:#fff;
+  color:#7f8792;
+
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.2px;
+
+  cursor:pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    transform .12s ease;
+}
+
+.diet-option:active{
+  transform:scale(.97);
+}
+
+.diet-option.active{
+  background:#f0c96b;
+  border-color:#f0c96b;
+  color:#17191d;
+}
+
+.diet-option:not(.active):hover{
+  border-color:#c9a957;
+  color:#956b18;
+}
 </style>
 </head>
 
