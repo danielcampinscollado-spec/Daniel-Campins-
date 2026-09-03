@@ -6085,6 +6085,16 @@ async function openApp(app){
   const clientApp = document.getElementById("client");
   const coachApp = document.getElementById("coach");
 
+  if(!login || !clientApp || !coachApp){
+    console.error("No se encontraron los elementos principales de la aplicación");
+    return;
+  }
+
+  /*
+   * Primero mostramos la aplicación.
+   * No dejamos la pantalla negra si Supabase tarda o falla.
+   */
+
   login.style.display = "none";
 
   clientApp.style.display =
@@ -6093,18 +6103,36 @@ async function openApp(app){
   coachApp.style.display =
     app === "coach" ? "block" : "none";
 
-  if(app === "client"){
 
-    buildClientNav();
-    resetWeeklyCheckinIfNeeded();
-    showClient("home");
+  try{
 
-  }else{
+    if(app === "client"){
 
-    buildCoachNav();
-    showCoach("dashboard");
+      buildClientNav();
+
+      resetWeeklyCheckinIfNeeded();
+
+      showClient("home");
+
+    }else{
+
+      buildCoachNav();
+
+      showCoach("dashboard");
+
+    }
+
+  }catch(e){
+
+    console.error("Error mostrando la aplicación:", e);
 
   }
+
+
+  /*
+   * Sincronización con Supabase.
+   * Si alguna consulta falla, la aplicación continúa funcionando.
+   */
 
   Promise.allSettled([
 
@@ -6112,7 +6140,8 @@ async function openApp(app){
     loadClientsFromSupabase(),
     loadRoutinesFromSupabase(),
     loadWorkoutHistoryFromSupabase(),
-    loadWeightsFromSupabase()
+    loadWeightsFromSupabase(),
+    loadNotificationStateFromSupabase()
 
   ]).then(results => {
 
@@ -6121,13 +6150,17 @@ async function openApp(app){
       if(result.status === "rejected"){
 
         console.error(
-          "Error cargando datos #" + (index + 1),
+          "Error sincronizando datos #" + (index + 1),
           result.reason
         );
 
       }
 
     });
+
+  }).catch(e => {
+
+    console.error("Error general sincronizando datos:",e);
 
   });
 
