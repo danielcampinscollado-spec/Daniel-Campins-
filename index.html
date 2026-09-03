@@ -7666,7 +7666,208 @@ if(screen==="training"){
       ? selectedDay.exercises
       : [];
 
+/* =====================================================
+   RECONOCIMIENTO INTELIGENTE DE EJERCICIOS
+   ===================================================== */
 
+const normalizeExerciseName = (name="") => {
+
+  return String(name)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+};
+
+
+const exerciseLibrary = [
+
+  {
+    id:"press-banca",
+    image:"press-banca.png",
+    aliases:[
+      "press banca",
+      "press de banca",
+      "press banca barra",
+      "press plano",
+      "banca plana",
+      "press plano barra",
+      "bench press",
+      "barbell bench press",
+      "press pecho barra"
+    ]
+  },
+
+  {
+    id:"press-inclinado",
+    image:"press-inclinado.png",
+    aliases:[
+      "press inclinado",
+      "press inclinado barra",
+      "press inclinado mancuernas",
+      "press inclinado maquina",
+      "press pecho inclinado",
+      "incline press",
+      "incline bench press",
+      "incline dumbbell press"
+    ]
+  },
+
+  {
+    id:"pull-over",
+    image:"pull-over.png",
+    aliases:[
+      "pull over",
+      "pull-over",
+      "pullover",
+      "pull over mancuerna",
+      "pull over polea",
+      "pullover mancuerna",
+      "pullover polea"
+    ]
+  },
+
+  {
+    id:"remo",
+    image:"remo.png",
+    aliases:[
+      "remo",
+      "remo barra",
+      "remo con barra",
+      "remo mancuerna",
+      "remo mancuerna unilateral",
+      "remo polea",
+      "remo sentado",
+      "seated row",
+      "cable row",
+      "barbell row",
+      "dumbbell row"
+    ]
+  },
+
+  {
+    id:"sentadilla",
+    image:"sentadilla.png",
+    aliases:[
+      "sentadilla",
+      "sentadilla barra",
+      "sentadilla libre",
+      "sentadilla trasera",
+      "back squat",
+      "squat",
+      "barbell squat"
+    ]
+  }
+
+];
+
+
+const recognizeExercise = (name="") => {
+
+  const n = normalizeExerciseName(name);
+
+  if(!n){
+    return null;
+  }
+
+  let bestMatch = null;
+  let bestScore = 0;
+
+  exerciseLibrary.forEach(exercise => {
+
+    exercise.aliases.forEach(alias => {
+
+      const a = normalizeExerciseName(alias);
+
+      /*
+       * Coincidencia exacta
+       */
+      if(n === a){
+        bestMatch = exercise;
+        bestScore = 100;
+        return;
+      }
+
+      /*
+       * El nombre contiene la variante conocida
+       */
+      if(n.includes(a)){
+        if(bestScore < 90){
+          bestMatch = exercise;
+          bestScore = 90;
+        }
+      }
+
+      /*
+       * La variante contiene el nombre escrito
+       */
+      if(a.includes(n) && n.length >= 5){
+        if(bestScore < 80){
+          bestMatch = exercise;
+          bestScore = 80;
+        }
+      }
+
+    });
+
+  });
+
+  return bestScore >= 80
+    ? bestMatch
+    : null;
+
+};
+
+
+const exerciseVisual = (name="") => {
+
+  const exercise =
+    recognizeExercise(name);
+
+  if(!exercise){
+    return `
+      <div style="
+        width:58px;
+        height:58px;
+        flex:none;
+      "></div>
+    `;
+  }
+
+  return `
+    <div style="
+      width:58px;
+      height:58px;
+      flex:none;
+      border-radius:16px;
+      overflow:hidden;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      background:rgba(217,170,74,.045);
+      border:1px solid rgba(217,170,74,.22);
+    ">
+
+      <img
+        src="./assets/exercises/${exercise.image}"
+        alt=""
+        loading="lazy"
+        style="
+          width:100%;
+          height:100%;
+          object-fit:contain;
+          display:block;
+        "
+      >
+
+    </div>
+  `;
+};
   /* =====================================================
      SELECTOR DE DÍAS
   ====================================================== */
@@ -7768,6 +7969,7 @@ border-radius:12px;
             cursor:pointer;
           "
         >
+${exerciseVisual(ex.name)}
 
           <div style="
             flex:1;
