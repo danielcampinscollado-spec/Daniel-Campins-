@@ -7964,53 +7964,201 @@ if(screen==="training"){
 </div>
         <!-- CONSEJO DE HOY -->
 
-<div class="card" style="
-  padding:18px;
-  margin-bottom:18px;
-  border-radius:20px;
+<div style="
+  position:relative;
+  overflow:hidden;
+  margin-bottom:20px;
+  padding:1px;
+  border-radius:22px;
+  background:linear-gradient(
+    135deg,
+    rgba(217,170,74,.65),
+    rgba(217,170,74,.12) 45%,
+    rgba(255,255,255,.08)
+  );
 ">
 
   <div style="
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
+    position:relative;
+    overflow:hidden;
+    padding:20px;
+    border-radius:21px;
+    background:
+      radial-gradient(
+        circle at 100% 0%,
+        rgba(217,170,74,.12),
+        transparent 42%
+      ),
+      linear-gradient(
+        145deg,
+        #171b21,
+        #0d1015
+      );
   ">
 
-    <div style="flex:1;min-width:0;">
+    <!-- DETALLE DECORATIVO -->
+
+    <div style="
+      position:absolute;
+      top:-45px;
+      right:-45px;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      border:1px solid rgba(217,170,74,.10);
+      pointer-events:none;
+    "></div>
+
+    <div style="
+      position:absolute;
+      top:-25px;
+      right:-25px;
+      width:80px;
+      height:80px;
+      border-radius:50%;
+      border:1px solid rgba(217,170,74,.08);
+      pointer-events:none;
+    "></div>
+
+
+    <!-- CABECERA -->
+
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      position:relative;
+      z-index:1;
+    ">
 
       <div style="
-        font-size:12px;
-        font-weight:700;
-        text-transform:uppercase;
-        letter-spacing:.08em;
-        margin-bottom:7px;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        min-width:0;
       ">
-        CONSEJO DE HOY
+
+        <div style="
+          width:38px;
+          height:38px;
+          flex:none;
+          border-radius:12px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:rgba(217,170,74,.10);
+          border:1px solid rgba(217,170,74,.24);
+          color:#d9aa4a;
+          font-size:18px;
+        ">
+          ✦
+        </div>
+
+        <div>
+
+          <div style="
+            color:#d9aa4a;
+            font-size:10px;
+            font-weight:800;
+            letter-spacing:1.8px;
+            text-transform:uppercase;
+            line-height:1.2;
+          ">
+            CONSEJO DE HOY
+          </div>
+
+          <div style="
+            margin-top:4px;
+            color:#727984;
+            font-size:11px;
+            letter-spacing:.3px;
+          ">
+            Enfoque · Rendimiento · Constancia
+          </div>
+
+        </div>
+
       </div>
 
+
+      <!-- CAMBIAR CONSEJO -->
+
+      <button
+        onclick="nextCoachTip('${currentClientId}');showClient('training')"
+        title="Otro consejo"
+        style="
+          width:38px;
+          height:38px;
+          min-width:38px;
+          padding:0;
+          border-radius:12px;
+          border:1px solid rgba(217,170,74,.25);
+          background:rgba(255,255,255,.035);
+          color:#d9aa4a;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:18px;
+          cursor:pointer;
+          transition:all .2s ease;
+        "
+      >
+        ↻
+      </button>
+
+    </div>
+
+
+    <!-- CONSEJO -->
+
+    <div style="
+      position:relative;
+      z-index:1;
+      margin-top:18px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.07);
+    ">
+
       <div style="
-        font-size:15px;
-        line-height:1.5;
+        color:#f5f5f2;
+        font-size:16px;
+        font-weight:600;
+        line-height:1.55;
+        letter-spacing:-.1px;
       ">
         ${esc(getTodayCoachTip(currentClientId))}
       </div>
 
     </div>
 
-    <button
-      class="ghost"
-      onclick="nextCoachTip('${currentClientId}');showClient('training')"
-      style="
-        width:40px;
-        height:40px;
-        min-width:40px;
-        padding:0;
-        border-radius:12px;
-        font-size:20px;
-      "
-      title="Otro consejo"
-    >↻</button>
+
+    <!-- PIE -->
+
+    <div style="
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      margin-top:16px;
+      color:#686f7a;
+      font-size:10px;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    ">
+
+      <span style="
+        width:5px;
+        height:5px;
+        border-radius:50%;
+        background:#d9aa4a;
+        opacity:.75;
+      "></span>
+
+      Tu progreso se construye día a día
+
+    </div>
 
   </div>
 
