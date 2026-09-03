@@ -6081,14 +6081,9 @@ async function openApp(app){
 
   currentApp = app;
 
-  const login =
-    document.getElementById("login");
-
-  const clientApp =
-    document.getElementById("client");
-
-  const coachApp =
-    document.getElementById("coach");
+  const login = document.getElementById("login");
+  const clientApp = document.getElementById("client");
+  const coachApp = document.getElementById("coach");
 
   login.style.display = "none";
 
@@ -6098,35 +6093,43 @@ async function openApp(app){
   coachApp.style.display =
     app === "coach" ? "block" : "none";
 
-
   if(app === "client"){
 
     buildClientNav();
-
-    await Promise.all([
-  loadDietsFromSupabase(),
-  loadClientsFromSupabase(),
-  loadRoutinesFromSupabase(),
-  loadWorkoutHistoryFromSupabase(),
-  loadWeightsFromSupabase(),
-  loadNotificationStateFromSupabase()
-]);
-
-showClient("home");
+    resetWeeklyCheckinIfNeeded();
+    showClient("home");
 
   }else{
 
     buildCoachNav();
-
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
-    
     showCoach("dashboard");
 
   }
+
+  Promise.allSettled([
+
+    loadDietsFromSupabase(),
+    loadClientsFromSupabase(),
+    loadRoutinesFromSupabase(),
+    loadWorkoutHistoryFromSupabase(),
+    loadWeightsFromSupabase()
+
+  ]).then(results => {
+
+    results.forEach((result,index) => {
+
+      if(result.status === "rejected"){
+
+        console.error(
+          "Error cargando datos #" + (index + 1),
+          result.reason
+        );
+
+      }
+
+    });
+
+  });
 
 }
 function logout(){
