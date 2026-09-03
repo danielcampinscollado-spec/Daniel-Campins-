@@ -6072,66 +6072,177 @@ setTimeout(()=>t.style.display="none",2200);
 
 async function openApp(app){
 
-  console.log("openApp funciona", app);
-
-  if(app !== "client" && app !== "coach"){
-    console.error("Aplicación no válida:", app);
-    return;
-  }
-
-  currentApp = app;
+  console.log("ENTRANDO EN openApp:", app);
 
   const login = document.getElementById("login");
   const clientApp = document.getElementById("client");
   const coachApp = document.getElementById("coach");
 
   if(!login || !clientApp || !coachApp){
-    console.error("No se encontraron los elementos principales de la aplicación");
+
+    console.error("Faltan elementos principales del HTML");
+
     return;
   }
 
+  currentApp = app;
+
   /*
-   * Primero mostramos la aplicación.
-   * No dejamos la pantalla negra si Supabase tarda o falla.
+   * Mostrar la aplicación inmediatamente.
    */
 
   login.style.display = "none";
 
-  clientApp.style.display =
-    app === "client" ? "block" : "none";
+  if(app === "client"){
 
-  coachApp.style.display =
-    app === "coach" ? "block" : "none";
+    clientApp.style.display = "block";
+    coachApp.style.display = "none";
 
+    const main = document.getElementById("client-main");
 
-  try{
+    /*
+     * Pantalla mínima de seguridad.
+     * Así nunca volvemos a quedarnos en negro.
+     */
 
-    if(app === "client"){
+    if(main){
 
-      buildClientNav();
+      main.innerHTML = `
+        <div style="
+          min-height:100vh;
+          padding:40px 24px;
+          box-sizing:border-box;
+          background:#0b0b0b;
+          color:white;
+          font-family:Arial,sans-serif;
+        ">
+          <h1 style="margin-top:0;">
+            Área Cliente
+          </h1>
 
-      resetWeeklyCheckinIfNeeded();
-
-      showClient("home");
-
-    }else{
-
-      buildCoachNav();
-
-      showCoach("dashboard");
+          <p style="opacity:.7;">
+            Cargando tu espacio...
+          </p>
+        </div>
+      `;
 
     }
 
-  }catch(e){
+    try{
 
-    console.error("Error mostrando la aplicación:", e);
+      buildClientNav();
+
+    }catch(e){
+
+      console.error("ERROR EN buildClientNav:",e);
+
+    }
+
+    try{
+
+      resetWeeklyCheckinIfNeeded();
+
+    }catch(e){
+
+      console.error("ERROR EN resetWeeklyCheckinIfNeeded:",e);
+
+    }
+
+    try{
+
+      showClient("home");
+
+    }catch(e){
+
+      console.error("ERROR EN showClient:",e);
+
+      if(main){
+
+        main.innerHTML = `
+          <div style="
+            padding:40px 24px;
+            color:white;
+            font-family:Arial,sans-serif;
+          ">
+
+            <h2>No se pudo cargar el inicio</h2>
+
+            <p style="opacity:.7;">
+              Hay un error en la pantalla de inicio.
+            </p>
+
+          </div>
+        `;
+
+      }
+
+    }
+
+  }else if(app === "coach"){
+
+    coachApp.style.display = "block";
+    clientApp.style.display = "none";
+
+    const main = document.getElementById("coach-main");
+
+    if(main){
+
+      main.innerHTML = `
+        <div style="
+          min-height:100vh;
+          padding:40px 24px;
+          box-sizing:border-box;
+          background:#0b0b0b;
+          color:white;
+          font-family:Arial,sans-serif;
+        ">
+          <h1 style="margin-top:0;">
+            Panel Entrenador
+          </h1>
+
+          <p style="opacity:.7;">
+            Cargando panel...
+          </p>
+        </div>
+      `;
+
+    }
+
+    try{
+
+      buildCoachNav();
+
+    }catch(e){
+
+      console.error("ERROR EN buildCoachNav:",e);
+
+    }
+
+    try{
+
+      showCoach("dashboard");
+
+    }catch(e){
+
+      console.error("ERROR EN showCoach:",e);
+
+    }
+
+  }else{
+
+    console.error("Aplicación desconocida:",app);
+
+    login.style.display = "grid";
+    clientApp.style.display = "none";
+    coachApp.style.display = "none";
+
+    return;
 
   }
 
-
   /*
-   * Sincronización con Supabase.
-   * Si alguna consulta falla, la aplicación continúa funcionando.
+   * Supabase se carga DESPUÉS.
+   * Un fallo de Supabase no puede dejar la aplicación en negro.
    */
 
   Promise.allSettled([
@@ -6140,8 +6251,7 @@ async function openApp(app){
     loadClientsFromSupabase(),
     loadRoutinesFromSupabase(),
     loadWorkoutHistoryFromSupabase(),
-    loadWeightsFromSupabase(),
-    loadNotificationStateFromSupabase()
+    loadWeightsFromSupabase()
 
   ]).then(results => {
 
@@ -6150,7 +6260,7 @@ async function openApp(app){
       if(result.status === "rejected"){
 
         console.error(
-          "Error sincronizando datos #" + (index + 1),
+          "Error Supabase #" + (index + 1),
           result.reason
         );
 
@@ -6160,7 +6270,10 @@ async function openApp(app){
 
   }).catch(e => {
 
-    console.error("Error general sincronizando datos:",e);
+    console.error(
+      "Error general de sincronización:",
+      e
+    );
 
   });
 
