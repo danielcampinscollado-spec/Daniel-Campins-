@@ -4874,8 +4874,23 @@ body{
 const KEY="danielCampinsApp";
 const SUPABASE_URL="https://khrhfurdlbqnlthlkhhp.supabase.co";
 const SUPABASE_KEY="sb_publishable_Dhr67diGFP22g8PKdmUg9A_jbn2EyNZ";
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const defaultData={
+let supabaseClient = null;
+
+if(typeof supabase !== "undefined"){
+
+  supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+}else{
+
+  console.warn(
+    "Supabase no está disponible. La aplicación continuará en modo local."
+  );
+
+}const defaultData={
 clients:[
 {id:"carlos",name:"Carlos García",goal:"Recomposición",weight:78.4,initial:80,plan:"2.250 kcal · 180 g proteína",status:"Revisado"},
 {id:"laura",name:"Laura Martín",goal:"Pérdida de grasa",weight:64.2,initial:64.2,plan:"Plan pendiente",status:"Pendiente"},
