@@ -4418,248 +4418,18 @@ body{
 
 }
 /* =====================================================
-   ALIMENTACIÓN — DCC PREMIUM
-===================================================== */
-
-.diet-switch{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  width:100%;
-  padding:4px;
-  margin:0 0 18px;
-  box-sizing:border-box;
-
-  border:1px solid rgba(217,170,74,.24);
-  border-radius:18px;
-
-  background:
-    linear-gradient(
-      145deg,
-      #191c22 0%,
-      #111419 55%,
-      #0b0e13 100%
-    );
-
-  box-shadow:
-    0 14px 34px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,255,255,.035);
-}
-
-.diet-switch button{
-  flex:1;
-  min-height:44px;
-
-  border:1px solid transparent;
-  border-radius:14px;
-
-  background:transparent;
-  color:#858c97;
-
-  font-size:12px;
-  font-weight:700;
-
-  cursor:pointer;
-}
-
-.diet-switch button.active{
-  color:#17191d;
-
-  border-color:#f0c96b;
-
-  background:
-    linear-gradient(
-      135deg,
-      #f5d17a 0%,
-      #d9aa4a 55%,
-      #b77e22 100%
-    );
-
-  box-shadow:
-    0 6px 18px rgba(217,170,74,.16);
-}
-
-
-/* =====================================================
-   PDF
-===================================================== */
-
-.diet-pdf-card{
-  position:relative !important;
-  overflow:hidden !important;
-
-  display:flex !important;
-  align-items:center !important;
-  gap:14px !important;
-
-  width:100% !important;
-  min-height:112px !important;
-
-  margin:0 0 16px !important;
-  padding:16px !important;
-
-  box-sizing:border-box !important;
-
-  border:1px solid rgba(217,170,74,.34) !important;
-  border-radius:22px !important;
-
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(217,170,74,.13),
-      transparent 40%
-    ),
-    linear-gradient(
-      145deg,
-      #1b1e25 0%,
-      #13161c 50%,
-      #0b0e13 100%
-    ) !important;
-
-  box-shadow:
-    0 18px 45px rgba(0,0,0,.28),
-    inset 0 1px 0 rgba(255,255,255,.04) !important;
-}
-
-.diet-pdf-icon{
-  flex:0 0 48px !important;
-  width:48px !important;
-  height:62px !important;
-
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-.diet-pdf-icon svg{
-  width:46px !important;
-  height:56px !important;
-}
-
-.diet-pdf-text{
-  flex:1 !important;
-  min-width:0 !important;
-}
-
-.diet-pdf-text strong{
-  display:block !important;
-  color:#f5f5f2 !important;
-  font-size:16px !important;
-  line-height:1.2 !important;
-}
-
-.diet-pdf-text span{
-  display:block !important;
-  margin-top:5px !important;
-  color:#858c97 !important;
-  font-size:11px !important;
-  line-height:1.35 !important;
-}
-
-.diet-pdf-button{
-  flex:none !important;
-
-  min-height:40px !important;
-  padding:8px 12px !important;
-
-  border:1px solid rgba(217,170,74,.58) !important;
-  border-radius:999px !important;
-
-  background:rgba(217,170,74,.035) !important;
-  color:#f0c96b !important;
-}
-
-
-/* =====================================================
-   COMIDAS
-===================================================== */
-
-.diet-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.meal-card{
-  position:relative !important;
-  overflow:hidden !important;
-
-  border:1px solid rgba(217,170,74,.30) !important;
-  border-radius:20px !important;
-
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(217,170,74,.10),
-      transparent 38%
-    ),
-    linear-gradient(
-      145deg,
-      #1b1e25 0%,
-      #13161c 50%,
-      #0b0e13 100%
-    ) !important;
-
-  box-shadow:
-    0 16px 38px rgba(0,0,0,.26),
-    inset 0 1px 0 rgba(255,255,255,.035) !important;
-}
-
-
-/* =====================================================
-   CABECERA DE COMIDA
-===================================================== */
-
-.meal-card summary{
-  min-height:62px;
-
-  padding:7px 16px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-
-  cursor:pointer;
-  list-style:none;
-}
-
-.meal-card summary::-webkit-details-marker{
-  display:none;
-}
-
-.meal-card summary b{
-  color:#f5f5f2 !important;
-}
-
-
-/* =====================================================
-   CONTENIDO
-===================================================== */
-
-.meal-content{
-  padding:0 16px 16px !important;
-
-  border-top:1px solid rgba(217,170,74,.30) !important;
-}
-
-
-/* =====================================================
-   OPCIÓN 1 / 2 / 3
+   OPCIONES DE ALIMENTACIÓN — ESTILO DCC
 ===================================================== */
 
 .diet-options{
-  display:flex !important;
-  align-items:center !important;
-  gap:8px !important;
-
-  width:100% !important;
-
-  margin:0 0 14px !important;
-  padding:14px 0 0 !important;
-
-  overflow-x:auto !important;
-  scrollbar-width:none !important;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin:0 0 16px;
+  padding:0;
+  overflow-x:auto;
+  scrollbar-width:none;
 }
 
 .diet-options::-webkit-scrollbar{
@@ -4667,94 +4437,47 @@ body{
 }
 
 .diet-option{
-  flex:0 0 auto !important;
+  flex:0 0 auto;
 
-  min-width:88px !important;
-  height:38px !important;
+  min-width:88px;
+  height:38px;
 
-  padding:0 15px !important;
+  padding:0 15px;
 
-  border:1px solid rgba(217,170,74,.28) !important;
-  border-radius:11px !important;
+  border:1px solid #dfe3e8;
+  border-radius:11px;
 
-  background:rgba(255,255,255,.035) !important;
+  background:#fff;
+  color:#7f8792;
 
-  color:#9aa1ac !important;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.2px;
 
-  font-size:12px !important;
-  font-weight:700 !important;
+  cursor:pointer;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    transform .12s ease;
+}
+
+.diet-option:active{
+  transform:scale(.97);
 }
 
 .diet-option.active{
-  background:
-    linear-gradient(
-      135deg,
-      #f5d17a 0%,
-      #d9aa4a 55%,
-      #b77e22 100%
-    ) !important;
-
-  border-color:#f0c96b !important;
-  color:#17191d !important;
+  background:#f0c96b;
+  border-color:#f0c96b;
+  color:#17191d;
 }
 
-
-/* =====================================================
-   ALIMENTOS — SEPARADORES DORADOS
-===================================================== */
-
-.food-row{
-  padding:11px 4px !important;
-
-  border-bottom:1px solid rgba(217,170,74,.18) !important;
+.diet-option:not(.active):hover{
+  border-color:#c9a957;
+  color:#956b18;
 }
-
-.food-row:last-child{
-  border-bottom:0 !important;
-}
-
-.food-row b{
-  color:#f0c96b !important;
-}
-
-
-/* =====================================================
-   FLECHA
-===================================================== */
-
-.meal-arrow{
-  color:#f0c96b !important;
-}
-
-
-/* =====================================================
-   MÓVIL
-===================================================== */
-
-@media(max-width:390px){
-
-  .diet-pdf-card{
-    gap:9px !important;
-    padding:10px !important;
-    min-height:96px !important;
-  }
-
-  .diet-pdf-icon{
-    flex-basis:38px !important;
-    width:38px !important;
-    height:52px !important;
-  }
-
-  .diet-pdf-icon svg{
-    width:35px !important;
-    height:47px !important;
-  }
-
-  .diet-pdf-button{
-    padding:8px 10px !important;
-  }
-
-}
+</style>
 </head>
 
 <body>
@@ -4869,31 +4592,13 @@ body{
 </div>
 
 <div id="toast" class="toast"></div>
-<script>
-alert("HTML CARGADO");
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const KEY="danielCampinsApp";
 const SUPABASE_URL="https://khrhfurdlbqnlthlkhhp.supabase.co";
 const SUPABASE_KEY="sb_publishable_Dhr67diGFP22g8PKdmUg9A_jbn2EyNZ";
-let supabaseClient = null;
-
-if(typeof supabase !== "undefined"){
-
-  supabaseClient =
-    supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-}else{
-
-  console.warn(
-    "Supabase no está disponible. La aplicación continuará en modo local."
-  );
-
-}const defaultData={
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const defaultData={
 clients:[
 {id:"carlos",name:"Carlos García",goal:"Recomposición",weight:78.4,initial:80,plan:"2.250 kcal · 180 g proteína",status:"Revisado"},
 {id:"laura",name:"Laura Martín",goal:"Pérdida de grasa",weight:64.2,initial:64.2,plan:"Plan pendiente",status:"Pendiente"},
@@ -5021,8 +4726,7 @@ marcos:[["Marcos","Nuevo mensaje"]],
 pedro:[]
 }
 };
-console.log("JAVASCRIPT CARGADO CORRECTAMENTE");
-alert("SCRIPT CARGADO");
+
 let data=loadData();
 
 let currentApp="";
@@ -6091,210 +5795,61 @@ setTimeout(()=>t.style.display="none",2200);
 
 async function openApp(app){
 
-  console.log("ENTRANDO EN openApp:", app);
+  console.log("openApp funciona", app);
 
-  const login = document.getElementById("login");
-  const clientApp = document.getElementById("client");
-  const coachApp = document.getElementById("coach");
-
-  if(!login || !clientApp || !coachApp){
-
-    console.error("Faltan elementos principales del HTML");
-
+  if(app !== "client" && app !== "coach"){
+    console.error("Aplicación no válida:", app);
     return;
   }
 
   currentApp = app;
 
-  /*
-   * Mostrar la aplicación inmediatamente.
-   */
+  const login =
+    document.getElementById("login");
+
+  const clientApp =
+    document.getElementById("client");
+
+  const coachApp =
+    document.getElementById("coach");
 
   login.style.display = "none";
 
+  clientApp.style.display =
+    app === "client" ? "block" : "none";
+
+  coachApp.style.display =
+    app === "coach" ? "block" : "none";
+
+
   if(app === "client"){
 
-    clientApp.style.display = "block";
-    coachApp.style.display = "none";
+    buildClientNav();
 
-    const main = document.getElementById("client-main");
+    await Promise.all([
+  loadDietsFromSupabase(),
+  loadClientsFromSupabase(),
+  loadRoutinesFromSupabase(),
+  loadWorkoutHistoryFromSupabase(),
+  loadWeightsFromSupabase(),
+  loadNotificationStateFromSupabase()
+]);
 
-    /*
-     * Pantalla mínima de seguridad.
-     * Así nunca volvemos a quedarnos en negro.
-     */
-
-    if(main){
-
-      main.innerHTML = `
-        <div style="
-          min-height:100vh;
-          padding:40px 24px;
-          box-sizing:border-box;
-          background:#0b0b0b;
-          color:white;
-          font-family:Arial,sans-serif;
-        ">
-          <h1 style="margin-top:0;">
-            Área Cliente
-          </h1>
-
-          <p style="opacity:.7;">
-            Cargando tu espacio...
-          </p>
-        </div>
-      `;
-
-    }
-
-    try{
-
-      buildClientNav();
-
-    }catch(e){
-
-      console.error("ERROR EN buildClientNav:",e);
-
-    }
-
-    try{
-
-      resetWeeklyCheckinIfNeeded();
-
-    }catch(e){
-
-      console.error("ERROR EN resetWeeklyCheckinIfNeeded:",e);
-
-    }
-
-    try{
-
-      showClient("home");
-
-    }catch(e){
-
-      console.error("ERROR EN showClient:",e);
-
-      if(main){
-
-        main.innerHTML = `
-          <div style="
-            padding:40px 24px;
-            color:white;
-            font-family:Arial,sans-serif;
-          ">
-
-            <h2>No se pudo cargar el inicio</h2>
-
-            <p style="opacity:.7;">
-              Hay un error en la pantalla de inicio.
-            </p>
-
-          </div>
-        `;
-
-      }
-
-    }
-
-  }else if(app === "coach"){
-
-    coachApp.style.display = "block";
-    clientApp.style.display = "none";
-
-    const main = document.getElementById("coach-main");
-
-    if(main){
-
-      main.innerHTML = `
-        <div style="
-          min-height:100vh;
-          padding:40px 24px;
-          box-sizing:border-box;
-          background:#0b0b0b;
-          color:white;
-          font-family:Arial,sans-serif;
-        ">
-          <h1 style="margin-top:0;">
-            Panel Entrenador
-          </h1>
-
-          <p style="opacity:.7;">
-            Cargando panel...
-          </p>
-        </div>
-      `;
-
-    }
-
-    try{
-
-      buildCoachNav();
-
-    }catch(e){
-
-      console.error("ERROR EN buildCoachNav:",e);
-
-    }
-
-    try{
-
-      showCoach("dashboard");
-
-    }catch(e){
-
-      console.error("ERROR EN showCoach:",e);
-
-    }
+showClient("home");
 
   }else{
 
-    console.error("Aplicación desconocida:",app);
+    buildCoachNav();
 
-    login.style.display = "grid";
-    clientApp.style.display = "none";
-    coachApp.style.display = "none";
-
-    return;
+    await loadDietsFromSupabase();
+    await loadClientsFromSupabase();
+    await loadRoutinesFromSupabase();
+    await loadWorkoutHistoryFromSupabase();
+    await loadWeightsFromSupabase();
+    
+    showCoach("dashboard");
 
   }
-
-  /*
-   * Supabase se carga DESPUÉS.
-   * Un fallo de Supabase no puede dejar la aplicación en negro.
-   */
-
-  Promise.allSettled([
-
-    loadDietsFromSupabase(),
-    loadClientsFromSupabase(),
-    loadRoutinesFromSupabase(),
-    loadWorkoutHistoryFromSupabase(),
-    loadWeightsFromSupabase()
-
-  ]).then(results => {
-
-    results.forEach((result,index) => {
-
-      if(result.status === "rejected"){
-
-        console.error(
-          "Error Supabase #" + (index + 1),
-          result.reason
-        );
-
-      }
-
-    });
-
-  }).catch(e => {
-
-    console.error(
-      "Error general de sincronización:",
-      e
-    );
-
-  });
 
 }
 function logout(){
@@ -12100,7 +11655,7 @@ html=`
           height:21px;
         "
       >
-        <path d="M4 5h16l-6.2 7.1v5.4l-3.6 1.8v-7.2z"/>
+        <path d="M4 5h16l-6.2 7.1v5.4l-3.6k 1.8v-7.2z"/>
       </svg>
 
     </button>
