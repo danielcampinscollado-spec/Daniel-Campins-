@@ -7506,9 +7506,8 @@ if(screen==="food"){
           return `
 
             <details
-              class="meal-card"
-              ${window.clientDietOptionIndex?.[i] != null ? 'open' : ''}
-              ontoggle="
+             class="meal-card"
+             ontoggle="
                 this.querySelector('.meal-arrow').textContent =
                 this.open ? '⌃' : '›';
               "
