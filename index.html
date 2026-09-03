@@ -4000,6 +4000,51 @@ margin:0 !important;
   position:relative;
   z-index:1;
 }
+/* =========================================================
+   DCC — HOME PREMIUM
+   ========================================================= */
+
+#client-main .dc-home-next{
+  position:relative !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  margin:0 0 18px !important;
+  padding:18px !important;
+
+  border:1px solid rgba(217,170,74,.42) !important;
+  border-radius:22px !important;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(217,170,74,.14),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #1b1e25 0%,
+      #13161c 50%,
+      #0b0e13 100%
+    ) !important;
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.32),
+    inset 0 1px 0 rgba(255,255,255,.05) !important;
+
+  overflow:hidden !important;
+}
+
+#client-main .dc-home-next > div{
+  box-sizing:border-box;
+}
+
+@media(max-width:700px){
+  #client-main .dc-home-next{
+    margin-bottom:18px !important;
+    padding:16px !important;
+    border-radius:20px !important;
+  }
+}
 /* ===== BASE ===== */
 
 body{
@@ -6780,7 +6825,7 @@ const notificationState =
 
       ? `
 
-       <section class="dc-card">
+      <section class="card dc-home-next">
           <div style="
             color:#aeb4bd;
             font-size:11px;
