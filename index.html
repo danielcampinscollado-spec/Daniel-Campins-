@@ -6451,12 +6451,22 @@ const notificationState =
 
   <div style="
     padding:16px;
-    border:1px solid rgba(255,255,255,.10);
+    border:1px solid transparent;
 border-right-color:transparent;
 border-radius:20px;
 background:
-  radial-gradient(circle at 100% 0%,rgba(217,170,74,.10),transparent 42%),
-  linear-gradient(145deg,#171a20 0%,#101319 55%,#0b0e13 100%);
+  linear-gradient(
+    145deg,
+    #171a20 0%,
+    #101319 55%,
+    #0b0e13 100%
+  ) padding-box,
+  linear-gradient(
+    135deg,
+    rgba(217,170,74,.55),
+    rgba(255,255,255,.12) 45%,
+    rgba(217,170,74,.18)
+  ) border-box;
 box-shadow:
   0 14px 32px rgba(0,0,0,.28),
   inset 0 1px 0 rgba(255,255,255,.035);
@@ -6550,13 +6560,22 @@ box-shadow:
 
   <div style="
     padding:16px;
-    border:1px solid rgba(255,255,255,.10);
-    border-left-color:transparent;
+    border:1px solid transparent;
+border-left-color:transparent;
 border-radius:20px;
 background:
-  radial-gradient(circle at 100% 0%,rgba(217,170,74,.10),transparent 42%),
-  linear-gradient(145deg,#171a20 0%,#101319 55%,#0b0e13 100%);
-box-shadow:
+  linear-gradient(
+    145deg,
+    #171a20 0%,
+    #101319 55%,
+    #0b0e13 100%
+  ) padding-box,
+  linear-gradient(
+    135deg,
+    rgba(217,170,74,.18),
+    rgba(255,255,255,.12) 45%,
+    rgba(217,170,74,.55)
+  ) border-box;box-shadow:
   0 14px 32px rgba(0,0,0,.28),
   inset 0 1px 0 rgba(255,255,255,.035);
     box-sizing:border-box;
