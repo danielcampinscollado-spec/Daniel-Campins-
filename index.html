@@ -4674,10 +4674,14 @@ function getTodayCoachTip(clientId){
   const state=
     getCoachTipState(clientId);
 
-  const today=
-    new Date()
-      .toISOString()
-      .slice(0,10);
+  const now = new Date();
+
+const today =
+  now.getFullYear() +
+  "-" +
+  String(now.getMonth()+1).padStart(2,"0") +
+  "-" +
+  String(now.getDate()).padStart(2,"0");
 
 
   /*
@@ -4732,12 +4736,14 @@ function nextCoachTip(clientId){
 
   }
 
+  const now = new Date();
 
-  state.dayKey=
-    new Date()
-      .toISOString()
-      .slice(0,10);
-
+state.dayKey =
+  now.getFullYear() +
+  "-" +
+  String(now.getMonth()+1).padStart(2,"0") +
+  "-" +
+  String(now.getDate()).padStart(2,"0");
 
   localStorage.setItem(
     key,
@@ -7952,12 +7958,12 @@ if(screen==="training"){
 ">
   ENTRENAMIENTO
 </div>
-      <div style="
+     <div style="
   display:flex;
   gap:8px;
   overflow-x:auto;
-  padding:2px 2px 10px;
-  margin-bottom:16px;
+  padding:2px 2px 2px;
+  margin-bottom:6px;
   scrollbar-width:none;
 ">
   ${dayTabs}
