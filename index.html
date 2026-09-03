@@ -7377,498 +7377,116 @@ if(screen==="training"){
    */
   const exerciseVisual = (name="") => {
 
-    const n = String(name).toLowerCase();
+  const n = String(name)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .trim();
 
-    let accent = "#d9aa4a";
-    let type = "upper";
+  let image = "";
 
-    if(
-      n.includes("sentadilla") ||
-      n.includes("prensa") ||
-      n.includes("cuádriceps") ||
-      n.includes("cuadriceps") ||
-      n.includes("femoral") ||
-      n.includes("peso muerto") ||
-      n.includes("zancada") ||
-      n.includes("gemelo") ||
-      n.includes("pierna")
-    ){
-      type = "legs";
-    }
+  /*
+   * PRESS BANCA
+   */
 
-    if(
-      n.includes("curl") ||
-      n.includes("bíceps") ||
-      n.includes("biceps") ||
-      n.includes("tríceps") ||
-      n.includes("triceps")
-    ){
-      type = "arms";
-    }
+  if(
+    n.includes("press banca") ||
+    n.includes("press de banca") ||
+    n.includes("bench press")
+  ){
+    image = "prensa-banca.png";
+  }
 
-    if(
-      n.includes("remo") ||
-      n.includes("jalón") ||
-      n.includes("jalon") ||
-      n.includes("dominada") ||
-      n.includes("espalda")
-    ){
-      type = "back";
-    }
+  /*
+   * PRESS INCLINADO
+   */
 
-    if(
-      n.includes("press banca") ||
-      n.includes("press inclinado") ||
-      n.includes("pecho") ||
-      n.includes("pectoral")
-    ){
-      type = "chest";
-    }
+  else if(
+    n.includes("press inclinado") ||
+    n.includes("press inclinado maquina") ||
+    n.includes("incline press")
+  ){
+    image = "prensa-inclinado.png";
+  }
 
-    if(
-      n.includes("elevaciones laterales") ||
-      n.includes("hombro") ||
-      n.includes("militar")
-    ){
-      type = "shoulders";
-    }
+  /*
+   * PULL OVER
+   */
 
-    let body="";
+  else if(
+    n.includes("pull over") ||
+    n.includes("pullover") ||
+    n.includes("pull-over")
+  ){
+    image = "Pull-over.png";
+  }
 
-    if(type==="legs"){
+  /*
+   * REMO
+   */
 
-      body=`
-        <path d="M48 25c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9Z"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
+  else if(
+    n.includes("remo") ||
+    n.includes("rowing") ||
+    n.includes("row")
+  ){
+    image = "Remo.png";
+  }
 
-        <path d="M48 43v18"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+  /*
+   * SENTADILLA
+   */
 
-        <path d="M48 48 31 55M48 48 65 55"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+  else if(
+    n.includes("sentadilla") ||
+    n.includes("squat")
+  ){
+    image = "Sentadilla.png";
+  }
 
-        <path d="M48 61 39 79M48 61 57 79"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
+  /*
+   * Si todavía no conocemos
+   * el ejercicio, no mostramos
+   * una imagen incorrecta.
+   */
 
-        <path d="M34 53h28"
-          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
-      `;
-
-    }else if(type==="arms"){
-
-      body=`
-        <circle cx="48" cy="25" r="8"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
-
-        <path d="M48 34v27"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 39 28 51 20 43"
-          fill="none" stroke="${accent}" stroke-width="3"
-          stroke-linecap="round" stroke-linejoin="round"/>
-
-        <path d="M48 39 68 51 76 43"
-          fill="none" stroke="${accent}" stroke-width="3"
-          stroke-linecap="round" stroke-linejoin="round"/>
-
-        <path d="M48 61 38 80M48 61 58 80"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <circle cx="20" cy="43" r="3"
-          fill="none" stroke="#f5d17a" stroke-width="2"/>
-        <circle cx="76" cy="43" r="3"
-          fill="none" stroke="#f5d17a" stroke-width="2"/>
-      `;
-
-    }else if(type==="chest"){
-
-      body=`
-        <circle cx="48" cy="25" r="8"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
-
-        <path d="M48 34v28"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 39 27 34M48 39 69 34"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M27 34h42"
-          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
-
-        <path d="M48 62 39 80M48 62 57 80"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M35 46h26"
-          stroke="#f5d17a" stroke-width="2.5"
-          stroke-linecap="round"/>
-      `;
-
-    }else if(type==="back"){
-
-      body=`
-        <circle cx="48" cy="25" r="8"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
-
-        <path d="M48 34v28"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 40 28 51M48 40 68 51"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 62 39 80M48 62 57 80"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M31 51h-7M65 51h7"
-          stroke="#f5d17a" stroke-width="2" stroke-linecap="round"/>
-      `;
-
-    }else if(type==="shoulders"){
-
-      body=`
-        <circle cx="48" cy="25" r="8"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
-
-        <path d="M48 34v28"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 40 26 22M48 40 70 22"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <circle cx="25" cy="21" r="4"
-          fill="none" stroke="#f5d17a" stroke-width="2"/>
-
-        <circle cx="71" cy="21" r="4"
-          fill="none" stroke="#f5d17a" stroke-width="2"/>
-
-        <path d="M48 62 39 80M48 62 57 80"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-      `;
-
-    }else{
-
-      body=`
-        <circle cx="48" cy="25" r="8"
-          fill="none" stroke="${accent}" stroke-width="2.5"/>
-
-        <path d="M48 34v28"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 40 29 52M48 40 67 52"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <path d="M48 62 39 80M48 62 57 80"
-          stroke="${accent}" stroke-width="3" stroke-linecap="round"/>
-
-        <circle cx="29" cy="52" r="3"
-          fill="#f5d17a"/>
-        <circle cx="67" cy="52" r="3"
-          fill="#f5d17a"/>
-      `;
-    }
-
+  if(!image){
     return `
-      <svg
-        viewBox="0 0 96 96"
-        width="58"
-        height="58"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-
-        <rect
-          x="1"
-          y="1"
-          width="94"
-          height="94"
-          rx="18"
-          fill="rgba(217,170,74,.055)"
-          stroke="rgba(217,170,74,.28)"/>
-
-        ${body}
-
-      </svg>
-    `;
-  };
-
-
-  /*
-   * Imagen/figura del grupo muscular del día.
-   */
-  const muscleVisual = (muscle="") => {
-
-    const m = String(muscle).toLowerCase();
-
-    const parts = [];
-
-    if(
-      m.includes("pecho") ||
-      m.includes("pectoral")
-    ){
-      parts.push("Pecho");
-    }
-
-    if(
-      m.includes("hombro")
-    ){
-      parts.push("Hombro");
-    }
-
-    if(
-      m.includes("tríceps") ||
-      m.includes("triceps")
-    ){
-      parts.push("Tríceps");
-    }
-
-    if(
-      m.includes("espalda")
-    ){
-      parts.push("Espalda");
-    }
-
-    if(
-      m.includes("bíceps") ||
-      m.includes("biceps")
-    ){
-      parts.push("Bíceps");
-    }
-
-    if(
-      m.includes("cuádriceps") ||
-      m.includes("cuadriceps")
-    ){
-      parts.push("Cuádriceps");
-    }
-
-    if(
-      m.includes("femoral")
-    ){
-      parts.push("Femoral");
-    }
-
-    if(
-      m.includes("glúteo") ||
-      m.includes("gluteo")
-    ){
-      parts.push("Glúteos");
-    }
-
-    if(
-      m.includes("gemelo")
-    ){
-      parts.push("Gemelos");
-    }
-
-    /*
-     * Si aparecen dos grupos diferentes,
-     * mostramos dos pequeños recuadros.
-     */
-    const visualParts =
-      parts.length
-        ? parts.slice(0,2)
-        : ["Entrenamiento"];
-
-    return visualParts.map(label=>{
-
-      return `
-        <div style="
-          width:46px;
-          height:46px;
-          border:1px solid rgba(217,170,74,.28);
-          border-radius:14px;
-          background:rgba(217,170,74,.045);
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          flex:none;
-          overflow:hidden;
-        ">
-
-          <svg
-            viewBox="0 0 60 60"
-            width="36"
-            height="36"
-            fill="none">
-
-            <circle
-              cx="30"
-              cy="14"
-              r="6"
-              stroke="#d9aa4a"
-              stroke-width="2"/>
-
-            <path
-              d="M30 22v18M30 25 17 33M30 25 43 33M30 40 23 52M30 40 37 52"
-              stroke="#d9aa4a"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-
-            <circle
-              cx="30"
-              cy="28"
-              r="4"
-              fill="rgba(217,170,74,.16)"
-              stroke="#f5d17a"
-              stroke-width="1.5"/>
-
-          </svg>
-
-        </div>
-      `;
-
-    }).join("");
-  };
-
-
-  /*
-   * Sin rutina
-   */
-  if(!routine.length){
-
-    html = `
-
       <div style="
-        padding:18px 2px 100px;
-      ">
-
-        <div style="
-          margin-bottom:22px;
-        ">
-
-          <div style="
-            color:#d9aa4a;
-            font-size:11px;
-            font-weight:700;
-            letter-spacing:2.4px;
-            text-transform:uppercase;
-            margin-bottom:8px;
-          ">
-            ENTRENAMIENTO
-          </div>
-
-          <h1 style="
-            margin:0;
-            font-size:30px;
-            line-height:1.1;
-          ">
-            Tu rutina
-          </h1>
-
-          <p class="muted" style="
-            margin:8px 0 0;
-            font-size:15px;
-          ">
-            Todavía no tienes una rutina asignada.
-          </p>
-
-        </div>
-
-        <div class="card" style="
-          padding:28px 18px;
-          text-align:center;
-        ">
-
-          <div style="
-            margin:0 auto 14px;
-            width:58px;
-            height:58px;
-            border-radius:17px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(217,170,74,.06);
-            border:1px solid rgba(217,170,74,.22);
-          ">
-
-            <svg viewBox="0 0 60 60" width="38" height="38" fill="none">
-
-              <circle
-                cx="30"
-                cy="14"
-                r="6"
-                stroke="#d9aa4a"
-                stroke-width="2"/>
-
-              <path
-                d="M30 22v18M30 25 17 33M30 25 43 33M30 40 23 52M30 40 37 52"
-                stroke="#d9aa4a"
-                stroke-width="2.5"
-                stroke-linecap="round"/>
-
-            </svg>
-
-          </div>
-
-          <h3 style="
-            margin:0 0 7px;
-            font-size:18px;
-          ">
-            No hay rutina asignada
-          </h3>
-
-          <p class="muted" style="
-            margin:0;
-            font-size:14px;
-            line-height:1.5;
-          ">
-            Tu entrenador todavía no ha configurado tus días de entrenamiento.
-          </p>
-
-        </div>
-
-      </div>
+        width:52px;
+        height:52px;
+        flex:none;
+      "></div>
     `;
+  }
 
-  }else{
-
-    const dayTabs = routine.map((day,index)=>{
-
-      const active = index === selectedDayIndex;
-
-      return `
-        <button
-          onclick="
-            window.trainingDayTab=${index};
-            showClient('training');
-          "
-          style="
-            flex:0 0 72px;
-            height:58px;
-            border-radius:16px;
-            border:1px solid ${active ? "#d9aa4a" : "#2d323a"};
-            background:${active ? "rgba(217,170,74,.13)" : "#111318"};
-            color:${active ? "#f5d17a" : "#9298a4"};
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            gap:3px;
-            padding:0;
-            cursor:pointer;
-          "
-        >
-
-          <span style="
-            font-size:10px;
-            font-weight:700;
-            letter-spacing:1.4px;
-            text-transform:uppercase;
-          ">
-            DÍA
-          </span>
-
-          <strong style="
-            font-size:18px;
-            line-height:1;
-          ">
-            ${index+1}
-          </strong>
-
-        </button>
-      `;
-
-    }).join("");
-
+  return `
+    <div style="
+      width:58px;
+      height:58px;
+      flex:none;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      background:rgba(217,170,74,.045);
+      border:1px solid rgba(217,170,74,.22);
+    ">
+      <img
+        src="./assets/exercises/${image}"
+        alt=""
+        loading="lazy"
+        style="
+          width:100%;
+          height:100%;
+          object-fit:contain;
+          display:block;
+        "
+      >
+    </div>
+  `;
+};
 
     const exercises = selectedDay?.exercises || [];
 
