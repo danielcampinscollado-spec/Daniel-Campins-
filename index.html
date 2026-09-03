@@ -5814,8 +5814,12 @@ function showClient(screen){
 
 if(screen==="home"){
 
-  const routine = data.routines?.[c.id] || [];
+  const routineData = data.routines?.[c.id];
 
+const routine =
+  Array.isArray(routineData)
+    ? routineData
+    : [];
   const checkin = data.checkins?.[c.id] || {};
 
   const currentWeight = Number(c.weight || 0);
