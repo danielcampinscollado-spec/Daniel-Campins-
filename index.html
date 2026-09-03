@@ -7770,27 +7770,6 @@ border-radius:12px;
         >
 
           <div style="
-            width:34px;
-            height:34px;
-            flex:none;
-            border-radius:10px;
-
-            display:flex;
-            align-items:center;
-            justify-content:center;
-
-            border:1px solid rgba(217,170,74,.38);
-            background:rgba(217,170,74,.07);
-            color:#d9aa4a;
-
-            font-size:12px;
-            font-weight:800;
-          ">
-            ${String(index+1).padStart(2,"0")}
-          </div>
-
-
-          <div style="
             flex:1;
             min-width:0;
           ">
@@ -13371,16 +13350,9 @@ function showClientAdmin(id){
         align-items:center;
         gap:10px;
       ">
-        <div>
-          <b>Día ${i+1}</b>
-          <div class="muted" style="margin-top:4px">
-            ${esc(day.muscle||"Sin grupo muscular")}
-          </div>
-        </div>
-
-        <span class="pill">
-          ${(day.exercises||[]).length} ejercicios
-        </span>
+       <div>
+  <b>${esc(day.muscle || "Sin grupo muscular")}</b>
+</div>
       </div>
 
       ${
