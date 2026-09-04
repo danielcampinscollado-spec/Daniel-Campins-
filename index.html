@@ -8293,38 +8293,27 @@ ${exerciseVisual(ex.name)}
           ">
 
 
-            <!-- ILUSTRACIÓN MUSCULAR -->
+            <!-- ICONO -->
 
-${
-  recognizeMuscleImage(selectedDay?.muscle || "")
-    ? `
-      <div style="
-        width:96px;
-        height:96px;
-        flex:none;
-        border-radius:18px;
-        overflow:hidden;
-        background:rgba(217,170,74,.045);
-        border:1px solid rgba(217,170,74,.22);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-      ">
-        <img
-          src="./muscles/assets/${recognizeMuscleImage(selectedDay?.muscle || "")}"
-          alt=""
-          loading="lazy"
-          style="
-            width:100%;
-            height:100%;
-            object-fit:contain;
-            display:block;
-          "
-        >
-      </div>
-    `
-    : ""
-}
+<div style="
+  width:38px;
+  height:38px;
+  flex:none;
+
+  border-radius:12px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(217,170,74,.10);
+  border:1px solid rgba(217,170,74,.25);
+
+  color:#d9aa4a;
+  font-size:18px;
+">
+  ✦
+</div>
 
 
             <!-- TEXTO -->
@@ -8488,7 +8477,30 @@ ${
     </h2>
 
   </div>
-
+<div style="
+  width:72px;
+  height:72px;
+  flex:none;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid rgba(217,170,74,.22);
+  background:rgba(217,170,74,.045);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+">
+  <img
+    src="./muscles/assets/${recognizeMuscleImage(selectedDay?.muscle || "")}"
+    alt=""
+    loading="lazy"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    "
+  >
+</div>
 </div>
 
           <!-- EJERCICIOS -->
