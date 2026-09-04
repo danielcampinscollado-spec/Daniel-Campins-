@@ -13170,80 +13170,6 @@ if(screen==="routines"){
   `;
   }else{
 
-    const days=data.routines[selected]||[];
-
-    html=`
-    <div class="top">
-      <div>
-        <h1>Rutinas</h1>
-        <p class="muted">${esc(c.name)}</p>
-      </div>
-    </div>
-
-    ${days.length?days.map((day,i)=>`
-
-      <div class="card" style="margin-top:16px">
-
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-          <div>
-            <h2 style="margin:0">Día ${i+1}</h2>
-
-            <p class="muted" style="margin:6px 0 0">
-              ${esc(day.muscle||"Sin grupo muscular")}
-            </p>
-          </div>
-
-          <button class="ghost"
-            onclick="removeTrainingDay('${selected}',${i})">
-            Eliminar día
-          </button>
-        </div>
-
-        <div style="margin-top:18px">
-
-          ${day.exercises&&day.exercises.length
-            ?day.exercises.map((ex,j)=>`
-
-              <div class="exercise" style="margin-top:12px">
-
-                <div style="flex:1">
-                  <b>${esc(ex.name||"Ejercicio")}</b>
-                  <span>
-                    ${esc(ex.sets||"")} × ${esc(ex.reps||"")}
-                  </span>
-                </div>
-
-                <button class="ghost"
-                  onclick="removeExercise('${selected}',${i},${j})">
-                  Eliminar
-                </button>
-
-              </div>
-
-            `).join("")
-            :`<div class="empty">
-                No hay ejercicios todavía.
-              </div>`
-          }
-
-        </div>
-
-        <button class="btn"
-          style="margin-top:16px"
-          onclick="addExercise('${selected}',${i})">
-          + Añadir ejercicio
-        </button>
-
-      </div>
-
-    `).join("")
-    :`<div class="card">
-        <div class="empty">
-          Todavía no hay días de entrenamiento.
-        </div>
-      </div>`
-    }
-
 const days=data.routines[selected]||[];
 
 html=`
@@ -13285,26 +13211,26 @@ html=`
           <div style="
             display:flex;
             align-items:center;
-            gap:11px;
+            gap:10px;
           ">
 
             <div style="
-              width:38px;
-              height:38px;
-              min-width:38px;
+              width:34px;
+              height:34px;
+              min-width:34px;
               display:flex;
               align-items:center;
               justify-content:center;
-              border-radius:11px;
+              border-radius:10px;
               background:linear-gradient(
                 145deg,
                 rgba(217,170,74,.18),
                 rgba(217,170,74,.06)
               );
               border:1px solid rgba(217,170,74,.35);
-              font-size:19px;
+              font-size:17px;
             ">
-              🏋️
+              🔨
             </div>
 
             <div style="
@@ -13313,7 +13239,7 @@ html=`
             ">
 
               <div style="
-                font-size:16px;
+                font-size:15px;
                 font-weight:700;
                 line-height:1.2;
               ">
@@ -13322,7 +13248,7 @@ html=`
 
               <div class="muted" style="
                 margin-top:3px;
-                font-size:13px;
+                font-size:12px;
                 line-height:1.2;
               ">
                 ${
@@ -13336,7 +13262,7 @@ html=`
 
             <span style="
               color:#d9aa4a;
-              font-size:25px;
+              font-size:22px;
               line-height:1;
             ">
               ›
@@ -13351,7 +13277,7 @@ html=`
 
         <div class="card" style="
           margin:0;
-          padding:18px;
+          padding:16px;
           text-align:center;
         ">
           <div class="empty">
@@ -13368,7 +13294,7 @@ html=`
     class="btn"
     style="
       margin-top:12px;
-      padding:10px 15px;
+      padding:9px 14px;
       border-radius:11px;
     "
     onclick="addTrainingDay('${selected}')"
@@ -13376,7 +13302,6 @@ html=`
     + Añadir día
   </button>
 `;
-    `;
   }
 }
 if(screen==="messages"){
