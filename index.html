@@ -7869,6 +7869,127 @@ const exerciseVisual = (name="") => {
   `;
 };
   /* =====================================================
+   ILUSTRACIÓN DEL GRUPO MUSCULAR
+====================================================== */
+
+const normalizeMuscleName = (name="") => {
+
+  return String(name)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9\s]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+};
+
+const recognizeMuscleImage = (muscle="") => {
+
+  const n = normalizeMuscleName(muscle);
+
+  if(!n) return null;
+
+  if(
+    n.includes("pecho") ||
+    n.includes("pectoral") ||
+    n.includes("pectorales") ||
+    n.includes("chest")
+  ){
+    return "pecho.png";
+  }
+
+  if(
+    n.includes("espalda") ||
+    n.includes("dorsal") ||
+    n.includes("dorsales") ||
+    n.includes("back") ||
+    n.includes("lat")
+  ){
+    return "espalda.png";
+  }
+
+  if(
+    n.includes("hombro") ||
+    n.includes("hombros") ||
+    n.includes("deltoide") ||
+    n.includes("deltoides")
+  ){
+    return "hombros.png";
+  }
+
+  if(
+    n.includes("biceps") ||
+    n.includes("braquial")
+  ){
+    return "biceps.png";
+  }
+
+  if(
+    n.includes("triceps")
+  ){
+    return "triceps.png";
+  }
+
+  if(
+    n.includes("cuadriceps") ||
+    n.includes("quad") ||
+    n.includes("quads")
+  ){
+    return "cuadriceps.png";
+  }
+
+  if(
+    n.includes("isquio") ||
+    n.includes("femoral") ||
+    n.includes("femorales") ||
+    n.includes("hamstring")
+  ){
+    return "isquios.png";
+  }
+
+  if(
+    n.includes("gluteo") ||
+    n.includes("gluteos") ||
+    n.includes("glute")
+  ){
+    return "gluteos.png";
+  }
+
+  if(
+    n.includes("gemelo") ||
+    n.includes("gemelos") ||
+    n.includes("pantorrilla") ||
+    n.includes("pantorrillas") ||
+    n.includes("calf") ||
+    n.includes("calves")
+  ){
+    return "gemelos.png";
+  }
+
+  if(
+    n.includes("core") ||
+    n.includes("abdomen") ||
+    n.includes("abdominal") ||
+    n.includes("abdominales") ||
+    n.includes("abs")
+  ){
+    return "core.png";
+  }
+
+  if(
+    n.includes("lumbar") ||
+    n.includes("lumbares") ||
+    n.includes("cuello") ||
+    n.includes("espalda baja")
+  ){
+    return "lumbar-cuello.png";
+  }
+
+  return null;
+
+};
+  /* =====================================================
      SELECTOR DE DÍAS
   ====================================================== */
 
