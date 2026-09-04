@@ -7667,334 +7667,102 @@ if(screen==="training"){
       : [];
 const muscleImage =
   recognizeMuscleImage(selectedDay?.muscle || "");
-/* =====================================================
-   RECONOCIMIENTO INTELIGENTE DE EJERCICIOS
-   ===================================================== */
+const exerciseRows =
+  exercises.map((ex,index)=>{
 
-const normalizeExerciseName = (name="") => {
+    const reps =
+      ex.reps || "";
 
-  return String(name)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9\s]/g," ")
-    .replace(/\s+/g," ")
-    .trim();
+    return `
 
-};
+      <div
+        onclick="startWorkout(${selectedDayIndex})"
+        style="
+          display:flex;
+          align-items:center;
+          gap:13px;
+          min-height:64px;
+          padding:11px 2px;
+          border-top:1px solid rgba(255,255,255,.08);
+          cursor:pointer;
+        "
+      >
 
+        <div style="
+          width:38px;
+          height:38px;
+          flex:none;
+          border:1px solid #8b6c28;
+          border-radius:12px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color:#d9aa4a;
+          font-size:13px;
+          font-weight:800;
+        ">
+          ${String(index+1).padStart(2,"0")}
+        </div>
 
-const exerciseLibrary = [
+        <div style="
+          flex:1;
+          min-width:0;
+        ">
 
-  {
-    id:"press-banca",
-    image:"press-banca.png",
-    aliases:[
-      "press banca",
-      "press de banca",
-      "press banca barra",
-      "press plano",
-      "banca plana",
-      "press plano barra",
-      "bench press",
-      "barbell bench press",
-      "press pecho barra"
-    ]
-  },
+          <b style="
+            display:block;
+            color:#f5f5f2;
+            font-size:16px;
+            line-height:1.25;
+            margin-bottom:5px;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+          ">
+            ${esc(ex.name || "Ejercicio")}
+          </b>
 
-  {
-    id:"press-inclinado",
-    image:"press-inclinado.png",
-    aliases:[
-      "press inclinado",
-      "press inclinado barra",
-      "press inclinado mancuernas",
-      "press inclinado maquina",
-      "press pecho inclinado",
-      "incline press",
-      "incline bench press",
-      "incline dumbbell press"
-    ]
-  },
+          <div
+            class="muted"
+            style="
+              font-size:12px;
+              line-height:1.3;
+            "
+          >
+            ${esc(String(ex.sets || ""))}
+            ${ex.sets ? " series" : ""}
 
-  {
-    id:"pull-over",
-    image:"pull-over.png",
-    aliases:[
-      "pull over",
-      "pull-over",
-      "pullover",
-      "pull over mancuerna",
-      "pull over polea",
-      "pullover mancuerna",
-      "pullover polea"
-    ]
-  },
+            ${
+              reps
+                ? `
+                  <span style="
+                    color:#d9aa4a;
+                    margin:0 5px;
+                  ">•</span>
 
-  {
-    id:"remo",
-    image:"remo.png",
-    aliases:[
-      "remo",
-      "remo barra",
-      "remo con barra",
-      "remo mancuerna",
-      "remo mancuerna unilateral",
-      "remo polea",
-      "remo sentado",
-      "seated row",
-      "cable row",
-      "barbell row",
-      "dumbbell row"
-    ]
-  },
+                  ${esc(String(reps))}
+                  repeticiones
+                `
+                : ""
+            }
+          </div>
 
-  {
-    id:"sentadilla",
-    image:"sentadilla.png",
-    aliases:[
-      "sentadilla",
-      "sentadilla barra",
-      "sentadilla libre",
-      "sentadilla trasera",
-      "back squat",
-      "squat",
-      "barbell squat"
-    ]
-  }
+        </div>
 
-];
+        <span style="
+          flex:none;
+          color:#d9aa4a;
+          font-size:27px;
+          line-height:1;
+        ">
+          ›
+        </span>
 
+      </div>
 
-const recognizeExercise = (name="") => {
+    `;
 
-  const n = normalizeExerciseName(name);
-
-  if(!n){
-    return null;
-  }
-
-  let bestMatch = null;
-  let bestScore = 0;
-
-  exerciseLibrary.forEach(exercise => {
-
-    exercise.aliases.forEach(alias => {
-
-      const a = normalizeExerciseName(alias);
-
-      /*
-       * Coincidencia exacta
-       */
-      if(n === a){
-        bestMatch = exercise;
-        bestScore = 100;
-        return;
-      }
-
-      /*
-       * El nombre contiene la variante conocida
-       */
-      if(n.includes(a)){
-        if(bestScore < 90){
-          bestMatch = exercise;
-          bestScore = 90;
-        }
-      }
-
-      /*
-       * La variante contiene el nombre escrito
-       */
-      if(a.includes(n) && n.length >= 5){
-        if(bestScore < 80){
-          bestMatch = exercise;
-          bestScore = 80;
-        }
-      }
-
-    });
-
-  });
-
-  return bestScore >= 80
-    ? bestMatch
-    : null;
-
-};
-
-/* =====================================================
-   RECONOCIMIENTO DE GRUPOS MUSCULARES
-===================================================== */
-
-const recognizeMuscleImage = (muscle="") => {
-
-  const m = String(muscle)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9\s]/g," ")
-    .replace(/\s+/g," ")
-    .trim();
-
-  if(!m){
-    return null;
-  }
-
-  /*
-   * PECHO
-   */
-  if(
-    m.includes("pecho") ||
-    m.includes("pectoral") ||
-    m.includes("pectorales") ||
-    m.includes("pectoral mayor") ||
-    m.includes("pectorales mayores") ||
-    m.includes("chest")
-  ){
-    return "pecho.png";
-  }
-
-  /*
-   * ESPALDA
-   */
-  if(
-    m.includes("espalda") ||
-    m.includes("dorsal") ||
-    m.includes("dorsales") ||
-    m.includes("lat") ||
-    m.includes("lats") ||
-    m.includes("dorsal ancho") ||
-    m.includes("back")
-  ){
-    return "espalda.png";
-  }
-
-  /*
-   * HOMBROS
-   */
-  if(
-    m.includes("hombro") ||
-    m.includes("hombros") ||
-    m.includes("deltoide") ||
-    m.includes("deltoides") ||
-    m.includes("deltoid") ||
-    m.includes("shoulders")
-  ){
-    return "hombros.png";
-  }
-
-  /*
-   * BÍCEPS
-   */
-  if(
-    m.includes("biceps") ||
-    m.includes("braquial anterior") ||
-    m.includes("braquial") ||
-    m.includes("biceps braquial") ||
-    m.includes("arms")
-  ){
-    return "biceps.png";
-  }
-
-  /*
-   * TRÍCEPS
-   */
-  if(
-    m.includes("triceps") ||
-    m.includes("triceps braquial")
-  ){
-    return "triceps.png";
-  }
-
-  /*
-   * CUÁDRICEPS
-   */
-  if(
-    m.includes("cuadriceps") ||
-    m.includes("cuadricep") ||
-    m.includes("quad") ||
-    m.includes("quads") ||
-    m.includes("parte frontal pierna")
-  ){
-    return "cuadriceps.png";
-  }
-
-  /*
-   * ISQUIOS / FEMORALES
-   */
-  if(
-    m.includes("isquio") ||
-    m.includes("isquios") ||
-    m.includes("isquiotibial") ||
-    m.includes("isquiotibiales") ||
-    m.includes("femoral") ||
-    m.includes("femorales") ||
-    m.includes("hamstring") ||
-    m.includes("hamstrings")
-  ){
-    return "isquios.png";
-  }
-
-  /*
-   * GLÚTEOS
-   */
-  if(
-    m.includes("gluteo") ||
-    m.includes("gluteos") ||
-    m.includes("glute") ||
-    m.includes("glutes") ||
-    m.includes("nalgas")
-  ){
-    return "gluteos.png";
-  }
-
-  /*
-   * GEMELOS
-   */
-  if(
-    m.includes("gemelo") ||
-    m.includes("gemelos") ||
-    m.includes("pantorrilla") ||
-    m.includes("pantorrillas") ||
-    m.includes("calf") ||
-    m.includes("calves")
-  ){
-    return "gemelos.png";
-  }
-
-  /*
-   * CORE / ABDOMINALES
-   */
-  if(
-    m.includes("core") ||
-    m.includes("abdominal") ||
-    m.includes("abdominales") ||
-    m.includes("abdomen") ||
-    m.includes("recto abdominal") ||
-    m.includes("oblicuo") ||
-    m.includes("oblicuos") ||
-    m.includes("abs")
-  ){
-    return "core.png";
-  }
-
-  /*
-   * LUMBAR / CUELLO
-   */
-  if(
-    m.includes("lumbar") ||
-    m.includes("lumbares") ||
-    m.includes("espalda baja") ||
-    m.includes("zona lumbar") ||
-    m.includes("cuello") ||
-    m.includes("cervical") ||
-    m.includes("cervicales")
-  ){
-    return "lumbar-cuello.png";
-  }
-
-  return null;
-};
+  }).join("");
 const exerciseVisual = (name="") => {
 
   const exercise =
