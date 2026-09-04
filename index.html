@@ -7638,7 +7638,13 @@ if(screen==="food"){
 }
 
 if(screen==="training"){
-
+main.innerHTML = `
+  <div style="padding:30px;color:#f5f5f2;">
+    <h1>ENTRENAMIENTO FUNCIONA</h1>
+    <p>La navegación está funcionando correctamente.</p>
+  </div>
+`;
+return;
   const routineData =
     data.routines?.[c.id];
 
