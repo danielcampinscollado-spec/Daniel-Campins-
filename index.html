@@ -14278,30 +14278,78 @@ async function removeFood(id,type,mi,fi,oi=0){
 
 
 async function addTrainingDay(id){
-  if(!data.routines[id]){
-    data.routines[id]=[];
+
+  const main = document.getElementById("coach-main");
+  if(!main) return;
+
+  main.innerHTML = `
+    <div class="top">
+      <div>
+        <h1>Crear rutina</h1>
+        <p class="muted">¿Cuántos días va a trabajar a la semana?</p>
+      </div>
+    </div>
+
+    <div class="card" style="
+      margin-top:12px;
+      padding:14px;
+      background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+    ">
+
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(7,minmax(0,1fr));
+        gap:7px;
+      ">
+
+        ${[1,2,3,4,5,6,7].map(n => `
+          <button
+            class="btn"
+            onclick="createRoutineDays('${id}',${n})"
+            style="
+              min-width:0;
+              height:42px;
+              padding:0;
+              border-radius:11px;
+              font-size:15px;
+              font-weight:700;
+            "
+          >
+            ${n}
+          </button>
+        `).join("")}
+
+      </div>
+
+    </div>
+  `;
+}
+async function createRoutineDays(id,count){
+
+  if(!data.routines){
+    data.routines = {};
   }
 
-  const muscle=prompt("Grupo muscular de este día:");
-  if(!muscle)return;
-
-  data.routines[id].push({
-    day:data.routines[id].length+1,
-    muscle:muscle,
-    exercises:[]
-  });
+  data.routines[id] = Array.from(
+    {length:count},
+    (_,i) => ({
+      day:i+1,
+      muscle:"",
+      muscleGroups:[],
+      exercises:[]
+    })
+  );
 
   saveData();
 
-  const ok=await saveRoutineToSupabase(id);
+  const ok = await saveRoutineToSupabase(id);
 
-  if(ok){
-    toast("Día de entrenamiento guardado");
+  if(!ok){
+    toast("Guardado localmente, pero no se pudo sincronizar");
   }
 
   showCoach("routines");
 }
-
 async function addExercise(id,dayIndex){
 
   const day=data.routines[id]?.[dayIndex];
