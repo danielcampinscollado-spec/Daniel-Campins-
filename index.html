@@ -14616,6 +14616,179 @@ function modifyRoutine(id){
   showCoach("routines");
 
 }
+function startNewRoutine(id){
+
+  if(!id) return;
+
+  const current=data.routines?.[id] || [];
+
+  if(!current.length){
+    addTrainingDay(id);
+    return;
+  }
+
+  if(!confirm("La rutina actual se guardará como rutina anterior. ¿Crear una nueva?")){
+    return;
+  }
+
+  if(!data.previousRoutines){
+    data.previousRoutines={};
+  }
+
+  data.previousRoutines[id]=JSON.parse(
+    JSON.stringify(current)
+  );
+
+  data.routines[id]=[];
+
+  saveData();
+
+  addTrainingDay(id);
+}
+
+
+function modifyRoutine(id){
+
+  if(!id) return;
+
+  window.routineEditMode=true;
+
+  showCoach("routines");
+
+  setTimeout(()=>{
+    const firstDay=document.querySelector(
+      '#coach-main .card[onclick*="openTrainingDay"]'
+    );
+
+    if(firstDay){
+      firstDay.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+    }
+  },50);
+}
+
+
+function showPreviousRoutine(id){
+
+  if(!id) return;
+
+  const previous=data.previousRoutines?.[id];
+
+  if(!previous?.length){
+    toast("No hay una rutina anterior guardada");
+    return;
+  }
+
+  const c=client(id);
+
+  const main=document.getElementById("coach-main");
+
+  if(!main) return;
+
+  main.innerHTML=`
+    <div class="top">
+
+      <button
+        class="ghost"
+        onclick="showCoach('routines')"
+        style="
+          border:0;
+          background:transparent;
+          color:#d9aa4a;
+          font-size:25px;
+          padding:0;
+          margin-bottom:8px;
+        "
+      >
+        ←
+      </button>
+
+      <h1>Rutina anterior</h1>
+
+      <p class="muted">
+        ${esc(c?.name || "")}
+      </p>
+
+    </div>
+
+    <div style="
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:12px;
+    ">
+
+      ${previous.map((day,i)=>`
+
+        <div
+          class="card"
+          style="
+            margin:0;
+            padding:14px;
+            background:linear-gradient(
+              145deg,
+              rgba(255,255,255,.055),
+              rgba(255,255,255,.018)
+            );
+            border-radius:14px;
+          "
+        >
+
+          <div style="
+            font-size:15px;
+            font-weight:800;
+          ">
+            Día ${i+1}
+          </div>
+
+          <div
+            class="muted"
+            style="
+              margin-top:4px;
+              font-size:13px;
+            "
+          >
+            ${esc(day.muscle || "Sin grupos musculares")}
+          </div>
+
+          ${
+            day.exercises?.length
+            ? `
+              <div
+                class="muted"
+                style="
+                  margin-top:8px;
+                  font-size:12px;
+                "
+              >
+                ${day.exercises.length}
+                ${day.exercises.length===1
+                  ? "ejercicio"
+                  : "ejercicios"}
+              </div>
+            `
+            : `
+              <div
+                class="muted"
+                style="
+                  margin-top:8px;
+                  font-size:12px;
+                "
+              >
+                Sin ejercicios registrados
+              </div>
+            `
+          }
+
+        </div>
+
+      `).join("")}
+
+    </div>
+  `;
+}
 async function addTrainingDay(id){
 
   const main = document.getElementById("coach-main");
