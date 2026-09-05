@@ -14662,7 +14662,6 @@ function openTrainingDay(id,dayIndex){
 }
 function toggleTrainingMuscle(id,dayIndex,group){
 
-
   const day=data.routines[id]?.[dayIndex];
 
   if(!day)return;
@@ -14685,11 +14684,92 @@ function toggleTrainingMuscle(id,dayIndex,group){
     }
 
     day.muscleGroups.push(group);
+
   }
 
   saveData();
 
-  openTrainingDay(id,dayIndex);
+  /*
+   * Actualizamos solo las tarjetas y el contador,
+   * sin reconstruir toda la pantalla.
+   */
+
+  const cards=document.querySelectorAll(
+    '#coach-main button[onclick*="toggleTrainingMuscle"]'
+  );
+
+  cards.forEach(card=>{
+
+    const match=card.getAttribute("onclick")
+      ?.match(/toggleTrainingMuscle\('.*?',\d+,'(.*)'\)/);
+
+    if(!match)return;
+
+    const cardGroup=match[1]
+      .replace(/\\'/g,"'");
+
+    const selected=day.muscleGroups.includes(cardGroup);
+
+    card.style.border=selected
+      ? "1px solid #d9aa4a"
+      : "1px solid rgba(255,255,255,.09)";
+
+    card.style.background=selected
+      ? "rgba(217,170,74,.13)"
+      : "rgba(255,255,255,.025)";
+
+    card.style.color=selected
+      ? "#f5d17a"
+      : "#e7e9ed";
+
+    card.style.boxShadow=selected
+      ? "0 0 0 1px rgba(217,170,74,.12)"
+      : "none";
+
+    let check=card.querySelector(".training-muscle-check");
+
+    if(selected && !check){
+
+      check=document.createElement("div");
+
+      check.className="training-muscle-check";
+
+      check.style.cssText=`
+        position:absolute;
+        top:7px;
+        right:7px;
+        width:20px;
+        height:20px;
+        border-radius:50%;
+        background:#d9aa4a;
+        color:#111;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:12px;
+        font-weight:900;
+      `;
+
+      check.textContent="✓";
+
+      card.appendChild(check);
+
+    }else if(!selected && check){
+
+      check.remove();
+
+    }
+
+  });
+
+  const counter=document.querySelector(
+    '#coach-main .muted'
+  );
+
+  if(counter){
+    counter.textContent=
+      `Seleccionados: ${day.muscleGroups.length} de 3`;
+  }
 }
 async function saveTrainingMuscleGroups(id,dayIndex){
 
