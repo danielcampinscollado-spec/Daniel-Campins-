@@ -5086,7 +5086,10 @@ function loadData(){
       if(parsed.workoutHistory) result.workoutHistory=parsed.workoutHistory;
       if(parsed.checkins) result.checkins=parsed.checkins;
       if(parsed.messages) result.messages=parsed.messages;
-      if(parsed.routines) result.routines=parsed.routines;
+      if(parsed.routines) result.routines=parsed.routines
+      if(parsed.previousRoutines){
+  result.previousRoutines=parsed.previousRoutines;
+}
 if(parsed.notificationState){
   result.notificationState=parsed.notificationState;
 }
@@ -13135,40 +13138,68 @@ if(screen==="routines"){
 
         <!-- CREAR NUEVA RUTINA -->
 
-        <button
-          type="button"
-          onclick="startNewRoutine('${selected}')"
-          style="
-            width:100%;
-            min-height:58px;
-            padding:12px 16px;
-            border-radius:15px;
-            border:1px solid rgba(217,170,74,.75);
-            background:
-              linear-gradient(
-                145deg,
-                rgba(217,170,74,.10),
-                rgba(255,255,255,.018)
-              );
-            color:#f0c96b;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:10px;
-            font-size:15px;
-            font-weight:800;
-            cursor:pointer;
-          "
-        >
-          <span style="
-            font-size:21px;
-          ">
-            ＋
-          </span>
+       <div style="
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:20px;
+">
 
-          Crear nueva rutina
+  <button
+    type="button"
+    onclick="modifyRoutine('${selected}')"
+    style="
+      min-height:72px;
+      padding:11px 12px;
+      border-radius:15px;
+      border:1px solid rgba(217,170,74,.75);
+      background:linear-gradient(
+        145deg,
+        rgba(217,170,74,.10),
+        rgba(255,255,255,.018)
+      );
+      color:#f0c96b;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+    "
+  >
+    <span style="font-size:22px;">✎</span>
+    <span>Modificar rutina</span>
+  </button>
 
-        </button>
+  <button
+    type="button"
+    onclick="startNewRoutine('${selected}')"
+    style="
+      min-height:72px;
+      padding:11px 12px;
+      border-radius:15px;
+      border:1px solid rgba(217,170,74,.75);
+      background:linear-gradient(
+        145deg,
+        rgba(217,170,74,.10),
+        rgba(255,255,255,.018)
+      );
+      color:#f0c96b;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+    "
+  >
+    <span style="font-size:22px;">＋</span>
+    <span>Crear nueva rutina</span>
+  </button>
+
+</div>
 
 
         <!-- RUTINA ANTERIOR -->
@@ -14574,6 +14605,15 @@ function showPreviousRoutine(id){
     </div>
 
   `;
+
+}
+function modifyRoutine(id){
+
+  if(!id) return;
+
+  window.routineEditMode=true;
+
+  showCoach("routines");
 
 }
 async function addTrainingDay(id){
