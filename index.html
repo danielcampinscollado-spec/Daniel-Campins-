@@ -14775,12 +14775,15 @@ function openTrainingDay(id,dayIndex){
         Elige de 1 a 3 grupos musculares para el entrenamiento
       </div>
 
-      <div class="muted" style="
-        margin-top:6px;
-        font-size:12px;
-      ">
-        Seleccionados: ${day.muscleGroups.length} de 3
-      </div>
+     <div
+  class="training-muscle-counter"
+  style="
+    margin-top:6px;
+    font-size:12px;
+  "
+>
+  Seleccionados: ${day.muscleGroups.length} de 3
+</div>
 
     </div>
 
@@ -15029,14 +15032,14 @@ function toggleTrainingMuscle(id,dayIndex,group){
 
   });
 
-  const counter=document.querySelector(
-    '#coach-main .muted'
-  );
+const counter=document.querySelector(
+  '#coach-main .training-muscle-counter'
+);
 
-  if(counter){
-    counter.textContent=
-      `Seleccionados: ${day.muscleGroups.length} de 3`;
-  }
+if(counter){
+  counter.textContent=
+    `Seleccionados: ${day.muscleGroups.length} de 3`;
+}
 }
 async function saveTrainingMuscleGroups(id,dayIndex){
 
