@@ -14357,53 +14357,42 @@ function showPreviousRoutine(id){
 
     ">
 
-      <button
+     <div style="
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+">
 
-        type="button"
+  <button
+    type="button"
+    class="ghost"
+    onclick="showClientAdmin('${selected}')"
+    style="
+      width:30px;
+      height:30px;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:#d9aa4a;
+      font-size:25px;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    "
+  >
+    ←
+  </button>
 
-        class="ghost"
+  <div class="muted" style="
+    font-size:14px;
+    margin:0;
+  ">
+    ${esc(c.name)}
+  </div>
 
-        onclick="showCoach('routines')"
-
-        style="
-
-          width:42px;
-
-          height:42px;
-
-          padding:0;
-
-          border-radius:12px;
-
-          margin-bottom:14px;
-
-          font-size:24px;
-
-          display:flex;
-
-          align-items:center;
-
-          justify-content:center;
-
-        "
-
-      >
-
-        ←
-
-      </button>
-
-      <div class="muted" style="
-
-        font-size:14px;
-
-        margin-bottom:4px;
-
-      ">
-
-        ${esc(c?.name||"Cliente")}
-
-      </div>
+</div>
 
       <h1 style="
 
