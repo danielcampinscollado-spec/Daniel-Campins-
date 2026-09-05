@@ -12812,6 +12812,7 @@ if(screen==="diets"){
 
 }
 if(screen==="routines"){
+
   if(!window.selectedClient){
 
     html=`
@@ -12819,10 +12820,10 @@ if(screen==="routines"){
         <div>
           <div style="
             color:#f0c96b;
-            font-size:15px;
+            font-size:13px;
             font-weight:700;
             letter-spacing:2px;
-            margin-bottom:14px;
+            margin-bottom:10px;
           ">
             RUTINAS
           </div>
@@ -12835,461 +12836,417 @@ if(screen==="routines"){
         </div>
       </div>
 
-      <div style="
-        display:flex;
-        gap:10px;
-        align-items:center;
-        margin-bottom:18px;
-      ">
+      <div class="card">
+        <h2>Clientes</h2>
 
         <div style="
-          flex:1;
-          height:64px;
-          display:flex;
-          align-items:center;
-          gap:12px;
-          padding:0 18px;
-          border:1px solid #292d35;
-          border-radius:18px;
-          background:#101217;
-          box-sizing:border-box;
+          display:grid;
+          gap:10px;
+          margin-top:16px;
         ">
 
-          <span style="
-            font-size:28px;
-            color:#9299a8;
-            line-height:1;
-          ">⌕</span>
+          ${data.clients.map(clientItem=>`
 
-          <input
-            type="text"
-            placeholder="Buscar cliente..."
-            oninput="
-              const q=this.value.toLowerCase().trim();
-
-              document
-                .querySelectorAll('.routine-client-row')
-                .forEach(row=>{
-                  row.style.display =
-                    row.dataset.name.includes(q)
-                      ? ''
-                      : 'none';
-                });
-            "
-            style="
-              width:100%;
-              height:100%;
-              border:0;
-              outline:0;
-              background:transparent;
-              color:#f5f5f5;
-              font-size:18px;
-            "
-          >
-
-        </div>
-
-        <button
-          class="ghost"
-          type="button"
-          style="
-            width:64px;
-            height:64px;
-            padding:0;
-            border:1px solid #292d35;
-            border-radius:18px;
-            background:#101217;
-            color:#f0c96b;
-            font-size:26px;
-          "
-        >
-          ▽
-        </button>
-
-      </div>
-
-      <div style="
-        display:grid;
-        gap:18px;
-      ">
-
-        ${data.clients.map(clientItem=>`
-
-          <button
-            class="routine-client-row"
-            data-name="${esc(clientItem.name).toLowerCase()}"
-            style="
-              width:100%;
-              min-height:195px;
-              padding:24px;
-              background:#101217;
-              border:1px solid #292d35;
-              border-radius:20px;
-              text-align:left;
-              color:#f5f5f5;
-              box-sizing:border-box;
-            "
-            onclick="
-              window.selectedClient='${clientItem.id}';
-              showCoach('routines');
-            "
-          >
-
-            <div style="
-              display:flex;
-              align-items:flex-start;
-              justify-content:space-between;
-              gap:16px;
-            ">
+            <button
+              class="client-row"
+              style="
+                width:100%;
+                background:#101217;
+                border:1px solid #292d35;
+                text-align:left;
+                color:#f5f5f5;
+              "
+              onclick="
+                window.selectedClient='${clientItem.id}';
+                showCoach('routines');
+              "
+            >
 
               <div style="
                 display:flex;
-                align-items:flex-start;
-                gap:18px;
-                min-width:0;
+                align-items:center;
+                justify-content:space-between;
+                gap:12px;
               ">
 
-                <div style="
-                  width:68px;
-                  height:68px;
-                  min-width:68px;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  border:1px solid #5c4a24;
-                  border-radius:50%;
-                  color:#f0c96b;
-                  font-size:22px;
-                  font-weight:700;
-                  box-sizing:border-box;
-                ">
-                  ${esc(
-                    clientItem.name
-                      .split(" ")
-                      .map(n=>n[0])
-                      .slice(0,2)
-                      .join("")
-                      .toUpperCase()
-                  )}
-                </div>
+                <div>
 
-                <div style="
-                  min-width:0;
-                ">
-
-                  <b style="
-                    display:block;
-                    font-size:22px;
-                    line-height:1.15;
-                    margin-bottom:7px;
-                  ">
+                  <b style="font-size:17px">
                     ${esc(clientItem.name)}
                   </b>
 
                   <div class="muted" style="
-                    font-size:17px;
-                    line-height:1.3;
-                    margin-bottom:10px;
+                    margin-top:5px;
                   ">
                     ${esc(clientItem.goal||"Sin objetivo")}
+                    · ${money(clientItem.weight)} kg
+                  </div>
+
+                </div>
+
+                <span style="
+                  font-size:22px;
+                  color:#d9aa4a;
+                ">
+                  →
+                </span>
+
+              </div>
+
+            </button>
+
+          `).join("")}
+
+        </div>
+      </div>
+    `;
+
+  }else{
+
+    const selected=window.selectedClient||"";
+    const c=client(selected);
+    const days=data.routines?.[selected]||[];
+    const previous=data.previousRoutines?.[selected]||null;
+
+    html=`
+
+      <div style="
+        padding:4px 4px 120px;
+      ">
+
+        <!-- CABECERA -->
+
+        <div style="
+          margin-bottom:20px;
+        ">
+
+          <button
+            type="button"
+            class="ghost"
+            onclick="showClientAdmin('${selected}')"
+            style="
+              width:42px;
+              height:42px;
+              padding:0;
+              border-radius:12px;
+              margin-bottom:14px;
+              font-size:24px;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+            "
+          >
+            ←
+          </button>
+
+          <div class="muted" style="
+            font-size:14px;
+            margin-bottom:4px;
+          ">
+            ${esc(c.name)}
+          </div>
+
+          <h1 style="
+            margin:0;
+            font-size:30px;
+            line-height:1.08;
+            letter-spacing:-.7px;
+          ">
+            Rutina de entrenamiento
+          </h1>
+
+          <p class="muted" style="
+            margin:8px 0 0;
+            font-size:14px;
+          ">
+            Organiza aquí los días y ejercicios de su rutina.
+          </p>
+
+        </div>
+
+
+        <!-- DÍAS -->
+
+        <div style="
+          display:flex;
+          flex-direction:column;
+          gap:8px;
+        ">
+
+          ${
+            days.length
+            ? days.map((day,i)=>`
+
+              <div
+                class="card"
+                onclick="openTrainingDay('${selected}',${i})"
+                style="
+                  margin:0;
+                  padding:11px 13px;
+                  min-height:0;
+                  background:
+                    linear-gradient(
+                      145deg,
+                      rgba(255,255,255,.055),
+                      rgba(255,255,255,.018)
+                    );
+                  border:1px solid rgba(217,170,74,.55);
+                  border-radius:14px;
+                  cursor:pointer;
+                "
+              >
+
+                <div style="
+                  display:flex;
+                  align-items:center;
+                  gap:10px;
+                ">
+
+                  <div style="
+                    width:34px;
+                    height:34px;
+                    min-width:34px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    border-radius:10px;
+                    background:
+                      linear-gradient(
+                        145deg,
+                        rgba(217,170,74,.18),
+                        rgba(217,170,74,.06)
+                      );
+                    border:1px solid rgba(217,170,74,.35);
+                    font-size:17px;
+                  ">
+                    🔨
+                  </div>
+
+                  <div style="
+                    flex:1;
+                    min-width:0;
+                  ">
+
+                    <div style="
+                      font-size:15px;
+                      font-weight:700;
+                      line-height:1.2;
+                    ">
+                      Día ${i+1}
+                    </div>
+
+                    <div class="muted" style="
+                      margin-top:3px;
+                      font-size:12px;
+                      line-height:1.2;
+                    ">
+                      ${
+                        day.muscleGroups?.length
+                        ? day.muscleGroups.map(g=>esc(g)).join(" · ")
+                        : "Sin grupos musculares"
+                      }
+                    </div>
+
                   </div>
 
                   <span style="
-                    display:inline-block;
-                    padding:6px 10px;
-                    border-radius:8px;
-                    background:#151d2b;
-                    color:#5da9f6;
-                    font-size:15px;
+                    color:#d9aa4a;
+                    font-size:22px;
+                    line-height:1;
                   ">
-                    ${money(clientItem.weight)} kg
+                    ›
                   </span>
 
                 </div>
 
               </div>
 
+            `).join("")
+
+            : `
+
+              <div class="card" style="
+                margin:0;
+                padding:15px;
+                background:
+                  linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.055),
+                    rgba(255,255,255,.018)
+                  );
+                border:1px solid rgba(255,255,255,.09);
+                border-radius:14px;
+              ">
+                <div class="empty">
+                  Todavía no hay días de entrenamiento.
+                </div>
+              </div>
+
+            `
+          }
+
+        </div>
+
+
+        <!-- AÑADIR DÍA -->
+
+        <button
+          type="button"
+          class="btn"
+          onclick="addTrainingDay('${selected}')"
+          style="
+            width:100%;
+            margin-top:10px;
+            min-height:44px;
+            padding:9px 14px;
+            border-radius:12px;
+            font-size:14px;
+            font-weight:800;
+          "
+        >
+          + Añadir día
+        </button>
+
+
+        <!-- SEPARADOR -->
+
+        <div style="
+          height:1px;
+          background:linear-gradient(
+            90deg,
+            transparent,
+            rgba(217,170,74,.35),
+            transparent
+          );
+          margin:20px 0 14px;
+        "></div>
+
+
+        <!-- CREAR NUEVA RUTINA -->
+
+        <button
+          type="button"
+          onclick="startNewRoutine('${selected}')"
+          style="
+            width:100%;
+            min-height:58px;
+            padding:12px 16px;
+            border-radius:15px;
+            border:1px solid rgba(217,170,74,.75);
+            background:
+              linear-gradient(
+                145deg,
+                rgba(217,170,74,.10),
+                rgba(255,255,255,.018)
+              );
+            color:#f0c96b;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            font-size:15px;
+            font-weight:800;
+            cursor:pointer;
+          "
+        >
+          <span style="
+            font-size:21px;
+          ">
+            ＋
+          </span>
+
+          Crear nueva rutina
+
+        </button>
+
+
+        <!-- RUTINA ANTERIOR -->
+
+        ${
+          previous
+          ? `
+
+            <button
+              type="button"
+              onclick="showPreviousRoutine('${selected}')"
+              style="
+                width:100%;
+                min-height:58px;
+                margin-top:10px;
+                padding:11px 14px;
+                border-radius:15px;
+                border:1px solid rgba(255,255,255,.10);
+                background:
+                  linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.055),
+                    rgba(255,255,255,.018)
+                  );
+                color:#f5f5f5;
+                display:flex;
+                align-items:center;
+                gap:12px;
+                text-align:left;
+                cursor:pointer;
+              "
+            >
+
+              <div style="
+                width:38px;
+                height:38px;
+                min-width:38px;
+                border-radius:11px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:
+                  linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.07),
+                    rgba(255,255,255,.02)
+                  );
+                border:1px solid rgba(255,255,255,.10);
+                font-size:20px;
+              ">
+                ◷
+              </div>
+
+              <div style="
+                flex:1;
+                min-width:0;
+              ">
+
+                <div style="
+                  font-size:15px;
+                  font-weight:800;
+                ">
+                  Rutina anterior
+                </div>
+
+                <div class="muted" style="
+                  margin-top:3px;
+                  font-size:12px;
+                ">
+                  Ver la última rutina guardada
+                </div>
+
+              </div>
+
               <span style="
-                flex:0 0 auto;
-                color:#f0c96b;
-                font-size:34px;
-                line-height:1;
-                padding-top:4px;
+                color:#d9aa4a;
+                font-size:22px;
               ">
                 ›
               </span>
 
-            </div>
+            </button>
 
-            <div style="
-              height:1px;
-              background:#292d35;
-              margin:20px 0 18px;
-            "></div>
-
-            <div style="
-              display:flex;
-              align-items:center;
-              justify-content:space-between;
-              gap:12px;
-            ">
-
-              <div style="
-                display:flex;
-                align-items:center;
-                gap:14px;
-                min-width:0;
-              ">
-
-                <span style="
-                  color:#b8bec9;
-                  font-size:24px;
-                  line-height:1;
-                ">
-                  🏋️
-                </span>
-
-                <span style="
-                  font-size:17px;
-                  color:#f5f5f5;
-                ">
-                  Entrenamiento
-                </span>
-
-              </div>
-
-              <div style="
-                display:flex;
-                align-items:center;
-                gap:12px;
-                color:#20b85a;
-                font-size:16px;
-                white-space:nowrap;
-              ">
-                Entrenamiento gestionado
-                <span style="
-                  color:#f0c96b;
-                  font-size:28px;
-                  line-height:1;
-                ">
-                  ›
-                </span>
-              </div>
-
-            </div>
-
-          </button>
-
-        `).join("")}
+          `
+          : ""
+        }
 
       </div>
     `;
-
-    main.innerHTML=html;
-    
-    return;
-  }
-  const selected=window.selectedClient||"";
-  const c=client(selected);
-
-  if(!selected||!c){
-
-  html=`
-  <div class="top">
-    <div>
-      <h1>Rutinas</h1>
-      <p class="muted">Selecciona el cliente al que quieres gestionar el entrenamiento.</p>
-    </div>
-  </div>
-
-  <div class="card">
-
-    <h2>Clientes</h2>
-
-    <div style="display:grid;gap:10px;margin-top:16px">
-
-      ${data.clients.map(clientItem=>`
-
-        <button
-          class="client-row"
-          style="
-            width:100%;
-            background:#fafbfc;
-            border:1px solid #e5e8ec;
-            text-align:left;
-          "
-          onclick="window.selectedClient='${clientItem.id}';showCoach('routines')"
-        >
-
-          <div style="
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:12px;
-          ">
-
-            <div>
-              <b style="font-size:17px">
-                ${esc(clientItem.name)}
-              </b>
-
-              <div class="muted" style="margin-top:5px">
-                ${esc(clientItem.goal||"Sin objetivo")}
-                · ${money(clientItem.weight)} kg
-              </div>
-            </div>
-
-            <span style="
-              font-size:22px;
-              color:#d9aa4a;
-            ">
-              →
-            </span>
-
-          </div>
-
-        </button>
-
-      `).join("")}
-
-    </div>
-
-  </div>
-  `;
-  }else{
-
-const days=data.routines[selected]||[];
-
-html=`
-  <div class="top">
-    <div>
-      <h1>Rutinas</h1>
-      <p class="muted">${esc(c.name)}</p>
-    </div>
-  </div>
-
-  <div style="
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-top:12px;
-  ">
-
-    ${
-      days.length
-      ? days.map((day,i)=>`
-
-        <div
-          class="card"
-          onclick="openTrainingDay('${selected}', ${i});"
-          style="
-            margin:0;
-            padding:12px 14px;
-            min-height:0;
-            background:linear-gradient(
-              145deg,
-              rgba(255,255,255,.055),
-              rgba(255,255,255,.018)
-            );
-            border-radius:14px;
-            cursor:pointer;
-          "
-        >
-
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:10px;
-          ">
-
-            <div style="
-              width:34px;
-              height:34px;
-              min-width:34px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              border-radius:10px;
-              background:linear-gradient(
-                145deg,
-                rgba(217,170,74,.18),
-                rgba(217,170,74,.06)
-              );
-              border:1px solid rgba(217,170,74,.35);
-              font-size:17px;
-            ">
-              🔨
-            </div>
-
-            <div style="
-              flex:1;
-              min-width:0;
-            ">
-
-              <div style="
-                font-size:15px;
-                font-weight:700;
-                line-height:1.2;
-              ">
-                Día ${i+1}
-              </div>
-
-              <div class="muted" style="
-                margin-top:3px;
-                font-size:12px;
-                line-height:1.2;
-              ">
-                ${
-                  day.muscleGroups?.length
-                    ? day.muscleGroups.map(g=>esc(g)).join(" · ")
-                    : "Sin grupos musculares"
-                }
-              </div>
-
-            </div>
-
-            <span style="
-              color:#d9aa4a;
-              font-size:22px;
-              line-height:1;
-            ">
-              ›
-            </span>
-
-          </div>
-
-        </div>
-
-      `).join("")
-      : `
-
-        <div class="card" style="
-          margin:0;
-          padding:16px;
-          text-align:center;
-        ">
-          <div class="empty">
-            Todavía no hay días de entrenamiento.
-          </div>
-        </div>
-
-      `
-    }
-
-  </div>
-
-  <button
-    class="btn"
-    style="
-      margin-top:12px;
-      padding:9px 14px;
-      border-radius:11px;
-    "
-    onclick="addTrainingDay('${selected}')"
-  >
-    + Añadir día
-  </button>
-`;
   }
 }
 if(screen==="messages"){
@@ -14316,7 +14273,309 @@ async function removeFood(id,type,mi,fi,oi=0){
 
 }
 
+function startNewRoutine(id){
 
+  if(!id)return;
+
+  if(!data.previousRoutines){
+
+    data.previousRoutines={};
+
+  }
+
+  const currentRoutine =
+
+    Array.isArray(data.routines?.[id])
+
+      ? data.routines[id]
+
+      : [];
+
+  if(!currentRoutine.length){
+
+    toast("No hay una rutina actual para guardar");
+
+    return;
+
+  }
+
+  data.previousRoutines[id]={
+
+    routine:JSON.parse(JSON.stringify(currentRoutine)),
+
+    savedAt:new Date().toISOString()
+
+  };
+
+  data.routines[id]=[];
+
+  saveData();
+
+  saveRoutineToSupabase(id).then(ok=>{
+
+    if(!ok){
+
+      toast("Nueva rutina creada localmente, pero no se pudo sincronizar");
+
+    }else{
+
+      toast("Nueva rutina creada");
+
+    }
+
+    showCoach("routines");
+
+  });
+
+}
+
+function showPreviousRoutine(id){
+
+  const previous =
+
+    data.previousRoutines?.[id]?.routine;
+
+  const c=client(id);
+
+  if(!previous?.length){
+
+    toast("No hay una rutina anterior guardada");
+
+    return;
+
+  }
+
+  const main=document.getElementById("coach-main");
+
+  if(!main)return;
+
+  main.innerHTML=`
+
+    <div style="
+
+      padding:4px 4px 120px;
+
+    ">
+
+      <button
+
+        type="button"
+
+        class="ghost"
+
+        onclick="showCoach('routines')"
+
+        style="
+
+          width:42px;
+
+          height:42px;
+
+          padding:0;
+
+          border-radius:12px;
+
+          margin-bottom:14px;
+
+          font-size:24px;
+
+          display:flex;
+
+          align-items:center;
+
+          justify-content:center;
+
+        "
+
+      >
+
+        ←
+
+      </button>
+
+      <div class="muted" style="
+
+        font-size:14px;
+
+        margin-bottom:4px;
+
+      ">
+
+        ${esc(c?.name||"Cliente")}
+
+      </div>
+
+      <h1 style="
+
+        margin:0;
+
+        font-size:30px;
+
+        line-height:1.08;
+
+      ">
+
+        Rutina anterior
+
+      </h1>
+
+      <p class="muted" style="
+
+        margin:8px 0 18px;
+
+        font-size:14px;
+
+      ">
+
+        Última rutina guardada
+
+      </p>
+
+      <div style="
+
+        display:flex;
+
+        flex-direction:column;
+
+        gap:8px;
+
+      ">
+
+        ${previous.map((day,i)=>`
+
+          <div
+
+            class="card"
+
+            style="
+
+              margin:0;
+
+              padding:11px 13px;
+
+              min-height:0;
+
+              background:
+
+                linear-gradient(
+
+                  145deg,
+
+                  rgba(255,255,255,.055),
+
+                  rgba(255,255,255,.018)
+
+                );
+
+              border:1px solid rgba(255,255,255,.10);
+
+              border-radius:14px;
+
+            "
+
+          >
+
+            <div style="
+
+              display:flex;
+
+              align-items:center;
+
+              gap:10px;
+
+            ">
+
+              <div style="
+
+                width:34px;
+
+                height:34px;
+
+                min-width:34px;
+
+                display:flex;
+
+                align-items:center;
+
+                justify-content:center;
+
+                border-radius:10px;
+
+                background:
+
+                  linear-gradient(
+
+                    145deg,
+
+                    rgba(217,170,74,.16),
+
+                    rgba(217,170,74,.05)
+
+                  );
+
+                border:1px solid rgba(217,170,74,.30);
+
+              ">
+
+                🔨
+
+              </div>
+
+              <div style="
+
+                flex:1;
+
+                min-width:0;
+
+              ">
+
+                <div style="
+
+                  font-size:15px;
+
+                  font-weight:800;
+
+                ">
+
+                  Día ${i+1}
+
+                </div>
+
+                <div class="muted" style="
+
+                  margin-top:3px;
+
+                  font-size:12px;
+
+                ">
+
+                  ${
+
+                    day.muscleGroups?.length
+
+                    ? day.muscleGroups.map(g=>esc(g)).join(" · ")
+
+                    : day.muscle || "Sin grupos musculares"
+
+                  }
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `).join("")}
+
+      </div>
+
+    </div>
+
+  `;
+
+}
 async function addTrainingDay(id){
 
   const main = document.getElementById("coach-main");
