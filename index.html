@@ -12920,31 +12920,42 @@ if(screen==="routines"){
           margin-bottom:20px;
         ">
 
-          <button
-            type="button"
-            class="ghost"
-            onclick="showClientAdmin('${selected}')"
-            style="
-              width:42px;
-              height:42px;
-              padding:0;
-              border-radius:12px;
-              margin-bottom:14px;
-              font-size:24px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-            "
-          >
-            ←
-          </button>
+        <div style="
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+">
 
-          <div class="muted" style="
-            font-size:14px;
-            margin-bottom:4px;
-          ">
-            ${esc(c.name)}
-          </div>
+  <button
+    type="button"
+    class="ghost"
+    onclick="showClientAdmin('${selected}')"
+    style="
+      width:30px;
+      height:30px;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:#d9aa4a;
+      font-size:25px;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    "
+  >
+    ←
+  </button>
+
+  <div class="muted" style="
+    font-size:14px;
+    margin:0;
+  ">
+    ${esc(c.name)}
+  </div>
+
+</div>
 
           <h1 style="
             margin:0;
