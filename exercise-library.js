@@ -1,4 +1,4 @@
-const exerciseLibrary = [
+const exerciseLibraryFull = [
   {
     "id": "press-banca-con-barra",
     "name": "Press banca con barra",
