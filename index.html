@@ -14376,6 +14376,106 @@ async function addTrainingDay(id){
     </div>
   `;
 }
+function openTrainingDay(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day){
+    toast("No se encontró el día");
+    return;
+  }
+
+  const main=document.getElementById("coach-main");
+
+  if(!main)return;
+
+  main.innerHTML=`
+    <div class="top" style="margin-bottom:12px">
+
+      <button
+        class="ghost"
+        onclick="showCoach('routines')"
+        style="
+          padding:7px 10px;
+          border-radius:10px;
+          margin-bottom:8px;
+        "
+      >
+        ← Volver
+      </button>
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:9px;
+      ">
+
+        <div style="
+          width:34px;
+          height:34px;
+          min-width:34px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          border-radius:10px;
+          background:linear-gradient(
+            145deg,
+            rgba(217,170,74,.18),
+            rgba(217,170,74,.06)
+          );
+          border:1px solid rgba(217,170,74,.35);
+          font-size:17px;
+        ">
+          🔨
+        </div>
+
+        <div>
+          <h1 style="margin:0">
+            Día ${dayIndex+1}
+          </h1>
+
+          <p class="muted" style="
+            margin:3px 0 0;
+            font-size:13px;
+          ">
+            Configuración del entrenamiento
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card" style="
+      margin:0;
+      padding:14px;
+      background:linear-gradient(
+        145deg,
+        rgba(255,255,255,.055),
+        rgba(255,255,255,.018)
+      );
+    ">
+
+      <div style="
+        font-size:15px;
+        font-weight:700;
+        line-height:1.3;
+      ">
+        Elige de 1 a 3 grupos musculares para el entrenamiento
+      </div>
+
+      <div class="muted" style="
+        margin-top:6px;
+        font-size:12px;
+      ">
+        Podrás seleccionar hasta 3 grupos.
+      </div>
+
+    </div>
+  `;
+}
+
+function toggleTrainingMuscle(id,dayIndex,group){
 function toggleTrainingMuscle(id,dayIndex,group){
 
   const day=data.routines[id]?.[dayIndex];
