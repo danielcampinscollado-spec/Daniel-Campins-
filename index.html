@@ -14389,7 +14389,29 @@ function openTrainingDay(id,dayIndex){
 
   if(!main)return;
 
+  if(!Array.isArray(day.muscleGroups)){
+    day.muscleGroups=[];
+  }
+
+  const muscleOptions=[
+    "Pectoral",
+    "Dorsal",
+    "Hombros",
+    "Trapecio",
+    "Bíceps",
+    "Tríceps",
+    "Antebrazos",
+    "Core",
+    "Lumbar",
+    "Pierna completa",
+    "Cuádriceps",
+    "Femoral",
+    "Glúteos",
+    "Gemelos"
+  ];
+
   main.innerHTML=`
+
     <div class="top" style="margin-bottom:12px">
 
       <button
@@ -14430,6 +14452,7 @@ function openTrainingDay(id,dayIndex){
         </div>
 
         <div>
+
           <h1 style="margin:0">
             Día ${dayIndex+1}
           </h1>
@@ -14440,6 +14463,7 @@ function openTrainingDay(id,dayIndex){
           ">
             Configuración del entrenamiento
           </p>
+
         </div>
 
       </div>
@@ -14468,13 +14492,154 @@ function openTrainingDay(id,dayIndex){
         margin-top:6px;
         font-size:12px;
       ">
-        Podrás seleccionar hasta 3 grupos.
+        Seleccionados: ${day.muscleGroups.length} de 3
       </div>
 
     </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    ">
+
+      ${muscleOptions.map(group=>{
+
+        const selected=day.muscleGroups.includes(group);
+        const image=recognizeMuscleImage(group);
+
+        return `
+
+          <button
+            type="button"
+            onclick="toggleTrainingMuscle('${group.replace(/'/g,"\\'")}',${dayIndex},'${group.replace(/'/g,"\\'")}')"
+            style="
+              position:relative;
+              min-height:105px;
+              padding:10px;
+              border-radius:14px;
+
+              border:1px solid ${
+                selected
+                  ? "#d9aa4a"
+                  : "rgba(255,255,255,.09)"
+              };
+
+              background:${
+                selected
+                  ? "rgba(217,170,74,.13)"
+                  : "rgba(255,255,255,.025)"
+              };
+
+              color:${
+                selected
+                  ? "#f5d17a"
+                  : "#e7e9ed"
+              };
+
+              display:flex;
+              flex-direction:column;
+              align-items:center;
+              justify-content:center;
+              gap:7px;
+
+              box-shadow:${
+                selected
+                  ? "0 0 0 1px rgba(217,170,74,.12)"
+                  : "none"
+              };
+            "
+          >
+
+            ${
+              image
+                ? `
+                  <img
+                    src="./assets/muscles/${image}"
+                    alt=""
+                    loading="lazy"
+                    style="
+                      width:52px;
+                      height:52px;
+                      object-fit:contain;
+                      display:block;
+                    "
+                  >
+                `
+                : `
+                  <div style="
+                    width:52px;
+                    height:52px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:26px;
+                    opacity:.75;
+                  ">
+                    🏋️
+                  </div>
+                `
+            }
+
+            <div style="
+              font-size:13px;
+              font-weight:700;
+              text-align:center;
+            ">
+              ${group}
+            </div>
+
+            ${
+              selected
+                ? `
+                  <div style="
+                    position:absolute;
+                    top:7px;
+                    right:7px;
+                    width:20px;
+                    height:20px;
+                    border-radius:50%;
+                    background:#d9aa4a;
+                    color:#111;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:12px;
+                    font-weight:900;
+                  ">
+                    ✓
+                  </div>
+                `
+                : ""
+            }
+
+          </button>
+
+        `;
+
+      }).join("")}
+
+    </div>
+
+    <button
+      type="button"
+      class="btn"
+      onclick="saveTrainingMuscleGroups('${id}',${dayIndex})"
+      style="
+        width:100%;
+        margin-top:14px;
+        min-height:46px;
+        border-radius:13px;
+        font-size:14px;
+        font-weight:800;
+      "
+    >
+      Guardar grupos musculares
+    </button>
+
   `;
 }
-
 function toggleTrainingMuscle(id,dayIndex,group){
 
 
