@@ -15088,8 +15088,7 @@ function openTrainingDay(id,dayIndex){
     <button
       type="button"
       class="btn"
-      onclick="saveTrainingMuscleGroups('${id}',${dayIndex})"
-      style="
+      onclick="openTrainingExercises('${id}',${dayIndex})"    style="
         width:100%;
         margin-top:14px;
         min-height:46px;
@@ -15265,6 +15264,143 @@ async function createRoutineDays(id,count){
   }
 
   showCoach("routines");
+}
+async function openTrainingExercises(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day){
+    toast("No se encontró el día");
+    return;
+  }
+
+  if(!day.muscleGroups?.length){
+    toast("Selecciona al menos un grupo muscular");
+    return;
+  }
+
+  day.muscle=day.muscleGroups.join(" · ");
+
+  saveData();
+
+  const ok=await saveRoutineToSupabase(id);
+
+  if(!ok){
+    toast("Guardado localmente, pero no se pudo sincronizar");
+    return;
+  }
+
+  const main=document.getElementById("coach-main");
+
+  if(!main)return;
+
+  main.innerHTML=`
+
+    <div class="top" style="margin-bottom:12px">
+
+      <button
+        class="ghost"
+        onclick="openTrainingDay('${id}',${dayIndex})"
+        style="
+          padding:7px 10px;
+          border-radius:10px;
+          margin-bottom:8px;
+        "
+      >
+        ← Volver
+      </button>
+
+      <div>
+        <h1>Día ${dayIndex+1}</h1>
+
+        <p class="muted" style="
+          margin:3px 0 0;
+          font-size:13px;
+        ">
+          ${esc(day.muscle || "Entrenamiento")}
+        </p>
+      </div>
+
+    </div>
+
+    <div class="card" style="
+      margin:0;
+      padding:14px;
+    ">
+
+      <div style="
+        font-size:16px;
+        font-weight:800;
+      ">
+        Ejercicios
+      </div>
+
+      <div class="muted" style="
+        margin-top:4px;
+        font-size:12px;
+      ">
+        Añade los ejercicios de este día
+      </div>
+
+      <div style="margin-top:14px">
+
+        ${
+          day.exercises?.length
+          ? day.exercises.map((ex,i)=>`
+
+            <div class="exercise">
+
+              <div style="flex:1">
+
+                <b>${esc(ex.name || "Ejercicio")}</b>
+
+                <div class="muted" style="
+                  margin-top:4px;
+                  font-size:12px;
+                ">
+                  ${esc(ex.sets || "")} series × ${esc(ex.reps || "")}
+                </div>
+
+              </div>
+
+              <button
+                class="danger"
+                onclick="removeExercise('${id}',${dayIndex},${i})"
+              >
+                Eliminar
+              </button>
+
+            </div>
+
+          `).join("")
+          : `
+            <div class="empty">
+              Todavía no hay ejercicios añadidos.
+            </div>
+          `
+        }
+
+      </div>
+
+      <button
+        type="button"
+        class="btn"
+        onclick="addExercise('${id}',${dayIndex})"
+        style="
+          width:100%;
+          margin-top:14px;
+          min-height:46px;
+          border-radius:13px;
+          font-size:14px;
+          font-weight:800;
+        "
+      >
+        + Añadir ejercicio
+      </button>
+
+    </div>
+
+  `;
 }
 async function addExercise(id,dayIndex){
 
