@@ -5577,6 +5577,26 @@ async function markClientNotificationSeen(type, clientId){
   }
 
 }
+function recognizeMuscleImage(group){
+  const map = {
+    "Pectoral":"pecho.png",
+    "Dorsal":"espalda.png",
+    "Hombros":"hombros.png",
+    "Trapecio":"lumbar-cuello.png",
+    "Bíceps":"biceps.png",
+    "Tríceps":"triceps.png",
+    "Antebrazos":"biceps.png",
+    "Core":"core.png",
+    "Lumbar":"lumbar-cuello.png",
+    "Pierna completa":"cuadriceps.png",
+    "Cuádriceps":"cuadriceps.png",
+    "Femoral":"isquios.png",
+    "Glúteos":"gluteos.png",
+    "Gemelos":"gemelos.png"
+  };
+
+  return map[group] || "";
+}
 function saveData(){
   try{
     localStorage.setItem(KEY,JSON.stringify(data));
