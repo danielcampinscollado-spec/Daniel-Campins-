@@ -15264,104 +15264,361 @@ async function openTrainingExercises(id,dayIndex){
     return;
   }
 
-  day.muscle=day.muscleGroups.join(" · ");
-
-  saveData();
-
-  const ok=await saveRoutineToSupabase(id);
-
-  if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
+  if(typeof exerciseLibraryFull==="undefined"){
+    toast("No se pudo cargar la biblioteca de ejercicios");
     return;
   }
+
+  if(!Array.isArray(day.selectedExerciseIds)){
+    day.selectedExerciseIds=[];
+  }
+
+  const groups=day.muscleGroups;
 
   const main=document.getElementById("coach-main");
 
   if(!main)return;
 
-  main.innerHTML=`
+  function countExercises(group){
 
-    <div class="top" style="margin-bottom:12px">
+    return exerciseLibraryFull.filter(ex=>
+      ex.muscle===group ||
+      ex.secondaryMuscles?.includes(group)
+    ).length;
 
-      <button
-        class="ghost"
-        onclick="openTrainingDay('${id}',${dayIndex})"
-        style="
-          padding:7px 10px;
-          border-radius:10px;
-          margin-bottom:8px;
-        "
-      >
-        ← Volver
-      </button>
+  }
 
-      <div>
-        <h1>Día ${dayIndex+1}</h1>
+  function render(){
 
-        <p class="muted" style="
-          margin:3px 0 0;
-          font-size:13px;
-        ">
-          ${esc(day.muscle || "Entrenamiento")}
-        </p>
+    const activeGroup=
+      window.trainingExerciseGroup?.[id]?.[dayIndex]
+      || groups[0];
+
+    const exercises=exerciseLibraryFull.filter(ex=>
+      ex.muscle===activeGroup ||
+      ex.secondaryMuscles?.includes(activeGroup)
+    );
+
+    main.innerHTML=`
+
+      <div class="top" style="
+        margin-bottom:12px;
+      ">
+
+        <button
+          class="ghost"
+          onclick="openTrainingDay('${id}',${dayIndex})"
+          style="
+            padding:7px 10px;
+            border-radius:10px;
+            margin-bottom:8px;
+          "
+        >
+          ← Volver
+        </button>
+
+        <div>
+
+          <h1 style="margin:0">
+            Añadir ejercicios
+          </h1>
+
+          <p class="muted" style="
+            margin:4px 0 0;
+            font-size:13px;
+          ">
+            Selecciona los ejercicios del día
+          </p>
+
+        </div>
+
       </div>
-
-    </div>
-
-    <div class="card" style="
-      margin:0;
-      padding:14px;
-    ">
 
       <div style="
-        font-size:16px;
-        font-weight:800;
+        display:flex;
+        gap:7px;
+        overflow-x:auto;
+        padding:2px 1px 8px;
+        scrollbar-width:none;
       ">
-        Ejercicios
+
+        ${groups.map(group=>`
+
+          <button
+            type="button"
+            onclick="
+              if(!window.trainingExerciseGroup)
+                window.trainingExerciseGroup={};
+
+              if(!window.trainingExerciseGroup['${id}'])
+                window.trainingExerciseGroup['${id}']={};
+
+              window.trainingExerciseGroup['${id}'][${dayIndex}]
+                ='${group.replace(/'/g,"\\'")}';
+
+              openTrainingExercises('${id}',${dayIndex});
+            "
+            style="
+              flex:0 0 auto;
+              min-width:112px;
+              padding:9px 11px;
+              border-radius:11px;
+              border:1px solid ${
+                activeGroup===group
+                  ? "#d9aa4a"
+                  : "rgba(255,255,255,.10)"
+              };
+              background:${
+                activeGroup===group
+                  ? "rgba(217,170,74,.14)"
+                  : "rgba(255,255,255,.025)"
+              };
+              color:${
+                activeGroup===group
+                  ? "#f5d17a"
+                  : "#e7e9ed"
+              };
+              font-size:12px;
+              font-weight:800;
+              white-space:nowrap;
+            "
+          >
+
+            ${esc(group)}
+
+            <span style="
+              opacity:.65;
+              margin-left:4px;
+            ">
+              ${countExercises(group)}
+            </span>
+
+          </button>
+
+        `).join("")}
+
       </div>
 
-      <div class="muted" style="
-        margin-top:4px;
-        font-size:12px;
+      <div class="card" style="
+        margin:4px 0 10px;
+        padding:12px;
       ">
-        Añade los ejercicios de este día
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:10px;
+        ">
+
+          <div>
+
+            <div style="
+              font-size:16px;
+              font-weight:800;
+            ">
+              ${esc(activeGroup)}
+            </div>
+
+            <div class="muted" style="
+              margin-top:3px;
+              font-size:12px;
+            ">
+              ${exercises.length} ejercicios disponibles
+            </div>
+
+          </div>
+
+          <div style="
+            font-size:12px;
+            font-weight:800;
+            padding:6px 9px;
+            border-radius:9px;
+            background:rgba(217,170,74,.12);
+            color:#f5d17a;
+            white-space:nowrap;
+          ">
+            ${day.selectedExerciseIds.length} seleccionados
+          </div>
+
+        </div>
+
       </div>
 
-      <div style="margin-top:14px">
+      <div style="
+        display:flex;
+        flex-direction:column;
+        gap:7px;
+      ">
 
         ${
-          day.exercises?.length
-          ? day.exercises.map((ex,i)=>`
+          exercises.length
 
-            <div class="exercise">
+          ? exercises.map(ex=>{
 
-              <div style="flex:1">
+              const selected=
+                day.selectedExerciseIds.includes(ex.id);
 
-                <b>${esc(ex.name || "Ejercicio")}</b>
+              const image=
+                ex.image
+                  ? `./${ex.image}`
+                  : "";
 
-                <div class="muted" style="
-                  margin-top:4px;
-                  font-size:12px;
-                ">
-                  ${esc(ex.sets || "")} series × ${esc(ex.reps || "")}
-                </div>
+              return `
 
-              </div>
+                <button
+                  type="button"
+                  onclick="
+                    toggleTrainingExercise(
+                      '${id}',
+                      ${dayIndex},
+                      '${ex.id.replace(/'/g,"\\'")}'
+                    )
+                  "
+                  style="
+                    width:100%;
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    text-align:left;
+                    padding:8px;
+                    border-radius:12px;
+                    border:1px solid ${
+                      selected
+                        ? "#d9aa4a"
+                        : "rgba(255,255,255,.08)"
+                    };
+                    background:${
+                      selected
+                        ? "rgba(217,170,74,.10)"
+                        : "rgba(255,255,255,.025)"
+                    };
+                    color:#e7e9ed;
+                  "
+                >
 
-              <button
-                class="danger"
-                onclick="removeExercise('${id}',${dayIndex},${i})"
-              >
-                Eliminar
-              </button>
+                  <div style="
+                    width:58px;
+                    height:58px;
+                    min-width:58px;
+                    border-radius:9px;
+                    overflow:hidden;
+                    background:rgba(255,255,255,.045);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                  ">
 
-            </div>
+                    ${
+                      image
 
-          `).join("")
+                      ? `
+
+                        <img
+                          src="${image}"
+                          alt=""
+                          loading="lazy"
+                          onerror="this.style.display='none'"
+                          style="
+                            width:100%;
+                            height:100%;
+                            object-fit:contain;
+                          "
+                        >
+
+                      `
+
+                      : `
+
+                        <span style="
+                          font-size:22px;
+                          opacity:.45;
+                        ">
+                          🏋️
+                        </span>
+
+                      `
+                    }
+
+                  </div>
+
+                  <div style="
+                    flex:1;
+                    min-width:0;
+                  ">
+
+                    <div style="
+                      font-size:13px;
+                      font-weight:800;
+                      line-height:1.25;
+                    ">
+                      ${esc(ex.name)}
+                    </div>
+
+                    <div style="
+                      display:flex;
+                      gap:5px;
+                      flex-wrap:wrap;
+                      margin-top:5px;
+                    ">
+
+                      <span style="
+                        font-size:10px;
+                        padding:3px 6px;
+                        border-radius:7px;
+                        background:rgba(255,255,255,.07);
+                        color:#aeb5bf;
+                      ">
+                        ${esc(ex.muscle)}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  <div style="
+                    width:27px;
+                    height:27px;
+                    min-width:27px;
+                    border-radius:50%;
+                    border:1px solid ${
+                      selected
+                        ? "#d9aa4a"
+                        : "rgba(255,255,255,.28)"
+                    };
+                    background:${
+                      selected
+                        ? "#d9aa4a"
+                        : "transparent"
+                    };
+                    color:${
+                      selected
+                        ? "#111"
+                        : "#aeb5bf"
+                    };
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:14px;
+                    font-weight:900;
+                  ">
+                    ${selected ? "✓" : "+"}
+                  </div>
+
+                </button>
+
+              `;
+
+            }).join("")
+
           : `
+
             <div class="empty">
-              Todavía no hay ejercicios añadidos.
+
+              No hay ejercicios disponibles para este grupo.
+
             </div>
+
           `
         }
 
@@ -15369,23 +15626,182 @@ async function openTrainingExercises(id,dayIndex){
 
       <button
         type="button"
-        class="btn"
-        onclick="addExercise('${id}',${dayIndex})"
+        class="ghost"
+        onclick="addManualTrainingExercise('${id}',${dayIndex})"
         style="
           width:100%;
-          margin-top:14px;
-          min-height:46px;
+          margin-top:12px;
+          min-height:44px;
+          border-radius:12px;
+          font-size:13px;
+          font-weight:800;
+        "
+      >
+        ＋ ¿No encuentras el ejercicio? Añadir manualmente
+      </button>
+
+      <button
+        type="button"
+        class="btn"
+        onclick="continueTrainingExerciseSelection('${id}',${dayIndex})"
+        style="
+          width:100%;
+          margin-top:9px;
+          min-height:48px;
           border-radius:13px;
           font-size:14px;
           font-weight:800;
         "
       >
-        + Añadir ejercicio
+        Continuar${
+          day.selectedExerciseIds.length
+            ? ` (${day.selectedExerciseIds.length})`
+            : ""
+        }
       </button>
 
-    </div>
+    `;
 
-  `;
+  }
+
+  render();
+
+}
+
+
+function toggleTrainingExercise(id,dayIndex,exerciseId){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day)return;
+
+  if(!Array.isArray(day.selectedExerciseIds)){
+    day.selectedExerciseIds=[];
+  }
+
+  const index=
+    day.selectedExerciseIds.indexOf(exerciseId);
+
+  if(index>=0){
+
+    day.selectedExerciseIds.splice(index,1);
+
+  }else{
+
+    day.selectedExerciseIds.push(exerciseId);
+
+  }
+
+  saveData();
+
+  openTrainingExercises(id,dayIndex);
+
+}
+
+
+function addManualTrainingExercise(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day)return;
+
+  const name=prompt("Nombre del ejercicio:");
+
+  if(!name?.trim())return;
+
+  if(!Array.isArray(day.exercises)){
+    day.exercises=[];
+  }
+
+  day.exercises.push({
+
+    id:"custom-"+Date.now(),
+
+    name:name.trim(),
+
+    sets:"",
+
+    reps:"",
+
+    restBetweenSets:0,
+
+    restBetweenExercises:0,
+
+    videoUrl:"",
+
+    custom:true
+
+  });
+
+  saveData();
+
+  toast("Ejercicio añadido");
+
+  openTrainingExercises(id,dayIndex);
+
+}
+
+
+function continueTrainingExerciseSelection(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day)return;
+
+  if(!day.selectedExerciseIds?.length){
+
+    toast("Selecciona al menos un ejercicio");
+
+    return;
+
+  }
+
+  const selected=
+    exerciseLibraryFull.filter(ex=>
+      day.selectedExerciseIds.includes(ex.id)
+    );
+
+  selected.forEach(ex=>{
+
+    const already=
+      day.exercises?.some(item=>
+        item.libraryId===ex.id
+      );
+
+    if(already)return;
+
+    day.exercises.push({
+
+      libraryId:ex.id,
+
+      name:ex.name,
+
+      muscle:ex.muscle,
+
+      image:ex.image,
+
+      sets:"",
+
+      reps:"",
+
+      restBetweenSets:0,
+
+      restBetweenExercises:0,
+
+      videoUrl:""
+
+    });
+
+  });
+
+  day.selectedExerciseIds=[];
+
+  saveData();
+
+  toast("Ejercicios seleccionados");
+
+  openTrainingExercises(id,dayIndex);
+
 }
 async function addExercise(id,dayIndex){
 
