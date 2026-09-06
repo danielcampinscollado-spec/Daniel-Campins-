@@ -13061,7 +13061,23 @@ if(screen==="routines"){
                         : "Sin grupos musculares"
                       }
                     </div>
-
+${
+  day.trainingSetupStarted &&
+  day.trainingSetupStep &&
+  day.trainingSetupStep !== "complete"
+  ? `
+    <div
+      style="
+        margin-top:8px;
+        font-size:12px;
+        font-weight:700;
+      "
+    >
+      Continuar configuración →
+    </div>
+  `
+  : ""
+}
                   </div>
 
                   <span style="
