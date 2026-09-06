@@ -16293,10 +16293,12 @@ async function saveConfiguredTraining(id,dayIndex){
     return;
   }
 
-  saveData();
+  day.trainingSetupStep="complete";
+day.trainingSetupStarted=false;
 
-  const ok=await saveRoutineToSupabase(id);
+saveData();
 
+const ok=await saveRoutineToSupabase(id);
   if(!ok){
     toast("La rutina se guardó localmente, pero no se pudo sincronizar");
     return;
