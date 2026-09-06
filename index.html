@@ -15786,12 +15786,18 @@ function continueTrainingExerciseSelection(id,dayIndex){
 
   });
 
+  /*
+   * Guardamos en qué punto de la gestión
+   * se encuentra la rutina.
+   */
+  day.trainingSetupStep="exerciseConfiguration";
+  day.trainingSetupStarted=true;
+
   day.selectedExerciseIds=[];
 
   saveData();
 
   renderTrainingExerciseConfiguration(id,dayIndex);
-
 }
 function renderTrainingExerciseConfiguration(id,dayIndex){
 
