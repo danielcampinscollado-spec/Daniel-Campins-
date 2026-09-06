@@ -15837,38 +15837,37 @@ if(day.restBetweenExercisesGlobal===undefined){
       </button>
 
       <div style="
-        display:flex;
-        align-items:flex-start;
-        gap:14px;
-      ">
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+">
 
-        <div style="flex:1">
+  <div>
+    <h1 style="
+      margin:0;
+      font-size:22px;
+      line-height:1.15;
+    ">
+      Configurar rutina
+    </h1>
 
-          <h1 style="
-            margin:0;
-            font-size:30px;
-            line-height:1.05;
-          ">
-            Configurar<br>ejercicios
-          </h1>
+    <div class="muted" style="
+      margin-top:4px;
+      font-size:12px;
+    ">
+      Ajusta cada ejercicio
+    </div>
+  </div>
 
-        </div>
+  <div class="muted" style="
+    font-size:12px;
+    white-space:nowrap;
+  ">
+    ${day.exercises.length} ejercicio${day.exercises.length===1 ? "" : "s"}
+  </div>
 
-        <div
-          class="muted"
-          style="
-            flex:1;
-            font-size:13px;
-            line-height:1.35;
-            padding-top:4px;
-          "
-        >
-          Define las series y repeticiones de cada ejercicio.
-          Los tiempos de descanso se configuran al final.
-        </div>
-
-      </div>
-
+</div>
     </div>
 
     <div style="
