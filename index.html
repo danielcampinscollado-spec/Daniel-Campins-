@@ -15820,61 +15820,56 @@ if(day.restBetweenExercisesGlobal===undefined){
   main.innerHTML=`
 
     <div class="top" style="
-      margin-bottom:14px;
-    ">
-
-      <button
-        type="button"
-        class="ghost"
-        onclick="openTrainingExercises('${id}',${dayIndex})"
-        style="
-          padding:7px 10px;
-          border-radius:10px;
-          margin-bottom:8px;
-        "
-      >
-        ← Volver a ejercicios
-      </button>
-
-      <div style="
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
+  margin-bottom:14px;
 ">
 
-  <div>
-    <h1 style="
-      margin:0;
-      font-size:22px;
-      line-height:1.15;
-    ">
-      Configurar rutina
-    </h1>
-
-    <div class="muted" style="
-      margin-top:4px;
-      font-size:12px;
-    ">
-      Ajusta cada ejercicio
-    </div>
-  </div>
-
-  <div class="muted" style="
-    font-size:12px;
-    white-space:nowrap;
+  <div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
   ">
-    ${day.exercises.length} ejercicio${day.exercises.length===1 ? "" : "s"}
+
+    <button
+      type="button"
+      class="ghost"
+      onclick="openTrainingExercises('${id}',${dayIndex})"
+      style="
+        padding:7px 10px;
+        border-radius:10px;
+        margin:0;
+        white-space:nowrap;
+      "
+    >
+      ← Volver
+    </button>
+
+    <div
+      class="muted"
+      style="
+        flex:1;
+        max-width:460px;
+        font-size:13px;
+        line-height:1.35;
+        padding:12px 14px;
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:16px;
+        background:rgba(255,255,255,.025);
+      "
+    >
+      <span style="
+        font-size:20px;
+        margin-right:8px;
+        vertical-align:middle;
+      ">ⓘ</span>
+
+      Define las series y repeticiones de cada ejercicio.
+      Los tiempos de descanso se configuran al final.
+    </div>
+
   </div>
 
 </div>
-    </div>
-
-    <div style="
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    ">
 
       ${
         day.exercises.map((ex,index)=>`
