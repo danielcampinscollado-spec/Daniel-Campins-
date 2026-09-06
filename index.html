@@ -14849,6 +14849,19 @@ function openTrainingDay(id,dayIndex){
   const main=document.getElementById("coach-main");
 
   if(!main)return;
+  /*
+   * Si el día tiene una gestión empezada,
+   * retomamos exactamente el punto donde se quedó.
+   */
+  if(day.trainingSetupStep==="exerciseSelection"){
+    openTrainingExercises(id,dayIndex);
+    return;
+  }
+
+  if(day.trainingSetupStep==="exerciseConfiguration"){
+    renderTrainingExerciseConfiguration(id,dayIndex);
+    return;
+  }
 
   if(!Array.isArray(day.muscleGroups)){
     day.muscleGroups=[];
