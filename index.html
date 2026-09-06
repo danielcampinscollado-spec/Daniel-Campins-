@@ -15749,12 +15749,13 @@ function continueTrainingExerciseSelection(id,dayIndex){
 
   if(!day)return;
 
+  if(!Array.isArray(day.exercises)){
+    day.exercises=[];
+  }
+
   if(!day.selectedExerciseIds?.length){
-
     toast("Selecciona al menos un ejercicio");
-
     return;
-
   }
 
   const selected=
@@ -15765,43 +15766,334 @@ function continueTrainingExerciseSelection(id,dayIndex){
   selected.forEach(ex=>{
 
     const already=
-      day.exercises?.some(item=>
+      day.exercises.some(item=>
         item.libraryId===ex.id
       );
 
     if(already)return;
 
     day.exercises.push({
-
       libraryId:ex.id,
-
       name:ex.name,
-
       muscle:ex.muscle,
-
       image:ex.image,
-
       sets:"",
-
       reps:"",
-
       restBetweenSets:0,
-
       restBetweenExercises:0,
-
       videoUrl:""
-
     });
 
   });
 
   day.selectedExerciseIds=[];
 
-saveData();
+  saveData();
 
-toast("Ejercicios seleccionados");
+  renderTrainingExerciseConfiguration(id,dayIndex);
 
-openTrainingDay(id,dayIndex);
+}
+function renderTrainingExerciseConfiguration(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day)return;
+
+  if(!Array.isArray(day.exercises)){
+    day.exercises=[];
+  }
+
+  const main=document.getElementById("coach-main");
+
+  if(!main)return;
+
+  window.scrollTo(0,0);
+
+  main.innerHTML=`
+
+    <div class="top" style="margin-bottom:14px">
+
+      <button
+        type="button"
+        class="ghost"
+        onclick="openTrainingExercises('${id}',${dayIndex})"
+        style="
+          padding:7px 10px;
+          border-radius:10px;
+          margin-bottom:8px;
+        "
+      >
+        ← Volver a ejercicios
+      </button>
+
+      <h1 style="margin:0">
+        Configurar ejercicios
+      </h1>
+
+      <p class="muted" style="
+        margin:4px 0 0;
+        font-size:13px;
+      ">
+        Configura series, repeticiones, descansos y vídeo.
+      </p>
+
+    </div>
+
+    <div style="
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    ">
+
+      ${
+        day.exercises.map((ex,index)=>`
+
+          <div class="card" style="
+            padding:14px;
+          ">
+
+            <div style="
+              display:flex;
+              align-items:center;
+              gap:10px;
+              margin-bottom:13px;
+            ">
+
+              <div style="
+                width:44px;
+                height:44px;
+                min-width:44px;
+                border-radius:10px;
+                background:rgba(255,255,255,.05);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                overflow:hidden;
+              ">
+
+                ${
+                  ex.image
+                  ? `
+                    <img
+                      src="./${ex.image}"
+                      alt=""
+                      style="
+                        width:100%;
+                        height:100%;
+                        object-fit:contain;
+                      "
+                      onerror="this.style.display='none'"
+                    >
+                  `
+                  : `🏋️`
+                }
+
+              </div>
+
+              <div style="min-width:0">
+
+                <div style="
+                  font-size:14px;
+                  font-weight:800;
+                ">
+                  ${esc(ex.name || "Ejercicio")}
+                </div>
+
+                <div class="muted" style="
+                  margin-top:3px;
+                  font-size:11px;
+                ">
+                  ${esc(ex.muscle || "")}
+                </div>
+
+              </div>
+
+            </div>
+
+            <div style="
+              display:grid;
+              grid-template-columns:1fr 1fr;
+              gap:10px;
+            ">
+
+              <label style="
+                font-size:11px;
+                font-weight:700;
+              ">
+                Series
+
+                <input
+                  type="number"
+                  min="1"
+                  placeholder="Ej. 4"
+                  value="${esc(String(ex.sets || ""))}"
+                  onchange="
+                    data.routines['${id}'][${dayIndex}].exercises[${index}].sets=this.value;
+                    saveData();
+                  "
+                  style="
+                    width:100%;
+                    margin-top:5px;
+                  "
+                >
+
+              </label>
+
+              <label style="
+                font-size:11px;
+                font-weight:700;
+              ">
+                Repeticiones
+
+                <input
+                  type="text"
+                  placeholder="Ej. 8-12"
+                  value="${esc(String(ex.reps || ""))}"
+                  onchange="
+                    data.routines['${id}'][${dayIndex}].exercises[${index}].reps=this.value;
+                    saveData();
+                  "
+                  style="
+                    width:100%;
+                    margin-top:5px;
+                  "
+                >
+
+              </label>
+
+              <label style="
+                font-size:11px;
+                font-weight:700;
+              ">
+                Descanso entre series
+
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Segundos"
+                  value="${esc(String(ex.restBetweenSets ?? 0))}"
+                  onchange="
+                    data.routines['${id}'][${dayIndex}].exercises[${index}].restBetweenSets=Math.max(0,parseInt(this.value)||0);
+                    saveData();
+                  "
+                  style="
+                    width:100%;
+                    margin-top:5px;
+                  "
+                >
+
+              </label>
+
+              <label style="
+                font-size:11px;
+                font-weight:700;
+              ">
+                Descanso entre ejercicios
+
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Segundos"
+                  value="${esc(String(ex.restBetweenExercises ?? 0))}"
+                  onchange="
+                    data.routines['${id}'][${dayIndex}].exercises[${index}].restBetweenExercises=Math.max(0,parseInt(this.value)||0);
+                    saveData();
+                  "
+                  style="
+                    width:100%;
+                    margin-top:5px;
+                  "
+                >
+
+              </label>
+
+            </div>
+
+            <label style="
+              display:block;
+              margin-top:10px;
+              font-size:11px;
+              font-weight:700;
+            ">
+
+              Vídeo del ejercicio
+
+              <input
+                type="url"
+                placeholder="https://..."
+                value="${esc(String(ex.videoUrl || ""))}"
+                onchange="
+                  data.routines['${id}'][${dayIndex}].exercises[${index}].videoUrl=this.value;
+                  saveData();
+                "
+                style="
+                  width:100%;
+                  margin-top:5px;
+                "
+              >
+
+            </label>
+
+          </div>
+
+        `).join("")
+      }
+
+    </div>
+
+    <button
+      type="button"
+      class="btn"
+      onclick="saveConfiguredTraining('${id}',${dayIndex})"
+      style="
+        width:100%;
+        margin-top:14px;
+        min-height:50px;
+        border-radius:13px;
+        font-size:15px;
+        font-weight:800;
+      "
+    >
+      Guardar rutina
+    </button>
+
+  `;
+
+}
+async function saveConfiguredTraining(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day)return;
+
+  if(!day.exercises?.length){
+    toast("No hay ejercicios configurados");
+    return;
+  }
+
+  const incomplete=day.exercises.find(ex=>
+    !String(ex.sets || "").trim() ||
+    !String(ex.reps || "").trim()
+  );
+
+  if(incomplete){
+    toast(`Completa series y repeticiones de ${incomplete.name}`);
+    return;
+  }
+
+  saveData();
+
+  const ok=await saveRoutineToSupabase(id);
+
+  if(!ok){
+    toast("Guardado localmente, pero no se pudo sincronizar");
+    return;
+  }
+
+  toast("Rutina guardada");
+
+  openTrainingDay(id,dayIndex);
+
 }
 async function addExercise(id,dayIndex){
 
