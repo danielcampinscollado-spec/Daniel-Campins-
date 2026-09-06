@@ -15279,7 +15279,7 @@ async function createRoutineDays(id,count){
 
   showCoach("routines");
 }
-async function openTrainingExercises(id,dayIndex){
+async function openTrainingExercises(id,dayIndex,preserveScroll=false){
 
   const day=data.routines[id]?.[dayIndex];
 
@@ -15720,10 +15720,15 @@ function toggleTrainingExercise(id,dayIndex,exerciseId){
 
   }
 
-  saveData();
+  const currentScroll=window.scrollY;
 
-  openTrainingExercises(id,dayIndex);
+saveData();
 
+openTrainingExercises(id,dayIndex,true);
+
+requestAnimationFrame(()=>{
+  window.scrollTo(0,currentScroll);
+});
 }
 
 
@@ -15838,10 +15843,11 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
 
   const main=document.getElementById("coach-main");
 
-  if(!main)return;
+if(!main)return;
 
+if(!preserveScroll){
   window.scrollTo(0,0);
-
+}
   if(day.restBetweenSetsGlobal===undefined){
     day.restBetweenSetsGlobal=0;
   }
