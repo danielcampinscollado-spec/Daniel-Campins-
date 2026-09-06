@@ -16263,14 +16263,7 @@ if(!main)return;
     <button
       type="button"
       class="btn"
-      onclick="
-        saveData();
-        saveRoutineToSupabase('${id}').then(ok=>{
-          if(ok){
-            toast('Rutina guardada correctamente');
-          }
-        });
-      "
+      onclick="saveConfiguredTraining('${id}',${dayIndex})"
       style="
         width:100%;
         margin-top:12px;
