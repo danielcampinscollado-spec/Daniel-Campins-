@@ -15797,12 +15797,11 @@ function continueTrainingExerciseSelection(id,dayIndex){
 
   day.selectedExerciseIds=[];
 
-  saveData();
+saveData();
 
-  toast("Ejercicios seleccionados");
+toast("Ejercicios seleccionados");
 
-  openTrainingExercises(id,dayIndex);
-
+openTrainingDay(id,dayIndex);
 }
 async function addExercise(id,dayIndex){
 
