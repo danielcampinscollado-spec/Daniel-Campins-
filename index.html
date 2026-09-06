@@ -15810,12 +15810,12 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
   window.scrollTo(0,0);
 
   if(day.restBetweenSetsGlobal===undefined){
-    day.restBetweenSetsGlobal=60;
-  }
+  day.restBetweenSetsGlobal=0;
+}
 
-  if(day.restBetweenExercisesGlobal===undefined){
-    day.restBetweenExercisesGlobal=90;
-  }
+if(day.restBetweenExercisesGlobal===undefined){
+  day.restBetweenExercisesGlobal=0;
+}
 
   main.innerHTML=`
 
