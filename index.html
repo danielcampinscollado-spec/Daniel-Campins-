@@ -15694,6 +15694,12 @@ if(!main)return;
 
   render();
 
+if(!preserveScroll){
+  requestAnimationFrame(()=>{
+    window.scrollTo(0,0);
+  });
+}
+
 }
 
 
@@ -15844,10 +15850,6 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
   const main=document.getElementById("coach-main");
 
 if(!main)return;
-
-if(!preserveScroll){
-  window.scrollTo(0,0);
-}
   if(day.restBetweenSetsGlobal===undefined){
     day.restBetweenSetsGlobal=0;
   }
