@@ -15809,9 +15809,19 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
 
   window.scrollTo(0,0);
 
+  if(day.restBetweenSetsGlobal===undefined){
+    day.restBetweenSetsGlobal=60;
+  }
+
+  if(day.restBetweenExercisesGlobal===undefined){
+    day.restBetweenExercisesGlobal=90;
+  }
+
   main.innerHTML=`
 
-    <div class="top" style="margin-bottom:14px">
+    <div class="top" style="
+      margin-bottom:14px;
+    ">
 
       <button
         type="button"
@@ -15826,16 +15836,38 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
         ← Volver a ejercicios
       </button>
 
-      <h1 style="margin:0">
-        Configurar ejercicios
-      </h1>
-
-      <p class="muted" style="
-        margin:4px 0 0;
-        font-size:13px;
+      <div style="
+        display:flex;
+        align-items:flex-start;
+        gap:14px;
       ">
-        Configura series, repeticiones, descansos y vídeo.
-      </p>
+
+        <div style="flex:1">
+
+          <h1 style="
+            margin:0;
+            font-size:30px;
+            line-height:1.05;
+          ">
+            Configurar<br>ejercicios
+          </h1>
+
+        </div>
+
+        <div
+          class="muted"
+          style="
+            flex:1;
+            font-size:13px;
+            line-height:1.35;
+            padding-top:4px;
+          "
+        >
+          Define las series y repeticiones de cada ejercicio.
+          Los tiempos de descanso se configuran al final.
+        </div>
+
+      </div>
 
     </div>
 
@@ -15850,25 +15882,27 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
 
           <div class="card" style="
             padding:14px;
+            border-radius:18px;
           ">
 
             <div style="
               display:flex;
               align-items:center;
-              gap:10px;
-              margin-bottom:13px;
+              gap:12px;
+              margin-bottom:14px;
             ">
 
               <div style="
-                width:44px;
-                height:44px;
-                min-width:44px;
-                border-radius:10px;
-                background:rgba(255,255,255,.05);
+                width:74px;
+                height:74px;
+                min-width:74px;
+                border-radius:13px;
+                overflow:hidden;
+                background:rgba(255,255,255,.045);
+                border:1px solid rgba(255,255,255,.08);
                 display:flex;
                 align-items:center;
                 justify-content:center;
-                overflow:hidden;
               ">
 
                 ${
@@ -15885,46 +15919,78 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
                       onerror="this.style.display='none'"
                     >
                   `
-                  : `🏋️`
+                  : `
+                    <span style="
+                      font-size:25px;
+                      opacity:.45;
+                    ">
+                      🏋️
+                    </span>
+                  `
                 }
 
               </div>
 
-              <div style="min-width:0">
+              <div style="
+                flex:1;
+                min-width:0;
+              ">
 
                 <div style="
-                  font-size:14px;
+                  font-size:16px;
                   font-weight:800;
+                  line-height:1.2;
                 ">
                   ${esc(ex.name || "Ejercicio")}
                 </div>
 
                 <div class="muted" style="
-                  margin-top:3px;
-                  font-size:11px;
+                  margin-top:5px;
+                  font-size:12px;
                 ">
                   ${esc(ex.muscle || "")}
                 </div>
 
               </div>
 
+              <button
+                type="button"
+                onclick="removeTrainingExercise('${id}',${dayIndex},${index})"
+                style="
+                  width:42px;
+                  height:42px;
+                  min-width:42px;
+                  border-radius:12px;
+                  border:1px solid rgba(255,255,255,.12);
+                  background:transparent;
+                  color:#e7e9ed;
+                  font-size:20px;
+                  cursor:pointer;
+                "
+                aria-label="Eliminar ejercicio"
+              >
+                🗑
+              </button>
+
             </div>
 
             <div style="
               display:grid;
               grid-template-columns:1fr 1fr;
-              gap:10px;
+              gap:12px;
             ">
 
               <label style="
-                font-size:11px;
-                font-weight:700;
+                font-size:12px;
+                font-weight:800;
               ">
+
                 Series
 
                 <input
                   type="number"
                   min="1"
+                  inputmode="numeric"
                   placeholder="Ej. 4"
                   value="${esc(String(ex.sets || ""))}"
                   onchange="
@@ -15933,16 +15999,17 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
                   "
                   style="
                     width:100%;
-                    margin-top:5px;
+                    margin-top:6px;
                   "
                 >
 
               </label>
 
               <label style="
-                font-size:11px;
-                font-weight:700;
+                font-size:12px;
+                font-weight:800;
               ">
+
                 Repeticiones
 
                 <input
@@ -15955,53 +16022,7 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
                   "
                   style="
                     width:100%;
-                    margin-top:5px;
-                  "
-                >
-
-              </label>
-
-              <label style="
-                font-size:11px;
-                font-weight:700;
-              ">
-                Descanso entre series
-
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Segundos"
-                  value="${esc(String(ex.restBetweenSets ?? 0))}"
-                  onchange="
-                    data.routines['${id}'][${dayIndex}].exercises[${index}].restBetweenSets=Math.max(0,parseInt(this.value)||0);
-                    saveData();
-                  "
-                  style="
-                    width:100%;
-                    margin-top:5px;
-                  "
-                >
-
-              </label>
-
-              <label style="
-                font-size:11px;
-                font-weight:700;
-              ">
-                Descanso entre ejercicios
-
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Segundos"
-                  value="${esc(String(ex.restBetweenExercises ?? 0))}"
-                  onchange="
-                    data.routines['${id}'][${dayIndex}].exercises[${index}].restBetweenExercises=Math.max(0,parseInt(this.value)||0);
-                    saveData();
-                  "
-                  style="
-                    width:100%;
-                    margin-top:5px;
+                    margin-top:6px;
                   "
                 >
 
@@ -16009,35 +16030,120 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
 
             </div>
 
-            <label style="
-              display:block;
-              margin-top:10px;
-              font-size:11px;
-              font-weight:700;
-            ">
-
-              Vídeo del ejercicio
-
-              <input
-                type="url"
-                placeholder="https://..."
-                value="${esc(String(ex.videoUrl || ""))}"
-                onchange="
-                  data.routines['${id}'][${dayIndex}].exercises[${index}].videoUrl=this.value;
-                  saveData();
-                "
-                style="
-                  width:100%;
-                  margin-top:5px;
-                "
-              >
-
-            </label>
-
           </div>
 
         `).join("")
       }
+
+    </div>
+
+    <div class="card" style="
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(217,170,74,.55);
+    ">
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:5px;
+      ">
+
+        <div style="
+          font-size:25px;
+        ">
+          ◷
+        </div>
+
+        <div style="
+          font-size:17px;
+          font-weight:800;
+        ">
+          Tiempos de descanso (globales)
+        </div>
+
+      </div>
+
+      <div class="muted" style="
+        font-size:12px;
+        margin-bottom:14px;
+      ">
+        Se aplicarán a todos los ejercicios de esta rutina.
+      </div>
+
+      <div style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+      ">
+
+        <label style="
+          font-size:12px;
+          font-weight:800;
+        ">
+
+          Descanso entre series
+
+          <input
+            type="number"
+            min="0"
+            inputmode="numeric"
+            value="${esc(String(day.restBetweenSetsGlobal))}"
+            onchange="
+              data.routines['${id}'][${dayIndex}].restBetweenSetsGlobal=Math.max(0,parseInt(this.value)||0);
+              saveData();
+            "
+            style="
+              width:100%;
+              margin-top:6px;
+            "
+          >
+
+          <span class="muted" style="
+            display:block;
+            margin-top:4px;
+            font-size:10px;
+          ">
+            segundos
+          </span>
+
+        </label>
+
+        <label style="
+          font-size:12px;
+          font-weight:800;
+        ">
+
+          Descanso entre ejercicios
+
+          <input
+            type="number"
+            min="0"
+            inputmode="numeric"
+            value="${esc(String(day.restBetweenExercisesGlobal))}"
+            onchange="
+              data.routines['${id}'][${dayIndex}].restBetweenExercisesGlobal=Math.max(0,parseInt(this.value)||0);
+              saveData();
+            "
+            style="
+              width:100%;
+              margin-top:6px;
+            "
+          >
+
+          <span class="muted" style="
+            display:block;
+            margin-top:4px;
+            font-size:10px;
+          ">
+            segundos
+          </span>
+
+        </label>
+
+      </div>
 
     </div>
 
@@ -16048,54 +16154,42 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
       style="
         width:100%;
         margin-top:14px;
-        min-height:50px;
-        border-radius:13px;
+        min-height:52px;
+        border-radius:14px;
         font-size:15px;
-        font-weight:800;
+        font-weight:900;
       "
     >
-      Guardar rutina
+      💾 Guardar rutina
     </button>
 
   `;
 
 }
-async function saveConfiguredTraining(id,dayIndex){
+function removeTrainingExercise(id,dayIndex,index){
 
   const day=data.routines[id]?.[dayIndex];
 
-  if(!day)return;
+  if(!day || !Array.isArray(day.exercises))return;
 
-  if(!day.exercises?.length){
-    toast("No hay ejercicios configurados");
-    return;
-  }
+  const exercise=day.exercises[index];
 
-  const incomplete=day.exercises.find(ex=>
-    !String(ex.sets || "").trim() ||
-    !String(ex.reps || "").trim()
-  );
+  if(!exercise)return;
 
-  if(incomplete){
-    toast(`Completa series y repeticiones de ${incomplete.name}`);
-    return;
-  }
+  const confirmDelete=
+    confirm(`¿Eliminar "${exercise.name}" de esta rutina?`);
+
+  if(!confirmDelete)return;
+
+  day.exercises.splice(index,1);
 
   saveData();
 
-  const ok=await saveRoutineToSupabase(id);
-
-  if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
-    return;
-  }
-
-  toast("Rutina guardada");
-
-  openTrainingDay(id,dayIndex);
+  renderTrainingExerciseConfiguration(id,dayIndex);
 
 }
 async function addExercise(id,dayIndex){
+
 
   const day=data.routines[id]?.[dayIndex];
 
