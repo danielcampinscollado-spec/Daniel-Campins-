@@ -15265,10 +15265,12 @@ async function openTrainingExercises(id,dayIndex){
     return;
   }
 
-  if(typeof exerciseLibraryFull==="undefined"){
-    toast("No se pudo cargar la biblioteca de ejercicios");
-    return;
-  }
+  if(!Array.isArray(window.exerciseLibraryFull)){
+  toast("No se pudo cargar la biblioteca de ejercicios");
+  return;
+}
+
+const exerciseLibraryFull = window.exerciseLibraryFull;
 
   if(!Array.isArray(day.selectedExerciseIds)){
     day.selectedExerciseIds=[];
