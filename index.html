@@ -16245,6 +16245,33 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
   `;
 
 }
+async function saveConfiguredTraining(id,dayIndex){
+
+  const day=data.routines[id]?.[dayIndex];
+
+  if(!day){
+    toast("No se encontró el día");
+    return;
+  }
+
+  if(!Array.isArray(day.exercises) || !day.exercises.length){
+    toast("No hay ejercicios en esta rutina");
+    return;
+  }
+
+  saveData();
+
+  const ok=await saveRoutineToSupabase(id);
+
+  if(!ok){
+    toast("La rutina se guardó localmente, pero no se pudo sincronizar");
+    return;
+  }
+
+  toast("Rutina guardada correctamente");
+
+  showCoach("routines");
+}
 function removeTrainingExercise(id,dayIndex,index){
 
   const day=data.routines[id]?.[dayIndex];
