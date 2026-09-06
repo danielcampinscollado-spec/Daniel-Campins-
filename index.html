@@ -15297,9 +15297,8 @@ window.scrollTo(0,0);
       || groups[0];
 
     const exercises=exerciseLibraryFull.filter(ex=>
-      ex.muscle===activeGroup ||
-      ex.secondaryMuscles?.includes(activeGroup)
-    );
+  ex.muscle===activeGroup
+);
 
     main.innerHTML=`
 
