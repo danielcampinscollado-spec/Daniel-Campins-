@@ -15810,87 +15810,94 @@ function renderTrainingExerciseConfiguration(id,dayIndex){
   window.scrollTo(0,0);
 
   if(day.restBetweenSetsGlobal===undefined){
-  day.restBetweenSetsGlobal=0;
-}
+    day.restBetweenSetsGlobal=0;
+  }
 
-if(day.restBetweenExercisesGlobal===undefined){
-  day.restBetweenExercisesGlobal=0;
-}
+  if(day.restBetweenExercisesGlobal===undefined){
+    day.restBetweenExercisesGlobal=0;
+  }
 
   main.innerHTML=`
 
-    <div class="top" style="
-  margin-bottom:14px;
-">
+    <div style="
+      margin-bottom:12px;
+    ">
 
-  <div style="
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:14px;
-  ">
+      <div style="
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+      ">
 
-    <button
-      type="button"
-      class="ghost"
-      onclick="openTrainingExercises('${id}',${dayIndex})"
-      style="
-        padding:7px 10px;
-        border-radius:10px;
-        margin:0;
-        white-space:nowrap;
-      "
-    >
-      ← Volver
-    </button>
+        <button
+          type="button"
+          class="ghost"
+          onclick="openTrainingExercises('${id}',${dayIndex})"
+          style="
+            padding:6px 8px;
+            margin:0;
+            border:0;
+            background:transparent;
+            font-size:17px;
+            font-weight:700;
+            white-space:nowrap;
+          "
+        >
+          ← Volver
+        </button>
 
-    <div
-      class="muted"
-      style="
-        flex:1;
-        max-width:460px;
-        font-size:13px;
-        line-height:1.35;
-        padding:12px 14px;
-        border:1px solid rgba(255,255,255,.10);
-        border-radius:16px;
-        background:rgba(255,255,255,.025);
-      "
-    >
-      <span style="
-        font-size:20px;
-        margin-right:8px;
-        vertical-align:middle;
-      ">ⓘ</span>
+        <div
+          class="muted"
+          style="
+            flex:0 1 360px;
+            padding:9px 12px;
+            border:1px solid rgba(255,255,255,.10);
+            border-radius:14px;
+            background:rgba(255,255,255,.025);
+            font-size:12px;
+            line-height:1.35;
+          "
+        >
+          <span style="
+            font-size:18px;
+            margin-right:6px;
+          ">ⓘ</span>
+          Define las series y repeticiones de cada ejercicio.
+          Los tiempos de descanso se configuran al final.
+        </div>
 
-      Define las series y repeticiones de cada ejercicio.
-      Los tiempos de descanso se configuran al final.
+      </div>
+
     </div>
 
-  </div>
 
-</div>
+    <div style="
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    ">
 
       ${
         day.exercises.map((ex,index)=>`
 
           <div class="card" style="
-            padding:14px;
-            border-radius:18px;
+            padding:12px;
+            border-radius:17px;
           ">
 
             <div style="
-              display:flex;
+              display:grid;
+              grid-template-columns:96px minmax(0,1fr) 42px;
+              gap:10px;
               align-items:center;
-              gap:12px;
-              margin-bottom:14px;
+              margin-bottom:10px;
             ">
 
               <div style="
-                width:74px;
-                height:74px;
-                min-width:74px;
-                border-radius:13px;
+                width:96px;
+                height:96px;
+                border-radius:12px;
                 overflow:hidden;
                 background:rgba(255,255,255,.045);
                 border:1px solid rgba(255,255,255,.08);
@@ -15903,20 +15910,21 @@ if(day.restBetweenExercisesGlobal===undefined){
                   ex.image
                   ? `
                     <img
-                      src="./${ex.image}"
+                      src="${esc(ex.image)}"
                       alt=""
                       style="
                         width:100%;
                         height:100%;
-                        object-fit:contain;
+                        object-fit:cover;
+                        display:block;
                       "
                       onerror="this.style.display='none'"
                     >
                   `
                   : `
                     <span style="
-                      font-size:25px;
-                      opacity:.45;
+                      font-size:24px;
+                      opacity:.4;
                     ">
                       🏋️
                     </span>
@@ -15925,27 +15933,29 @@ if(day.restBetweenExercisesGlobal===undefined){
 
               </div>
 
+
               <div style="
-                flex:1;
                 min-width:0;
               ">
 
                 <div style="
-                  font-size:16px;
+                  font-size:18px;
                   font-weight:800;
-                  line-height:1.2;
+                  line-height:1.15;
+                  word-break:break-word;
                 ">
                   ${esc(ex.name || "Ejercicio")}
                 </div>
 
                 <div class="muted" style="
-                  margin-top:5px;
+                  margin-top:4px;
                   font-size:12px;
                 ">
                   ${esc(ex.muscle || "")}
                 </div>
 
               </div>
+
 
               <button
                 type="button"
@@ -15954,11 +15964,11 @@ if(day.restBetweenExercisesGlobal===undefined){
                   width:42px;
                   height:42px;
                   min-width:42px;
-                  border-radius:12px;
+                  border-radius:11px;
                   border:1px solid rgba(255,255,255,.12);
                   background:transparent;
                   color:#e7e9ed;
-                  font-size:20px;
+                  font-size:19px;
                   cursor:pointer;
                 "
                 aria-label="Eliminar ejercicio"
@@ -15968,14 +15978,15 @@ if(day.restBetweenExercisesGlobal===undefined){
 
             </div>
 
+
             <div style="
               display:grid;
               grid-template-columns:1fr 1fr;
-              gap:12px;
+              gap:10px;
             ">
 
               <label style="
-                font-size:12px;
+                font-size:13px;
                 font-weight:800;
               ">
 
@@ -15993,14 +16004,17 @@ if(day.restBetweenExercisesGlobal===undefined){
                   "
                   style="
                     width:100%;
-                    margin-top:6px;
+                    margin-top:5px;
+                    min-height:42px;
+                    box-sizing:border-box;
                   "
                 >
 
               </label>
 
+
               <label style="
-                font-size:12px;
+                font-size:13px;
                 font-weight:800;
               ">
 
@@ -16016,11 +16030,66 @@ if(day.restBetweenExercisesGlobal===undefined){
                   "
                   style="
                     width:100%;
-                    margin-top:6px;
+                    margin-top:5px;
+                    min-height:42px;
+                    box-sizing:border-box;
                   "
                 >
 
               </label>
+
+            </div>
+
+
+            <div style="
+              display:grid;
+              grid-template-columns:minmax(0,1fr) 116px;
+              gap:8px;
+              margin-top:9px;
+            ">
+
+              <input
+                type="url"
+                inputmode="url"
+                placeholder="🔗  Pega aquí el enlace del vídeo (opcional)"
+                value="${esc(String(ex.videoUrl || ""))}"
+                onchange="
+                  data.routines['${id}'][${dayIndex}].exercises[${index}].videoUrl=this.value.trim();
+                  saveData();
+                "
+                style="
+                  width:100%;
+                  min-height:44px;
+                  box-sizing:border-box;
+                  font-size:12px;
+                "
+              >
+
+
+              <button
+                type="button"
+                onclick="
+                  const u=data.routines['${id}'][${dayIndex}].exercises[${index}].videoUrl;
+                  if(u){
+                    window.open(u,'_blank','noopener');
+                  }else{
+                    toast('Añade primero el enlace del vídeo');
+                  }
+                "
+                style="
+                  min-height:44px;
+                  border:1px solid #d9aa4a;
+                  border-radius:11px;
+                  background:transparent;
+                  color:#d9aa4a;
+                  font-size:13px;
+                  font-weight:800;
+                  cursor:pointer;
+                  white-space:nowrap;
+                "
+              >
+                ▶ Ver vídeo
+              </button>
 
             </div>
 
@@ -16031,28 +16100,29 @@ if(day.restBetweenExercisesGlobal===undefined){
 
     </div>
 
+
     <div class="card" style="
-      margin-top:16px;
-      padding:16px;
-      border-radius:18px;
+      margin-top:12px;
+      padding:14px;
+      border-radius:17px;
       border:1px solid rgba(217,170,74,.55);
     ">
 
       <div style="
         display:flex;
         align-items:center;
-        gap:10px;
-        margin-bottom:5px;
+        gap:8px;
+        margin-bottom:3px;
       ">
 
         <div style="
-          font-size:25px;
+          font-size:21px;
         ">
           ◷
         </div>
 
         <div style="
-          font-size:17px;
+          font-size:15px;
           font-weight:800;
         ">
           Tiempos de descanso (globales)
@@ -16060,17 +16130,19 @@ if(day.restBetweenExercisesGlobal===undefined){
 
       </div>
 
+
       <div class="muted" style="
-        font-size:12px;
-        margin-bottom:14px;
+        font-size:11px;
+        margin-bottom:10px;
       ">
         Se aplicarán a todos los ejercicios de esta rutina.
       </div>
 
+
       <div style="
         display:grid;
         grid-template-columns:1fr 1fr;
-        gap:12px;
+        gap:10px;
       ">
 
         <label style="
@@ -16091,19 +16163,22 @@ if(day.restBetweenExercisesGlobal===undefined){
             "
             style="
               width:100%;
-              margin-top:6px;
+              min-height:42px;
+              margin-top:5px;
+              box-sizing:border-box;
             "
           >
 
           <span class="muted" style="
             display:block;
-            margin-top:4px;
+            margin-top:3px;
             font-size:10px;
           ">
             segundos
           </span>
 
         </label>
+
 
         <label style="
           font-size:12px;
@@ -16123,13 +16198,15 @@ if(day.restBetweenExercisesGlobal===undefined){
             "
             style="
               width:100%;
-              margin-top:6px;
+              min-height:42px;
+              margin-top:5px;
+              box-sizing:border-box;
             "
           >
 
           <span class="muted" style="
             display:block;
-            margin-top:4px;
+            margin-top:3px;
             font-size:10px;
           ">
             segundos
@@ -16141,15 +16218,23 @@ if(day.restBetweenExercisesGlobal===undefined){
 
     </div>
 
+
     <button
       type="button"
       class="btn"
-      onclick="saveConfiguredTraining('${id}',${dayIndex})"
+      onclick="
+        saveData();
+        saveRoutineToSupabase('${id}').then(ok=>{
+          if(ok){
+            toast('Rutina guardada correctamente');
+          }
+        });
+      "
       style="
         width:100%;
-        margin-top:14px;
-        min-height:52px;
-        border-radius:14px;
+        margin-top:12px;
+        min-height:50px;
+        border-radius:13px;
         font-size:15px;
         font-weight:900;
       "
