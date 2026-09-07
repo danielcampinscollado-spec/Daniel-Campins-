@@ -1,0 +1,44 @@
+name: Fix progress body fat
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-progress-body-fat.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply progress body-fat fix
+        run: python .github/scripts/fix-progress-body-fat.py
+
+      - name: Validate progress body-fat source
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'const progressCheckin =' in s
+          assert 'progressCheckin.bodyFat' in s
+          print('Progress body-fat source validated')
+          PY
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/fix-progress-body-fat.py
+          rm -f .github/workflows/fix-progress-body-fat.yml
+          git add index.html .github/scripts/fix-progress-body-fat.py .github/workflows/fix-progress-body-fat.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Show current body fat in progress"
+          git push origin main
