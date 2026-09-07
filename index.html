@@ -6431,7 +6431,7 @@ const notificationState =
     tasks.push({
       icon:"💬",
       title:"Mensajes sin leer",
-      action:"showClient('coach')"
+      action:"showClient('messages')"
     });
 
   }
@@ -11060,7 +11060,7 @@ data.messages[currentClientId].push([
   text
 ]);
 saveData();
-showClient("coach");
+showClient("messages");
 toast("Mensaje enviado");
 }
 
