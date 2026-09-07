@@ -5,7 +5,12 @@ const DCC_LOCAL_LIBRARY="entrenamientos/ejercicios.json";
 const DCC_PREMIUM_IMAGES=new Set([
   "press-banca-barra",
   "jalon-pecho-ancho",
-  "remo-sentado-polea-neutro"
+  "remo-sentado-polea-neutro",
+  "extension-triceps-cuerda",
+  "press-hombro-maquina",
+  "prensa-45",
+  "extension-cuadriceps",
+  "hip-thrust-maquina"
 ]);
 function dccLocalImage(ex){
   if(!ex||!DCC_PREMIUM_IMAGES.has(ex.id)||!ex.ilustracion)return "";
