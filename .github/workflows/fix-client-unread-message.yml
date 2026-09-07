@@ -1,0 +1,46 @@
+name: Fix client unread message
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-client-unread-message.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply client unread-message fix
+        run: python .github/scripts/fix-client-unread-message.py
+
+      - name: Validate client unread-message condition
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'const unreadMessages =' in s
+          assert 'lastMessage[0] === "Daniel"' in s
+          assert 'const newMessages = clients.filter' in s
+          assert 'return last && last[0] !== "Daniel";' in s
+          print('Client unread-message logic validated')
+          PY
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/fix-client-unread-message.py
+          rm -f .github/workflows/fix-client-unread-message.yml
+          git add index.html .github/scripts/fix-client-unread-message.py .github/workflows/fix-client-unread-message.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix client unread message detection"
+          git push origin main
