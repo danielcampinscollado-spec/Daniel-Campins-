@@ -1,81 +1,46 @@
-name: One-shot local exercise library
-
+name: DCC library migration
 on:
   push:
-    branches: [main]
-    paths:
-      - .github/workflows/one-shot-local-exercise-library.yml
-
+    branches:
+      - main
 permissions:
   contents: write
-
 jobs:
-  patch:
+  migrate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Replace RepDB with DCC library
+      - name: Migrate library
+        shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
-          p=Path('ejercicio-biblioteca.js')
-          s=p.read_text(encoding='utf-8')
-          marker='window.addEventListener("load",()=>{'
+          p = Path("ejercicio-biblioteca.js")
+          s = p.read_text(encoding="utf-8")
+          marker = 'window.addEventListener("load",()=>{'
           if marker not in s:
-              raise SystemExit('load marker not found')
-          _, rest=s.split(marker,1)
-          pre='''/* DCC — Biblioteca propia de ejercicios */
+              raise SystemExit("load marker not found")
+          rest = s.split(marker, 1)[1]
+          pre = '''/* DCC - Biblioteca propia de ejercicios */
 var exerciseLibraryFull=[];
 window.exerciseLibraryFull=exerciseLibraryFull;
-const DCC_ILLUSTRATED_EXERCISES=new Set([
-  "press-banca-barra",
-  "jalon-pecho-ancho",
-  "extension-triceps-cuerda"
-]);
+const DCC_ILLUSTRATED_EXERCISES=new Set(["press-banca-barra","jalon-pecho-ancho","extension-triceps-cuerda"]);
 function dccLocalMuscle(group){return group==="Espalda"?"Dorsal":group;}
 function dccMapLocal(ex){
   const hasImage=DCC_ILLUSTRATED_EXERCISES.has(ex.id);
-  const image=hasImage&&ex.ilustracion?`./entrenamientos/${ex.ilustracion}`:"";
-  return{
-    id:ex.id,
-    name:ex.nombre||ex.id,
-    muscle:dccLocalMuscle(ex.grupo||""),
-    secondaryMuscles:[],
-    equipment:ex.equipo||"",
-    image,
-    imageStart:image,
-    imagePeak:image,
-    videoOptional:"",
-    aliases:[],
-    description:"",
-    instructions:[],
-    tips:[],
-    difficulty:"",
-    category:ex.patron||"",
-    variationGroup:"",
-    isUnilateral:false,
-    isBodyweight:ex.equipo==="Peso corporal",
-    source:"DCC"
-  };
+  const image=hasImage&&ex.ilustracion?("./entrenamientos/"+ex.ilustracion):"";
+  return {id:ex.id,name:ex.nombre||ex.id,muscle:dccLocalMuscle(ex.grupo||""),secondaryMuscles:[],equipment:ex.equipo||"",image:image,imageStart:image,imagePeak:image,videoOptional:"",aliases:[],description:"",instructions:[],tips:[],difficulty:"",category:ex.patron||"",variationGroup:"",isUnilateral:false,isBodyweight:ex.equipo==="Peso corporal",source:"DCC"};
 }
-window.exerciseLibraryReady=fetch("./entrenamientos/ejercicios-base.json",{cache:"no-store"})
-  .then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca DCC: HTTP "+response.status);return response.json();})
-  .then(payload=>{const records=Array.isArray(payload?.ejercicios)?payload.ejercicios:[];exerciseLibraryFull.length=0;records.forEach(ex=>exerciseLibraryFull.push(dccMapLocal(ex)));window.exerciseLibraryFull=exerciseLibraryFull;return exerciseLibraryFull;})
-  .catch(error=>{console.error("DCC — error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
+window.exerciseLibraryReady=fetch("./entrenamientos/ejercicios-base.json",{cache:"no-store"}).then(function(response){if(!response.ok)throw new Error("No se pudo cargar la biblioteca DCC: HTTP "+response.status);return response.json();}).then(function(payload){const records=Array.isArray(payload&&payload.ejercicios)?payload.ejercicios:[];exerciseLibraryFull.length=0;records.forEach(function(ex){exerciseLibraryFull.push(dccMapLocal(ex));});window.exerciseLibraryFull=exerciseLibraryFull;return exerciseLibraryFull;}).catch(function(error){console.error("DCC - error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
 
 '''
-          p.write_text(pre+marker+rest,encoding='utf-8')
+          p.write_text(pre + marker + rest, encoding="utf-8")
           PY
-      - name: Remove workflow
-        run: rm -f .github/workflows/one-shot-local-exercise-library.yml
-      - name: Commit
-        run: |
+          rm -f .github/workflows/one-shot-local-exercise-library.yml
           git config user.name "DCC Fix Bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
-          git diff --cached --quiet && exit 0
           git commit -m "Use DCC exercise library instead of RepDB"
           git push origin HEAD:main
