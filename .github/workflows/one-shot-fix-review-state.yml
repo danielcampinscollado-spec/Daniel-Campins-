@@ -1,0 +1,46 @@
+name: One-shot review state fix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/one-shot-fix-review-state.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch partial review failure handling
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('ejercicio-biblioteca.js')
+          text = path.read_text(encoding='utf-8')
+          old = '''  window.markReviewed=async function(id){const c=client(id);const x=data.checkins?.[id];if(!c||!x?.sentAt){toast("No hay un check-in enviado para revisar");return;}try{const {error:checkinError}=await supabaseClient.from("client_checkins").update({reviewed:true}).eq("client_id",id);if(checkinError)throw checkinError;const {error:clientError}=await supabaseClient.from("clients").update({status:"Revisado"}).eq("id",id);if(clientError)throw clientError;x.reviewed=true;x.status="Revisado";c.status="Revisado";saveData();closeModal();showCoach("checkins");toast("Check-in marcado como revisado");}catch(error){console.error("Error guardando revisión:",error);toast("No se pudo guardar la revisión");}};'''
+          new = '''  window.markReviewed=async function(id){const c=client(id);const x=data.checkins?.[id];if(!c||!x?.sentAt){toast("No hay un check-in enviado para revisar");return;}try{const {error:checkinError}=await supabaseClient.from("client_checkins").update({reviewed:true}).eq("client_id",id);if(checkinError)throw checkinError;x.reviewed=true;x.status="Revisado";c.status="Revisado";saveData();closeModal();showCoach("checkins");const {error:clientError}=await supabaseClient.from("clients").update({status:"Revisado"}).eq("id",id);if(clientError){console.error("Check-in revisado, pero no se pudo sincronizar clients.status:",clientError);toast("Check-in revisado; el estado secundario no pudo sincronizarse");return;}toast("Check-in marcado como revisado");}catch(error){console.error("Error guardando revisión:",error);toast("No se pudo guardar la revisión");}};'''
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected exactly one markReviewed block, found {count}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Remove one-shot workflow
+        run: rm -f .github/workflows/one-shot-fix-review-state.yml
+
+      - name: Commit patch
+        run: |
+          git config user.name "DCC Fix Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Handle partial check-in review sync failures"
+          git push origin HEAD:main
