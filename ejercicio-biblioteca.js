@@ -237,3 +237,83 @@ window.exerciseLibraryReady = fetch(
   window.exerciseLibraryFull = exerciseLibraryFull;
   throw error;
 });
+
+/*
+ * DCC — Hotfixes conservadores para la versión actual de index.html.
+ * Se aplican después de que el script principal haya definido sus funciones.
+ * No alteran datos, rutinas ni dietas; solo corrigen rutas antiguas y
+ * mantienen sincronizado el % de grasa en el estado local del cliente.
+ */
+window.addEventListener("load", () => {
+  if(typeof window.showClient === "function"){
+    const originalShowClient = window.showClient;
+
+    window.showClient = function(screen){
+      const safeScreen =
+        screen === "coach"
+          ? "messages"
+          : screen === "profile"
+            ? "progress"
+            : screen;
+
+      if(safeScreen === "progress"){
+        try{
+          const id = window.currentClientId;
+          const checkin = window.data?.checkins?.[id];
+          const currentClient =
+            typeof window.client === "function"
+              ? window.client(id)
+              : null;
+
+          if(
+            currentClient &&
+            checkin &&
+            checkin.bodyFat !== undefined &&
+            checkin.bodyFat !== null &&
+            checkin.bodyFat !== ""
+          ){
+            currentClient.bodyFat = Number(checkin.bodyFat);
+          }
+        }catch(error){
+          console.error("DCC — no se pudo sincronizar % de grasa:", error);
+        }
+      }
+
+      return originalShowClient.call(this, safeScreen);
+    };
+  }
+
+  if(typeof window.updateClientBodyFat === "function"){
+    const originalUpdateClientBodyFat = window.updateClientBodyFat;
+
+    window.updateClientBodyFat = function(){
+      const result = originalUpdateClientBodyFat.apply(this, arguments);
+
+      try{
+        const id = window.currentClientId;
+        const checkin = window.data?.checkins?.[id];
+        const currentClient =
+          typeof window.client === "function"
+            ? window.client(id)
+            : null;
+
+        if(
+          currentClient &&
+          checkin &&
+          checkin.bodyFat !== undefined &&
+          checkin.bodyFat !== null &&
+          checkin.bodyFat !== ""
+        ){
+          currentClient.bodyFat = Number(checkin.bodyFat);
+          if(typeof window.saveData === "function"){
+            window.saveData();
+          }
+        }
+      }catch(error){
+        console.error("DCC — no se pudo guardar % de grasa local:", error);
+      }
+
+      return result;
+    };
+  }
+});
