@@ -4517,6 +4517,51 @@ body{
     0 10px 30px rgba(217,170,74,.065),
     inset 0 1px 0 rgba(255,255,255,.025);
 }
+
+/* =========================================================
+   DCC — NAVEGACIÓN MÓVIL FINAL
+   Cliente: 6 accesos · Entrenador: 7 accesos
+   ========================================================= */
+@media (max-width:700px){
+  #client .nav,
+  #client-nav{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+  }
+
+  #coach .nav,
+  #coach-nav{
+    display:grid !important;
+    grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  }
+
+  #coach .nav button,
+  #coach-nav button{
+    min-width:0 !important;
+    width:100% !important;
+    padding-left:0 !important;
+    padding-right:0 !important;
+  }
+
+  #coach .nav button span,
+  #coach-nav button span{
+    width:100% !important;
+    font-size:7.8px !important;
+    line-height:1 !important;
+    letter-spacing:-.35px !important;
+    white-space:nowrap !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+  }
+
+  #coach .nav button svg,
+  #coach-nav button svg{
+    width:20px !important;
+    height:20px !important;
+    flex-basis:20px !important;
+  }
+}
+
 </style>
 </head>
 
@@ -6014,7 +6059,7 @@ showClient("home");
 
 }
 function logout(){
-document.getElementById("login").style.display="grid";
+document.getElementById("login").style.display="flex";
 document.getElementById("client").style.display="none";
 document.getElementById("coach").style.display="none";
 }
@@ -12089,7 +12134,7 @@ html=`
           height:21px;
         "
       >
-        <path d="M4 5h16l-6.2 7.1v5.4l-3.6k 1.8v-7.2z"/>
+        <path d="M4 5h16l-6.2 7.1v5.4l-3.6 1.8v-7.2z"/>
       </svg>
 
     </button>
