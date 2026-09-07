@@ -2,76 +2,13 @@
 var exerciseLibraryFull=[];
 window.exerciseLibraryFull=exerciseLibraryFull;
 const DCC_IMAGE_BASE="https://exercise-dataset.com/";
-
-function dccText(value){
-  return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_-]+/g," ");
-}
-function dccHas(muscles,words){
-  const list=muscles.map(dccText);
-  return words.some(word=>list.some(m=>m===word||m.includes(word)));
-}
-function dccGroups(ex){
-  const primary=Array.isArray(ex.primary_muscles)?ex.primary_muscles:[];
-  const body=dccText(ex.body_part);
-  const groups=[];
-  const add=group=>{if(!groups.includes(group))groups.push(group);};
-
-  if(body==="chest"||dccHas(primary,["chest","pectoralis","pec"]))add("Pectoral");
-  if(body==="back"||dccHas(primary,["latissimus","rhomboid","teres major","teres minor"]))add("Dorsal");
-  if(body==="shoulders"||dccHas(primary,["deltoid","shoulder"]))add("Hombros");
-  if(dccHas(primary,["trapezius"]))add("Trapecio");
-  if(body==="upper arms"){
-    if(dccHas(primary,["triceps","tricep"]))add("Tríceps");
-    else if(dccHas(primary,["biceps","bicep","brachialis"]))add("Bíceps");
-  }else{
-    if(dccHas(primary,["triceps","tricep"]))add("Tríceps");
-    if(dccHas(primary,["biceps","bicep","brachialis"]))add("Bíceps");
-  }
-  if(body==="lower arms"||dccHas(primary,["forearm","wrist"]))add("Antebrazos");
-  if(body==="core"||dccHas(primary,["abdom","rectus abdominis","transverse abdominis","oblique","serratus"]))add("Core");
-  if(dccHas(primary,["erector","multifidus","quadratus lumborum"]))add("Lumbar");
-  if(body==="upper legs"||dccHas(primary,["quadriceps","quad","vastus","rectus femoris"]))add("Cuádriceps");
-  if(dccHas(primary,["hamstring","biceps femoris","semitendinosus","semimembranosus"]))add("Femoral");
-  if(dccHas(primary,["gluteus","glute"]))add("Glúteos");
-  if(body==="lower legs"||dccHas(primary,["gastrocnemius","soleus","calf","calves"]))add("Gemelos");
-
-  const lower=groups.includes("Cuádriceps")||groups.includes("Femoral")||groups.includes("Glúteos");
-  const multiLower=dccHas(primary,["quadriceps","hamstring","gluteus"])||body==="full body";
-  if(multiLower&&lower)add("Pierna completa");
-
-  if(!groups.length){
-    if(body==="chest")add("Pectoral");
-    else if(body==="back")add("Dorsal");
-    else if(body==="shoulders")add("Hombros");
-    else if(body==="core")add("Core");
-    else if(body==="lower arms")add("Antebrazos");
-    else if(body==="lower legs")add("Gemelos");
-    else if(body==="upper legs")add("Pierna completa");
-    else if(body==="upper arms")add("Bíceps");
-    else add("Pierna completa");
-  }
-  return groups;
-}
-function dccEquipment(value){
-  if(!value)return "Peso corporal";
-  const labels={barbell:"Barra",dumbbell:"Mancuernas",cable:"Polea",kettlebell:"Kettlebell",plates:"Disco",smith_machine:"Multipower",ez_bar:"Barra EZ",trap_bar:"Trap bar",resistance_band:"Banda",loop_band:"Banda",pull_up_bar:"Barra de dominadas",dip_station:"Paralelas",ab_wheel:"Rueda abdominal",flat_bench:"Banco",plyo_box:"Cajón",stability_ball:"Fitball",suspension_trainer:"TRX",rings:"Anillas",battle_rope:"Cuerda de batalla",slam_ball:"Slam ball",sled:"Trineo",wrist_roller:"Rodillo de muñeca"};
-  return labels[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());
-}
-function dccImage(path){
-  if(!path)return "";
-  if(/^https?:\/\//i.test(path))return path;
-  return DCC_IMAGE_BASE+String(path).replace(/^\/+/,"");
-}
-function dccMap(ex){
-  const groups=dccGroups(ex);
-  const flat=ex.images&&ex.images.flat?ex.images.flat:{};
-  return {id:ex.id,name:ex.name_es||ex.name_en||ex.id,muscle:groups[0],secondaryMuscles:groups.slice(1),equipment:dccEquipment(ex.equipment),image:dccImage(flat.peak||flat.main||flat.start||""),imageStart:dccImage(flat.start||flat.main||flat.peak||""),imagePeak:dccImage(flat.peak||flat.main||flat.start||""),videoOptional:"",aliases:[ex.name_en,ex.name_de].filter(Boolean),description:ex.description_es||ex.description_en||"",instructions:ex.instructions_es||ex.instructions_en||[],tips:ex.tips_es||ex.tips_en||[],difficulty:ex.difficulty||"",category:ex.category||"",variationGroup:ex.variation_group||"",isUnilateral:!!ex.is_unilateral,isBodyweight:!!ex.is_bodyweight,source:"RepDB"};
-}
-
-window.exerciseLibraryReady=fetch("https://exercise-dataset.com/exercises.json",{cache:"no-store"})
-.then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca RepDB: HTTP "+response.status);return response.json();})
-.then(payload=>{const records=Array.isArray(payload?.exercises)?payload.exercises:[];exerciseLibraryFull.length=0;records.forEach(ex=>exerciseLibraryFull.push(dccMap(ex)));window.exerciseLibraryFull=exerciseLibraryFull;console.log("DCC — biblioteca cargada:",exerciseLibraryFull.length,"ejercicios");return exerciseLibraryFull;})
-.catch(error=>{console.error("DCC — error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
+function dccText(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[_-]+/g," ");}
+function dccHas(muscles,words){const list=muscles.map(dccText);return words.some(word=>list.some(m=>m===word||m.includes(word)));}
+function dccGroups(ex){const primary=Array.isArray(ex.primary_muscles)?ex.primary_muscles:[];const body=dccText(ex.body_part);const groups=[];const add=group=>{if(!groups.includes(group))groups.push(group);};if(body==="chest"||dccHas(primary,["chest","pectoralis","pec"]))add("Pectoral");if(body==="back"||dccHas(primary,["latissimus","rhomboid","teres major","teres minor"]))add("Dorsal");if(body==="shoulders"||dccHas(primary,["deltoid","shoulder"]))add("Hombros");if(dccHas(primary,["trapezius"]))add("Trapecio");if(body==="upper arms"){if(dccHas(primary,["triceps","tricep"]))add("Tríceps");else if(dccHas(primary,["biceps","bicep","brachialis"]))add("Bíceps");}else{if(dccHas(primary,["triceps","tricep"]))add("Tríceps");if(dccHas(primary,["biceps","bicep","brachialis"]))add("Bíceps");}if(body==="lower arms"||dccHas(primary,["forearm","wrist"]))add("Antebrazos");if(body==="core"||dccHas(primary,["abdom","rectus abdominis","transverse abdominis","oblique","serratus"]))add("Core");if(dccHas(primary,["erector","multifidus","quadratus lumborum"]))add("Lumbar");if(body==="upper legs"||dccHas(primary,["quadriceps","quad","vastus","rectus femoris"]))add("Cuádriceps");if(dccHas(primary,["hamstring","biceps femoris","semitendinosus","semimembranosus"]))add("Femoral");if(dccHas(primary,["gluteus","glute"]))add("Glúteos");if(body==="lower legs"||dccHas(primary,["gastrocnemius","soleus","calf","calves"]))add("Gemelos");const lower=groups.includes("Cuádriceps")||groups.includes("Femoral")||groups.includes("Glúteos");const multiLower=dccHas(primary,["quadriceps","hamstring","gluteus"])||body==="full body";if(multiLower&&lower)add("Pierna completa");if(!groups.length){if(body==="chest")add("Pectoral");else if(body==="back")add("Dorsal");else if(body==="shoulders")add("Hombros");else if(body==="core")add("Core");else if(body==="lower arms")add("Antebrazos");else if(body==="lower legs")add("Gemelos");else if(body==="upper legs")add("Pierna completa");else if(body==="upper arms")add("Bíceps");else add("Pierna completa");}return groups;}
+function dccEquipment(value){if(!value)return "Peso corporal";const labels={barbell:"Barra",dumbbell:"Mancuernas",cable:"Polea",kettlebell:"Kettlebell",plates:"Disco",smith_machine:"Multipower",ez_bar:"Barra EZ",trap_bar:"Trap bar",resistance_band:"Banda",loop_band:"Banda",pull_up_bar:"Barra de dominadas",dip_station:"Paralelas",ab_wheel:"Rueda abdominal",flat_bench:"Banco",plyo_box:"Cajón",stability_ball:"Fitball",suspension_trainer:"TRX",rings:"Anillas",battle_rope:"Cuerda de batalla",slam_ball:"Slam ball",sled:"Trineo",wrist_roller:"Rodillo de muñeca"};return labels[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());}
+function dccImage(path){if(!path)return "";if(/^https?:\/\//i.test(path))return path;return DCC_IMAGE_BASE+String(path).replace(/^\/+/,"");}
+function dccMap(ex){const groups=dccGroups(ex);const flat=ex.images&&ex.images.flat?ex.images.flat:{};return{id:ex.id,name:ex.name_es||ex.name_en||ex.id,muscle:groups[0],secondaryMuscles:groups.slice(1),equipment:dccEquipment(ex.equipment),image:dccImage(flat.peak||flat.main||flat.start||""),imageStart:dccImage(flat.start||flat.main||flat.peak||""),imagePeak:dccImage(flat.peak||flat.main||flat.start||""),videoOptional:"",aliases:[ex.name_en,ex.name_de].filter(Boolean),description:ex.description_es||ex.description_en||"",instructions:ex.instructions_es||ex.instructions_en||[],tips:ex.tips_es||ex.tips_en||[],difficulty:ex.difficulty||"",category:ex.category||"",variationGroup:ex.variation_group||"",isUnilateral:!!ex.is_unilateral,isBodyweight:!!ex.is_bodyweight,source:"RepDB"};}
+window.exerciseLibraryReady=fetch("https://exercise-dataset.com/exercises.json",{cache:"no-store"}).then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca RepDB: HTTP "+response.status);return response.json();}).then(payload=>{const records=Array.isArray(payload?.exercises)?payload.exercises:[];exerciseLibraryFull.length=0;records.forEach(ex=>exerciseLibraryFull.push(dccMap(ex)));window.exerciseLibraryFull=exerciseLibraryFull;console.log("DCC — biblioteca cargada:",exerciseLibraryFull.length,"ejercicios");return exerciseLibraryFull;}).catch(error=>{console.error("DCC — error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
 
 window.addEventListener("load",()=>{
   if(typeof showClient==="function"){
@@ -79,173 +16,43 @@ window.addEventListener("load",()=>{
     window.showClient=function(screen){
       const safeScreen=screen==="coach"?"messages":screen;
       if(safeScreen==="progress"){
-        const checkin=data?.checkins?.[currentClientId];
-        const currentClient=client(currentClientId);
+        const checkin=data?.checkins?.[currentClientId];const currentClient=client(currentClientId);
         if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!=="")currentClient.bodyFat=Number(checkin.bodyFat);
       }
       return originalShowClient(safeScreen);
     };
   }
-
   if(typeof updateClientBodyFat==="function"){
     const originalUpdateClientBodyFat=updateClientBodyFat;
-    window.updateClientBodyFat=function(){
-      const result=originalUpdateClientBodyFat.apply(this,arguments);
-      const checkin=data?.checkins?.[currentClientId];
-      const currentClient=client(currentClientId);
-      if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!==""){
-        currentClient.bodyFat=Number(checkin.bodyFat);
-        saveData();
-      }
-      return result;
-    };
+    window.updateClientBodyFat=function(){const result=originalUpdateClientBodyFat.apply(this,arguments);const checkin=data?.checkins?.[currentClientId];const currentClient=client(currentClientId);if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!==""){currentClient.bodyFat=Number(checkin.bodyFat);saveData();}return result;};
   }
-
-  function setCheckinStatus(message,ok){
-    let status=document.getElementById("dcc-checkin-status");
-    const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');
-    if(!button)return;
-    if(!status){
-      status=document.createElement("div");
-      status.id="dcc-checkin-status";
-      status.style.cssText="margin-top:12px;text-align:center;font-size:14px;font-weight:700;line-height:1.4;";
-      button.insertAdjacentElement("afterend",status);
-    }
-    status.textContent=message;
-    status.style.color=ok?"#39b982":"#e05a5a";
-  }
-
-  window.sendClientCheckin=async function(){
-    const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');
-    const originalLabel=button?button.innerHTML:"";
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),12000);
-
-    try{
-      const c=client(currentClientId);
-      if(!c)throw new Error("No se encontró el cliente");
-
-      if(button){button.disabled=true;button.innerHTML="Enviando check-in…";}
-      setCheckinStatus("Enviando…",true);
-
-      if(!data.checkins)data.checkins={};
-      if(!data.checkins[currentClientId])data.checkins[currentClientId]={weight:money(c.weight)+" kg",bodyFat:"",diet:"",training:"",comment:"",reviewed:false};
-
-      const checkin=data.checkins[currentClientId];
-      const commentBox=document.getElementById("checkin-comment");
-      if(commentBox)checkin.comment=commentBox.value.trim();
-      if(!checkin.diet||!checkin.training)throw new Error("Selecciona Alimentación y Entrenamiento antes de enviar");
-
-      checkin.weight=money(c.weight)+" kg";
-      checkin.reviewed=false;
-      checkin.status="Nuevo check-in";
-      checkin.sentAt=new Date().toISOString();
-      checkin.weekKey=getCurrentWeekKey();
-      c.status="Pendiente";
-
-      const bodyFat=checkin.bodyFat===""||checkin.bodyFat==null?null:Number(checkin.bodyFat);
-      const payload={client_id:currentClientId,weight:checkin.weight,diet:checkin.diet,training:checkin.training,comment:checkin.comment||"",reviewed:false,updated_at:new Date().toISOString()};
-      if(Number.isFinite(bodyFat))payload.body_fat=bodyFat;
-
-      const response=await fetch(SUPABASE_URL+"/rest/v1/client_checkins?on_conflict=client_id",{
-        method:"POST",
-        signal:controller.signal,
-        headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"},
-        body:JSON.stringify(payload)
-      });
-
-      if(!response.ok){
-        let detail="HTTP "+response.status;
-        try{const err=await response.json();detail=err.message||err.details||err.hint||detail;}catch(_){ }
-        throw new Error(detail);
-      }
-
-      if(Number.isFinite(bodyFat))c.bodyFat=bodyFat;
-      saveData();
-      setCheckinStatus("✓ Check-in enviado a Daniel",true);
-      if(button){button.innerHTML="✓ Check-in enviado";button.disabled=true;}
-      toast("✓ Check-in enviado a Daniel");
-    }catch(error){
-      const message=error?.name==="AbortError"?"La conexión ha tardado demasiado. Inténtalo de nuevo.":(error?.message||"No se pudo enviar el check-in");
-      console.error("ERROR ENVIANDO CHECK-IN:",error);
-      setCheckinStatus("ERROR: "+message,false);
-      toast("ERROR: "+message);
-      if(button){button.disabled=false;button.innerHTML=originalLabel;}
-    }finally{
-      clearTimeout(timeout);
-    }
-  };
-
-  document.addEventListener("click",event=>{
-    const button=event.target.closest('#client-main button[onclick="sendClientCheckin()"]');
-    if(!button)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    window.sendClientCheckin();
-  },true);
+  function setCheckinStatus(message,ok){let status=document.getElementById("dcc-checkin-status");const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');if(!button)return;if(!status){status=document.createElement("div");status.id="dcc-checkin-status";status.style.cssText="margin-top:12px;text-align:center;font-size:14px;font-weight:700;line-height:1.4;";button.insertAdjacentElement("afterend",status);}status.textContent=message;status.style.color=ok?"#39b982":"#e05a5a";}
+  window.sendClientCheckin=async function(){const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');const originalLabel=button?button.innerHTML:"";const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const c=client(currentClientId);if(!c)throw new Error("No se encontró el cliente");if(button){button.disabled=true;button.innerHTML="Enviando check-in…";}setCheckinStatus("Enviando…",true);if(!data.checkins)data.checkins={};if(!data.checkins[currentClientId])data.checkins[currentClientId]={weight:money(c.weight)+" kg",bodyFat:"",diet:"",training:"",comment:"",reviewed:false};const checkin=data.checkins[currentClientId];const commentBox=document.getElementById("checkin-comment");if(commentBox)checkin.comment=commentBox.value.trim();if(!checkin.diet||!checkin.training)throw new Error("Selecciona Alimentación y Entrenamiento antes de enviar");checkin.weight=money(c.weight)+" kg";checkin.reviewed=false;checkin.status="Nuevo check-in";checkin.sentAt=new Date().toISOString();checkin.weekKey=getCurrentWeekKey();c.status="Pendiente";const bodyFat=checkin.bodyFat===""||checkin.bodyFat==null?null:Number(checkin.bodyFat);const payload={client_id:currentClientId,weight:checkin.weight,diet:checkin.diet,training:checkin.training,comment:checkin.comment||"",reviewed:false,updated_at:new Date().toISOString()};if(Number.isFinite(bodyFat))payload.body_fat=bodyFat;const response=await fetch(SUPABASE_URL+"/rest/v1/client_checkins?on_conflict=client_id",{method:"POST",signal:controller.signal,headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(payload)});if(!response.ok){let detail="HTTP "+response.status;try{const err=await response.json();detail=err.message||err.details||err.hint||detail;}catch(_){ }throw new Error(detail);}if(Number.isFinite(bodyFat))c.bodyFat=bodyFat;saveData();setCheckinStatus("✓ Check-in enviado a Daniel",true);if(button){button.innerHTML="✓ Check-in enviado";button.disabled=true;}toast("✓ Check-in enviado a Daniel");}catch(error){const message=error?.name==="AbortError"?"La conexión ha tardado demasiado. Inténtalo de nuevo.":(error?.message||"No se pudo enviar el check-in");console.error("ERROR ENVIANDO CHECK-IN:",error);setCheckinStatus("ERROR: "+message,false);toast("ERROR: "+message);if(button){button.disabled=false;button.innerHTML=originalLabel;}}finally{clearTimeout(timeout);}};
+  document.addEventListener("click",event=>{const button=event.target.closest('#client-main button[onclick="sendClientCheckin()"]');if(!button)return;event.preventDefault();event.stopImmediatePropagation();window.sendClientCheckin();},true);
 });
 
-/* Compatibilidad temporal entre el formato nuevo de dieta (meal.options[].foods)
-   y las pantallas antiguas que todavía cuentan meal.foods. */
 window.addEventListener("load",()=>{
-  function withDietFoodCompatibility(render){
-    const changed=[];
-    Object.values(data?.diets||{}).forEach(clientDiet=>{
-      ["training","rest"].forEach(type=>{
-        const meals=clientDiet?.[type]?.meals;
-        if(!Array.isArray(meals))return;
-        meals.forEach(meal=>{
-          if(!Array.isArray(meal?.options))return;
-          const foods=meal.options.flatMap(option=>Array.isArray(option?.foods)?option.foods:[]);
-          changed.push({meal,had:Object.prototype.hasOwnProperty.call(meal,"foods"),value:meal.foods});
-          meal.foods=foods;
-        });
-      });
-    });
-    try{return render();}
-    finally{
-      changed.forEach(item=>{
-        if(item.had)item.meal.foods=item.value;
-        else delete item.meal.foods;
-      });
-    }
-  }
+  function withDietFoodCompatibility(render){const changed=[];Object.values(data?.diets||{}).forEach(clientDiet=>{["training","rest"].forEach(type=>{const meals=clientDiet?.[type]?.meals;if(!Array.isArray(meals))return;meals.forEach(meal=>{if(!Array.isArray(meal?.options))return;const foods=meal.options.flatMap(option=>Array.isArray(option?.foods)?option.foods:[]);changed.push({meal,had:Object.prototype.hasOwnProperty.call(meal,"foods"),value:meal.foods});meal.foods=foods;});});});try{return render();}finally{changed.forEach(item=>{if(item.had)item.meal.foods=item.value;else delete item.meal.foods;});}}
+  if(typeof window.showClient==="function"){const previousShowClient=window.showClient;window.showClient=function(screen){if(screen==="home")return withDietFoodCompatibility(()=>previousShowClient(screen));return previousShowClient(screen);};}
+  if(typeof showCoach==="function"){const previousShowCoach=showCoach;window.showCoach=function(screen){if(screen==="dashboard")return withDietFoodCompatibility(()=>previousShowCoach(screen));return previousShowCoach(screen);};}
+  window.sendClientMessage=function(){const box=document.getElementById("client-message");const text=box?.value?.trim();if(!text)return;if(!data.messages[currentClientId])data.messages[currentClientId]=[];data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);saveData();showClient("messages");toast("Mensaje enviado");};
+  window.sendCoachMessage=function(id){const box=document.getElementById("coach-message");const text=box?.value?.trim();if(!text)return;if(!data.messages[id])data.messages[id]=[];data.messages[id].push(["Daniel",text,new Date().toISOString()]);saveData();closeModal();toast("Mensaje enviado");};
 
-  if(typeof window.showClient==="function"){
-    const previousShowClient=window.showClient;
-    window.showClient=function(screen){
-      if(screen==="home")return withDietFoodCompatibility(()=>previousShowClient(screen));
-      return previousShowClient(screen);
-    };
-  }
-
-  if(typeof showCoach==="function"){
-    const previousShowCoach=showCoach;
-    window.showCoach=function(screen){
-      if(screen==="dashboard")return withDietFoodCompatibility(()=>previousShowCoach(screen));
-      return previousShowCoach(screen);
-    };
-  }
-
-  window.sendClientMessage=function(){
-    const box=document.getElementById("client-message");
-    const text=box?.value?.trim();
-    if(!text)return;
-    if(!data.messages[currentClientId])data.messages[currentClientId]=[];
-    data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);
-    saveData();
-    showClient("messages");
-    toast("Mensaje enviado");
-  };
-
-  window.sendCoachMessage=function(id){
-    const box=document.getElementById("coach-message");
-    const text=box?.value?.trim();
-    if(!text)return;
-    if(!data.messages[id])data.messages[id]=[];
-    data.messages[id].push(["Daniel",text,new Date().toISOString()]);
-    saveData();
-    closeModal();
-    toast("Mensaje enviado");
+  /* El peso anterior se guardaba en client_weights, pero no actualizaba clients.weight.
+     Al recargar, loadClientsFromSupabase restauraba el peso viejo. */
+  window.addWeight=async function(id){
+    const c=client(id);if(!c){toast("No se encontró el cliente");return;}
+    const text=prompt("Nuevo peso (kg):");if(text===null)return;
+    const value=parseFloat(text.trim().replace(",","."));
+    if(!Number.isFinite(value)||value<=0||value>=500){toast("Introduce un peso válido");return;}
+    try{
+      const {error:clientError}=await supabaseClient.from("clients").update({weight:value}).eq("id",id);
+      if(clientError)throw clientError;
+      const {error:historyError}=await supabaseClient.from("client_weights").insert({client_id:id,weight:value});
+      if(historyError)throw historyError;
+      c.weight=value;if(!data.weights[id])data.weights[id]=[];data.weights[id].push(value);saveData();
+      if(currentApp==="coach")showClientAdmin(id);else if(currentApp==="client")showClient("progress");
+      toast("Peso actualizado");
+    }catch(error){console.error("Error actualizando peso:",error);toast("No se pudo actualizar el peso");}
   };
 });
