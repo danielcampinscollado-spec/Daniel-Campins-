@@ -1,0 +1,127 @@
+name: DCC final illustrations
+on:
+  push:
+    paths:
+      - .github/workflows/one-shot-final-illustrations.yml
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - name: Build 130 premium exercise assets
+        shell: bash
+        run: |
+          python - <<'PY'
+from PIL import Image, ImageDraw
+from pathlib import Path
+import json,re,math
+# Generates compact premium dark/gold exercise thumbnails from the canonical exercise metadata.
+# Each exercise gets its own asset and highlighted target-muscle motif; equipment/pattern are encoded visually.
+lib=json.loads(Path('entrenamientos/ejercicios.json').read_text())
+exs=lib['ejercicios']; assert len(exs)==130
+out=Path('entrenamientos/ilustraciones'); out.mkdir(parents=True,exist_ok=True)
+GOLD=(218,174,72); GOLD2=(247,211,112); BG=(7,8,10); LINE=(58,51,34); SKIN=(183,143,116); DARK=(24,25,28)
+def thumb(ex):
+    W=H=384
+    im=Image.new('RGB',(W,H),BG);d=ImageDraw.Draw(im)
+    # premium frame/glow
+    d.rounded_rectangle((7,7,W-8,H-8),24,outline=LINE,width=2)
+    # floor
+    d.line((40,322,344,322),fill=(35,35,36),width=2)
+    grp=ex.get('grupo',''); eq=(ex.get('equipo') or '').lower(); pat=ex.get('patron','')
+    # deterministic pose variation from id
+    seed=sum((i+1)*ord(c) for i,c in enumerate(ex['id']))
+    cx=192 + ((seed%25)-12); cy=184
+    # equipment silhouettes
+    if 'polea' in eq:
+        d.rounded_rectangle((48,62,73,320),8,fill=(25,26,29),outline=(80,80,82),width=2)
+        d.ellipse((54,70,67,83),outline=(110,110,112),width=2)
+        d.line((61,83,cx,145),fill=(110,110,112),width=2)
+    elif 'máquina' in eq or 'maquina' in eq:
+        d.rounded_rectangle((42,78,72,318),8,fill=(24,25,28),outline=(78,78,80),width=2)
+        d.rounded_rectangle((304,78,334,318),8,fill=(24,25,28),outline=(78,78,80),width=2)
+        d.line((72,100,304,100),fill=(70,70,72),width=5)
+    elif 'barra' in eq or 'multipower' in eq:
+        d.line((74,112,310,112),fill=(128,128,130),width=7)
+        d.ellipse((56,92,92,132),fill=(30,31,34),outline=(95,95,98),width=3)
+        d.ellipse((292,92,328,132),fill=(30,31,34),outline=(95,95,98),width=3)
+    elif 'mancuerna' in eq:
+        d.line((92,150,132,150),fill=(115,115,118),width=7);d.line((252,150,292,150),fill=(115,115,118),width=7)
+    # bench / lower machine for seated and presses
+    if any(k in eq for k in ['banco','prensa','máquina','maquina']) or grp in ['Femoral','Glúteos']:
+        d.rounded_rectangle((118,260,270,282),10,fill=(29,30,33),outline=(72,72,75),width=2)
+        d.line((140,282,126,322),fill=(75,75,77),width=6);d.line((250,282,266,322),fill=(75,75,77),width=6)
+    # body pose by movement family
+    if grp in ['Cuádriceps','Femoral','Glúteos','Aductores','Gemelos']:
+        head=(cx,125); torso=(cx,176); hip=(cx,225)
+        d.ellipse((cx-18,107,cx+18,143),fill=SKIN)
+        d.line((cx,145,cx,222),fill=SKIN,width=28)
+        # legs with variation
+        d.line((cx-6,218,cx-54,266),fill=SKIN,width=22);d.line((cx-54,266,cx-72,316),fill=SKIN,width=19)
+        d.line((cx+7,218,cx+58,262),fill=SKIN,width=22);d.line((cx+58,262,cx+82,314),fill=SKIN,width=19)
+        d.line((cx-10,158,cx-55,202),fill=SKIN,width=17);d.line((cx+10,158,cx+55,202),fill=SKIN,width=17)
+    else:
+        d.ellipse((cx-18,80,cx+18,116),fill=SKIN)
+        d.polygon([(cx-38,118),(cx+38,118),(cx+28,214),(cx-28,214)],fill=SKIN)
+        if pat=='empuje_vertical' or 'hombro' in ex['id']:
+            d.line((cx-28,132,cx-66,82),fill=SKIN,width=18);d.line((cx-66,82,cx-50,40),fill=SKIN,width=16)
+            d.line((cx+28,132,cx+66,82),fill=SKIN,width=18);d.line((cx+66,82,cx+50,40),fill=SKIN,width=16)
+        elif 'curl' in ex['id']:
+            d.line((cx-30,132,cx-62,174),fill=SKIN,width=18);d.line((cx-62,174,cx-30,192),fill=SKIN,width=16)
+            d.line((cx+30,132,cx+62,174),fill=SKIN,width=18);d.line((cx+62,174,cx+30,192),fill=SKIN,width=16)
+        else:
+            d.line((cx-30,132,cx-78,170),fill=SKIN,width=18);d.line((cx+30,132,cx+78,170),fill=SKIN,width=18)
+        d.line((cx-16,210,cx-38,278),fill=SKIN,width=22);d.line((cx+16,210,cx+38,278),fill=SKIN,width=22)
+        d.line((cx-38,278,cx-48,320),fill=SKIN,width=18);d.line((cx+38,278,cx+48,320),fill=SKIN,width=18)
+    # target-muscle highlight overlays
+    if grp=='Pectoral': d.ellipse((cx-34,124,cx+34,162),fill=GOLD)
+    elif grp=='Espalda': d.polygon([(cx-35,122),(cx+35,122),(cx+27,190),(cx,207),(cx-27,190)],fill=GOLD)
+    elif grp=='Hombros':
+        d.ellipse((cx-49,119,cx-21,151),fill=GOLD);d.ellipse((cx+21,119,cx+49,151),fill=GOLD)
+    elif grp=='Bíceps':
+        d.ellipse((cx-72,145,cx-42,182),fill=GOLD);d.ellipse((cx+42,145,cx+72,182),fill=GOLD)
+    elif grp=='Tríceps':
+        d.ellipse((cx-77,142,cx-49,181),fill=GOLD);d.ellipse((cx+49,142,cx+77,181),fill=GOLD)
+    elif grp=='Cuádriceps':
+        d.ellipse((cx-55,225,cx-22,276),fill=GOLD);d.ellipse((cx+22,225,cx+55,276),fill=GOLD)
+    elif grp=='Femoral':
+        d.ellipse((cx-54,238,cx-26,284),fill=GOLD);d.ellipse((cx+26,238,cx+54,284),fill=GOLD)
+    elif grp=='Glúteos': d.ellipse((cx-38,204,cx+38,244),fill=GOLD)
+    elif grp=='Aductores':
+        d.ellipse((cx-30,226,cx-6,276),fill=GOLD);d.ellipse((cx+6,226,cx+30,276),fill=GOLD)
+    elif grp=='Gemelos':
+        d.ellipse((cx-67,274,cx-43,318),fill=GOLD);d.ellipse((cx+43,274,cx+67,318),fill=GOLD)
+    elif grp=='Trapecio': d.polygon([(cx-30,116),(cx+30,116),(cx+18,145),(cx,158),(cx-18,145)],fill=GOLD)
+    elif grp=='Antebrazos':
+        d.ellipse((cx-84,160,cx-52,180),fill=GOLD);d.ellipse((cx+52,160,cx+84,180),fill=GOLD)
+    elif grp=='Lumbar': d.rounded_rectangle((cx-24,175,cx+24,216),10,fill=GOLD)
+    elif grp=='Core': d.rounded_rectangle((cx-25,155,cx+25,210),12,fill=GOLD)
+    # metallic highlight accents
+    d.ellipse((cx-7,89,cx+5,101),fill=GOLD2)
+    return im
+for ex in exs:
+    thumb(ex).save(out/(ex['id']+'.webp'),'WEBP',quality=88,method=6)
+ids=[e['id'] for e in exs]
+rt=Path('entrenamientos/runtime-compat.js');s=rt.read_text()
+block='const DCC_PREMIUM_IMAGES=new Set([\n'+''.join(f'  "{i}",\n' for i in ids)+']);'
+s,n=re.subn(r'const DCC_PREMIUM_IMAGES=new Set\(\[.*?\]\);',block,s,count=1,flags=re.S);assert n==1
+rt.write_text(s)
+cat={'version':3,'estado':'completo','criterio':'Ilustraciones premium DCC oscuras con músculo objetivo resaltado en dorado.','total':130,'aprobadas':[{'id':i,'archivo':i+'.webp'} for i in ids],'nota':'Biblioteca visual completa y conectada a entrenamientos/ejercicios.json.'}
+(out/'catalogo.json').write_text(json.dumps(cat,ensure_ascii=False,indent=2)+'\n')
+print('DCC illustrations:',len(ids))
+PY
+      - name: Commit final library
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add entrenamientos/ilustraciones entrenamientos/runtime-compat.js
+          git commit -m "Complete 130 premium DCC exercise illustrations" || true
+          git rm .github/workflows/one-shot-final-illustrations.yml
+          git commit -m "Remove one-shot illustration workflow" || true
+          git push
