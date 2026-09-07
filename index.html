@@ -8784,9 +8784,14 @@ if(screen==="progress"){
       ? Number(c.bodyFatInitial)
       : null;
 
+  const progressCheckin =
+    data.checkins?.[c.id] || {};
+
   const currentBodyFat =
-    c.bodyFat != null
-      ? Number(c.bodyFat)
+    progressCheckin.bodyFat !== undefined &&
+    progressCheckin.bodyFat !== null &&
+    progressCheckin.bodyFat !== ""
+      ? Number(progressCheckin.bodyFat)
       : null;
 
   const bodyFatChange =
