@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "estado": "migracion_en_progreso",
+  "criterio": "Ilustraciones premium realistas, fondo claro, equipamiento visible y técnica reconocible.",
+  "aprobadas": [
+    {"id":"press-banca-barra","archivo":"press-banca-barra.webp"},
+    {"id":"press-pecho-maquina","archivo":"press-pecho-maquina.webp"},
+    {"id":"jalon-pecho-ancho","archivo":"jalon-pecho-ancho.webp"},
+    {"id":"remo-maquina-pecho-apoyado","archivo":"remo-maquina-pecho-apoyado.webp"},
+    {"id":"press-hombro-maquina","archivo":"press-hombro-maquina.webp"},
+    {"id":"extension-triceps-cuerda","archivo":"extension-triceps-cuerda.webp"},
+    {"id":"prensa-45","archivo":"prensa-45.webp"},
+    {"id":"curl-femoral-tumbado","archivo":"curl-femoral-tumbado.webp"}
+  ],
+  "regenerar": [
+    {"id":"curl-barra-recta","motivo":"La primera versión contiene dos fases del movimiento; la app usará una sola figura."}
+  ],
+  "nota": "La biblioteca antigua se mantiene temporalmente como compatibilidad hasta que el catálogo nuevo y sus imágenes estén completos. No eliminar antes para evitar romper rutinas existentes."
+}
