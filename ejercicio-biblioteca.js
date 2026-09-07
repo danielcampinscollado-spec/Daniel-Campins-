@@ -160,9 +160,17 @@ window.addEventListener("load",()=>{
   }
 
   window.sendClientCheckin = async function(){
+    const button = document.querySelector('#client-main button[onclick="sendClientCheckin()"]');
+    const originalLabel = button ? button.innerHTML : "";
+
     try{
       const c = client(currentClientId);
       if(!c){ toast("No se encontró el cliente"); return; }
+
+      if(button){
+        button.disabled = true;
+        button.innerHTML = "Enviando check-in…";
+      }
 
       if(!data.checkins) data.checkins = {};
       if(!data.checkins[currentClientId]){
@@ -176,6 +184,11 @@ window.addEventListener("load",()=>{
       const commentBox = document.getElementById("checkin-comment");
       if(commentBox) checkin.comment = commentBox.value.trim();
 
+      if(!checkin.diet || !checkin.training){
+        toast("Selecciona Alimentación y Entrenamiento antes de enviar");
+        return;
+      }
+
       checkin.weight = money(c.weight)+" kg";
       checkin.reviewed = false;
       checkin.status = "Nuevo check-in";
@@ -187,30 +200,50 @@ window.addEventListener("load",()=>{
         ? null
         : Number(checkin.bodyFat);
 
-      const {error} = await supabaseClient.from("client_checkins").upsert({
+      const payload = {
         client_id:currentClientId,
         weight:checkin.weight,
-        body_fat:Number.isFinite(bodyFat) ? bodyFat : null,
-        diet:checkin.diet || "Pendiente",
-        training:checkin.training || "Pendiente",
+        diet:checkin.diet,
+        training:checkin.training,
         comment:checkin.comment || "",
         reviewed:false,
         updated_at:new Date().toISOString()
-      },{onConflict:"client_id"});
+      };
 
-      if(error){
-        console.error("ERROR ENVIANDO CHECK-IN:",error);
-        toast("No se pudo enviar el check-in: "+(error.message || "Error desconocido"));
-        return;
-      }
+      if(Number.isFinite(bodyFat)) payload.body_fat = bodyFat;
+
+      const {data:saved,error} = await supabaseClient
+        .from("client_checkins")
+        .upsert(payload,{onConflict:"client_id"})
+        .select("client_id,updated_at")
+        .single();
+
+      if(error) throw error;
+      if(!saved) throw new Error("Supabase no confirmó el guardado");
 
       if(Number.isFinite(bodyFat)) c.bodyFat = bodyFat;
       saveData();
-      toast("Check-in enviado a Daniel");
+      toast("✓ Check-in enviado a Daniel");
       showClient("checkin");
     }catch(error){
-      console.error("ERROR GENERAL CHECK-IN:",error);
-      toast("No se pudo enviar el check-in: "+(error.message || "Error desconocido"));
+      console.error("ERROR ENVIANDO CHECK-IN:",error);
+      toast("ERROR: "+(error?.message || error?.code || "No se pudo enviar el check-in"));
+    }finally{
+      if(button && document.body.contains(button)){
+        button.disabled = false;
+        button.innerHTML = originalLabel;
+      }
     }
   };
+
+  /* El script de la biblioteca se carga antes que el script principal.
+     Este listener delegado garantiza que el botón use la versión corregida
+     aunque Safari resuelva el onclick inline contra la declaración original. */
+  document.addEventListener("click",event=>{
+    const button = event.target.closest('#client-main button[onclick="sendClientCheckin()"]');
+    if(!button) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.sendClientCheckin();
+  },true);
 });
