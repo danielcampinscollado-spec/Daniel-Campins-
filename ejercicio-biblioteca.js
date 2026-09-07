@@ -13,14 +13,7 @@ window.exerciseLibraryReady=fetch("https://exercise-dataset.com/exercises.json",
 window.addEventListener("load",()=>{
   if(typeof showClient==="function"){
     const originalShowClient=showClient;
-    window.showClient=function(screen){
-      const safeScreen=screen==="coach"?"messages":screen;
-      if(safeScreen==="progress"){
-        const checkin=data?.checkins?.[currentClientId];const currentClient=client(currentClientId);
-        if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!=="")currentClient.bodyFat=Number(checkin.bodyFat);
-      }
-      return originalShowClient(safeScreen);
-    };
+    window.showClient=function(screen){const safeScreen=screen==="coach"?"messages":screen;if(safeScreen==="progress"){const checkin=data?.checkins?.[currentClientId];const currentClient=client(currentClientId);if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!=="")currentClient.bodyFat=Number(checkin.bodyFat);}return originalShowClient(safeScreen);};
   }
   if(typeof updateClientBodyFat==="function"){
     const originalUpdateClientBodyFat=updateClientBodyFat;
@@ -35,24 +28,41 @@ window.addEventListener("load",()=>{
   function withDietFoodCompatibility(render){const changed=[];Object.values(data?.diets||{}).forEach(clientDiet=>{["training","rest"].forEach(type=>{const meals=clientDiet?.[type]?.meals;if(!Array.isArray(meals))return;meals.forEach(meal=>{if(!Array.isArray(meal?.options))return;const foods=meal.options.flatMap(option=>Array.isArray(option?.foods)?option.foods:[]);changed.push({meal,had:Object.prototype.hasOwnProperty.call(meal,"foods"),value:meal.foods});meal.foods=foods;});});});try{return render();}finally{changed.forEach(item=>{if(item.had)item.meal.foods=item.value;else delete item.meal.foods;});}}
   if(typeof window.showClient==="function"){const previousShowClient=window.showClient;window.showClient=function(screen){if(screen==="home")return withDietFoodCompatibility(()=>previousShowClient(screen));return previousShowClient(screen);};}
   if(typeof showCoach==="function"){const previousShowCoach=showCoach;window.showCoach=function(screen){if(screen==="dashboard")return withDietFoodCompatibility(()=>previousShowCoach(screen));return previousShowCoach(screen);};}
-  window.sendClientMessage=function(){const box=document.getElementById("client-message");const text=box?.value?.trim();if(!text)return;if(!data.messages[currentClientId])data.messages[currentClientId]=[];data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);saveData();showClient("messages");toast("Mensaje enviado");};
-  window.sendCoachMessage=function(id){const box=document.getElementById("coach-message");const text=box?.value?.trim();if(!text)return;if(!data.messages[id])data.messages[id]=[];data.messages[id].push(["Daniel",text,new Date().toISOString()]);saveData();closeModal();toast("Mensaje enviado");};
 
-  /* El peso anterior se guardaba en client_weights, pero no actualizaba clients.weight.
-     Al recargar, loadClientsFromSupabase restauraba el peso viejo. */
+  async function persistMessage(clientId,sender,text){
+    const {error}=await supabaseClient.from("client_messages").insert({client_id:clientId,sender:sender,message:text});
+    if(error)throw error;
+  }
+
+  window.sendClientMessage=async function(){
+    const box=document.getElementById("client-message");const text=box?.value?.trim();if(!text)return;
+    try{
+      await persistMessage(currentClientId,client(currentClientId)?.name||"Cliente",text);
+      if(!data.messages[currentClientId])data.messages[currentClientId]=[];
+      data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);
+      saveData();showClient("messages");toast("Mensaje enviado");
+    }catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}
+  };
+
+  window.sendCoachMessage=async function(id){
+    const box=document.getElementById("coach-message");const text=box?.value?.trim();if(!text)return;
+    try{
+      await persistMessage(id,"Daniel",text);
+      if(!data.messages[id])data.messages[id]=[];
+      data.messages[id].push(["Daniel",text,new Date().toISOString()]);
+      saveData();closeModal();toast("Mensaje enviado");
+    }catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}
+  };
+
   window.addWeight=async function(id){
     const c=client(id);if(!c){toast("No se encontró el cliente");return;}
     const text=prompt("Nuevo peso (kg):");if(text===null)return;
-    const value=parseFloat(text.trim().replace(",","."));
-    if(!Number.isFinite(value)||value<=0||value>=500){toast("Introduce un peso válido");return;}
+    const value=parseFloat(text.trim().replace(",","."));if(!Number.isFinite(value)||value<=0||value>=500){toast("Introduce un peso válido");return;}
     try{
-      const {error:clientError}=await supabaseClient.from("clients").update({weight:value}).eq("id",id);
-      if(clientError)throw clientError;
-      const {error:historyError}=await supabaseClient.from("client_weights").insert({client_id:id,weight:value});
-      if(historyError)throw historyError;
+      const {error:clientError}=await supabaseClient.from("clients").update({weight:value}).eq("id",id);if(clientError)throw clientError;
+      const {error:historyError}=await supabaseClient.from("client_weights").insert({client_id:id,weight:value});if(historyError)throw historyError;
       c.weight=value;if(!data.weights[id])data.weights[id]=[];data.weights[id].push(value);saveData();
-      if(currentApp==="coach")showClientAdmin(id);else if(currentApp==="client")showClient("progress");
-      toast("Peso actualizado");
+      if(currentApp==="coach")showClientAdmin(id);else if(currentApp==="client")showClient("progress");toast("Peso actualizado");
     }catch(error){console.error("Error actualizando peso:",error);toast("No se pudo actualizar el peso");}
   };
 });
