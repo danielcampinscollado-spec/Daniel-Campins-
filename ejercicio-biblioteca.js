@@ -9,7 +9,7 @@
     return realFetch(input,init);
   };
 
-  document.write('<script src="./entrenamientos/runtime-compat.js"><\\/script>');
+  document.write('<script src="./entrenamientos/runtime-compat.js"><\/script>');
   window.fetch=realFetch;
 
   const legacyReady=window.exerciseLibraryReady;
