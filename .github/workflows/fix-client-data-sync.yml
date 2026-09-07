@@ -1,0 +1,38 @@
+name: Fix client data sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-client-data-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply Supabase client data synchronization patch
+        run: python .github/scripts/fix-client-data-sync.py
+
+      - name: Validate synchronized routes and tables
+        shell: bash
+        run: |
+          python -c 'from pathlib import Path; s=Path("index.html").read_text(encoding="utf-8"); required=["loadMessagesFromSupabase","loadCheckinsFromSupabase","client_messages","body_fat:"]; missing=[x for x in required if x not in s]; assert not missing, missing; assert "showClient(\u0027coach\u0027)" not in s; assert "showClient(\"coach\")" not in s; print("Supabase synchronization validated")'
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/fix-client-data-sync.py
+          rm -f .github/workflows/fix-client-data-sync.yml
+          git add index.html .github/scripts/fix-client-data-sync.py .github/workflows/fix-client-data-sync.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Sync messages and check-ins with Supabase"
+          git push origin main
