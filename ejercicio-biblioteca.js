@@ -8,9 +8,30 @@ function dccGroups(ex){const primary=Array.isArray(ex.primary_muscles)?ex.primar
 function dccEquipment(value){if(!value)return "Peso corporal";const labels={barbell:"Barra",dumbbell:"Mancuernas",cable:"Polea",kettlebell:"Kettlebell",plates:"Disco",smith_machine:"Multipower",ez_bar:"Barra EZ",trap_bar:"Trap bar",resistance_band:"Banda",loop_band:"Banda",pull_up_bar:"Barra de dominadas",dip_station:"Paralelas",ab_wheel:"Rueda abdominal",flat_bench:"Banco",plyo_box:"Cajón",stability_ball:"Fitball",suspension_trainer:"TRX",rings:"Anillas",battle_rope:"Cuerda de batalla",slam_ball:"Slam ball",sled:"Trineo",wrist_roller:"Rodillo de muñeca"};return labels[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase());}
 function dccImage(path){if(!path)return "";if(/^https?:\/\//i.test(path))return path;return DCC_IMAGE_BASE+String(path).replace(/^\/+/,"");}
 function dccMap(ex){const groups=dccGroups(ex);const flat=ex.images&&ex.images.flat?ex.images.flat:{};return{id:ex.id,name:ex.name_es||ex.name_en||ex.id,muscle:groups[0],secondaryMuscles:groups.slice(1),equipment:dccEquipment(ex.equipment),image:dccImage(flat.peak||flat.main||flat.start||""),imageStart:dccImage(flat.start||flat.main||flat.peak||""),imagePeak:dccImage(flat.peak||flat.main||flat.start||""),videoOptional:"",aliases:[ex.name_en,ex.name_de].filter(Boolean),description:ex.description_es||ex.description_en||"",instructions:ex.instructions_es||ex.instructions_en||[],tips:ex.tips_es||ex.tips_en||[],difficulty:ex.difficulty||"",category:ex.category||"",variationGroup:ex.variation_group||"",isUnilateral:!!ex.is_unilateral,isBodyweight:!!ex.is_bodyweight,source:"RepDB"};}
-window.exerciseLibraryReady=fetch("https://exercise-dataset.com/exercises.json",{cache:"no-store"}).then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca RepDB: HTTP "+response.status);return response.json();}).then(payload=>{const records=Array.isArray(payload?.exercises)?payload.exercises:[];exerciseLibraryFull.length=0;records.forEach(ex=>exerciseLibraryFull.push(dccMap(ex)));window.exerciseLibraryFull=exerciseLibraryFull;console.log("DCC — biblioteca cargada:",exerciseLibraryFull.length,"ejercicios");return exerciseLibraryFull;}).catch(error=>{console.error("DCC — error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
+window.exerciseLibraryReady=fetch("https://exercise-dataset.com/exercises.json",{cache:"no-store"}).then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca RepDB: HTTP "+response.status);return response.json();}).then(payload=>{const records=Array.isArray(payload?.exercises)?payload.exercises:[];exerciseLibraryFull.length=0;records.forEach(ex=>exerciseLibraryFull.push(dccMap(ex)));window.exerciseLibraryFull=exerciseLibraryFull;return exerciseLibraryFull;}).catch(error=>{console.error("DCC — error de biblioteca:",error);exerciseLibraryFull.length=0;window.exerciseLibraryFull=exerciseLibraryFull;throw error;});
 
 window.addEventListener("load",()=>{
+  async function loadMessagesFromSupabase(){
+    try{
+      const {data:rows,error}=await supabaseClient.from("client_messages").select("client_id,sender,message,created_at").order("created_at",{ascending:true});
+      if(error)throw error;
+      const grouped={};
+      (rows||[]).forEach(row=>{if(!grouped[row.client_id])grouped[row.client_id]=[];grouped[row.client_id].push([row.sender||"",row.message||"",row.created_at||""]);});
+      data.messages=grouped;saveData();
+    }catch(error){console.error("Error cargando mensajes:",error);}
+  }
+  async function loadCheckinsFromSupabase(){
+    try{
+      const {data:rows,error}=await supabaseClient.from("client_checkins").select("client_id,weight,body_fat,diet,training,comment,reviewed,updated_at");
+      if(error)throw error;
+      if(!data.checkins)data.checkins={};
+      (rows||[]).forEach(row=>{const previous=data.checkins[row.client_id]||{};data.checkins[row.client_id]={...previous,weight:row.weight||previous.weight||"",bodyFat:row.body_fat!=null?Number(row.body_fat):(previous.bodyFat??""),diet:row.diet||"",training:row.training||"",comment:row.comment||"",reviewed:!!row.reviewed,sentAt:row.updated_at||previous.sentAt||null};});
+      saveData();
+    }catch(error){console.error("Error cargando check-ins:",error);}
+  }
+  const originalOpenApp=window.openApp||openApp;
+  window.openApp=async function(app){await originalOpenApp(app);await Promise.all([loadMessagesFromSupabase(),loadCheckinsFromSupabase()]);if(app==="client")showClient("home");else showCoach("dashboard");};
+
   if(typeof showClient==="function"){
     const originalShowClient=showClient;
     window.showClient=function(screen){const safeScreen=screen==="coach"?"messages":screen;if(safeScreen==="progress"){const checkin=data?.checkins?.[currentClientId];const currentClient=client(currentClientId);if(currentClient&&checkin?.bodyFat!==undefined&&checkin.bodyFat!=="")currentClient.bodyFat=Number(checkin.bodyFat);}return originalShowClient(safeScreen);};
@@ -22,47 +43,14 @@ window.addEventListener("load",()=>{
   function setCheckinStatus(message,ok){let status=document.getElementById("dcc-checkin-status");const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');if(!button)return;if(!status){status=document.createElement("div");status.id="dcc-checkin-status";status.style.cssText="margin-top:12px;text-align:center;font-size:14px;font-weight:700;line-height:1.4;";button.insertAdjacentElement("afterend",status);}status.textContent=message;status.style.color=ok?"#39b982":"#e05a5a";}
   window.sendClientCheckin=async function(){const button=document.querySelector('#client-main button[onclick="sendClientCheckin()"]');const originalLabel=button?button.innerHTML:"";const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const c=client(currentClientId);if(!c)throw new Error("No se encontró el cliente");if(button){button.disabled=true;button.innerHTML="Enviando check-in…";}setCheckinStatus("Enviando…",true);if(!data.checkins)data.checkins={};if(!data.checkins[currentClientId])data.checkins[currentClientId]={weight:money(c.weight)+" kg",bodyFat:"",diet:"",training:"",comment:"",reviewed:false};const checkin=data.checkins[currentClientId];const commentBox=document.getElementById("checkin-comment");if(commentBox)checkin.comment=commentBox.value.trim();if(!checkin.diet||!checkin.training)throw new Error("Selecciona Alimentación y Entrenamiento antes de enviar");checkin.weight=money(c.weight)+" kg";checkin.reviewed=false;checkin.status="Nuevo check-in";checkin.sentAt=new Date().toISOString();checkin.weekKey=getCurrentWeekKey();c.status="Pendiente";const bodyFat=checkin.bodyFat===""||checkin.bodyFat==null?null:Number(checkin.bodyFat);const payload={client_id:currentClientId,weight:checkin.weight,diet:checkin.diet,training:checkin.training,comment:checkin.comment||"",reviewed:false,updated_at:new Date().toISOString()};if(Number.isFinite(bodyFat))payload.body_fat=bodyFat;const response=await fetch(SUPABASE_URL+"/rest/v1/client_checkins?on_conflict=client_id",{method:"POST",signal:controller.signal,headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(payload)});if(!response.ok){let detail="HTTP "+response.status;try{const err=await response.json();detail=err.message||err.details||err.hint||detail;}catch(_){ }throw new Error(detail);}if(Number.isFinite(bodyFat))c.bodyFat=bodyFat;saveData();setCheckinStatus("✓ Check-in enviado a Daniel",true);if(button){button.innerHTML="✓ Check-in enviado";button.disabled=true;}toast("✓ Check-in enviado a Daniel");}catch(error){const message=error?.name==="AbortError"?"La conexión ha tardado demasiado. Inténtalo de nuevo.":(error?.message||"No se pudo enviar el check-in");console.error("ERROR ENVIANDO CHECK-IN:",error);setCheckinStatus("ERROR: "+message,false);toast("ERROR: "+message);if(button){button.disabled=false;button.innerHTML=originalLabel;}}finally{clearTimeout(timeout);}};
   document.addEventListener("click",event=>{const button=event.target.closest('#client-main button[onclick="sendClientCheckin()"]');if(!button)return;event.preventDefault();event.stopImmediatePropagation();window.sendClientCheckin();},true);
-});
 
-window.addEventListener("load",()=>{
   function withDietFoodCompatibility(render){const changed=[];Object.values(data?.diets||{}).forEach(clientDiet=>{["training","rest"].forEach(type=>{const meals=clientDiet?.[type]?.meals;if(!Array.isArray(meals))return;meals.forEach(meal=>{if(!Array.isArray(meal?.options))return;const foods=meal.options.flatMap(option=>Array.isArray(option?.foods)?option.foods:[]);changed.push({meal,had:Object.prototype.hasOwnProperty.call(meal,"foods"),value:meal.foods});meal.foods=foods;});});});try{return render();}finally{changed.forEach(item=>{if(item.had)item.meal.foods=item.value;else delete item.meal.foods;});}}
   if(typeof window.showClient==="function"){const previousShowClient=window.showClient;window.showClient=function(screen){if(screen==="home")return withDietFoodCompatibility(()=>previousShowClient(screen));return previousShowClient(screen);};}
   if(typeof showCoach==="function"){const previousShowCoach=showCoach;window.showCoach=function(screen){if(screen==="dashboard")return withDietFoodCompatibility(()=>previousShowCoach(screen));return previousShowCoach(screen);};}
 
-  async function persistMessage(clientId,sender,text){
-    const {error}=await supabaseClient.from("client_messages").insert({client_id:clientId,sender:sender,message:text});
-    if(error)throw error;
-  }
+  async function persistMessage(clientId,sender,text){const {error}=await supabaseClient.from("client_messages").insert({client_id:clientId,sender:sender,message:text});if(error)throw error;}
+  window.sendClientMessage=async function(){const box=document.getElementById("client-message");const text=box?.value?.trim();if(!text)return;try{await persistMessage(currentClientId,client(currentClientId)?.name||"Cliente",text);if(!data.messages[currentClientId])data.messages[currentClientId]=[];data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);saveData();showClient("messages");toast("Mensaje enviado");}catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}};
+  window.sendCoachMessage=async function(id){const box=document.getElementById("coach-message");const text=box?.value?.trim();if(!text)return;try{await persistMessage(id,"Daniel",text);if(!data.messages[id])data.messages[id]=[];data.messages[id].push(["Daniel",text,new Date().toISOString()]);saveData();closeModal();toast("Mensaje enviado");}catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}};
 
-  window.sendClientMessage=async function(){
-    const box=document.getElementById("client-message");const text=box?.value?.trim();if(!text)return;
-    try{
-      await persistMessage(currentClientId,client(currentClientId)?.name||"Cliente",text);
-      if(!data.messages[currentClientId])data.messages[currentClientId]=[];
-      data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);
-      saveData();showClient("messages");toast("Mensaje enviado");
-    }catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}
-  };
-
-  window.sendCoachMessage=async function(id){
-    const box=document.getElementById("coach-message");const text=box?.value?.trim();if(!text)return;
-    try{
-      await persistMessage(id,"Daniel",text);
-      if(!data.messages[id])data.messages[id]=[];
-      data.messages[id].push(["Daniel",text,new Date().toISOString()]);
-      saveData();closeModal();toast("Mensaje enviado");
-    }catch(error){console.error("Error enviando mensaje:",error);toast("No se pudo enviar el mensaje");}
-  };
-
-  window.addWeight=async function(id){
-    const c=client(id);if(!c){toast("No se encontró el cliente");return;}
-    const text=prompt("Nuevo peso (kg):");if(text===null)return;
-    const value=parseFloat(text.trim().replace(",","."));if(!Number.isFinite(value)||value<=0||value>=500){toast("Introduce un peso válido");return;}
-    try{
-      const {error:clientError}=await supabaseClient.from("clients").update({weight:value}).eq("id",id);if(clientError)throw clientError;
-      const {error:historyError}=await supabaseClient.from("client_weights").insert({client_id:id,weight:value});if(historyError)throw historyError;
-      c.weight=value;if(!data.weights[id])data.weights[id]=[];data.weights[id].push(value);saveData();
-      if(currentApp==="coach")showClientAdmin(id);else if(currentApp==="client")showClient("progress");toast("Peso actualizado");
-    }catch(error){console.error("Error actualizando peso:",error);toast("No se pudo actualizar el peso");}
-  };
+  window.addWeight=async function(id){const c=client(id);if(!c){toast("No se encontró el cliente");return;}const text=prompt("Nuevo peso (kg):");if(text===null)return;const value=parseFloat(text.trim().replace(",","."));if(!Number.isFinite(value)||value<=0||value>=500){toast("Introduce un peso válido");return;}try{const {error:clientError}=await supabaseClient.from("clients").update({weight:value}).eq("id",id);if(clientError)throw clientError;const {error:historyError}=await supabaseClient.from("client_weights").insert({client_id:id,weight:value});if(historyError)throw historyError;c.weight=value;if(!data.weights[id])data.weights[id]=[];data.weights[id].push(value);saveData();if(currentApp==="coach")showClientAdmin(id);else if(currentApp==="client")showClient("progress");toast("Peso actualizado");}catch(error){console.error("Error actualizando peso:",error);toast("No se pudo actualizar el peso");}};
 });
