@@ -1,0 +1,89 @@
+name: Fusionar biblioteca de entrenamientos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fusionar-biblioteca-entrenamientos.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Fusionar y depurar catalogos
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const basePath = 'entrenamientos/ejercicios-base.json';
+          const extraPath = 'entrenamientos/ampliacion-gimnasio-comercial.json';
+          const outPath = 'entrenamientos/ejercicios.json';
+          const base = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+          const extra = JSON.parse(fs.readFileSync(extraPath, 'utf8'));
+
+          // Variantes de ID que representan exactamente el mismo ejercicio.
+          // Conservamos el ID original de la biblioteca base para no crear aliases innecesarios.
+          const semanticAliases = new Map([
+            ['aduccion-cadera-maquina','aductor-maquina'],
+            ['aduccion-cadera-polea','aductor-polea'],
+            ['gemelo-sentado-maquina','gemelos-sentado-maquina'],
+            ['gemelo-de-pie-maquina','gemelos-de-pie-maquina'],
+            ['gemelo-prensa','gemelos-prensa'],
+            ['gemelo-multipower','gemelos-multipower'],
+            ['crunch-abdominal-maquina','crunch-maquina'],
+            ['crunch-polea-alta','crunch-polea']
+          ]);
+
+          const byId = new Map(base.ejercicios.map(e => [e.id, e]));
+          const skipped = [];
+          for (const e of extra.ejercicios) {
+            if (byId.has(e.id)) { skipped.push([e.id, 'id duplicado']); continue; }
+            const baseAlias = semanticAliases.get(e.id);
+            if (baseAlias && byId.has(baseAlias)) { skipped.push([e.id, `equivale a ${baseAlias}`]); continue; }
+            byId.set(e.id, e);
+          }
+
+          const ejercicios = [...byId.values()];
+          const grupos = {};
+          const equipos = {};
+          for (const e of ejercicios) {
+            grupos[e.grupo] = (grupos[e.grupo] || 0) + 1;
+            equipos[e.equipo] = (equipos[e.equipo] || 0) + 1;
+          }
+          const output = {
+            version: 2,
+            descripcion: 'Biblioteca DCC definitiva de ejercicios habituales de gimnasio. Base unificada para entrenador y cliente.',
+            total: ejercicios.length,
+            criterios: [
+              'Ejercicios reconocibles y habituales en gimnasios comerciales',
+              'Cobertura de maquinas, poleas, barras, mancuernas, multipower y peso corporal',
+              'Sin duplicados funcionales evidentes',
+              'ID estable y una ilustracion propia por ejercicio'
+            ],
+            grupos,
+            ejercicios
+          };
+          fs.writeFileSync(outPath, JSON.stringify(output, null, 2) + '\n');
+          fs.writeFileSync('entrenamientos/REVISION-BIBLIOTECA.md', `# Revisión biblioteca DCC\n\nTotal definitivo: **${ejercicios.length} ejercicios**.\n\nDuplicados descartados durante la fusión: **${skipped.length}**.\n\n## Cobertura por grupo\n${Object.entries(grupos).map(([k,v])=>`- ${k}: ${v}`).join('\n')}\n\n## Duplicados descartados\n${skipped.map(([a,b])=>`- ${a}: ${b}`).join('\n')}\n`);
+          console.log(`Biblioteca definitiva: ${ejercicios.length} ejercicios; descartados ${skipped.length} duplicados.`);
+          NODE
+      - name: Retirar catalogos temporales
+        run: |
+          rm entrenamientos/ejercicios-base.json
+          rm entrenamientos/ampliacion-gimnasio-comercial.json
+      - name: Commit de biblioteca definitiva y limpieza del workflow
+        run: |
+          rm .github/workflows/fusionar-biblioteca-entrenamientos.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Unify and deduplicate DCC exercise library'
+          git push
