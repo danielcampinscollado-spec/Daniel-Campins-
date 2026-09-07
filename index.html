@@ -5994,6 +5994,116 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2200);
 }
 
+function setupMessageRealtime(){
+
+  if(window.clientMessagesRealtimeChannel){
+    return;
+  }
+
+  const channel = supabaseClient
+    .channel("client-messages-sync")
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"client_messages"
+      },
+      payload=>{
+
+        const row=payload?.new;
+
+        if(!row?.client_id) return;
+
+        if(!data.messages){
+          data.messages={};
+        }
+
+        if(!data.messages[row.client_id]){
+          data.messages[row.client_id]=[];
+        }
+
+        const exists=data.messages[row.client_id].some(m=>
+          m?.[0]===row.sender &&
+          m?.[1]===row.message &&
+          m?.[2]===row.created_at
+        );
+
+        if(!exists){
+          data.messages[row.client_id].push([
+            row.sender || "",
+            row.message || "",
+            row.created_at || null
+          ]);
+
+          saveData();
+        }
+
+        if(
+          currentApp==="client" &&
+          row.client_id===currentClientId
+        ){
+
+          if(currentScreen==="messages"){
+
+            const draft=
+              document.getElementById("client-message")?.value || "";
+
+            showClient("messages");
+
+            requestAnimationFrame(()=>{
+              const box=document.getElementById("client-message");
+              if(box) box.value=draft;
+            });
+
+          }else if(currentScreen==="home"){
+
+            showClient("home");
+
+          }
+
+        }
+
+        if(currentApp==="coach"){
+
+          if(
+            window.openCoachMessageClientId===row.client_id &&
+            document.getElementById("modal")?.style.display==="grid"
+          ){
+
+            const draft=
+              document.getElementById("coach-message")?.value || "";
+
+            openMessages(row.client_id);
+
+            requestAnimationFrame(()=>{
+              const box=document.getElementById("coach-message");
+              if(box) box.value=draft;
+            });
+
+          }else if(currentScreen==="messages"){
+
+            showCoach("messages");
+
+          }else if(currentScreen==="dashboard"){
+
+            showCoach("dashboard");
+
+          }
+
+        }
+
+      }
+    )
+    .subscribe(status=>{
+      if(status==="CHANNEL_ERROR"){
+        console.error("No se pudo activar la mensajería en tiempo real");
+      }
+    });
+
+  window.clientMessagesRealtimeChannel=channel;
+}
+
 async function openApp(app){
 
   console.log("openApp funciona", app);
@@ -6004,6 +6114,8 @@ async function openApp(app){
   }
 
   currentApp = app;
+
+  setupMessageRealtime();
 
   const login =
     document.getElementById("login");
@@ -16866,6 +16978,7 @@ async function markReviewed(id){
 }
 
 function openMessages(id){
+window.openCoachMessageClientId=id;
 const c=client(id);
 const msgs=data.messages[id]||[];
 
@@ -16911,6 +17024,7 @@ document.getElementById("modal").style.display="grid";
 }
 
 function closeModal(){
+window.openCoachMessageClientId=null;
 document.getElementById("modal").style.display="none";
 }
 
