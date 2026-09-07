@@ -150,12 +150,7 @@ window.addEventListener("load",()=>{
       const response=await fetch(SUPABASE_URL+"/rest/v1/client_checkins?on_conflict=client_id",{
         method:"POST",
         signal:controller.signal,
-        headers:{
-          "apikey":SUPABASE_KEY,
-          "Authorization":"Bearer "+SUPABASE_KEY,
-          "Content-Type":"application/json",
-          "Prefer":"resolution=merge-duplicates,return=minimal"
-        },
+        headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"resolution=merge-duplicates,return=minimal"},
         body:JSON.stringify(payload)
       });
 
@@ -188,4 +183,69 @@ window.addEventListener("load",()=>{
     event.stopImmediatePropagation();
     window.sendClientCheckin();
   },true);
+});
+
+/* Compatibilidad temporal entre el formato nuevo de dieta (meal.options[].foods)
+   y las pantallas antiguas que todavía cuentan meal.foods. */
+window.addEventListener("load",()=>{
+  function withDietFoodCompatibility(render){
+    const changed=[];
+    Object.values(data?.diets||{}).forEach(clientDiet=>{
+      ["training","rest"].forEach(type=>{
+        const meals=clientDiet?.[type]?.meals;
+        if(!Array.isArray(meals))return;
+        meals.forEach(meal=>{
+          if(!Array.isArray(meal?.options))return;
+          const foods=meal.options.flatMap(option=>Array.isArray(option?.foods)?option.foods:[]);
+          changed.push({meal,had:Object.prototype.hasOwnProperty.call(meal,"foods"),value:meal.foods});
+          meal.foods=foods;
+        });
+      });
+    });
+    try{return render();}
+    finally{
+      changed.forEach(item=>{
+        if(item.had)item.meal.foods=item.value;
+        else delete item.meal.foods;
+      });
+    }
+  }
+
+  if(typeof window.showClient==="function"){
+    const previousShowClient=window.showClient;
+    window.showClient=function(screen){
+      if(screen==="home")return withDietFoodCompatibility(()=>previousShowClient(screen));
+      return previousShowClient(screen);
+    };
+  }
+
+  if(typeof showCoach==="function"){
+    const previousShowCoach=showCoach;
+    window.showCoach=function(screen){
+      if(screen==="dashboard")return withDietFoodCompatibility(()=>previousShowCoach(screen));
+      return previousShowCoach(screen);
+    };
+  }
+
+  window.sendClientMessage=function(){
+    const box=document.getElementById("client-message");
+    const text=box?.value?.trim();
+    if(!text)return;
+    if(!data.messages[currentClientId])data.messages[currentClientId]=[];
+    data.messages[currentClientId].push([client(currentClientId)?.name||"Cliente",text,new Date().toISOString()]);
+    saveData();
+    showClient("messages");
+    toast("Mensaje enviado");
+  };
+
+  window.sendCoachMessage=function(id){
+    const box=document.getElementById("coach-message");
+    const text=box?.value?.trim();
+    if(!text)return;
+    if(!data.messages[id])data.messages[id]=[];
+    data.messages[id].push(["Daniel",text,new Date().toISOString()]);
+    saveData();
+    closeModal();
+    toast("Mensaje enviado");
+  };
 });
