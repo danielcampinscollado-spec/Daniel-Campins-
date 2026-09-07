@@ -1,0 +1,93 @@
+name: Wire premium DCC exercise library
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-shot-premium-exercise-library.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Switch runtime from RepDB to local DCC catalog
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('entrenamientos/runtime-compat.js')
+          s = p.read_text()
+          marker = 'window.addEventListener("load",()=>{'
+          if marker not in s:
+              raise SystemExit('runtime marker not found')
+          rest = s[s.index(marker):]
+          prefix = r'''/* DCC — Biblioteca premium local */
+var exerciseLibraryFull=[];
+window.exerciseLibraryFull=exerciseLibraryFull;
+const DCC_LOCAL_LIBRARY="entrenamientos/ejercicios.json";
+const DCC_PREMIUM_IMAGES=new Set([
+  "press-banca-barra",
+  "jalon-pecho-ancho",
+  "remo-sentado-polea-neutro"
+]);
+function dccLocalImage(ex){
+  if(!ex||!DCC_PREMIUM_IMAGES.has(ex.id)||!ex.ilustracion)return "";
+  return "entrenamientos/"+String(ex.ilustracion).replace(/^\\/+/,"");
+}
+function dccMapLocal(ex){
+  const image=dccLocalImage(ex);
+  const muscle=ex.grupo==="Espalda"?"Dorsal":(ex.grupo||"");
+  return {
+    id:ex.id,
+    name:ex.nombre||ex.id,
+    muscle,
+    secondaryMuscles:[],
+    equipment:ex.equipo||"",
+    image,
+    imageStart:image,
+    imagePeak:image,
+    videoOptional:"",
+    aliases:[],
+    description:"",
+    instructions:[],
+    tips:[],
+    difficulty:"",
+    category:ex.patron||"",
+    variationGroup:"",
+    isUnilateral:/unilateral/i.test(ex.nombre||"")||/unilateral/i.test(ex.id||""),
+    isBodyweight:/peso corporal/i.test(ex.equipo||""),
+    source:"DCC"
+  };
+}
+window.exerciseLibraryReady=fetch(DCC_LOCAL_LIBRARY,{cache:"no-store"})
+  .then(response=>{if(!response.ok)throw new Error("No se pudo cargar la biblioteca DCC: HTTP "+response.status);return response.json();})
+  .then(payload=>{
+    const records=Array.isArray(payload?.ejercicios)?payload.ejercicios:[];
+    exerciseLibraryFull.length=0;
+    records.forEach(ex=>exerciseLibraryFull.push(dccMapLocal(ex)));
+    window.exerciseLibraryFull=exerciseLibraryFull;
+    return exerciseLibraryFull;
+  })
+  .catch(error=>{
+    console.error("DCC — error de biblioteca local:",error);
+    exerciseLibraryFull.length=0;
+    window.exerciseLibraryFull=exerciseLibraryFull;
+    throw error;
+  });
+
+'''
+          p.write_text(prefix + rest)
+          PY
+      - name: Commit runtime patch and remove workflow
+        run: |
+          rm .github/workflows/one-shot-premium-exercise-library.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add entrenamientos/runtime-compat.js .github/workflows/one-shot-premium-exercise-library.yml
+          git commit -m "Use local premium DCC exercise library"
+          git push
