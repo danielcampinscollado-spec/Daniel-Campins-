@@ -1,0 +1,46 @@
+name: Add create routine screen
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-create-routine-screen.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Add create-routine coach screen
+        run: python .github/scripts/add-create-routine-screen.py
+
+      - name: Validate create-routine screen
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert 'if(screen==="createRoutine"){' in s
+          assert 'startNewRoutine' in s
+          assert '"＋":`<svg' in s
+          assert 'showCoach(\'createRoutine\')' in s
+          print('Create-routine screen validated')
+          PY
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/add-create-routine-screen.py
+          rm -f .github/workflows/add-create-routine-screen.yml
+          git add index.html .github/scripts/add-create-routine-screen.py .github/workflows/add-create-routine-screen.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Add coach create routine screen"
+          git push origin main
