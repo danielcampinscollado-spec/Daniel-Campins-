@@ -10,7 +10,24 @@ const DCC_PREMIUM_IMAGES=new Set([
   "press-hombro-maquina",
   "prensa-45",
   "extension-cuadriceps",
-  "hip-thrust-maquina"
+  "hip-thrust-maquina",
+  "press-banca-mancuernas",
+  "press-inclinado-barra",
+  "press-inclinado-mancuernas",
+  "press-pecho-maquina",
+  "press-inclinado-maquina",
+  "press-convergente-maquina",
+  "aperturas-pec-deck",
+  "cruces-polea-media",
+  "cruces-polea-alta",
+  "cruces-polea-baja",
+  "flexiones",
+  "press-declinado-maquina",
+  "press-pecho-iso-lateral",
+  "press-inclinado-iso-lateral",
+  "press-banca-multipower",
+  "press-inclinado-multipower",
+  "aperturas-polea-banco"
 ]);
 function dccLocalImage(ex){
   if(!ex||!DCC_PREMIUM_IMAGES.has(ex.id)||!ex.ilustracion)return "";
