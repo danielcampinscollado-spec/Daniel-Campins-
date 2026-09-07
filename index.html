@@ -16809,23 +16809,40 @@ async function markReviewed(id){
     return;
   }
 
-  const { error } = await supabaseClient
+  const reviewedAt = new Date().toISOString();
+
+  const { error:checkinError } = await supabaseClient
+    .from("client_checkins")
+    .update({
+      reviewed:true,
+      updated_at:reviewedAt
+    })
+    .eq("client_id",id);
+
+  if(checkinError){
+
+    console.error(
+      "Error guardando revisión del check-in:",
+      checkinError
+    );
+
+    toast("No se pudo guardar la revisión");
+
+    return;
+  }
+
+  const { error:clientError } = await supabaseClient
     .from("clients")
     .update({
       status:"Revisado"
     })
     .eq("id",id);
 
-  if(error){
-
+  if(clientError){
     console.error(
-      "Error guardando estado del check-in:",
-      error
+      "Check-in revisado, pero no se pudo actualizar el estado del cliente:",
+      clientError
     );
-
-    toast("No se pudo guardar la revisión");
-
-    return;
   }
 
   if(!data.checkins[id]){
