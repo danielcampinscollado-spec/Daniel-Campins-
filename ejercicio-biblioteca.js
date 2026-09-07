@@ -133,7 +133,7 @@ window.addEventListener("load",()=>{
   if(typeof showClient === "function"){
     const originalShowClient = showClient;
     window.showClient = function(screen){
-      const safeScreen = screen === "coach" ? "messages" : screen === "profile" ? "progress" : screen;
+      const safeScreen = screen === "coach" ? "messages" : screen;
       if(safeScreen === "progress"){
         const checkin = data?.checkins?.[currentClientId];
         const currentClient = client(currentClientId);
@@ -158,4 +158,59 @@ window.addEventListener("load",()=>{
       return result;
     };
   }
+
+  window.sendClientCheckin = async function(){
+    try{
+      const c = client(currentClientId);
+      if(!c){ toast("No se encontró el cliente"); return; }
+
+      if(!data.checkins) data.checkins = {};
+      if(!data.checkins[currentClientId]){
+        data.checkins[currentClientId] = {
+          weight:money(c.weight)+" kg", bodyFat:"", diet:"", training:"",
+          comment:"", reviewed:false
+        };
+      }
+
+      const checkin = data.checkins[currentClientId];
+      const commentBox = document.getElementById("checkin-comment");
+      if(commentBox) checkin.comment = commentBox.value.trim();
+
+      checkin.weight = money(c.weight)+" kg";
+      checkin.reviewed = false;
+      checkin.status = "Nuevo check-in";
+      checkin.sentAt = new Date().toISOString();
+      checkin.weekKey = getCurrentWeekKey();
+      c.status = "Pendiente";
+
+      const bodyFat = checkin.bodyFat === "" || checkin.bodyFat == null
+        ? null
+        : Number(checkin.bodyFat);
+
+      const {error} = await supabaseClient.from("client_checkins").upsert({
+        client_id:currentClientId,
+        weight:checkin.weight,
+        body_fat:Number.isFinite(bodyFat) ? bodyFat : null,
+        diet:checkin.diet || "Pendiente",
+        training:checkin.training || "Pendiente",
+        comment:checkin.comment || "",
+        reviewed:false,
+        updated_at:new Date().toISOString()
+      },{onConflict:"client_id"});
+
+      if(error){
+        console.error("ERROR ENVIANDO CHECK-IN:",error);
+        toast("No se pudo enviar el check-in: "+(error.message || "Error desconocido"));
+        return;
+      }
+
+      if(Number.isFinite(bodyFat)) c.bodyFat = bodyFat;
+      saveData();
+      toast("Check-in enviado a Daniel");
+      showClient("checkin");
+    }catch(error){
+      console.error("ERROR GENERAL CHECK-IN:",error);
+      toast("No se pudo enviar el check-in: "+(error.message || "Error desconocido"));
+    }
+  };
 });
