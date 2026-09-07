@@ -14875,9 +14875,18 @@ function showPreviousRoutine(id){
 
   if(!id) return;
 
-  const previous=data.previousRoutines?.[id];
+  const previousStored=data.previousRoutines?.[id];
 
-  if(!previous?.length){
+  const previous=
+    Array.isArray(previousStored)
+      ? previousStored
+      : (
+          Array.isArray(previousStored?.routine)
+            ? previousStored.routine
+            : []
+        );
+
+  if(!previous.length){
     toast("No hay una rutina anterior guardada");
     return;
   }
