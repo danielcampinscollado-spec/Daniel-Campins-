@@ -6477,11 +6477,28 @@ const notificationState =
       ? getCurrentWeekKey()
       : "";
 
+  const weekStart =
+    currentWeekKey
+      ? new Date(`${currentWeekKey}T00:00:00`)
+      : null;
+
+  const serverCheckinSentThisWeek =
+    !!(
+      checkin.updatedAt &&
+      weekStart &&
+      new Date(checkin.updatedAt) >= weekStart
+    );
+
   const checkinSentThisWeek =
-    checkin.weekKey &&
-    currentWeekKey &&
-    checkin.weekKey === currentWeekKey &&
-    checkin.sentAt;
+    !!(
+      (
+        checkin.weekKey &&
+        currentWeekKey &&
+        checkin.weekKey === currentWeekKey &&
+        checkin.sentAt
+      ) ||
+      serverCheckinSentThisWeek
+    );
 
   if(!checkinSentThisWeek){
 
