@@ -1,0 +1,53 @@
+name: Fix weekly check-in cycle
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-weekly-checkin-cycle.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply weekly check-in cycle fix
+        run: python .github/scripts/fix-weekly-checkin-cycle.py
+
+      - name: Validate weekly check-in cycle
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          required=[
+            'body_fat,sent_at,updated_at',
+            'sentAt:row.sent_at',
+            'new Date(checkin.sentAt) >= weekStart',
+            'resetWeeklyCheckinIfNeeded();',
+            'sent_at: checkin.sentAt',
+            'data.checkins[currentClientId].comment=commentBox.value',
+            '>${esc(x.comment || "")}</textarea>'
+          ]
+          missing=[x for x in required if x not in s]
+          assert not missing, missing
+          print('Weekly check-in cycle validated')
+          PY
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/fix-weekly-checkin-cycle.py
+          rm -f .github/workflows/fix-weekly-checkin-cycle.yml
+          git add index.html .github/scripts/fix-weekly-checkin-cycle.py .github/workflows/fix-weekly-checkin-cycle.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix weekly check-in lifecycle"
+          git push origin main
