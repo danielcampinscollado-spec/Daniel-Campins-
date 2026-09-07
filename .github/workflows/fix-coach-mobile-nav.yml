@@ -1,0 +1,38 @@
+name: Fix coach mobile navigation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-coach-mobile-nav.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Apply coach mobile navigation patch
+        run: python .github/scripts/fix-coach-mobile-nav.py
+
+      - name: Validate navigation layout
+        shell: bash
+        run: |
+          python -c 'from pathlib import Path; s=Path("index.html").read_text(encoding="utf-8"); assert "grid-template-columns:repeat(7,minmax(0,1fr))" in s; assert "document.getElementById(\"login\").style.display=\"flex\";" in s; assert "l-3.6k 1.8v-7.2z" not in s; print("Coach mobile navigation validated")'
+
+      - name: Commit fix and remove one-shot files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f .github/scripts/fix-coach-mobile-nav.py
+          rm -f .github/workflows/fix-coach-mobile-nav.yml
+          git add index.html .github/scripts/fix-coach-mobile-nav.py .github/workflows/fix-coach-mobile-nav.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix coach mobile navigation layout"
+          git push origin main
