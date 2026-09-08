@@ -36,7 +36,7 @@
       .dcc-pd-icon{width:40px;height:40px;flex:0 0 40px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(217,170,74,.15);border-radius:12px;background:rgba(217,170,74,.07);color:${GOLD2};font-size:17px;}
       .dcc-pd-copy{flex:1;min-width:0;}
       .dcc-pd-copy b{display:block;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .dcc-pd-copy span{display:block;margin-top:4px;color:#858c96;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .dcc-pd-copy span{display:block;margin-top:4px;color:#858c96;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}\n      .dcc-pd-attention .dcc-pd-copy span{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35;padding-right:4px;}\n      .dcc-pd-section.dcc-empty{padding-top:17px;padding-bottom:17px;}\n      .dcc-pd-section.dcc-empty .dcc-pd-section-head{margin-bottom:2px;}\n      .dcc-pd-section.dcc-empty .dcc-pd-empty{padding:10px 0 0;}
       .dcc-pd-badge{flex:none;padding:7px 9px;border-radius:9px;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;background:rgba(217,170,74,.08);color:${GOLD2};border:1px solid rgba(217,170,74,.14);}
       .dcc-pd-arrow{flex:none;color:${GOLD2};font-size:20px;padding-left:2px;}
       .dcc-pd-empty{padding:18px 0 4px;color:#8a929d;font-size:12px;line-height:1.55;}
@@ -52,7 +52,7 @@
         .dcc-pd-eyebrow{margin-top:30px;font-size:9px;letter-spacing:3px}.dcc-pd-title{font-size:40px;max-width:66%;}
         .dcc-pd-hero-note{right:18px;bottom:24px;width:125px;font-size:8px;letter-spacing:1.6px;line-height:1.8;}
         .dcc-pd-strip{gap:7px}.dcc-pd-stat{min-height:65px;padding:11px}.dcc-pd-stat strong{font-size:20px}.dcc-pd-stat span{font-size:7.5px;letter-spacing:1.1px}
-        .dcc-pd-section{padding:17px 16px;border-radius:20px}.dcc-pd-row{gap:10px}.dcc-pd-icon{width:38px;height:38px;flex-basis:38px}.dcc-pd-copy b{font-size:12.5px}.dcc-pd-copy span{font-size:10.5px}
+        .dcc-pd-section{padding:17px 16px;border-radius:20px}.dcc-pd-row{gap:10px}.dcc-pd-icon{width:38px;height:38px;flex-basis:38px}.dcc-pd-copy b{font-size:12.5px}.dcc-pd-copy span{font-size:10.5px}.dcc-pd-attention .dcc-pd-row{align-items:flex-start}.dcc-pd-attention .dcc-pd-badge{margin-top:2px;padding:6px 7px;font-size:8px}.dcc-pd-attention .dcc-pd-arrow{margin-top:5px}
         #coach .side{height:76px!important;}#coach-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important;}#coach-nav button{font-size:10px!important;}#coach-nav button svg{width:24px!important;height:24px!important;}
       }
     `;
@@ -197,17 +197,34 @@
 
   function installNav(){
     const nav=document.getElementById("coach-nav"); if(!nav) return;
-    nav.innerHTML=`
-      <button onclick="showCoach('dashboard')">${svg("panel")}<span>Panel</span></button>
-      <button onclick="showCoach('clients')">${svg("clients")}<span>Clientes</span></button>
-      <button onclick="showCoach('checkins')">${svg("check")}<span>Check-in</span></button>
-      <button onclick="showCoach('messages')">${svg("msg")}<span>Mensajes</span></button>`;
-    nav.style.gridTemplateColumns="repeat(4,minmax(0,1fr))";
+    const expected=["Panel","Clientes","Check-in","Mensajes"];
+    const current=[...nav.querySelectorAll("button span")].map(x=>x.textContent.trim());
+    if(current.length!==4 || expected.some((x,i)=>current[i]!==x)){
+      nav.innerHTML=`
+        <button onclick="showCoach('dashboard')">${svg("panel")}<span>Panel</span></button>
+        <button onclick="showCoach('clients')">${svg("clients")}<span>Clientes</span></button>
+        <button onclick="showCoach('checkins')">${svg("check")}<span>Check-in</span></button>
+        <button onclick="showCoach('messages')">${svg("msg")}<span>Mensajes</span></button>`;
+    }
+    nav.style.setProperty("grid-template-columns","repeat(4,minmax(0,1fr))","important");
+  }
+
+  function guardCoachNav(){
+    const nav=document.getElementById("coach-nav"); if(!nav||nav.__dccGuard) return;
+    nav.__dccGuard=true;
+    new MutationObserver(()=>installNav()).observe(nav,{childList:true,subtree:true});
+    if(typeof window.buildCoachNav==="function"&&!window.buildCoachNav.__dccPremium){
+      const originalBuild=window.buildCoachNav;
+      const wrappedBuild=function(){ const r=originalBuild.apply(this,arguments); installNav(); return r; };
+      wrappedBuild.__dccPremium=true;
+      window.buildCoachNav=wrappedBuild;
+    }
   }
 
   function install(){
     injectStyles();
     installNav();
+    guardCoachNav();
     const original=window.showCoach;
     if(typeof original!=="function"||original.__dccPremium) return;
     const wrapped=function(screen){
