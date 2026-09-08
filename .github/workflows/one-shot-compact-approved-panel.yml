@@ -1,0 +1,40 @@
+name: Apply final approved compact panel
+on:
+  push:
+    paths: ['.github/workflows/one-shot-compact-approved-panel.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          cat >> coach-premium.js <<'EOF'
+
+/* DCC final approved compact panel refinements */
+(function(){
+  const s=document.createElement('style');
+  s.id='dcc-panel-approved-compact-v2';
+  s.textContent=`
+    #coach-main.dcc-premium-dashboard{padding-top:6px!important;padding-bottom:92px!important}
+    .dcc-pd-hero{min-height:205px!important;padding:12px 18px 12px!important;background:radial-gradient(ellipse at 76% 40%,rgba(224,171,69,.18),transparent 31%),linear-gradient(108deg,#030405 0%,#080a0c 57%,#020303 100%)!important}
+    .dcc-pd-brand img{width:50px!important}.dcc-pd-brand-name{font-size:10px!important;letter-spacing:3.5px!important}.dcc-pd-brand-sub{font-size:7px!important;letter-spacing:2.8px!important}
+    .dcc-pd-title{margin-top:37px!important;font-size:36px!important;line-height:1!important;max-width:60%!important}.dcc-pd-title:after{width:44px!important;margin-top:13px!important}
+    .dcc-pd-strip{margin:5px 0 10px!important}.dcc-pd-stat{min-height:70px!important;padding:10px 8px!important}.dcc-pd-stat strong{font-size:20px!important}.dcc-pd-stat span{font-size:6.7px!important;line-height:1.3!important}
+    .dcc-pd-section{margin-top:10px!important;padding:13px 16px!important}.dcc-pd-section-head{margin-bottom:5px!important}.dcc-pd-section-sub{margin-top:3px!important;font-size:10.5px!important}
+    .dcc-pd-section.dcc-empty{padding:12px 16px!important}.dcc-pd-section.dcc-empty .dcc-pd-empty{padding:7px 0 0!important}.dcc-pd-empty{font-size:11px!important}
+    .dcc-pd-banner{margin-top:10px!important;min-height:74px!important;padding:12px 17px!important;gap:14px!important}.dcc-pd-trophy{font-size:24px!important}.dcc-pd-banner small{font-size:7.5px!important;letter-spacing:2.5px!important}.dcc-pd-banner strong{font-size:16px!important;margin-top:5px!important}
+    #coach .side{height:68px!important;left:14px!important;right:14px!important;bottom:10px!important;border-radius:22px!important}#coach-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}#coach-nav button{font-size:8px!important;padding:7px 2px!important}#coach-nav button svg{width:22px!important;height:22px!important}#coach-nav button span{font-size:7.5px!important;margin-top:3px!important}
+    @media(max-width:700px){#coach-main.dcc-premium-dashboard{padding:5px 12px 90px!important}.dcc-pd-hero{min-height:198px!important;padding:11px 10px!important}.dcc-pd-title{margin-top:35px!important;font-size:34px!important}.dcc-pd-strip{border-radius:16px!important}.dcc-pd-stat{min-height:68px!important;padding:9px 6px!important}.dcc-pd-section{padding:12px 13px!important}.dcc-pd-banner{padding:11px 14px!important}#coach .side{height:66px!important}}
+  `;
+  document.head.appendChild(s);
+})();
+EOF
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add coach-premium.js
+          git commit -m 'Polish approved compact coach panel'
+          git rm .github/workflows/one-shot-compact-approved-panel.yml
+          git commit -m 'Remove one-shot compact panel workflow'
+          git push
