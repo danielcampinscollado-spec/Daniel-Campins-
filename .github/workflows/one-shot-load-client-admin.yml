@@ -1,0 +1,30 @@
+name: Load premium client admin
+on:
+  push:
+    paths: ['.github/workflows/one-shot-load-client-admin.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add client admin script to app
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="./client-admin-premium.js?v=1"></script>'
+          if tag not in s:
+              if '</body>' in s:
+                  s=s.replace('</body>',tag+'\n</body>')
+              else:
+                  s += '\n'+tag+'\n'
+              p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m 'Enable premium client management screen' || true
+          git push
