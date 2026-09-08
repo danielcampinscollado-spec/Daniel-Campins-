@@ -72,7 +72,7 @@
   document.head.appendChild(unify);
 
   const checkins=document.createElement('script');
-  checkins.src='./checkin-premium.js?v=20260908-1';
+  checkins.src='./checkin-premium.js?v=20260908-2';
   checkins.async=true;
   document.head.appendChild(checkins);
 })();
