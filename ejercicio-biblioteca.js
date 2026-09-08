@@ -99,4 +99,9 @@
   premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-3';
   premiumCoachTheme.async=true;
   document.head.appendChild(premiumCoachTheme);
+
+  const clientsSearchFix=document.createElement('script');
+  clientsSearchFix.src='./clients-search-final-fix.js?v=20260908-1';
+  clientsSearchFix.async=true;
+  document.head.appendChild(clientsSearchFix);
 })();
