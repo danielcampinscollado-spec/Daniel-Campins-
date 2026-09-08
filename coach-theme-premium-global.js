@@ -93,7 +93,6 @@
       html body #coach #coach-main .dcc-ca-tabs,
       html body #coach #coach-main .dcc-diet-switch,
       html body #coach #coach-main .dcc-chat-composer,
-      html body #coach #coach-main input,
       html body #coach #coach-main textarea,
       html body #coach #coach-main select{
         border-color:rgba(217,170,74,.32)!important;
@@ -102,33 +101,63 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
-      /* Los buscadores premium ya tienen su propio contenedor. El input interior no puede crear un segundo recuadro. */
-      html body #coach #coach-main .dcc-fcl-search{
-        height:48px!important;
-        min-height:48px!important;
-        padding:0 14px!important;
-        border:1px solid rgba(217,170,74,.40)!important;
-        border-radius:15px!important;
+      /* BUSCADOR DE CLIENTES: una sola barra real, sin input interior enano. */
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search{
+        position:relative!important;
+        width:100%!important;
+        height:54px!important;
+        min-height:54px!important;
         display:flex!important;
         align-items:center!important;
+        gap:11px!important;
+        padding:0 16px!important;
+        overflow:hidden!important;
+        border:1px solid rgba(240,201,107,.48)!important;
+        border-radius:17px!important;
+        background:radial-gradient(circle at 90% 0,rgba(217,170,74,.07),transparent 34%),linear-gradient(145deg,#11171c,#090d10)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
       }
-      html body #coach #coach-main .dcc-fcl-search input,
-      html body #coach #coach-main .dcc-msg-search input{
-        width:100%!important;
-        height:100%!important;
-        min-height:0!important;
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search svg{
+        width:19px!important;
+        height:19px!important;
+        min-width:19px!important;
+        flex:0 0 19px!important;
+        color:#a6afb9!important;
+      }
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search #dccClientSearch{
+        all:unset!important;
+        display:block!important;
+        flex:1 1 auto!important;
+        width:auto!important;
+        min-width:0!important;
+        height:52px!important;
+        line-height:52px!important;
         margin:0!important;
         padding:0!important;
         border:0!important;
-        border-radius:0!important;
         outline:0!important;
         background:transparent!important;
         box-shadow:none!important;
         color:#f4f1ed!important;
-        font-size:12px!important;
+        -webkit-text-fill-color:#f4f1ed!important;
+        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
+        font-size:13px!important;
+        font-weight:650!important;
+        letter-spacing:0!important;
+        -webkit-appearance:none!important;
+        appearance:none!important;
       }
-      html body #coach #coach-main .dcc-fcl-search input::placeholder,
-      html body #coach #coach-main .dcc-msg-search input::placeholder{color:#77808a!important;opacity:1!important}
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search #dccClientSearch::placeholder{
+        color:#858e99!important;
+        -webkit-text-fill-color:#858e99!important;
+        opacity:1!important;
+        font-weight:650!important;
+      }
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search #dccClientSearch:focus{
+        border:0!important;
+        outline:0!important;
+        box-shadow:none!important;
+      }
 
       html body #coach #coach-main .ghost,
       html body #coach #coach-main .dcc-ca-back,
@@ -186,6 +215,23 @@
     document.head.appendChild(s);
   }
 
+  function forceClientSearch(){
+    const input=document.getElementById('dccClientSearch');
+    const wrap=input?.closest('.dcc-fcl-search');
+    if(!input||!wrap)return;
+    input.style.setProperty('all','unset','important');
+    input.style.setProperty('display','block','important');
+    input.style.setProperty('flex','1 1 auto','important');
+    input.style.setProperty('min-width','0','important');
+    input.style.setProperty('height','52px','important');
+    input.style.setProperty('line-height','52px','important');
+    input.style.setProperty('border','0','important');
+    input.style.setProperty('background','transparent','important');
+    input.style.setProperty('box-shadow','none','important');
+    input.style.setProperty('color','#f4f1ed','important');
+    input.style.setProperty('font-size','13px','important');
+  }
+
   install();
-  [250,700,1500,2600].forEach(ms=>setTimeout(install,ms));
+  [120,350,700,1200,2200].forEach(ms=>setTimeout(()=>{install();forceClientSearch()},ms));
 })();
