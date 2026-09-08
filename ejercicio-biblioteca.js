@@ -44,7 +44,7 @@
   document.head.appendChild(inlineEditor);
 
   const progress=document.createElement('script');
-  progress.src='./progress-premium-v2.js?v=20260908-2';
+  progress.src='./progress-premium-v3.js?v=20260908-3';
   progress.async=true;
   document.head.appendChild(progress);
 })();
