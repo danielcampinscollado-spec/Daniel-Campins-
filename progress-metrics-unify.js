@@ -7,14 +7,10 @@
     const s=document.createElement('style');
     s.id='dcc-progress-metrics-unify-css';
     s.textContent=`
+      html body #coach-main.dcc-ca .dcc-ca-metrics{align-items:stretch!important}
+      html body #coach-main.dcc-ca .dcc-ca-metrics .dcc-ca-metric{height:auto!important}
       html body #coach-main.dcc-ca .dcc-ca-metrics .dcc-ca-metric.dcc-progress-force-card::before{
         background-image:url("${FORCE_ICON}")!important;
-      }
-      html body #coach-main.dcc-ca .dcc-ca-metrics{
-        align-items:stretch!important;
-      }
-      html body #coach-main.dcc-ca .dcc-ca-metrics .dcc-ca-metric{
-        height:auto!important;
       }
     `;
     document.head.appendChild(s);
@@ -25,7 +21,6 @@
     if(!root) return;
     const active=[...root.querySelectorAll('.dcc-ca-tab')].find(b=>b.classList.contains('active'));
     if(!active || !/progreso/i.test(active.textContent||'')) return;
-
     const metrics=root.querySelector('.dcc-ca-metrics');
     if(!metrics) return;
     const cards=[...metrics.children];
@@ -37,20 +32,15 @@
       const label=copy?.querySelector('small')?.textContent||'';
       const value=copy?.querySelector('b')?.textContent||'—';
       const trend=copy?.querySelector('.dcc-ca-trend');
-      const trendHtml=trend?trend.outerHTML:'';
-
       card.className='dcc-ca-metric';
       if(index===2) card.classList.add('dcc-progress-force-card');
-      card.innerHTML=`<small>${label}</small><b>${value}</b>${trendHtml}`;
+      card.innerHTML=`<small>${label}</small><b>${value}</b>${trend?trend.outerHTML:''}`;
     });
   }
 
-  function install(){
-    installCss();
+  function wrapCurrent(){
     const current=window.dccClientAdmin;
-    if(typeof current!=='function') return setTimeout(install,60);
-    if(current.__dccMetricsUnified) return;
-
+    if(typeof current!=='function' || current.__dccMetricsUnified) return;
     const wrapped=function(id,tab){
       current(id,tab);
       if(tab==='progress') normalizeProgressMetrics();
@@ -60,5 +50,10 @@
     window.dccClientAdmin=wrapped;
   }
 
-  install();
+  installCss();
+  let tries=0;
+  (function ensure(){
+    wrapCurrent();
+    if(++tries<80) setTimeout(ensure,100);
+  })();
 })();
