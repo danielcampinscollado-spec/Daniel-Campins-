@@ -57,6 +57,23 @@
       }
     `;
     document.head.appendChild(style);
+    const finalStyle=document.createElement("style");
+    finalStyle.id="dcc-approved-dashboard-final";
+    finalStyle.textContent=`
+      .dcc-pd-hero{min-height:225px;border:0;border-radius:0;padding:18px 22px 20px;background:radial-gradient(ellipse at 73% 35%,rgba(221,170,70,.16),transparent 30%),linear-gradient(110deg,#050607 0%,#090b0d 58%,#030405 100%);box-shadow:none}
+      .dcc-pd-hero:after{right:0;top:-12px;width:48%;height:245px;opacity:.85;background:radial-gradient(ellipse at 55% 45%,rgba(213,164,74,.23),transparent 28%),radial-gradient(ellipse at 58% 60%,rgba(255,255,255,.07),transparent 33%);filter:none}
+      .dcc-pd-brand{z-index:3}.dcc-pd-title{margin-top:46px;font-size:48px;max-width:55%;z-index:3}.dcc-pd-title:after{content:"";display:block;width:52px;height:2px;margin-top:16px;background:linear-gradient(90deg,${GOLD2},${GOLD})}
+      .dcc-pd-strip{grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:8px 0 12px;border:1px solid rgba(217,170,74,.38);border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#10151a,#080b0e)}
+      .dcc-pd-stat{border:0;border-right:1px solid rgba(255,255,255,.12);border-radius:0;min-height:82px;padding:15px 12px;background:transparent}.dcc-pd-stat:last-child{border-right:0}.dcc-pd-stat strong{font-family:Arial,sans-serif;font-size:25px;font-weight:700}.dcc-pd-stat span{font-size:8px;line-height:1.35;letter-spacing:.8px;color:#d4d6d9}
+      .dcc-pd-section{margin-top:12px;padding:15px 18px;border-color:rgba(217,170,74,.42);border-radius:18px;background:linear-gradient(145deg,#101418,#080b0d)}
+      .dcc-pd-section-kicker{font-size:11px}.dcc-pd-section-sub{color:#b6bac0}.dcc-pd-row{padding:10px 0}.dcc-pd-empty{padding:9px 0 2px}
+      .dcc-pd-banner{display:flex;align-items:center;gap:18px;margin-top:12px;padding:18px 22px;border-color:rgba(240,201,107,.72);border-radius:18px;background:radial-gradient(ellipse at 86% 45%,rgba(232,178,66,.35),transparent 18%),radial-gradient(ellipse at 72% 70%,rgba(178,121,28,.25),transparent 24%),radial-gradient(ellipse at 18% 50%,rgba(216,158,45,.25),transparent 22%),linear-gradient(100deg,#171006,#090a0b 38%,#171006 100%);box-shadow:inset 0 0 35px rgba(211,153,41,.12),0 14px 40px rgba(0,0,0,.3)}
+      .dcc-pd-banner:before{content:"";position:absolute;inset:-40%;background:repeating-radial-gradient(ellipse at 70% 50%,rgba(235,187,82,.08) 0 3%,transparent 4% 9%);filter:blur(7px);transform:rotate(-8deg);pointer-events:none}.dcc-pd-trophy{position:relative;z-index:2;font-size:30px;color:${GOLD2};text-shadow:0 0 18px rgba(240,201,107,.35)}.dcc-pd-banner>div{position:relative;z-index:2}.dcc-pd-banner strong{font-size:20px}
+      #coach .side{height:78px!important}#coach-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}#coach-nav button{font-size:9px!important}
+      @media(max-width:700px){#coach-main.dcc-premium-dashboard{padding:10px 14px 102px!important}.dcc-pd-hero{min-height:220px;padding:15px 12px 18px}.dcc-pd-brand img{width:52px}.dcc-pd-title{margin-top:45px;font-size:38px;max-width:62%}.dcc-pd-strip{margin-top:6px}.dcc-pd-stat{min-height:76px;padding:12px 7px}.dcc-pd-stat strong{font-size:21px}.dcc-pd-stat span{font-size:6.8px;letter-spacing:.35px}.dcc-pd-section{padding:14px}.dcc-pd-banner{padding:16px}.dcc-pd-banner strong{font-size:17px}#coach-nav button span{font-size:8px!important}}
+    `;
+    document.head.appendChild(finalStyle);
+
   }
 
   function escText(value){
@@ -154,15 +171,14 @@
     main.innerHTML=`<div class="dcc-pd">
       <section class="dcc-pd-hero">
         <div class="dcc-pd-brand"><img src="./dc-stride-logo.svg.svg" alt="DC"><div><div class="dcc-pd-brand-name">DANIEL CAMPINS</div><div class="dcc-pd-brand-sub">TRAINING PLATFORM</div></div></div>
-        <div class="dcc-pd-eyebrow">PANEL ENTRENADOR</div>
         <h1 class="dcc-pd-title">${greeting},<span>DANIEL</span></h1>
-        <div class="dcc-pd-hero-note">CADA CLIENTE ES UN PROCESO.<br><b>TÚ MARCAS LA DIFERENCIA.</b><div class="dcc-pd-hero-line"></div></div>
       </section>
 
       <div class="dcc-pd-strip">
         <div class="dcc-pd-stat"><strong>${clients.length}</strong><span>CLIENTES</span></div>
-        <div class="dcc-pd-stat"><strong>${pending}</strong><span>CHECK-INS PENDIENTES</span></div>
-        <div class="dcc-pd-stat"><strong>${unread}</strong><span>MENSAJES NUEVOS</span></div>
+        <div class="dcc-pd-stat"><strong>${pending}</strong><span>CHECK-IN PENDIENTE</span></div>
+        <div class="dcc-pd-stat"><strong>0</strong><span>RUTINAS POR RENOVAR</span></div>
+        <div class="dcc-pd-stat"><strong>0</strong><span>DIETAS POR RENOVAR</span></div>
       </div>
 
       <section class="dcc-pd-section">
@@ -175,13 +191,13 @@
         ${attention.length?attention.map(i=>row(i,true)).join(""):`<div class="dcc-pd-empty">NO HAY CLIENTES QUE REQUIERAN SEGUIMIENTO ESPECIAL AHORA MISMO.</div>`}
       </section>
 
-      <section class="dcc-pd-banner"><small>ENTRENADORES QUE TRANSFORMAN VIDAS</small><strong>ENFOQUE. CONSTANCIA. RESULTADOS.</strong></section>
+      <section class="dcc-pd-banner"><span class="dcc-pd-trophy">♛</span><div><small>CADA CLIENTE ES UN PROCESO.</small><strong>TÚ MARCAS LA DIFERENCIA.</strong></div></section>
     </div>`;
   }
 
   function activateCoachNav(screen){
     const nav=document.getElementById("coach-nav"); if(!nav) return;
-    const map={dashboard:0,clients:1,checkins:2,messages:3};
+    const map={dashboard:0,clients:1,checkins:3,messages:4};
     nav.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
     const i=map[screen]; if(i!==undefined) nav.querySelectorAll("button")[i]?.classList.add("active");
   }
@@ -190,6 +206,7 @@
     const map={
       panel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',
       clients:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 20c.5-4 2.3-6 5.5-6s5 2 5.5 6"/><path d="M14 15c3-.2 5 1.3 5.5 4.5"/></svg>',
+      calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
       check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5h6M8 11l2 2 5-5M8 17h7"/></svg>',
       msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>'
     }; return map[icon];
