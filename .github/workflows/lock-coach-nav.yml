@@ -1,0 +1,72 @@
+name: Lock coach nav
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Append nav lock
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('coach-premium.js')
+          s=p.read_text()
+          patch=r'''
+
+/* DCC global coach nav lock */
+(function(){
+  function icon(kind){
+    return {
+      panel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',
+      clients:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 20c.5-4 2.3-6 5.5-6s5 2 5.5 6"/></svg>',
+      calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',
+      check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M8 11l2 2 5-5M8 17h7"/></svg>',
+      msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>'
+    }[kind]||'';
+  }
+  function desired(){
+    return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="toast('Calendario próximamente')">${icon('calendar')}<span>Calendario</span></button><button onclick="showCoach('checkins')">${icon('check')}<span>Check-in</span></button><button onclick="showCoach('messages')">${icon('msg')}<span>Mensajes</span></button>`;
+  }
+  function enforce(){
+    const nav=document.getElementById('coach-nav');
+    if(!nav) return;
+    const labels=[...nav.querySelectorAll('button span')].map(x=>x.textContent.trim());
+    const wanted=['Panel','Clientes','Calendario','Check-in','Mensajes'];
+    if(labels.length!==5 || wanted.some((x,i)=>labels[i]!==x)) nav.innerHTML=desired();
+    nav.style.setProperty('grid-template-columns','repeat(5,minmax(0,1fr))','important');
+  }
+  function boot(){
+    enforce();
+    const nav=document.getElementById('coach-nav');
+    if(nav && !nav.__dccNavLocked){
+      nav.__dccNavLocked=true;
+      new MutationObserver(enforce).observe(nav,{childList:true,subtree:true});
+    }
+    if(typeof window.buildCoachNav==='function' && !window.buildCoachNav.__dccLocked){
+      const old=window.buildCoachNav;
+      const wrapped=function(){const r=old.apply(this,arguments);enforce();return r;};
+      wrapped.__dccLocked=true;
+      window.buildCoachNav=wrapped;
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0)); else setTimeout(boot,0);
+  window.addEventListener('load',()=>setTimeout(boot,50));
+  setInterval(enforce,500);
+})();
+'''
+          if 'DCC global coach nav lock' not in s:
+              p.write_text(s+patch)
+          PY
+      - name: Commit
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add coach-premium.js
+          git commit -m "Lock coach nav to five items" || exit 0
+          git rm .github/workflows/lock-coach-nav.yml
+          git commit -m "Remove one-shot nav workflow"
+          git push
