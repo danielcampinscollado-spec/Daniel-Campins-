@@ -95,4 +95,9 @@
   premiumNav.src='./nav-premium-global.js?v=20260908-1';
   premiumNav.async=true;
   document.head.appendChild(premiumNav);
+
+  const premiumCoachTheme=document.createElement('script');
+  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-1';
+  premiumCoachTheme.async=true;
+  document.head.appendChild(premiumCoachTheme);
 })();
