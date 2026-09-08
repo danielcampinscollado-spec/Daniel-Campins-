@@ -112,7 +112,7 @@
 
   /* El editor de rutinas se queda dentro de la ficha premium del cliente. */
   const inlineEditor=document.createElement('script');
-  inlineEditor.src='./training-inline-fix.js?v=20260908-2';
+  inlineEditor.src='./training-inline-fix.js?v=20260908-3';
   inlineEditor.async=true;
   document.head.appendChild(inlineEditor);
 })();
