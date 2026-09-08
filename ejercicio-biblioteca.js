@@ -12,7 +12,6 @@
   document.write('<script src="./entrenamientos/runtime-compat.js"><\/script>');
   window.fetch=realFetch;
 
-  /* Una sola geometría para las métricas en todas las pestañas. */
   if(!document.getElementById('dcc-client-metrics-stable')){
     const style=document.createElement('style');
     style.id='dcc-client-metrics-stable';
@@ -97,7 +96,7 @@
   document.head.appendChild(premiumNav);
 
   const premiumCoachTheme=document.createElement('script');
-  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-2';
+  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-3';
   premiumCoachTheme.async=true;
   document.head.appendChild(premiumCoachTheme);
 })();
