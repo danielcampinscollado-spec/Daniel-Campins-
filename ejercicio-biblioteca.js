@@ -49,7 +49,7 @@
   document.head.appendChild(progress);
 
   const progressStyle=document.createElement('script');
-  progressStyle.src='./progress-style-fix.js?v=20260908-1';
+  progressStyle.src='./progress-style-fix.js?v=20260908-2';
   progressStyle.async=true;
   document.head.appendChild(progressStyle);
 })();
