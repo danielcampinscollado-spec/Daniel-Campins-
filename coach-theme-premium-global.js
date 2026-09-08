@@ -32,7 +32,6 @@
         background:var(--dcc-bg)!important;
       }
 
-      /* Pantallas premium: mismo fondo, mismo padding visual */
       html body #coach #coach-main.dcc-final-dashboard,
       html body #coach #coach-main.dcc-final-clients,
       html body #coach #coach-main.dcc-premium-checkins,
@@ -42,7 +41,6 @@
         background:var(--dcc-bg)!important;
       }
 
-      /* TARJETAS PRINCIPALES — borde dorado claro + degradado premium */
       html body #coach #coach-main .dcc-fd-hero,
       html body #coach #coach-main .dcc-fd-stats,
       html body #coach #coach-main .dcc-fd-card,
@@ -58,13 +56,9 @@
       html body #coach #coach-main .metrics{
         border:1px solid var(--dcc-border)!important;
         background:var(--dcc-card)!important;
-        box-shadow:
-          inset 0 1px 0 rgba(255,255,255,.035),
-          0 12px 30px rgba(0,0,0,.22),
-          0 0 0 1px rgba(217,170,74,.025)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 12px 30px rgba(0,0,0,.22),0 0 0 1px rgba(217,170,74,.025)!important;
       }
 
-      /* Superficies interiores: mismo material, menos protagonismo */
       html body #coach #coach-main .dcc-ca-activity-item,
       html body #coach #coach-main .dcc-diet-meal,
       html body #coach #coach-main .dcc-diet-food,
@@ -85,14 +79,12 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
-      /* Entrenamiento: el día abierto sube un nivel visual */
       html body #coach #coach-main .dcc-tr-day.open{
         border-color:rgba(240,201,107,.82)!important;
         background:var(--dcc-card)!important;
         box-shadow:0 0 0 1px rgba(217,170,74,.08),0 12px 28px rgba(0,0,0,.20)!important;
       }
 
-      /* Cabeceras, buscadores y selectores */
       html body #coach #coach-main .dcc-fcl-search,
       html body #coach #coach-main .dcc-fcl-tabs,
       html body #coach #coach-main .dcc-fcl-sort,
@@ -105,14 +97,39 @@
       html body #coach #coach-main textarea,
       html body #coach #coach-main select{
         border-color:rgba(217,170,74,.32)!important;
-        background:
-          radial-gradient(circle at 88% 0,rgba(217,170,74,.045),transparent 35%),
-          linear-gradient(145deg,#0e1418,#080c0f)!important;
+        background:radial-gradient(circle at 88% 0,rgba(217,170,74,.045),transparent 35%),linear-gradient(145deg,#0e1418,#080c0f)!important;
         color:#f4f1ec!important;
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
-      /* Botones secundarios / antiguos */
+      /* Los buscadores premium ya tienen su propio contenedor. El input interior no puede crear un segundo recuadro. */
+      html body #coach #coach-main .dcc-fcl-search{
+        height:48px!important;
+        min-height:48px!important;
+        padding:0 14px!important;
+        border:1px solid rgba(217,170,74,.40)!important;
+        border-radius:15px!important;
+        display:flex!important;
+        align-items:center!important;
+      }
+      html body #coach #coach-main .dcc-fcl-search input,
+      html body #coach #coach-main .dcc-msg-search input{
+        width:100%!important;
+        height:100%!important;
+        min-height:0!important;
+        margin:0!important;
+        padding:0!important;
+        border:0!important;
+        border-radius:0!important;
+        outline:0!important;
+        background:transparent!important;
+        box-shadow:none!important;
+        color:#f4f1ed!important;
+        font-size:12px!important;
+      }
+      html body #coach #coach-main .dcc-fcl-search input::placeholder,
+      html body #coach #coach-main .dcc-msg-search input::placeholder{color:#77808a!important;opacity:1!important}
+
       html body #coach #coach-main .ghost,
       html body #coach #coach-main .dcc-ca-back,
       html body #coach #coach-main .dcc-tr-edit,
@@ -122,7 +139,6 @@
         color:#ece7dc!important;
       }
 
-      /* Botones dorados mantienen la firma visual */
       html body #coach #coach-main .btn,
       html body #coach #coach-main .dcc-fcl-new,
       html body #coach #coach-main .dcc-diet-add-food,
@@ -137,28 +153,20 @@
         box-shadow:0 7px 20px rgba(217,170,74,.14)!important;
       }
 
-      /* Check-in modal: misma tarjeta premium, no modal blanco/aislado */
       html body #coach .dcc-ci-review,
       html body .dcc-ci-review{
         border:1px solid rgba(240,201,107,.92)!important;
-        background:
-          radial-gradient(circle at 95% 0,rgba(240,201,107,.14),transparent 30%),
-          radial-gradient(circle at 5% 35%,rgba(217,170,74,.05),transparent 30%),
-          linear-gradient(150deg,#151b20,#080c0f 70%)!important;
+        background:radial-gradient(circle at 95% 0,rgba(240,201,107,.14),transparent 30%),radial-gradient(circle at 5% 35%,rgba(217,170,74,.05),transparent 30%),linear-gradient(150deg,#151b20,#080c0f 70%)!important;
         color:#f6f3ed!important;
         box-shadow:0 28px 80px rgba(0,0,0,.72),0 0 30px rgba(217,170,74,.10),inset 0 1px 0 rgba(255,255,255,.035)!important;
       }
 
-      /* Chat */
       html body #coach #coach-main .dcc-chat-row.mine .dcc-chat-bubble{
         border-color:rgba(240,201,107,.72)!important;
         background:radial-gradient(circle at 100% 0,rgba(240,201,107,.15),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)!important;
       }
-      html body #coach #coach-main .dcc-chat-row:not(.mine) .dcc-chat-bubble{
-        border-color:rgba(217,170,74,.27)!important;
-      }
+      html body #coach #coach-main .dcc-chat-row:not(.mine) .dcc-chat-bubble{border-color:rgba(217,170,74,.27)!important}
 
-      /* Vacíos */
       html body #coach #coach-main .dcc-fcl-empty,
       html body #coach #coach-main .dcc-ci-empty,
       html body #coach #coach-main .dcc-msg-empty,
@@ -169,19 +177,15 @@
         color:#939ca7!important;
       }
 
-      /* Radios coherentes */
       html body #coach #coach-main .dcc-fcl-card,
       html body #coach #coach-main .dcc-ci-card,
       html body #coach #coach-main .dcc-msg-card{border-radius:18px!important}
       html body #coach #coach-main.dcc-ca .dcc-ca-card,
       html body #coach #coach-main.dcc-ca .dcc-p5-section{border-radius:20px!important}
-
-      /* Barra inferior no se toca aquí: ya usa nav-premium-global.js */
     `;
     document.head.appendChild(s);
   }
 
   install();
-  /* Los módulos entran async. Reinstalamos al final para ganar el cascade sin observers. */
   [250,700,1500,2600].forEach(ms=>setTimeout(install,ms));
 })();
