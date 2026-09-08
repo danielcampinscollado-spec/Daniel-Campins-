@@ -85,4 +85,9 @@
   messageSync.src='./messages-sync-fix.js?v=20260908-1';
   messageSync.async=true;
   document.head.appendChild(messageSync);
+
+  const finalShell=document.createElement('script');
+  finalShell.src='./coach-premium-final-v2.js?v=20260908-1';
+  finalShell.async=true;
+  document.head.appendChild(finalShell);
 })();
