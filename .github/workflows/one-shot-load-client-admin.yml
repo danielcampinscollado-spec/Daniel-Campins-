@@ -1,4 +1,4 @@
-name: Load premium client admin
+name: Fix client management actions
 on:
   push:
     paths: ['.github/workflows/one-shot-load-client-admin.yml']
@@ -9,22 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add client admin script to app
+      - name: Fix manage and new client buttons
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
+
+          p=Path('client-admin-premium.js')
           s=p.read_text()
-          tag='<script src="./client-admin-premium.js?v=1"></script>'
-          if tag not in s:
-              if '</body>' in s:
-                  s=s.replace('</body>',tag+'\n</body>')
-              else:
-                  s += '\n'+tag+'\n'
-              p.write_text(s)
+          s=s.replace('window.data?.clients','data?.clients')
+          s=s.replace('window.data?.weights','data?.weights')
+          s=s.replace('window.data?.routines','data?.routines')
+          s=s.replace('window.data?.workoutHistory','data?.workoutHistory')
+          s=s.replace('window.data.clients','data.clients')
+          s=s.replace('window.supabaseClient','supabaseClient')
+          p.write_text(s)
+
+          p=Path('coach-premium.js')
+          s=p.read_text()
+          s=s.replace("onclick=\"showCoach('newClient')\"","onclick=\"newClient()\"")
+          p.write_text(s)
           PY
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add index.html
-          git commit -m 'Enable premium client management screen' || true
+          git add client-admin-premium.js coach-premium.js
+          git commit -m 'Fix manage client and new client actions'
           git push
