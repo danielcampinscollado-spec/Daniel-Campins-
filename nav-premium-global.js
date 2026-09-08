@@ -1,4 +1,4 @@
-/* DCC — navegación inferior premium unificada: entrenador + cliente */
+/* DCC — navegación inferior premium unificada + acabado visual global entrenador */
 (function(){
   function install(){
     const old=document.getElementById('dcc-nav-premium-global-css');
@@ -7,6 +7,129 @@
     const s=document.createElement('style');
     s.id='dcc-nav-premium-global-css';
     s.textContent=`
+      /* =========================================================
+         TEMA PREMIUM GLOBAL — PANEL DE ENTRENADOR
+         Se instala desde el mismo archivo de la barra inferior,
+         que sabemos que sí está cargando correctamente.
+      ========================================================= */
+      html body #coach,
+      html body #coach #coach-main{
+        background:
+          radial-gradient(ellipse at 88% 3%,rgba(219,167,59,.12),transparent 24%),
+          radial-gradient(ellipse at 8% 86%,rgba(217,170,74,.055),transparent 30%),
+          linear-gradient(145deg,#080b0e 0%,#050709 48%,#020405 100%)!important;
+        color:#f6f3ed!important;
+      }
+
+      /* Tarjetas principales: mismo borde dorado + mismo degradado */
+      html body #coach #coach-main .dcc-fcl-card,
+      html body #coach #coach-main .dcc-ci-card,
+      html body #coach #coach-main .dcc-msg-card,
+      html body #coach #coach-main .dcc-ca-card,
+      html body #coach #coach-main .dcc-p5-section,
+      html body #coach #coach-main .dcc-p5-metric,
+      html body #coach #coach-main .dcc-ca-metric,
+      html body #coach #coach-main .card{
+        border:1px solid rgba(224,173,76,.72)!important;
+        background:
+          radial-gradient(circle at 92% 8%,rgba(240,201,107,.105),transparent 30%),
+          radial-gradient(circle at 8% 92%,rgba(217,170,74,.035),transparent 28%),
+          linear-gradient(145deg,#11171c 0%,#0a0f13 58%,#070a0d 100%)!important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,.035),
+          0 12px 30px rgba(0,0,0,.22)!important;
+      }
+
+      /* Clientes: borde algo más marcado para conservar la estética aprobada */
+      html body #coach #coach-main .dcc-fcl-card{
+        border-color:rgba(240,201,107,.82)!important;
+        background:
+          radial-gradient(circle at 88% 15%,rgba(240,201,107,.12),transparent 31%),
+          linear-gradient(135deg,#10161a 0%,#090d10 62%,#171107 100%)!important;
+      }
+
+      /* Check-in y Mensajes: quitar aspecto gris/negro plano */
+      html body #coach #coach-main .dcc-ci-card,
+      html body #coach #coach-main .dcc-msg-card{
+        border-color:rgba(224,173,76,.66)!important;
+        background:
+          radial-gradient(circle at 92% 12%,rgba(240,201,107,.11),transparent 31%),
+          linear-gradient(140deg,#10161b 0%,#090d10 60%,#130f08 100%)!important;
+      }
+
+      /* Buscadores, selectores y pestañas: misma familia visual */
+      html body #coach #coach-main .dcc-fcl-search,
+      html body #coach #coach-main .dcc-fcl-tabs,
+      html body #coach #coach-main .dcc-fcl-sort,
+      html body #coach #coach-main .dcc-ci-tabs,
+      html body #coach #coach-main .dcc-msg-search,
+      html body #coach #coach-main .dcc-ca-tabs,
+      html body #coach #coach-main .dcc-diet-switch,
+      html body #coach #coach-main .dcc-chat-composer{
+        border:1px solid rgba(217,170,74,.32)!important;
+        background:
+          radial-gradient(circle at 90% 0%,rgba(217,170,74,.055),transparent 34%),
+          linear-gradient(145deg,#0e1418,#080c0f)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
+      }
+
+      /* Superficies interiores: dorado más suave para no saturar */
+      html body #coach #coach-main .dcc-ca-activity-item,
+      html body #coach #coach-main .dcc-diet-meal,
+      html body #coach #coach-main .dcc-diet-food,
+      html body #coach #coach-main .dcc-tr-day,
+      html body #coach #coach-main .dcc-tr-ex,
+      html body #coach #coach-main .dcc-tr-history,
+      html body #coach #coach-main .dcc-p5-card,
+      html body #coach #coach-main .dcc-ci-review-row,
+      html body #coach #coach-main .dcc-chat-bubble,
+      html body #coach #coach-main .exercise,
+      html body #coach #coach-main .food,
+      html body #coach #coach-main .metric,
+      html body #coach #coach-main .item{
+        border-color:rgba(217,170,74,.30)!important;
+        background:
+          radial-gradient(circle at 90% 5%,rgba(217,170,74,.05),transparent 34%),
+          linear-gradient(145deg,#0e1418,#080c0f)!important;
+      }
+
+      /* Panel principal: conservar diseño aprobado pero con el mismo material */
+      html body #coach #coach-main .dcc-fd-hero,
+      html body #coach #coach-main .dcc-fd-stats,
+      html body #coach #coach-main .dcc-fd-card,
+      html body #coach #coach-main .dcc-fd-banner{
+        border-color:rgba(224,173,76,.70)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 12px 30px rgba(0,0,0,.22)!important;
+      }
+
+      /* Modales / revisión de check-in */
+      html body .dcc-ci-review{
+        border-color:rgba(240,201,107,.94)!important;
+        background:
+          radial-gradient(circle at 94% 0%,rgba(240,201,107,.15),transparent 31%),
+          linear-gradient(150deg,#151b20,#080c0f 70%)!important;
+      }
+
+      /* Mensajes: burbuja del entrenador mantiene el dorado */
+      html body #coach #coach-main .dcc-chat-row.mine .dcc-chat-bubble{
+        border-color:rgba(240,201,107,.76)!important;
+        background:
+          radial-gradient(circle at 100% 0%,rgba(240,201,107,.16),transparent 42%),
+          linear-gradient(145deg,#211a0f,#100e0a)!important;
+      }
+
+      /* Inputs antiguos / vacíos: evitar blanco o gris plano */
+      html body #coach #coach-main .ghost,
+      html body #coach #coach-main .empty,
+      html body #coach #coach-main .dcc-fcl-empty,
+      html body #coach #coach-main .dcc-ci-empty,
+      html body #coach #coach-main .dcc-msg-empty,
+      html body #coach #coach-main .dcc-chat-none{
+        border-color:rgba(217,170,74,.30)!important;
+        background:linear-gradient(145deg,#0e1418,#080c0f)!important;
+        color:#949ca7!important;
+      }
+
       @media (max-width:700px){
         html body #coach .side,
         html body #client .side{
@@ -111,7 +234,6 @@
           text-overflow:ellipsis!important;
         }
 
-        /* Estado activo: recuadro físico y claramente visible. */
         html body #coach #coach-nav button.active,
         html body #client #client-nav button.active{
           border-color:#e4b54d!important;
@@ -165,7 +287,6 @@
   install();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
   window.addEventListener('load',()=>setTimeout(install,80));
-  /* Los módulos visuales se cargan async; reinsertamos este estilo al final. */
   setTimeout(install,500);
   setTimeout(install,1400);
   setTimeout(install,2600);
