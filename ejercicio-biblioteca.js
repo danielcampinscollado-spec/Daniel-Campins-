@@ -97,7 +97,7 @@
   document.head.appendChild(premiumNav);
 
   const premiumCoachTheme=document.createElement('script');
-  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-1';
+  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-2';
   premiumCoachTheme.async=true;
   document.head.appendChild(premiumCoachTheme);
 })();
