@@ -70,4 +70,9 @@
   unify.src='./progress-metrics-unify.js?v=20260908-2';
   unify.async=true;
   document.head.appendChild(unify);
+
+  const checkins=document.createElement('script');
+  checkins.src='./checkin-premium.js?v=20260908-1';
+  checkins.async=true;
+  document.head.appendChild(checkins);
 })();
