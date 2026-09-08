@@ -27,7 +27,18 @@ const DCC_PREMIUM_IMAGES=new Set([
   "press-inclinado-iso-lateral",
   "press-banca-multipower",
   "press-inclinado-multipower",
-  "aperturas-polea-banco"
+  "aperturas-polea-banco",
+  "extension-triceps-barra",
+  "extension-triceps-unilateral",
+  "extension-triceps-sobre-cabeza",
+  "fondos-maquina-asistida",
+  "press-triceps-maquina",
+  "press-cerrado-barra",
+  "extension-triceps-tumbado-ez",
+  "fondos-maquina",
+  "extension-triceps-maquina",
+  "extension-triceps-polea-agarre-inverso",
+  "extension-triceps-sobre-cabeza-unilateral"
 ]);
 function dccLocalImage(ex){
   if(!ex||!DCC_PREMIUM_IMAGES.has(ex.id)||!ex.ilustracion)return "";

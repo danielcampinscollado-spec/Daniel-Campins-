@@ -3,17 +3,101 @@
   "estado": "migracion_en_progreso",
   "criterio": "Ilustraciones premium realistas, fondo claro, equipamiento visible y técnica reconocible.",
   "aprobadas": [
-    {"id":"press-banca-barra","archivo":"press-banca-barra.webp"},
-    {"id":"press-pecho-maquina","archivo":"press-pecho-maquina.webp"},
-    {"id":"jalon-pecho-ancho","archivo":"jalon-pecho-ancho.webp"},
-    {"id":"remo-maquina-pecho-apoyado","archivo":"remo-maquina-pecho-apoyado.webp"},
-    {"id":"press-hombro-maquina","archivo":"press-hombro-maquina.webp"},
-    {"id":"extension-triceps-cuerda","archivo":"extension-triceps-cuerda.webp"},
-    {"id":"prensa-45","archivo":"prensa-45.webp"},
-    {"id":"curl-femoral-tumbado","archivo":"curl-femoral-tumbado.webp"}
+    {
+      "id": "press-banca-barra",
+      "archivo": "press-banca-barra.webp"
+    },
+    {
+      "id": "press-pecho-maquina",
+      "archivo": "press-pecho-maquina.webp"
+    },
+    {
+      "id": "jalon-pecho-ancho",
+      "archivo": "jalon-pecho-ancho.webp"
+    },
+    {
+      "id": "remo-maquina-pecho-apoyado",
+      "archivo": "remo-maquina-pecho-apoyado.webp"
+    },
+    {
+      "id": "press-hombro-maquina",
+      "archivo": "press-hombro-maquina.webp"
+    },
+    {
+      "id": "extension-triceps-cuerda",
+      "archivo": "extension-triceps-cuerda.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "prensa-45",
+      "archivo": "prensa-45.webp"
+    },
+    {
+      "id": "curl-femoral-tumbado",
+      "archivo": "curl-femoral-tumbado.webp"
+    },
+    {
+      "id": "extension-triceps-barra",
+      "archivo": "extension-triceps-barra.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-unilateral",
+      "archivo": "extension-triceps-unilateral.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-sobre-cabeza",
+      "archivo": "extension-triceps-sobre-cabeza.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "fondos-maquina-asistida",
+      "archivo": "fondos-maquina-asistida.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "press-triceps-maquina",
+      "archivo": "press-triceps-maquina.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "press-cerrado-barra",
+      "archivo": "press-cerrado-barra.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-tumbado-ez",
+      "archivo": "extension-triceps-tumbado-ez.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "fondos-maquina",
+      "archivo": "fondos-maquina.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-maquina",
+      "archivo": "extension-triceps-maquina.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-polea-agarre-inverso",
+      "archivo": "extension-triceps-polea-agarre-inverso.webp",
+      "estado": "provisional"
+    },
+    {
+      "id": "extension-triceps-sobre-cabeza-unilateral",
+      "archivo": "extension-triceps-sobre-cabeza-unilateral.webp",
+      "estado": "provisional"
+    }
   ],
   "regenerar": [
-    {"id":"curl-barra-recta","motivo":"La primera versión contiene dos fases del movimiento; la app usará una sola figura."}
+    {
+      "id": "curl-barra-recta",
+      "motivo": "La primera versión contiene dos fases del movimiento; la app usará una sola figura."
+    }
   ],
-  "nota": "La biblioteca antigua se mantiene temporalmente como compatibilidad hasta que el catálogo nuevo y sus imágenes estén completos. No eliminar antes para evitar romper rutinas existentes."
+  "nota": "La biblioteca antigua se mantiene temporalmente como compatibilidad hasta que el catálogo nuevo y sus imágenes estén completos. No eliminar antes para evitar romper rutinas existentes.",
+  "estilo_actual": "premium oscuro negro/dorado con músculo principal resaltado"
 }
