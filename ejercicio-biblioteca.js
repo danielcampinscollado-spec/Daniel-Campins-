@@ -19,7 +19,7 @@
 
   const legacyReady=window.exerciseLibraryReady;
 
-  /* Ilustraciones individuales premium ya presentes físicamente en GitHub. */
+  /* Únicamente ilustraciones DCC nuevas ya aprobadas y presentes en GitHub. */
   const illustrated=new Set([
     "press-banca-barra",
     "jalon-pecho-ancho",
@@ -59,30 +59,12 @@
     "extension-triceps-sobre-cabeza-unilateral"
   ]);
 
-  /* Mientras completamos las 130 ilustraciones, ningún ejercicio queda visualmente vacío:
-     se usa la lámina muscular dorada del grupo como fallback premium. */
-  const muscleFallback={
-    "Pectoral":"./assets/muscles/pecho.png",
-    "Espalda":"./assets/muscles/espalda.png",
-    "Hombros":"./assets/muscles/hombros.png",
-    "Bíceps":"./assets/muscles/biceps.png",
-    "Tríceps":"./assets/muscles/triceps.png",
-    "Cuádriceps":"./assets/muscles/cuadriceps.png",
-    "Femoral":"./assets/muscles/isquios.png",
-    "Glúteos":"./assets/muscles/gluteos.png",
-    "Gemelos":"./assets/muscles/gemelos.png",
-    "Core":"./assets/muscles/core.png",
-    "Lumbar":"./assets/muscles/lumbar-cuello.png"
-  };
-
   const mapMuscle=group=>group==="Espalda"?"Dorsal":group;
 
   const mapExercise=ex=>{
-    const ownImage=illustrated.has(ex.id)&&ex.ilustracion
+    const image=illustrated.has(ex.id)&&ex.ilustracion
       ? `./entrenamientos/${ex.ilustracion}`
       : "";
-    const fallback=muscleFallback[ex.grupo]||"";
-    const image=ownImage||fallback;
 
     return{
       id:ex.id,
@@ -127,4 +109,10 @@
       if(Array.isArray(window.exerciseLibraryFull))window.exerciseLibraryFull.length=0;
       return [];
     });
+
+  /* El editor de rutinas se queda dentro de la ficha premium del cliente. */
+  const inlineEditor=document.createElement('script');
+  inlineEditor.src='./training-inline-fix.js?v=20260908-1';
+  inlineEditor.async=true;
+  document.head.appendChild(inlineEditor);
 })();
