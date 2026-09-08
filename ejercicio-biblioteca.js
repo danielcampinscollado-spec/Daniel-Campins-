@@ -77,7 +77,12 @@
   document.head.appendChild(checkins);
 
   const messages=document.createElement('script');
-  messages.src='./messages-premium.js?v=20260908-1';
+  messages.src='./messages-premium.js?v=20260908-2';
   messages.async=true;
   document.head.appendChild(messages);
+
+  const messageSync=document.createElement('script');
+  messageSync.src='./messages-sync-fix.js?v=20260908-1';
+  messageSync.async=true;
+  document.head.appendChild(messageSync);
 })();
