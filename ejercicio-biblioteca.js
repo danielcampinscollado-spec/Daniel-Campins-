@@ -17,7 +17,7 @@
   document.write('<script src="./entrenamientos/runtime-compat.js"><\/script>');
   window.fetch=realFetch;
 
-  /* Las métricas de cliente se muestran únicamente en Progreso. Se aplica antes del render para evitar destellos. */
+  /* Las métricas del cliente se muestran únicamente en Progreso. */
   if(!document.getElementById('dcc-progress-metrics-visibility')){
     const style=document.createElement('style');
     style.id='dcc-progress-metrics-visibility';
@@ -54,7 +54,7 @@
   document.head.appendChild(inlineEditor);
 
   const progress=document.createElement('script');
-  progress.src='./progress-premium-v4.js?v=20260908-6';
+  progress.src='./progress-premium-v5.js?v=20260908-7';
   progress.async=true;
   document.head.appendChild(progress);
 })();
