@@ -105,6 +105,16 @@
   clientsSearchFix.async=true;
   document.head.appendChild(clientsSearchFix);
 
+  /* La pantalla premium del entrenamiento activo se carga al final,
+     después de que el resto de renderizadores hayan terminado. */
+  window.addEventListener('load',()=>{
+    if(document.querySelector('script[data-dcc-workout-premium]'))return;
+    const workoutPremium=document.createElement('script');
+    workoutPremium.src='./workout-session-premium-v2.js?v=20260909-1';
+    workoutPremium.dataset.dccWorkoutPremium='1';
+    document.body.appendChild(workoutPremium);
+  },{once:true});
+
   /* Al cambiar de pestaña principal, empezar siempre en el encabezado.
      No afecta a botones internos de rutina/selección de ejercicios. */
   if(!window.__dccTopOnMainTabInstalled){
