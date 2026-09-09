@@ -1,4 +1,4 @@
-/* DCC — entrenador: energía visible + revisión sincronizada */
+/* DCC — entrenador: energía visible + revisión y recepción sincronizadas */
 (function(){
   'use strict';
 
@@ -10,6 +10,37 @@
     return window.supabaseClient||null;
   }
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+  async function syncCheckinsFromDatabase(){
+    const db=database();if(!db)return false;
+    try{
+      const {data:rows,error}=await db.from('client_checkins').select('client_id,weight,diet,training,energy,comment,reviewed,body_fat,sent_at,updated_at');
+      if(error)throw error;
+      const d=appData();d.checkins=d.checkins||{};
+      (rows||[]).forEach(r=>{
+        const prev=d.checkins[r.client_id]||{};
+        d.checkins[r.client_id]={
+          ...prev,
+          weight:r.weight??prev.weight??'',
+          diet:r.diet??prev.diet??'',
+          training:r.training??prev.training??'',
+          energy:r.energy??prev.energy??'',
+          comment:r.comment??prev.comment??'',
+          reviewed:!!r.reviewed,
+          bodyFat:r.body_fat!=null?Number(r.body_fat):(prev.bodyFat??''),
+          sentAt:r.sent_at??prev.sentAt??null,
+          updatedAt:r.updated_at??prev.updatedAt??null
+        };
+        const c=(d.clients||[]).find(x=>String(x.id)===String(r.client_id));
+        if(c)c.status=r.reviewed?'Revisado':'Pendiente';
+      });
+      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){console.warn(e)}
+      return true;
+    }catch(e){
+      console.error('DCC recepción check-ins entrenador:',e);
+      return false;
+    }
+  }
 
   function installEnergyRow(){
     const current=window.reviewCheckin;
@@ -62,13 +93,33 @@
     return true;
   }
 
+  function installNavigationSync(){
+    const current=window.showCoach;
+    if(typeof current!=='function'||current.__dccCheckinRemoteSyncV3)return false;
+    const wrapped=function(screen){
+      const result=current.apply(this,arguments);
+      if(screen==='checkins'){
+        syncCheckinsFromDatabase().then(ok=>{
+          if(ok&&window.currentScreen==='checkins')current('checkins');
+        });
+      }
+      return result;
+    };
+    wrapped.__dccCheckinRemoteSyncV3=true;
+    wrapped.__base=current;
+    window.showCoach=wrapped;
+    return true;
+  }
+
   function install(){
     installEnergyRow();
     installReviewedSync();
+    installNavigationSync();
   }
 
   install();
+  syncCheckinsFromDatabase();
   setTimeout(install,300);
   setTimeout(install,1000);
-  window.addEventListener('load',()=>setTimeout(install,120));
+  window.addEventListener('load',()=>setTimeout(()=>{install();syncCheckinsFromDatabase()},120));
 })();
