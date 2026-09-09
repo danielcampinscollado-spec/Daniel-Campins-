@@ -1,9 +1,11 @@
-/* DCC — Progreso premium del cliente v6 */
+/* DCC — Progreso premium del cliente: renderer único y estable */
 (function(){
   'use strict';
 
+  if(window.__dccClientProgressV6StableLoaded) return;
+  window.__dccClientProgressV6StableLoaded=true;
+
   const GOLD='#efbb4c';
-  const GREEN='#52dda6';
 
   const num=value=>{
     const n=parseFloat(String(value??'').replace(',','.'));
@@ -23,118 +25,106 @@
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#039;');
 
+  const WEIGHT_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="6" width="14" height="13" rx="3"/><path d="M9 9.5c1.9-1.5 4.1-1.5 6 0"/><path d="M12 9.5v3"/></svg>';
+  const FORCE_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12"/></svg>';
+
   function injectStyles(){
-    if(document.getElementById('dcc-client-progress-v6-style')) return;
+    const old=document.getElementById('dcc-client-progress-v6-style');
+    if(old) old.remove();
+
     const style=document.createElement('style');
     style.id='dcc-client-progress-v6-style';
     style.textContent=`
       #client-main .dcpr6{width:100%;max-width:860px;margin:0 auto;padding:2px 0 34px;color:#f7f6f1}
       #client-main .dcpr6 *{box-sizing:border-box}
-      #client-main .dcpr6-head{margin:4px 2px 18px}
+      #client-main .dcpr6-head{margin:4px 2px 15px}
       #client-main .dcpr6-kicker{color:#e9b74d;font-size:11px;font-weight:850;letter-spacing:3px;text-transform:uppercase}
-      #client-main .dcpr6-head p{margin:8px 0 0;color:#9ba5b1;font-size:15px;line-height:1.35}
+      #client-main .dcpr6-head p{margin:8px 0 0;color:#9ba5b1;font-size:14px;line-height:1.35}
 
-      #client-main .dcpr6-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:11px}
-      #client-main .dcpr6-metric{position:relative;min-height:154px;padding:14px 13px 11px;overflow:hidden;border:1px solid rgba(232,178,68,.76);border-radius:21px;background:radial-gradient(circle at 100% 0,rgba(232,178,68,.13),transparent 38%),linear-gradient(145deg,#141b23 0%,#091118 70%,#070b10 100%);box-shadow:0 15px 36px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.04)}
-      #client-main .dcpr6-metric:after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 32%,rgba(255,255,255,.026),transparent 65%);pointer-events:none}
-      #client-main .dcpr6-metric-top{position:relative;z-index:2;display:flex;align-items:center;gap:9px}
-      #client-main .dcpr6-icon{width:38px;height:38px;flex:none;display:grid;place-items:center;border:1px solid rgba(232,178,68,.40);border-radius:12px;background:linear-gradient(145deg,rgba(232,178,68,.10),rgba(232,178,68,.025));color:#f1c35d;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
-      #client-main .dcpr6-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-      #client-main .dcpr6-percent{font-size:22px;font-weight:820;line-height:1}
+      #client-main .dcpr6-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+      #client-main .dcpr6-metric{position:relative;min-height:122px;padding:12px 12px 10px;overflow:hidden;border:1px solid rgba(232,178,68,.76);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(232,178,68,.11),transparent 38%),linear-gradient(145deg,#141b23 0%,#091118 70%,#070b10 100%);box-shadow:0 15px 36px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.035)}
+      #client-main .dcpr6-metric-top{display:flex;align-items:center;gap:8px}
+      #client-main .dcpr6-icon{width:32px;height:32px;flex:none;display:grid;place-items:center;border:1px solid rgba(232,178,68,.40);border-radius:10px;background:linear-gradient(145deg,rgba(232,178,68,.10),rgba(232,178,68,.025));color:#f1c35d}
+      #client-main .dcpr6-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      #client-main .dcpr6-percent{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Arial,sans-serif;font-size:21px;font-weight:400;line-height:1;letter-spacing:-.04em}
       #client-main .dcpr6-metric-copy{min-width:0}
-      #client-main .dcpr6-metric-title{color:#f5f4ef;font-size:14px;font-weight:780;line-height:1.1;white-space:nowrap}
-      #client-main .dcpr6-metric-start{margin-top:3px;color:#919ca9;font-size:10px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-      #client-main .dcpr6-value{position:relative;z-index:2;margin-top:14px;color:#fff;font-size:30px;font-weight:830;letter-spacing:-1.1px;line-height:1;white-space:nowrap}
-      #client-main .dcpr6-chip{position:relative;z-index:3;display:inline-flex;align-items:center;min-height:28px;margin-top:10px;padding:5px 10px;border:1px solid rgba(70,218,154,.64);border-radius:999px;background:rgba(20,111,75,.18);color:#58e3a7;font-size:10px;font-weight:820;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+      #client-main .dcpr6-metric-title{color:#f5f4ef;font-size:12px;font-weight:780;line-height:1.1;white-space:nowrap}
+      #client-main .dcpr6-metric-start{margin-top:2px;color:#919ca9;font-size:8.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      #client-main .dcpr6-value{margin-top:10px;color:#fff;font-size:25px;font-weight:830;letter-spacing:-.8px;line-height:1;white-space:nowrap}
+      #client-main .dcpr6-chip{display:inline-flex;align-items:center;min-height:24px;margin-top:8px;padding:4px 8px;border:1px solid rgba(70,218,154,.64);border-radius:999px;background:rgba(20,111,75,.18);color:#58e3a7;font-size:9px;font-weight:820;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
       #client-main .dcpr6-chip.neutral{border-color:#344351;background:#0b1219;color:#aab5c2}
-      #client-main .dcpr6-spark{position:absolute;right:7px;bottom:5px;width:48%;height:35px;opacity:.82;pointer-events:none;z-index:1}
-      #client-main .dcpr6-spark svg{display:block;width:100%;height:100%}
+      #client-main .dcpr6-spark{display:none!important}
 
-      #client-main .dcpr6-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 0 12px;padding:4px;border:1px solid #27333f;border-radius:18px;background:linear-gradient(145deg,#0b1219,#070c11);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
-      #client-main .dcpr6-switch button{min-height:44px;display:flex;align-items:center;justify-content:center;gap:7px;padding:6px 4px;border:1px solid transparent!important;border-radius:14px;background:transparent!important;color:#9ca8b5!important;font-size:11px;font-weight:800;box-shadow:none!important}
+      #client-main .dcpr6-switch{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 0 10px;padding:4px;border:1px solid #27333f;border-radius:18px;background:linear-gradient(145deg,#0b1219,#070c11);box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+      #client-main .dcpr6-switch button{min-height:42px;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 4px;border:1px solid transparent!important;border-radius:14px;background:transparent!important;color:#9ca8b5!important;font-size:10.5px;font-weight:800;box-shadow:none!important}
       #client-main .dcpr6-switch button.active{border-color:#e5b347!important;background:radial-gradient(circle at 50% 0,rgba(242,194,91,.21),transparent 78%),linear-gradient(145deg,#2a2418,#15130d)!important;color:#f1c45e!important;box-shadow:0 0 20px rgba(226,171,62,.14),inset 0 1px 0 rgba(255,255,255,.04)!important}
-      #client-main .dcpr6-switch svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      #client-main .dcpr6-switch svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      #client-main .dcpr6-fat-switch-icon{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Arial,sans-serif;font-size:18px;font-weight:400;line-height:1;letter-spacing:-.04em}
 
-      #client-main .dcpr6-panel{position:relative;margin:0 0 12px;padding:16px;border:1px solid rgba(232,178,68,.74);border-radius:21px;background:radial-gradient(circle at 100% 0,rgba(232,178,68,.10),transparent 38%),linear-gradient(145deg,#111922,#071018);box-shadow:0 15px 38px rgba(0,0,0,.29),inset 0 1px 0 rgba(255,255,255,.03);overflow:hidden}
-      #client-main .dcpr6-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative;z-index:1}
-      #client-main .dcpr6-panel-title{display:flex;align-items:flex-start;gap:9px;min-width:0}
-      #client-main .dcpr6-panel-title .dcpr6-icon{width:34px;height:34px;border:0;background:transparent}
+      #client-main .dcpr6-panel{position:relative;margin:0 0 10px;padding:13px 14px 11px;border:1px solid rgba(232,178,68,.74);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(232,178,68,.10),transparent 38%),linear-gradient(145deg,#111922,#071018);box-shadow:0 15px 38px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.03);overflow:hidden}
+      #client-main .dcpr6-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1}
+      #client-main .dcpr6-panel-title{display:flex;align-items:center;gap:6px;min-width:0}
+      #client-main .dcpr6-panel-title .dcpr6-icon{width:28px;height:28px;border:0;background:transparent}
       #client-main .dcpr6-eyebrow{color:#e9b74d;font-size:10px;font-weight:850;letter-spacing:2.3px;text-transform:uppercase}
-      #client-main .dcpr6-panel h2{margin:2px 0 0!important;color:#f6f5f0!important;font-size:20px!important;line-height:1.1!important;letter-spacing:-.35px!important}
-      #client-main .dcpr6-sub{margin:4px 0 0;color:#8f9aa7;font-size:10px;line-height:1.35}
-      #client-main .dcpr6-chart-badge{flex:none;padding:8px 12px;border:1px solid rgba(232,178,68,.66);border-radius:14px;background:linear-gradient(145deg,rgba(232,178,68,.11),rgba(232,178,68,.03));color:#f1c45e;font-size:11px;font-weight:850;white-space:nowrap}
-      #client-main .dcpr6-chart{height:235px;margin-top:9px}
+      #client-main .dcpr6-panel h2{margin:0!important;color:#f6f5f0!important;font-size:18px!important;line-height:1.1!important;letter-spacing:-.35px!important}
+      #client-main .dcpr6-sub{margin:2px 0 0;color:#8f9aa7;font-size:9px;line-height:1.35}
+      #client-main .dcpr6-chart-badge{flex:none;padding:6px 9px;border:1px solid rgba(232,178,68,.66);border-radius:12px;background:linear-gradient(145deg,rgba(232,178,68,.11),rgba(232,178,68,.03));color:#f1c45e;font-size:10px;font-weight:850;white-space:nowrap}
+      #client-main .dcpr6-chart{height:175px;margin-top:4px}
       #client-main .dcpr6-chart svg{width:100%;height:100%;display:block;overflow:visible}
-      #client-main .dcpr6-chart-empty{height:205px;display:grid;place-items:center;padding:20px;color:#7f8b97;font-size:11px;line-height:1.5;text-align:center}
+      #client-main .dcpr6-chart-empty{height:145px;display:grid;place-items:center;padding:14px;color:#7f8b97;font-size:10px;line-height:1.5;text-align:center}
 
-      #client-main .dcpr6-force-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+      #client-main .dcpr6-force-panel{padding:0!important}
+      #client-main .dcpr6-force-head{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:68px;margin:0;padding:13px 48px 13px 15px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+      #client-main .dcpr6-force-head::after{content:'';position:absolute;right:18px;top:50%;width:9px;height:9px;border-right:2px solid #e7b64e;border-bottom:2px solid #e7b64e;transform:translateY(-65%) rotate(45deg);transition:transform .18s ease}
+      #client-main .dcpr6-force-panel.is-open .dcpr6-force-head::after{transform:translateY(-35%) rotate(225deg)}
       #client-main .dcpr6-count{flex:none;padding:7px 10px;border:1px solid #2c3945;border-radius:999px;background:#081018;color:#9da9b5;font-size:9px;white-space:nowrap}
+      #client-main .dcpr6-force-body{display:none}
+      #client-main .dcpr6-force-panel.is-open .dcpr6-force-body{display:block;padding:0 13px 13px}
       #client-main .dcpr6-force-list{border:1px solid #202b35;border-radius:15px;overflow:hidden;background:#071018}
-      #client-main .dcpr6-force-row{min-height:54px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid #202b35}
+      #client-main .dcpr6-force-row{min-height:50px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:9px 10px;border-top:1px solid #202b35}
       #client-main .dcpr6-force-row:first-child{border-top:0}
-      #client-main .dcpr6-force-name{color:#f1f2ee;font-size:12px;font-weight:710;line-height:1.25}
-      #client-main .dcpr6-force-change{padding:5px 9px;border:1px solid rgba(53,210,143,.52);border-radius:999px;background:rgba(16,96,65,.17);color:#59e2aa;font-size:11px;font-weight:850;white-space:nowrap}
-      #client-main .dcpr6-force-empty{padding:22px 14px;text-align:center;color:#818c98;font-size:11px;line-height:1.45}
-      #client-main .dcpr6-best{display:flex;align-items:center;gap:9px;margin-top:8px;padding:10px 12px;border:1px solid rgba(232,178,68,.70);border-radius:13px;background:linear-gradient(90deg,rgba(232,178,68,.18),rgba(232,178,68,.03));color:#f0c35d;font-size:11px;font-weight:820}
+      #client-main .dcpr6-force-name{color:#f1f2ee;font-size:11px;font-weight:710;line-height:1.25}
+      #client-main .dcpr6-force-change{padding:5px 9px;border:1px solid rgba(53,210,143,.52);border-radius:999px;background:rgba(16,96,65,.17);color:#59e2aa;font-size:10px;font-weight:850;white-space:nowrap}
+      #client-main .dcpr6-force-empty{padding:20px 14px;text-align:center;color:#818c98;font-size:10px;line-height:1.45}
+      #client-main .dcpr6-best{display:flex;align-items:center;gap:8px;margin-top:8px;padding:9px 11px;border:1px solid rgba(232,178,68,.70);border-radius:13px;background:linear-gradient(90deg,rgba(232,178,68,.18),rgba(232,178,68,.03));color:#f0c35d;font-size:10px;font-weight:820}
 
-      #client-main .dcpr6-constancy{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:11px}
+      #client-main .dcpr6-constancy{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px}
       #client-main .dcpr6-constancy-copy{min-width:0}
-      #client-main .dcpr6-constancy-copy p{margin:4px 0 8px;color:#a0aab5;font-size:10px;line-height:1.35}
+      #client-main .dcpr6-constancy-copy p{margin:4px 0 8px;color:#a0aab5;font-size:9.5px;line-height:1.35}
       #client-main .dcpr6-constancy-pct{color:#f5f5ef;font-size:14px;font-weight:850;white-space:nowrap}
       #client-main .dcpr6-bar{height:8px;border:1px solid #283744;border-radius:999px;background:#0a1118;overflow:hidden}
       #client-main .dcpr6-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#e3a936,#f5ca64);box-shadow:0 0 16px rgba(240,190,76,.27)}
 
       @media(max-width:430px){
-        #client-main .dcpr6-head{margin-bottom:15px}
+        #client-main .dcpr6-head{margin-bottom:14px}
         #client-main .dcpr6-head p{font-size:13px}
-        #client-main .dcpr6-metrics{gap:7px}
-        #client-main .dcpr6-metric{min-height:137px;padding:11px 9px 9px;border-radius:18px}
-        #client-main .dcpr6-icon{width:31px;height:31px;border-radius:10px}
-        #client-main .dcpr6-icon svg{width:17px;height:17px}
-        #client-main .dcpr6-percent{font-size:18px}
-        #client-main .dcpr6-metric-title{font-size:11px}
-        #client-main .dcpr6-metric-start{font-size:8px}
-        #client-main .dcpr6-value{font-size:23px;margin-top:12px}
-        #client-main .dcpr6-chip{min-height:25px;margin-top:8px;padding:4px 7px;font-size:8.5px}
-        #client-main .dcpr6-spark{right:5px;bottom:4px;height:27px;width:44%}
+        #client-main .dcpr6-metrics{gap:6px}
+        #client-main .dcpr6-metric{min-height:110px;padding:9px 8px 8px;border-radius:17px}
+        #client-main .dcpr6-icon{width:29px;height:29px;border-radius:9px}
+        #client-main .dcpr6-icon svg{width:16px;height:16px}
+        #client-main .dcpr6-percent{font-size:19px}
+        #client-main .dcpr6-metric-title{font-size:10.5px}
+        #client-main .dcpr6-metric-start{font-size:7.6px}
+        #client-main .dcpr6-value{margin-top:8px;font-size:20px;letter-spacing:-.45px}
+        #client-main .dcpr6-chip{min-height:22px;margin-top:6px;padding:3px 6px;font-size:7.8px}
         #client-main .dcpr6-switch button{min-height:40px;font-size:9.5px;gap:5px}
         #client-main .dcpr6-switch svg{width:16px;height:16px}
-        #client-main .dcpr6-panel{padding:13px;border-radius:19px}
-        #client-main .dcpr6-panel h2{font-size:17px!important}
-        #client-main .dcpr6-chart-badge{padding:7px 9px;font-size:9.5px}
-        #client-main .dcpr6-chart{height:205px}
-        #client-main .dcpr6-chart-empty{height:175px}
-        #client-main .dcpr6-force-name{font-size:11px}
-        #client-main .dcpr6-force-row{min-height:50px;padding:9px 10px}
+        #client-main .dcpr6-panel{padding:11px 11px 9px}
+        #client-main .dcpr6-panel h2{font-size:16px!important}
+        #client-main .dcpr6-chart-badge{padding:5px 8px;font-size:9px}
+        #client-main .dcpr6-chart{height:148px;margin-top:2px}
+        #client-main .dcpr6-chart-empty{height:125px}
+        #client-main .dcpr6-force-panel{padding:0!important}
+        #client-main .dcpr6-force-head{min-height:64px;padding:12px 44px 12px 13px}
+        #client-main .dcpr6-force-head::after{right:16px}
+        #client-main .dcpr6-force-panel.is-open .dcpr6-force-body{padding:0 11px 11px}
         #client-main .dcpr6-count{font-size:8px;padding:6px 8px}
         #client-main .dcpr6-constancy{grid-template-columns:34px minmax(0,1fr) auto;gap:8px}
         #client-main .dcpr6-constancy .dcpr6-icon{width:34px;height:34px}
         #client-main .dcpr6-constancy-copy p{font-size:9px}
       }
-      @media(max-width:370px){
-        #client-main .dcpr6-value{font-size:20px}
-        #client-main .dcpr6-chip{font-size:7.8px;padding-left:6px;padding-right:6px}
-        #client-main .dcpr6-metric-title{font-size:10px}
-        #client-main .dcpr6-metric-start{font-size:7.5px}
-        #client-main .dcpr6-switch button{font-size:8.5px}
-      }
     `;
     document.head.appendChild(style);
-  }
-
-  function spark(values,id){
-    const vals=(values||[]).map(Number).filter(Number.isFinite);
-    if(vals.length<2) return '';
-    const w=150,h=38,p=3;
-    const lo=Math.min(...vals),hi=Math.max(...vals),span=hi-lo||1;
-    const pts=vals.map((v,i)=>{
-      const x=p+i*(w-2*p)/(vals.length-1);
-      const y=h-p-(v-lo)*(h-2*p)/span;
-      return [x,y];
-    });
-    const line=pts.map((pt,i)=>`${i?'L':'M'}${pt[0].toFixed(1)},${pt[1].toFixed(1)}`).join(' ');
-    const area=`${line} L${pts[pts.length-1][0].toFixed(1)},${h-p} L${pts[0][0].toFixed(1)},${h-p} Z`;
-    return `<div class="dcpr6-spark"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${GOLD}" stop-opacity=".22"/><stop offset="1" stop-color="${GOLD}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="${GOLD}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>`;
   }
 
   function bestEstimatedStrength(ex){
@@ -153,10 +143,10 @@
   function chart(dataSet){
     const points=(dataSet.values||[]).filter(item=>Number.isFinite(Number(item.v)));
     if(points.length<2){
-      return `<div class="dcpr6-chart-empty">Necesitamos más registros para mostrar esta evolución.<br>En cuanto entrenes y registres datos, aparecerá aquí automáticamente.</div>`;
+      return `<div class="dcpr6-chart-empty">Necesitamos más registros para mostrar esta evolución.<br>En cuanto registres nuevos datos, aparecerá aquí automáticamente.</div>`;
     }
 
-    const W=720,H=245,L=55,R=18,T=18,B=38;
+    const W=720,H=210,L=55,R=18,T=16,B=34;
     const vals=points.map(x=>Number(x.v));
     let min=Math.min(...vals),max=Math.max(...vals),span=max-min;
     if(!span){
@@ -191,13 +181,13 @@
 
     const every=Math.max(1,Math.ceil(coords.length/10));
     const vertical=coords.map((pt,i)=>{
-      const label=i%every===0||i===coords.length-1?`<text x="${pt.x}" y="${H-12}" text-anchor="middle" fill="#7f8b98" font-size="10">${escHtml(pt.label)}</text>`:'';
+      const label=i%every===0||i===coords.length-1?`<text x="${pt.x}" y="${H-10}" text-anchor="middle" fill="#7f8b98" font-size="10">${escHtml(pt.label)}</text>`:'';
       return `<line x1="${pt.x}" y1="${T}" x2="${pt.x}" y2="${H-B}" stroke="rgba(145,159,174,.10)"/>${label}`;
     }).join('');
 
-    const dots=coords.map(pt=>`<circle cx="${pt.x}" cy="${pt.y}" r="4.2" fill="#f4c75c" stroke="#fff0bb" stroke-width="1.3"/>`).join('');
+    const dots=coords.map(pt=>`<circle cx="${pt.x}" cy="${pt.y}" r="4" fill="#f4c75c" stroke="#fff0bb" stroke-width="1.2"/>`).join('');
 
-    return `<div class="dcpr6-chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${GOLD}" stop-opacity=".31"/><stop offset="1" stop-color="${GOLD}" stop-opacity="0"/></linearGradient><filter id="${fid}"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${horizontal}${vertical}<path d="${area}" fill="url(#${gid})"/><path d="${line}" fill="none" stroke="${GOLD}" stroke-width="3.1" vector-effect="non-scaling-stroke" filter="url(#${fid})"/>${dots}</svg></div>`;
+    return `<div class="dcpr6-chart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${GOLD}" stop-opacity=".28"/><stop offset="1" stop-color="${GOLD}" stop-opacity="0"/></linearGradient><filter id="${fid}"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${horizontal}${vertical}<path d="${area}" fill="url(#${gid})"/><path d="${line}" fill="none" stroke="${GOLD}" stroke-width="3" vector-effect="non-scaling-stroke" filter="url(#${fid})"/>${dots}</svg></div>`;
   }
 
   function getContext(){
@@ -241,7 +231,11 @@
     if(initialBodyFat!=null && initialBodyFat<=0) initialBodyFat=null;
 
     const checkin=d.checkins?.[cid]||{};
-    let currentBodyFat=checkin.bodyFat!==undefined && checkin.bodyFat!==null && checkin.bodyFat!==''?num(checkin.bodyFat):null;
+    let currentBodyFat=
+      checkin.bodyFat!==undefined && checkin.bodyFat!==null && checkin.bodyFat!=='' ? num(checkin.bodyFat) :
+      checkin.body_fat!==undefined && checkin.body_fat!==null && checkin.body_fat!=='' ? num(checkin.body_fat) :
+      c.bodyFat!==undefined && c.bodyFat!==null && c.bodyFat!=='' ? num(c.bodyFat) :
+      c.body_fat!==undefined && c.body_fat!==null && c.body_fat!=='' ? num(c.body_fat) : null;
     if(currentBodyFat!=null && currentBodyFat<=0) currentBodyFat=null;
 
     const bodyFatChange=initialBodyFat!=null && currentBodyFat!=null?currentBodyFat-initialBodyFat:null;
@@ -294,13 +288,14 @@
     const allChanges=strengthRows.map(row=>row.change).filter(Number.isFinite);
     const averageStrength=allChanges.length?allChanges.reduce((a,b)=>a+b,0)/allChanges.length:null;
 
-    const selected=window.dccClientProgressMetric||'force';
+    const selected=window.dccClientProgressMetric||'weight';
+    const forceOpen=!!window.dccForceProgressOpen;
     const metricData={
       weight:{label:'Peso',subtitle:'Tu peso registro a registro.',unit:' kg',values:weightSeries.map((v,i)=>({v,label:`R${i+1}`})),valueLabel:currentWeight>0?`${fmt(currentWeight)} kg`:'—'},
-      fat:{label:'% de grasa',subtitle:'Tu composición corporal a lo largo del proceso.',unit:'%',values:fatSeries.map((v,i)=>({v,label:`R${i+1}`})),valueLabel:currentBodyFat!=null?`${fmt(currentBodyFat)}%`:'—'},
+      fat:{label:'Grasa',subtitle:'Tu composición corporal a lo largo del proceso.',unit:'%',values:fatSeries.map((v,i)=>({v,label:`R${i+1}`})),valueLabel:currentBodyFat!=null?`${fmt(currentBodyFat)}%`:'—'},
       force:{label:'Fuerza',subtitle:'Tu fuerza entrenamiento a entrenamiento.',unit:'%',values:strengthTimeline,valueLabel:averageStrength!=null?`${averageStrength>=0?'+':''}${fmt(averageStrength)}%`:'—'}
     };
-    const selectedData=metricData[selected]||metricData.force;
+    const selectedData=metricData[selected]||metricData.weight;
 
     const now=new Date();
     const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
@@ -325,31 +320,28 @@
 
         <div class="dcpr6-metrics">
           <div class="dcpr6-metric">
-            <div class="dcpr6-metric-top"><div class="dcpr6-icon"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M9 10c2-1.5 4-1.5 6 0"/><path d="M12 10v3"/></svg></div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">Peso</div><div class="dcpr6-metric-start">Inicio ${initialWeight>0?fmt(initialWeight)+' kg':'—'}</div></div></div>
+            <div class="dcpr6-metric-top"><div class="dcpr6-icon">${WEIGHT_SVG}</div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">Peso</div><div class="dcpr6-metric-start">Inicio ${initialWeight>0?fmt(initialWeight)+' kg':'—'}</div></div></div>
             <div class="dcpr6-value">${currentWeight>0?fmt(currentWeight)+' kg':'—'}</div>
             <div class="dcpr6-chip ${weightChange===0?'neutral':''}">${weightChip}</div>
-            ${spark(weightSeries,'dcpr6SparkWeight')}
           </div>
 
           <div class="dcpr6-metric">
-            <div class="dcpr6-metric-top"><div class="dcpr6-icon"><span class="dcpr6-percent">%</span></div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">% de grasa</div><div class="dcpr6-metric-start">Inicio ${initialBodyFat!=null?fmt(initialBodyFat)+'%':'Sin dato'}</div></div></div>
+            <div class="dcpr6-metric-top"><div class="dcpr6-icon"><span class="dcpr6-percent">%</span></div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">Grasa</div><div class="dcpr6-metric-start">Inicio ${initialBodyFat!=null?fmt(initialBodyFat)+'%':'Sin dato'}</div></div></div>
             <div class="dcpr6-value">${currentBodyFat!=null?fmt(currentBodyFat)+'%':'—'}</div>
             <div class="dcpr6-chip ${bodyFatChange==null?'neutral':''}">${fatChip}</div>
-            ${spark(fatSeries,'dcpr6SparkFat')}
           </div>
 
           <div class="dcpr6-metric">
-            <div class="dcpr6-metric-top"><div class="dcpr6-icon"><svg viewBox="0 0 24 24"><path d="M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12"/></svg></div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">Fuerza</div><div class="dcpr6-metric-start">Desde el inicio</div></div></div>
+            <div class="dcpr6-metric-top"><div class="dcpr6-icon">${FORCE_SVG}</div><div class="dcpr6-metric-copy"><div class="dcpr6-metric-title">Fuerza</div><div class="dcpr6-metric-start">Desde el inicio</div></div></div>
             <div class="dcpr6-value">${averageStrength!=null?`${averageStrength>=0?'+':''}${fmt(averageStrength)}%`:'—'}</div>
             <div class="dcpr6-chip ${averageStrength==null?'neutral':''}">${forceChip}</div>
-            ${spark(strengthTimeline.map(x=>x.v),'dcpr6SparkForce')}
           </div>
         </div>
 
         <div class="dcpr6-switch">
-          <button type="button" data-dcpr6-metric="weight" class="${selected==='weight'?'active':''}"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M9 10c2-1.5 4-1.5 6 0"/></svg><span>Peso</span></button>
-          <button type="button" data-dcpr6-metric="fat" class="${selected==='fat'?'active':''}"><span style="font-size:18px;line-height:1">%</span><span>% Grasa</span></button>
-          <button type="button" data-dcpr6-metric="force" class="${selected==='force'?'active':''}"><svg viewBox="0 0 24 24"><path d="M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12"/></svg><span>Fuerza</span></button>
+          <button type="button" data-dcpr6-metric="weight" class="${selected==='weight'?'active':''}">${WEIGHT_SVG}<span>Peso</span></button>
+          <button type="button" data-dcpr6-metric="fat" class="${selected==='fat'?'active':''}"><span class="dcpr6-fat-switch-icon">%</span><span>Grasa</span></button>
+          <button type="button" data-dcpr6-metric="force" class="${selected==='force'?'active':''}">${FORCE_SVG}<span>Fuerza</span></button>
         </div>
 
         <div class="dcpr6-panel">
@@ -360,12 +352,17 @@
           ${chart(selectedData)}
         </div>
 
-        <div class="dcpr6-panel">
-          <div class="dcpr6-force-head"><div><div class="dcpr6-eyebrow">PROGRESO DE FUERZA</div><p class="dcpr6-sub">Variación desde el inicio.</p></div><div class="dcpr6-count">${improvedRows.length} ${improvedRows.length===1?'ejercicio mejorado':'ejercicios mejorados'}</div></div>
-          <div class="dcpr6-force-list">
-            ${rows.length?rows.map(row=>`<div class="dcpr6-force-row"><div class="dcpr6-force-name">${escHtml(row.name)}</div><div class="dcpr6-force-change">${row.change>=0?'+':''}${fmt(row.change)}%</div></div>`).join(''):`<div class="dcpr6-force-empty">Registra varios entrenamientos para empezar a comparar tu fuerza.</div>`}
+        <div class="dcpr6-panel dcpr6-force-panel ${forceOpen?'is-open':''}">
+          <div class="dcpr6-force-head" role="button" tabindex="0" aria-expanded="${forceOpen?'true':'false'}">
+            <div><div class="dcpr6-eyebrow">PROGRESO DE FUERZA</div><p class="dcpr6-sub">${forceOpen?'Variación desde el inicio.':'Pulsa para ver el detalle'}</p></div>
+            <div class="dcpr6-count">${improvedRows.length} ${improvedRows.length===1?'ejercicio mejorado':'ejercicios mejorados'}</div>
           </div>
-          ${best?`<div class="dcpr6-best"><span>★</span><span>Mejor progreso: ${escHtml(best.name)} · +${fmt(best.change)}%</span></div>`:''}
+          <div class="dcpr6-force-body">
+            <div class="dcpr6-force-list">
+              ${rows.length?rows.map(row=>`<div class="dcpr6-force-row"><div class="dcpr6-force-name">${escHtml(row.name)}</div><div class="dcpr6-force-change">${row.change>=0?'+':''}${fmt(row.change)}%</div></div>`).join(''):`<div class="dcpr6-force-empty">Registra varios entrenamientos para empezar a comparar tu fuerza.</div>`}
+            </div>
+            ${best?`<div class="dcpr6-best"><span>★</span><span>Mejor progreso: ${escHtml(best.name)} · +${fmt(best.change)}%</span></div>`:''}
+          </div>
         </div>
 
         <div class="dcpr6-panel">
@@ -382,10 +379,31 @@
       button.addEventListener('click',()=>{
         const y=window.scrollY;
         window.dccClientProgressMetric=button.dataset.dcpr6Metric;
+        window.dccForceProgressOpen=false;
         render();
         requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}));
       });
     });
+
+    const forceHead=main.querySelector('.dcpr6-force-head');
+    if(forceHead){
+      const toggle=()=>{
+        const panel=forceHead.closest('.dcpr6-force-panel');
+        if(!panel) return;
+        const open=!panel.classList.contains('is-open');
+        window.dccForceProgressOpen=open;
+        panel.classList.toggle('is-open',open);
+        forceHead.setAttribute('aria-expanded',String(open));
+        const sub=forceHead.querySelector('.dcpr6-sub');
+        if(sub) sub.textContent=open?'Variación desde el inicio.':'Pulsa para ver el detalle';
+      };
+      forceHead.addEventListener('click',toggle);
+      forceHead.addEventListener('keydown',event=>{
+        if(event.key!=='Enter'&&event.key!==' ') return;
+        event.preventDefault();
+        toggle();
+      });
+    }
   }
 
   function install(){
@@ -394,9 +412,15 @@
       setTimeout(install,80);
       return;
     }
+
     window.__dccClientProgressV6Installed=true;
     const original=window.showClient;
+
     window.showClient=function(screen){
+      if(screen==='progress'){
+        window.dccClientProgressMetric='weight';
+        window.dccForceProgressOpen=false;
+      }
       const result=original.apply(this,arguments);
       if(screen==='progress') requestAnimationFrame(render);
       return result;
@@ -407,7 +431,11 @@
     const nav=document.getElementById('client-nav');
     if(nav){
       const active=[...nav.querySelectorAll('button')].find(btn=>/progreso/i.test(btn.textContent||'')&&btn.classList.contains('active'));
-      if(active) requestAnimationFrame(render);
+      if(active){
+        window.dccClientProgressMetric='weight';
+        window.dccForceProgressOpen=false;
+        requestAnimationFrame(render);
+      }
     }
   }
 
