@@ -165,4 +165,12 @@
       forceInput();
     },300);
   }
+
+  if(!document.querySelector('script[data-dcc-client-home-task-seen]')){
+    const taskSeen=document.createElement('script');
+    taskSeen.src='./client-home-task-seen-fix.js?v=20260909-1';
+    taskSeen.async=true;
+    taskSeen.dataset.dccClientHomeTaskSeen='1';
+    document.head.appendChild(taskSeen);
+  }
 })();
