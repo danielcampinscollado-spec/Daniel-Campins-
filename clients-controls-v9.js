@@ -143,7 +143,9 @@
     const main=document.getElementById('coach-main');
     if(main){
       const observer=new MutationObserver(()=>{
-        if(window.currentScreen==='clients') setTimeout(enhance,0);
+        if(window.currentScreen==='clients' && !document.getElementById('dccSortV9')){
+          setTimeout(enhance,0);
+        }
       });
       observer.observe(main,{childList:true,subtree:true});
       window.__dccClientsV9Observer=observer;
