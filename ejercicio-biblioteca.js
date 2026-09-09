@@ -70,6 +70,11 @@
   clientProgress.async=true;
   document.head.appendChild(clientProgress);
 
+  const clientProgressCompact=document.createElement('script');
+  clientProgressCompact.src='./client-progress-compact-v7.js?v=20260909-1';
+  clientProgressCompact.async=true;
+  document.head.appendChild(clientProgressCompact);
+
   const unify=document.createElement('script');
   unify.src='./progress-metrics-unify.js?v=20260908-2';
   unify.async=true;
