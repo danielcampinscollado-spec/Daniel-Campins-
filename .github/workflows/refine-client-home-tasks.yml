@@ -1,4 +1,4 @@
-name: Refine client home pending tasks
+name: Remove client home profile shortcut
 
 on:
   push:
@@ -15,12 +15,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Update client home
-        run: python scripts/refine_client_home_tasks.py
-      - name: Commit changes
+      - name: Remove top profile shortcut
+        shell: bash
         run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text()
+          old = '''      <button class="dch-profile" type="button" onclick="showClient('profile')" aria-label="Perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"/></svg></button>'''
+          if old not in s:
+              raise SystemExit('Profile shortcut not found')
+          s = s.replace(old, '', 1)
+          p.write_text(s)
+          PY
+
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add index.html
-          git commit -m "Improve client pending tasks panel"
+          git commit -m "Remove client home profile shortcut"
           git push origin main
