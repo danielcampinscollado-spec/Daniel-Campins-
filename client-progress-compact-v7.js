@@ -87,7 +87,8 @@
       panel.classList.toggle('dcpr8-open',open);
       forceHead.setAttribute('aria-expanded',String(open));
       const sub=forceHead.querySelector('.dcpr6-sub');
-      if(sub) sub.textContent=open?'Variación desde el inicio.':'Pulsa para ver el detalle';
+      const text=open?'Variación desde el inicio.':'Pulsa para ver el detalle';
+      if(sub && sub.textContent!==text) sub.textContent=text;
     };
 
     if(!forceHead.dataset.dcpr8Bound){
@@ -108,16 +109,15 @@
     applyState();
   }
 
-  const main=document.getElementById('client-main');
-  if(main){
-    new MutationObserver(()=>refineProgress()).observe(main,{childList:true,subtree:true});
-    refineProgress();
-  }else{
-    document.addEventListener('DOMContentLoaded',()=>{
-      const target=document.getElementById('client-main');
-      if(!target) return;
-      new MutationObserver(()=>refineProgress()).observe(target,{childList:true,subtree:true});
-      refineProgress();
-    },{once:true});
-  }
+  /* Importante: no observamos mutaciones del DOM. El render de Progreso cambia
+     elementos y un observer aquí podía crear un bucle y bloquear toda la navegación. */
+  const runRefine=()=>requestAnimationFrame(()=>requestAnimationFrame(refineProgress));
+
+  document.addEventListener('click',event=>{
+    const navButton=event.target.closest('#client-nav button');
+    if(navButton) runRefine();
+  },false);
+
+  document.addEventListener('DOMContentLoaded',runRefine,{once:true});
+  runRefine();
 })();
