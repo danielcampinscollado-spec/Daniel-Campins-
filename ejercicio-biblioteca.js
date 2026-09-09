@@ -66,14 +66,19 @@
   document.head.appendChild(progress);
 
   const clientProgress=document.createElement('script');
-  clientProgress.src='./client-progress-premium-v6.js?v=20260909-1';
+  clientProgress.src='./client-progress-premium-v6.js?v=20260910-1';
   clientProgress.async=true;
   document.head.appendChild(clientProgress);
 
   const clientProgressCompact=document.createElement('script');
-  clientProgressCompact.src='./client-progress-compact-v7.js?v=20260909-1';
+  clientProgressCompact.src='./client-progress-compact-v7.js?v=20260910-1';
   clientProgressCompact.async=true;
   document.head.appendChild(clientProgressCompact);
+
+  const clientProgressStable=document.createElement('script');
+  clientProgressStable.src='./client-progress-stable-v8.js?v=20260910-1';
+  clientProgressStable.async=true;
+  document.head.appendChild(clientProgressStable);
 
   const unify=document.createElement('script');
   unify.src='./progress-metrics-unify.js?v=20260908-2';
