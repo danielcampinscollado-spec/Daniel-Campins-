@@ -84,14 +84,45 @@
     return dayMuscles[0] || null;
   };
 
-  const exerciseImage = (exercise, muscle) => {
-    const n = normalize(exercise?.name);
+  const exerciseImage = exercise => {
+    const cleanPath = value => String(value || '').replace(/^\.\/+/,'');
+    const direct = exercise?.image || exercise?.imageStart || exercise?.illustration || exercise?.ilustracion || '';
+    if(direct) return cleanPath(direct);
+
+    const library = Array.isArray(window.exerciseLibraryFull) ? window.exerciseLibraryFull : [];
+    const id = String(exercise?.id ?? exercise?.exerciseId ?? exercise?.exercise_id ?? '').trim();
+    const n = normalize(exercise?.name ?? exercise?.nombre ?? exercise?.exercise ?? exercise?.exerciseName);
+
+    let hit = id ? library.find(item => String(item?.id ?? '') === id) : null;
+    if(!hit && n) hit = library.find(item => normalize(item?.name) === n) || null;
+
+    if(!hit && n){
+      const legacyAliases = [
+        [/fondos.*maquina.*asistida|fondos.*asistida/, 'fondos-maquina-asistida'],
+        [/press.*banca.*barra|press de banca con barra/, 'press-banca-barra'],
+        [/aperturas.*cable|aperturas.*polea/, 'aperturas-polea-banco'],
+        [/patada.*triceps.*cable|patada.*triceps.*polea/, 'extension-triceps-unilateral'],
+        [/press.*inclinado.*barra/, 'press-inclinado-barra'],
+        [/press.*inclinado.*mancuernas/, 'press-inclinado-mancuernas']
+      ];
+      for(const [regex,libraryId] of legacyAliases){
+        if(regex.test(n)){
+          hit = library.find(item => String(item?.id ?? '') === libraryId) || null;
+          if(hit) break;
+        }
+      }
+    }
+
+    const libraryImage = hit?.image || hit?.imageStart || '';
+    if(libraryImage) return cleanPath(libraryImage);
+
     if(/press banca|press de banca|bench press/.test(n)) return 'press-banca.png';
     if(/press inclinado|incline press/.test(n)) return 'press-inclinado.png';
     if(/pull over|pullover/.test(n)) return 'pull-over.png';
     if(/remo|row/.test(n)) return 'remo.png';
     if(/sentadilla|squat/.test(n)) return 'sentadilla.png';
-    return muscle?.image || '';
+
+    return '';
   };
 
   function renderPremiumTraining(){
@@ -129,12 +160,12 @@
 
     const rows = exercises.map((exercise,index)=>{
       const muscle = inferExerciseMuscle(exercise, dayMuscles);
-      const image = exerciseImage(exercise, muscle);
+      const image = exerciseImage(exercise);
       const sets = exercise?.sets ? `${escHtml(exercise.sets)} series` : '';
       const reps = exercise?.reps ? `${escHtml(exercise.reps)} repeticiones` : '';
 
       return `
-        <div class="dct-exercise ${index>=4?'dct-extra':''}">
+        <div class="dct-exercise ${index>=4?'dct-extra':''} ${image?'':'dct-no-exercise-image'}">
           <div class="dct-exercise-visual">
             ${image ? `<img src="./${escHtml(image)}" alt="">` : ''}
           </div>
@@ -197,6 +228,8 @@
         #client-main .dct-exercise-list:not(.expanded) .dct-extra{display:none}
         #client-main .dct-exercise-list{display:grid;gap:8px}
         #client-main .dct-exercise{min-height:88px;display:grid;grid-template-columns:66px minmax(0,1fr);align-items:center;gap:13px;padding:10px 12px;border:1px solid rgba(217,170,74,.70);border-radius:18px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.085),transparent 38%),linear-gradient(145deg,#15191f,#0b0f14 74%);box-shadow:0 10px 25px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.025)}
+        #client-main .dct-exercise.dct-no-exercise-image{grid-template-columns:minmax(0,1fr)}
+        #client-main .dct-exercise.dct-no-exercise-image .dct-exercise-visual{display:none}
         #client-main .dct-exercise-visual{width:66px;height:66px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(217,170,74,.25);border-radius:14px;background:rgba(217,170,74,.025)}
         #client-main .dct-exercise-visual img{width:100%;height:100%;object-fit:contain;display:block}
         #client-main .dct-exercise-copy{min-width:0}
@@ -207,7 +240,7 @@
         #client-main .dct-start{width:100%;min-height:58px;margin-top:13px;padding:12px 16px;border:1px solid #f2cb6a;border-radius:17px;background:linear-gradient(135deg,#f0c45d,#dda93e 62%,#edc25b);color:#15110a;font-size:16px;font-weight:850;box-shadow:0 10px 28px rgba(217,170,74,.18),inset 0 1px 0 rgba(255,255,255,.30)}
         #client-main .dct-start span{margin-left:10px;font-size:23px;vertical-align:-2px}
         #client-main .dct-empty{padding:22px 16px;text-align:center;color:#9098a4;font-size:13px;line-height:1.45;border:1px solid rgba(217,170,74,.28);border-radius:18px;background:linear-gradient(145deg,#14181e,#0c1015)}
-        @media(max-width:390px){#client-main .dct-days{gap:4px}#client-main .dct-day{height:54px;border-radius:12px}#client-main .dct-day span{font-size:7px;letter-spacing:1px}#client-main .dct-day strong{font-size:17px}#client-main .dct-muscles{min-height:130px;grid-template-columns:minmax(0,1.1fr) minmax(118px,.9fr);padding:15px}#client-main .dct-muscle-title{font-size:21px}#client-main .dct-muscle-sub{font-size:11px}#client-main .dct-exercise{grid-template-columns:58px minmax(0,1fr);gap:11px;min-height:80px;padding:9px 10px}#client-main .dct-exercise-visual{width:58px;height:58px}#client-main .dct-exercise-name{font-size:14px}#client-main .dct-exercise-meta{font-size:10px}}
+        @media(max-width:390px){#client-main .dct-days{gap:4px}#client-main .dct-day{height:54px;border-radius:12px}#client-main .dct-day span{font-size:7px;letter-spacing:1px}#client-main .dct-day strong{font-size:17px}#client-main .dct-muscles{min-height:130px;grid-template-columns:minmax(0,1.1fr) minmax(118px,.9fr);padding:15px}#client-main .dct-muscle-title{font-size:21px}#client-main .dct-muscle-sub{font-size:11px}#client-main .dct-exercise{grid-template-columns:58px minmax(0,1fr);gap:11px;min-height:80px;padding:9px 10px}#client-main .dct-exercise.dct-no-exercise-image{grid-template-columns:minmax(0,1fr)}#client-main .dct-exercise-visual{width:58px;height:58px}#client-main .dct-exercise-name{font-size:14px}#client-main .dct-exercise-meta{font-size:10px}}
       </style>
 
       <div class="dct-wrap">
