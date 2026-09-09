@@ -33,8 +33,7 @@
     const taskCard=[...root.querySelectorAll('.dch-task-card,.dch-card')]
       .find(card=>/TAREAS PENDIENTES/i.test(card.textContent||''));
     if(!taskCard) return;
-    const candidates=[...taskCard.querySelectorAll('*')];
-    candidates.forEach(el=>{
+    [...taskCard.querySelectorAll('*')].forEach(el=>{
       if(el.children.length===0 && (el.textContent||'').trim()==='Todo al día'){
         el.textContent='Todo al día, sin tareas pendientes';
       }
@@ -46,7 +45,7 @@
     const root=document.querySelector('#client-main .dcpr6');
     if(!root) return;
 
-    /* El icono ya contiene %, por eso el texto debe ser únicamente Grasa. */
+    /* Un único símbolo %: el icono ya representa el porcentaje. */
     const fatTitle=root.querySelector('.dcpr6-metrics .dcpr6-metric:nth-child(2) .dcpr6-metric-title');
     if(fatTitle) fatTitle.textContent='Grasa';
 
@@ -54,8 +53,7 @@
     if(fatButton){
       const spans=fatButton.querySelectorAll('span');
       if(spans.length){
-        const textSpan=spans[spans.length-1];
-        textSpan.textContent='Grasa';
+        spans[spans.length-1].textContent='Grasa';
       }
     }
 
@@ -80,6 +78,7 @@
   function scheduleProgressFix(){
     requestAnimationFrame(()=>requestAnimationFrame(applyProgressFixes));
     setTimeout(applyProgressFixes,60);
+    setTimeout(applyProgressFixes,180);
   }
 
   function scheduleHomeFix(){
@@ -87,11 +86,21 @@
     setTimeout(applyHomeEmptyText,60);
   }
 
-  /* Delegación en captura: evita el doble toggle del ajuste antiguo y hace
-     que abrir/cerrar funcione siempre, aunque el renderer sustituya el DOM. */
+  /* Captura temprana: antes de que el botón Progreso ejecute showClient,
+     dejamos PESO y Fuerza cerrada como estado inicial inequívoco. */
   document.addEventListener('click',event=>{
+    const navButton=event.target.closest('#client-nav button');
+    if(navButton && /progreso/i.test(navButton.textContent||'')){
+      window.dccClientProgressMetric='weight';
+      window.dccForceProgressOpen=false;
+      scheduleProgressFix();
+      return;
+    }
+
     const forceHead=event.target.closest('#client-main .dcpr6 .dcpr6-force-head');
     if(forceHead){
+      /* El ajuste antiguo también tenía un listener propio. Lo bloqueamos aquí
+         para que un toque produzca exactamente un cambio de estado. */
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -128,7 +137,6 @@
 
     const wrapped=function(screen){
       if(screen==='progress'){
-        /* Cada entrada nueva a Progreso empieza siempre en PESO y con Fuerza cerrada. */
         window.dccClientProgressMetric='weight';
         window.dccForceProgressOpen=false;
       }
