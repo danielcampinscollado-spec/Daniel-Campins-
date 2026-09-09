@@ -73,7 +73,7 @@
 
   const clientProgressFinal=document.createElement('script');
   clientProgressFinal.async=false;
-  clientProgressFinal.src='./client-progress-final-v9.js?v=20260910-3';
+  clientProgressFinal.src='./client-progress-final-v9.js?v=20260910-4';
   document.head.appendChild(clientProgressFinal);
 
   /* Sincronización única de métricas del cliente: el % de grasa se persiste
