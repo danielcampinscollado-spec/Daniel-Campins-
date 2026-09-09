@@ -1,0 +1,32 @@
+name: Install client check-in and messages premium runtime
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'client-checkin-messages-premium-v1.js'
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load premium runtime in index
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          tag = '<script src="./client-checkin-messages-premium-v1.js?v=1"></script>'
+          if tag not in text:
+              text = text.replace('</body>', tag + '\n\n</body>', 1)
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit index loader
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m "Load premium client check-in and messages runtime"
+          git push
