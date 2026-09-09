@@ -76,7 +76,7 @@
   document.head.appendChild(clientProgressCompact);
 
   const clientProgressStable=document.createElement('script');
-  clientProgressStable.src='./client-progress-stable-v8.js?v=20260910-1';
+  clientProgressStable.src='./client-progress-stable-v8.js?v=20260910-2';
   clientProgressStable.async=true;
   document.head.appendChild(clientProgressStable);
 
