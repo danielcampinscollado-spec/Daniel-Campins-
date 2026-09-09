@@ -116,6 +116,44 @@
     document.body.appendChild(workoutPremium);
   },{once:true});
 
+  /* Evitar perder un entrenamiento por tocar otra pestaña sin querer. */
+  if(!window.__dccWorkoutNavGuardInstalled){
+    window.__dccWorkoutNavGuardInstalled=true;
+
+    document.addEventListener('click',event=>{
+      const button=event.target.closest('#client-nav button');
+      if(!button || !window.activeWorkout)return;
+
+      const action=button.getAttribute('onclick') || '';
+      const label=(button.textContent || '').trim();
+      const staysInTraining=/showClient\s*\(\s*["']training["']\s*\)/i.test(action) || /entrenamiento/i.test(label);
+      if(staysInTraining)return;
+
+      const leave=window.confirm(
+        'Tienes un entrenamiento en curso. Si sales ahora se perderá el entrenamiento y las series registradas. ¿Quieres salir?'
+      );
+
+      if(!leave){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+
+      clearInterval(window.restTimerInterval);
+      clearInterval(window.dccWorkoutElapsedInterval);
+      window.restTimerInterval=null;
+      window.dccWorkoutElapsedInterval=null;
+      window.activeWorkout=null;
+      document.body.classList.remove('dcc-workout-mode');
+    },true);
+
+    window.addEventListener('beforeunload',event=>{
+      if(!window.activeWorkout)return;
+      event.preventDefault();
+      event.returnValue='';
+    });
+  }
+
   /* Al cambiar de pestaña principal, empezar siempre en el encabezado.
      No afecta a botones internos de rutina/selección de ejercicios. */
   if(!window.__dccTopOnMainTabInstalled){
