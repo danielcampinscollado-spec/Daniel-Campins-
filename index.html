@@ -7096,10 +7096,6 @@ if(screen==="food"){
         ALIMENTACIÓN
       </span>
 
-      <h1>
-        Tu alimentación
-      </h1>
-
       <p class="muted">
         ${dietType==="training"
           ? "Día de entrenamiento"
@@ -7157,12 +7153,11 @@ if(screen==="food"){
     <div class="diet-pdf-text">
 
       <strong>
-        Tu dieta completa
+        Plan de alimentación
       </strong>
 
       <span>
-        Descarga tu plan de alimentación
-        en formato PDF.
+        PDF personalizado
       </span>
 
     </div>
@@ -7185,7 +7180,7 @@ if(screen==="food"){
       </svg>
 
       <span>
-        DESCARGAR PDF
+        DESCARGAR
       </span>
 
     </button>
@@ -16782,5 +16777,73 @@ async function sendClientCheckin(){
 
 <script src="./coach-premium.js"></script>
 <script src="./client-admin-premium.js?v=1"></script>
+
+<style id="dcc-diet-pdf-compact">
+.diet-pdf-card{
+  min-height:76px!important;
+  padding:10px 12px!important;
+  gap:10px!important;
+  border-radius:17px!important;
+  border-color:rgba(217,170,74,.24)!important;
+  background:linear-gradient(145deg,rgba(20,24,30,.96),rgba(10,13,17,.96))!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.diet-pdf-icon{
+  flex:0 0 34px!important;
+  width:34px!important;
+  height:42px!important;
+  max-width:34px!important;
+  max-height:42px!important;
+}
+.diet-pdf-icon svg{
+  width:29px!important;
+  height:35px!important;
+  max-width:29px!important;
+  max-height:35px!important;
+}
+.diet-pdf-text strong{
+  font-size:14px!important;
+  line-height:1.15!important;
+  font-weight:750!important;
+  letter-spacing:-.15px!important;
+}
+.diet-pdf-text span{
+  margin-top:3px!important;
+  font-size:10px!important;
+  line-height:1.25!important;
+  color:#8f97a3!important;
+}
+.diet-pdf-button{
+  min-height:36px!important;
+  padding:8px 11px!important;
+  border-radius:12px!important;
+  max-width:none!important;
+  gap:6px!important;
+  background:rgba(217,170,74,.045)!important;
+  border-color:rgba(217,170,74,.48)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
+}
+.diet-pdf-button svg{
+  width:15px!important;
+  height:15px!important;
+  max-width:15px!important;
+  max-height:15px!important;
+}
+.diet-pdf-button span{
+  font-size:9px!important;
+  font-weight:750!important;
+  letter-spacing:.65px!important;
+}
+@media(max-width:390px){
+  .diet-pdf-card{min-height:72px!important;padding:9px 10px!important;gap:8px!important}
+  .diet-pdf-icon{flex-basis:30px!important;width:30px!important;height:38px!important}
+  .diet-pdf-icon svg{width:26px!important;height:32px!important}
+  .diet-pdf-text strong{font-size:13px!important}
+  .diet-pdf-text span{font-size:9px!important}
+  .diet-pdf-button{min-height:34px!important;padding:7px 9px!important}
+  .diet-pdf-button span{font-size:8.5px!important}
+}
+</style>
+
 </body>
 </html>
