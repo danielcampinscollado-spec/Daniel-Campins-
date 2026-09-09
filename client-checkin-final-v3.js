@@ -13,11 +13,13 @@
   const money1=v=>{const n=Number(v);return Number.isFinite(n)?n.toFixed(1).replace('.',','):'—'};
 
   const drafts=window.__dccCheckinDraftsV3=window.__dccCheckinDraftsV3||{};
+  const success=window.__dccCheckinSuccessV3=window.__dccCheckinSuccessV3||{};
+
   function latest(id){
     const d=appData();d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};return d.checkins[id];
   }
   function draft(id){
-    if(!drafts[id])drafts[id]={diet:'Bien',training:'Bien',energy:'Alta',comment:''};
+    if(!drafts[id])drafts[id]={diet:'',training:'',energy:'',comment:''};
     return drafts[id];
   }
   function setDraft(id,next){drafts[id]={...draft(id),...next}}
@@ -25,6 +27,14 @@
   function option(type,value,label,current){
     const active=String(current||'').toLowerCase()===String(value).toLowerCase();
     return `<button type="button" class="dcc-cc-option ${active?'active':''}" onclick="dccCheckinPickV3('${type}','${esc(value)}')">${esc(label)}</button>`;
+  }
+  function sentLabel(value){
+    if(!value)return'';
+    const d=new Date(value);if(!Number.isFinite(d.getTime()))return'';
+    const now=new Date();
+    const same=d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()&&d.getDate()===now.getDate();
+    const date=d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+    return same?`hoy · ${date}`:date;
   }
 
   function ensureCss(){
@@ -36,6 +46,8 @@
       #client-main .dcc-cc-update{display:flex!important;margin-left:auto!important;margin-right:auto!important}
       #client-main .dcc-cc-send{display:flex;align-items:center;justify-content:center;gap:8px}
       #client-main .dcc-cc-send-icon{font-size:16px;line-height:1}
+      #client-main .dcc-cc-success{margin:10px 0 0;padding:10px 12px;border:1px solid rgba(72,201,142,.45);border-radius:13px;background:rgba(72,201,142,.09);color:#83e7b3;font-size:11px;font-weight:800;text-align:center;letter-spacing:.15px}
+      #client-main .dcc-cc-sent{margin-top:8px!important}
     `;document.head.appendChild(s);
   }
 
@@ -63,7 +75,8 @@
       </section>
       <section class="dcc-cc-card"><div class="dcc-cc-comment-head"><div class="dcc-cc-comment-title"><span>💬</span> ¿CÓMO TE HAS ENCONTRADO?</div><span class="dcc-cc-comment-hint">Comparte lo que quieras</span></div><textarea id="dccCheckinComment" class="dcc-cc-comment" maxlength="500" placeholder="Escribe aquí tus sensaciones de la semana..." oninput="dccCheckinDraftV3(this.value)">${esc(d.comment||'')}</textarea></section>
       <button id="dccSendCheckinButton" type="button" class="dcc-cc-send" onclick="dccSendCheckinPremiumV3()"><span class="dcc-cc-send-icon">➤</span> Enviar check-in</button>
-      ${sent?`<div class="dcc-cc-sent">Último envío: ${esc(new Date(sent).toLocaleDateString('es-ES',{day:'numeric',month:'short'}))}</div>`:''}
+      ${success[id]?'<div class="dcc-cc-success">✓ Check-in enviado correctamente</div>':''}
+      ${sent?`<div class="dcc-cc-sent">Último envío: ${esc(sentLabel(sent))}</div>`:''}
     </div>`;
     if(preserve)requestAnimationFrame(()=>window.scrollTo(0,y));
   }
@@ -86,7 +99,9 @@
       const {error}=await database.from('client_checkins').upsert(payload,{onConflict:'client_id'});if(error)throw error;
       x.weight=weightText;x.diet=d.diet;x.training=d.training;x.energy=d.energy;x.comment=d.comment||'';x.bodyFat=payload.body_fat;x.sentAt=now;x.updatedAt=now;x.reviewed=false;x.status='Nuevo check-in';c.status='Pendiente';save();
       drafts[id]={diet:'',training:'',energy:'',comment:''};
-      toastSafe('Check-in enviado a tu entrenador');render(false);
+      success[id]=true;
+      toastSafe('Check-in enviado correctamente');render(false);
+      setTimeout(()=>{if(success[id]){delete success[id];if(document.querySelector('#client-main .dcc-cc'))render(true)}},4500);
     }catch(e){console.error('DCC check-in v3:',e);toastSafe('No se pudo enviar el check-in');if(btn)btn.disabled=false}
   };
 
