@@ -1,0 +1,52 @@
+name: Compact client home header
+on:
+  push:
+    paths:
+      - '.github/workflows/compact-client-home-header.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove logo and tighten client home header
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          before = s
+
+          # Remove every client-home logo row from the rendered home template.
+          s = re.sub(
+              r'\s*<div class="dch-logo-row">\s*<img[^>]*dc-stride-logo[^>]*>\s*</div>\s*',
+              '\n    ',
+              s
+          )
+
+          # Remove the unused logo-row CSS, including the mobile rules.
+          s = re.sub(r'#client-main \.dch-logo-row(?: img)?\{[^}]*\}', '', s)
+
+          # Pull the welcome block upwards and reduce the gap before the metrics.
+          s = s.replace(
+              '#client-main .dch-welcome{display:block;margin:0 0 18px;padding:0 2px}',
+              '#client-main .dch-welcome{display:block;margin:0 0 12px;padding:4px 2px 0}'
+          )
+
+          if s == before:
+              raise SystemExit('No client-home header changes were applied')
+
+          p.write_text(s)
+          PY
+      - name: Commit compact client home header
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m 'Remove client home logo and reduce header spacing'
+          git pull --rebase origin main
+          git push
