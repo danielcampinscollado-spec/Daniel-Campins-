@@ -65,19 +65,13 @@
   progress.async=true;
   document.head.appendChild(progress);
 
-  /* Progreso cliente: renderer base + una sola capa final estable. */
+  /* Progreso cliente: un único renderer. No cargar capas v7/v8/v9 encima. */
   const clientProgress=document.createElement('script');
   clientProgress.async=false;
-  clientProgress.src='./client-progress-premium-v6.js?v=20260910-2';
+  clientProgress.src='./client-progress-premium-v6.js?v=20260910-5';
   document.head.appendChild(clientProgress);
 
-  const clientProgressFinal=document.createElement('script');
-  clientProgressFinal.async=false;
-  clientProgressFinal.src='./client-progress-final-v9.js?v=20260910-4';
-  document.head.appendChild(clientProgressFinal);
-
-  /* Sincronización única de métricas del cliente: el % de grasa se persiste
-     y se comparte entre Inicio, Check-in y Progreso. */
+  /* Sincronización de métricas entre Inicio, Check-in y Progreso. */
   const clientMetricsSync=document.createElement('script');
   clientMetricsSync.async=false;
   clientMetricsSync.src='./client-metrics-sync-v10.js?v=20260910-1';
