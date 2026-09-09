@@ -104,4 +104,19 @@
   clientsSearchFix.src='./clients-search-final-fix.js?v=20260908-1';
   clientsSearchFix.async=true;
   document.head.appendChild(clientsSearchFix);
+
+  /* Al cambiar de pestaña principal, empezar siempre en el encabezado.
+     No afecta a botones internos de rutina/selección de ejercicios. */
+  if(!window.__dccTopOnMainTabInstalled){
+    window.__dccTopOnMainTabInstalled=true;
+    document.addEventListener('click',event=>{
+      const button=event.target.closest('#coach-nav button,#client-nav button');
+      if(!button)return;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        window.scrollTo({top:0,left:0,behavior:'auto'});
+        document.documentElement.scrollTop=0;
+        document.body.scrollTop=0;
+      }));
+    },true);
+  }
 })();
