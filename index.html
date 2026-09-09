@@ -6623,7 +6623,7 @@ const notificationState =
 
     tasks.push({
       icon:"🏋️",
-      title:"Nuevo entrenamiento",
+      title:"Nueva rutina disponible",
       action:"showClient('training')"
     });
 
@@ -6655,7 +6655,7 @@ const notificationState =
 
     tasks.push({
       icon:"✓",
-      title:"Enviar check-in semanal",
+      title:"Check-in semanal pendiente",
       action:"showClient('checkin')"
     });
 
@@ -6695,7 +6695,7 @@ const notificationState =
 
     tasks.push({
       icon:"💬",
-      title:"Mensajes sin leer",
+      title:"Nuevo mensaje",
       action:"showClient('messages')"
     });
 
@@ -6714,10 +6714,10 @@ const notificationState =
     #client-main .dch-logo-row img{display:block;width:122px;height:auto;max-height:86px;object-fit:contain}
     #client-main .dch-profile{position:absolute;right:2px;top:16px;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid rgba(217,170,74,.62);border-radius:50%;background:linear-gradient(145deg,#14171c,#090b0e);color:#f0c96b;box-shadow:0 0 18px rgba(217,170,74,.08)}
     #client-main .dch-profile svg{width:22px;height:22px}
-    #client-main .dch-welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:0 0 18px;padding:0 2px}
+    #client-main .dch-welcome{display:block;margin:0 0 18px;padding:0 2px}
     #client-main .dch-eyebrow{margin:0 0 6px;color:#e0ad4c;font-size:11px;font-weight:800;letter-spacing:2.8px}
     #client-main .dch-name{margin:0!important;color:#f8f7f3!important;font-size:36px!important;line-height:1!important;font-weight:760!important;letter-spacing:-1.25px!important;white-space:nowrap}
-    #client-main .dch-motto{max-width:116px;padding-bottom:2px;color:#777f8a;font-size:8px;line-height:1.55;letter-spacing:2.6px;text-align:right;text-transform:uppercase}
+    
     #client-main .dch-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:0 0 12px!important;background:none!important;box-shadow:none!important;border:0!important;border-radius:0!important}
     #client-main .dch-stat{position:relative;min-height:88px;display:grid;grid-template-columns:38px minmax(0,1fr) 10px;align-items:center;gap:8px;padding:10px 10px;box-sizing:border-box;border:1px solid rgba(217,170,74,.36)!important;border-radius:17px!important;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.065),transparent 42%),linear-gradient(145deg,#15191f 0%,#0d1116 62%,#090c10 100%)!important;box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.028)!important;overflow:hidden;cursor:pointer}
     #client-main .dch-iconbox{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.34);border-radius:11px;background:linear-gradient(145deg,rgba(217,170,74,.075),rgba(217,170,74,.018));color:#f0c96b;box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 0 12px rgba(217,170,74,.035)}
@@ -6728,11 +6728,17 @@ const notificationState =
     #client-main .dch-stat-value span{color:#929aa5;font-size:11.5px;font-weight:500;letter-spacing:0}
     #client-main .dch-chevron{color:#707984;font-size:22px;line-height:1;font-weight:250}
     #client-main .dch-card{position:relative;width:100%;box-sizing:border-box;margin:0 0 12px;border:1px solid rgba(217,170,74,.55)!important;border-radius:20px!important;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.10),transparent 38%),linear-gradient(145deg,#171b21 0%,#0e1217 58%,#090c10 100%)!important;box-shadow:0 13px 30px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.035)!important;overflow:hidden}
-    #client-main .dch-task-row{width:100%;min-height:92px;display:grid;grid-template-columns:50px minmax(0,1fr) 28px;align-items:center;gap:12px;padding:14px 15px;border:0;border-top:1px solid rgba(255,255,255,.075);background:transparent!important;color:#f7f5f0;text-align:left}
+    #client-main .dch-task-card{padding:0!important}
+    #client-main .dch-task-head{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:1px solid rgba(255,255,255,.07);color:#e0ad4c;font-size:9px;font-weight:800;letter-spacing:2.3px;text-transform:uppercase}
+    #client-main .dch-task-count{min-width:26px;height:26px;display:grid;place-items:center;padding:0 8px;border:1px solid rgba(217,170,74,.30);border-radius:999px;background:rgba(217,170,74,.07);color:#f0c96b;font-size:10px;letter-spacing:0}
+    #client-main .dch-task-row{width:100%;min-height:68px;display:grid;grid-template-columns:38px minmax(0,1fr) 20px;align-items:center;gap:11px;padding:10px 15px;border:0;border-top:1px solid rgba(255,255,255,.06);background:transparent!important;color:#f7f5f0;text-align:left}
     #client-main .dch-task-row:first-of-type{border-top:0}
+    #client-main .dch-task-copy{display:block;min-width:0}
+    #client-main .dch-task-title{display:block;color:#f8f7f3;font-size:15px;font-weight:720;line-height:1.18}
+    #client-main .dch-task-meta{display:block;margin-top:3px;color:#8f97a3;font-size:10px;line-height:1.3}
+    #client-main .dch-task-empty{min-height:64px;display:flex;align-items:center;gap:10px;padding:10px 15px;color:#929aa5;font-size:12px}
     #client-main .dch-task-label,#client-main .dch-progress-label,#client-main .dch-next-label{margin:0 0 6px;color:#e0ad4c;font-size:9px;font-weight:800;line-height:1.1;letter-spacing:2.3px;text-transform:uppercase}
-    #client-main .dch-task-title{color:#f8f7f3;font-size:17px;font-weight:720;line-height:1.18}
-    #client-main .dch-arrow{color:#e0ad4c;font-size:28px;line-height:1;text-align:right}
+    #client-main .dch-arrow{color:#e0ad4c;font-size:24px;line-height:1;text-align:right}
     #client-main .dch-progress{min-height:112px;display:grid;grid-template-columns:50px minmax(0,1fr) 20px;align-items:center;gap:12px;padding:15px;cursor:pointer}
     #client-main .dch-progress-label{color:#42c89a}
     #client-main .dch-progress-title{margin:0;color:#f8f7f3;font-size:18px;font-weight:740;line-height:1.15}
@@ -6754,15 +6760,16 @@ const notificationState =
       <button class="dch-profile" type="button" onclick="showClient('profile')" aria-label="Perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"/></svg></button>
     </div>
 
-    <div class="dch-welcome"><div><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div><div class="dch-motto">DISCIPLINA<br>HOY,<br>RESULTADOS<br>SIEMPRE</div></div>
+    <div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div>
 
     <section class="dch-stats">
       <div class="dch-stat" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="6" width="14" height="13" rx="3"/><path d="M9 9.5c1.9-1.5 4.1-1.5 6 0"/><path d="M12 9.5v3"/></svg></div><div><div class="dch-stat-label">PESO ACTUAL</div><div class="dch-stat-value">${currentWeight > 0 ? money(currentWeight) : "—"}<span> kg</span></div></div><div class="dch-chevron">›</div></div>
       <div class="dch-stat" onclick="showClient('progress')"><div class="dch-iconbox"><div class="dch-percent">%</div></div><div><div class="dch-stat-label">% DE GRASA ACTUAL</div><div class="dch-stat-value">${currentBodyFat !== null && Number.isFinite(currentBodyFat) ? money(currentBodyFat) : "—"}${currentBodyFat !== null && Number.isFinite(currentBodyFat) ? '<span> %</span>' : ''}</div></div><div class="dch-chevron">›</div></div>
     </section>
 
-    <section class="dch-card">
-      ${tasks.length ? tasks.map(task => `<button type="button" class="dch-task-row" onclick="${task.action}"><span class="dch-iconbox">${task.action.includes("training") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10M4 12H2M22 12h-2"/></svg>` : task.action.includes("food") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3v7M4.5 3v5.5A2.5 2.5 0 0 0 7 11a2.5 2.5 0 0 0 2.5-2.5V3M7 11v10M16 3v18M16 3c3 1.5 3 5 0 7"/></svg>` : task.action.includes("checkin") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 2.5 2.5L16 9"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>`}</span><span><span class="dch-task-label">TAREAS PENDIENTES</span><span class="dch-task-title">${task.title}</span></span><span class="dch-arrow">→</span></button>`).join("") : `<div class="dch-task-row" style="border-top:0"><span class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span><span class="dch-task-label">TAREAS PENDIENTES</span><span class="dch-task-title">Todo al día</span></span><span></span></div>`}
+    <section class="dch-card dch-task-card">
+      <div class="dch-task-head"><span>TAREAS PENDIENTES</span><span class="dch-task-count">${tasks.length}</span></div>
+      ${tasks.length ? tasks.map(task => `<button type="button" class="dch-task-row" onclick="${task.action}"><span class="dch-iconbox">${task.action.includes("training") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10M4 12H2M22 12h-2"/></svg>` : task.action.includes("food") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3v7M4.5 3v5.5A2.5 2.5 0 0 0 7 11a2.5 2.5 0 0 0 2.5-2.5V3M7 11v10M16 3v18M16 3c3 1.5 3 5 0 7"/></svg>` : task.action.includes("checkin") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 2.5 2.5L16 9"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>`}</span><span class="dch-task-copy"><span class="dch-task-title">${task.title}</span><span class="dch-task-meta">${task.action.includes("training") ? "Tu entrenador ha actualizado tu rutina" : task.action.includes("food") ? "Tu plan de alimentación tiene cambios" : task.action.includes("checkin") ? "Completa el seguimiento de esta semana" : "Tienes una conversación pendiente"}</span></span><span class="dch-arrow">›</span></button>`).join("") : `<div class="dch-task-empty"><span class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span>Todo al día</span></div>`}
     </section>
 
     <section class="dch-card dch-progress" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 18v-5M11 18V9M16 18V5"/></svg></div><div><div class="dch-progress-label">PROGRESO DE FUERZA</div>${strengthRows.length ? `<div class="dch-progress-title">Has mejorado en ${strengthRows.length} ${strengthRows.length === 1 ? "ejercicio" : "ejercicios"}</div><div class="dch-progress-sub">Tu rendimiento está avanzando. Consulta el detalle en Progreso.</div>` : `<div class="dch-progress-title">Sigue dándolo todo</div><div class="dch-progress-sub">Todavía no hay mejoras registradas. Cada entrenamiento te acerca a tu mejor versión.</div>`}</div><div class="dch-chevron">›</div></section>
