@@ -65,20 +65,17 @@
   progress.async=true;
   document.head.appendChild(progress);
 
+  /* Progreso cliente: renderer base + una sola capa final estable.
+     Los antiguos v7/v8 ya no se cargan para evitar renders dobles y parpadeos. */
   const clientProgress=document.createElement('script');
-  clientProgress.src='./client-progress-premium-v6.js?v=20260910-1';
-  clientProgress.async=true;
+  clientProgress.async=false;
+  clientProgress.src='./client-progress-premium-v6.js?v=20260910-2';
   document.head.appendChild(clientProgress);
 
-  const clientProgressCompact=document.createElement('script');
-  clientProgressCompact.src='./client-progress-compact-v7.js?v=20260910-1';
-  clientProgressCompact.async=true;
-  document.head.appendChild(clientProgressCompact);
-
-  const clientProgressStable=document.createElement('script');
-  clientProgressStable.src='./client-progress-stable-v8.js?v=20260910-2';
-  clientProgressStable.async=true;
-  document.head.appendChild(clientProgressStable);
+  const clientProgressFinal=document.createElement('script');
+  clientProgressFinal.async=false;
+  clientProgressFinal.src='./client-progress-final-v9.js?v=20260910-1';
+  document.head.appendChild(clientProgressFinal);
 
   const unify=document.createElement('script');
   unify.src='./progress-metrics-unify.js?v=20260908-2';
