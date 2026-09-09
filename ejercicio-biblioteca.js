@@ -108,9 +108,10 @@
   /* La pantalla premium del entrenamiento activo se carga al final,
      después de que el resto de renderizadores hayan terminado. */
   window.addEventListener('load',()=>{
+    try{if(typeof data!=='undefined')window.data=data;}catch(_){ }
     if(document.querySelector('script[data-dcc-workout-premium]'))return;
     const workoutPremium=document.createElement('script');
-    workoutPremium.src='./workout-session-premium-v2.js?v=20260909-1';
+    workoutPremium.src='./workout-session-premium-v2.js?v=20260909-2';
     workoutPremium.dataset.dccWorkoutPremium='1';
     document.body.appendChild(workoutPremium);
   },{once:true});
