@@ -58,11 +58,32 @@
   `;
   document.head.appendChild(style);
 
+  function refineHomeEmptyState(){
+    const root=document.querySelector('#client-main .dch-wrap');
+    if(!root) return;
+    const cards=[...root.querySelectorAll('.dch-task-card,.dch-card')];
+    const taskCard=cards.find(card=>/TAREAS PENDIENTES/i.test(card.textContent||''));
+    if(!taskCard) return;
+
+    const walker=document.createTreeWalker(taskCard,NodeFilter.SHOW_TEXT);
+    let node;
+    while((node=walker.nextNode())){
+      if((node.nodeValue||'').trim()==='Todo al día'){
+        const leading=(node.nodeValue.match(/^\s*/)||[''])[0];
+        const trailing=(node.nodeValue.match(/\s*$/)||[''])[0];
+        node.nodeValue=leading+'Todo al día, sin tareas pendientes'+trailing;
+      }
+    }
+  }
+
   function refineProgress(){
     const root=document.querySelector('#client-main .dcpr6');
     if(!root) return;
 
-    /* Evita el texto duplicado "% % Grasa": dejamos icono % + palabra Grasa. */
+    /* Un solo símbolo %: el icono ya identifica la grasa, por eso el texto queda como "Grasa". */
+    const fatMetricTitle=root.querySelector('.dcpr6-metric:nth-child(2) .dcpr6-metric-title');
+    if(fatMetricTitle && fatMetricTitle.textContent.trim()!=='Grasa') fatMetricTitle.textContent='Grasa';
+
     const fatButton=root.querySelector('[data-dcpr6-metric="fat"]');
     if(fatButton){
       const labels=fatButton.querySelectorAll('span');
@@ -109,15 +130,58 @@
     applyState();
   }
 
-  /* Importante: no observamos mutaciones del DOM. El render de Progreso cambia
-     elementos y un observer aquí podía crear un bucle y bloquear toda la navegación. */
   const runRefine=()=>requestAnimationFrame(()=>requestAnimationFrame(refineProgress));
+  const runHomeRefine=()=>requestAnimationFrame(()=>requestAnimationFrame(refineHomeEmptyState));
 
+  function installShowClientDefaults(){
+    const base=window.showClient;
+    if(typeof base!=='function'){
+      setTimeout(installShowClientDefaults,80);
+      return;
+    }
+    if(base.__dccProgressCompactV7Defaults) return;
+
+    const wrapped=function(screen){
+      if(screen==='progress'){
+        window.dccClientProgressMetric='weight';
+        window.dccForceProgressOpen=false;
+      }
+      const result=base.apply(this,arguments);
+      if(screen==='progress') runRefine();
+      if(screen==='home') runHomeRefine();
+      return result;
+    };
+    wrapped.__dccProgressCompactV7Defaults=true;
+    wrapped.__base=base;
+    window.showClient=wrapped;
+  }
+
+  /* Tras cambiar Peso / Grasa / Fuerza el renderer sustituye el DOM.
+     Volvemos a preparar el acordeón nuevo y lo dejamos cerrado. */
   document.addEventListener('click',event=>{
+    const metricButton=event.target.closest('#client-main .dcpr6 [data-dcpr6-metric]');
+    if(metricButton){
+      window.dccForceProgressOpen=false;
+      runRefine();
+      return;
+    }
+
     const navButton=event.target.closest('#client-nav button');
-    if(navButton) runRefine();
+    if(navButton){
+      runRefine();
+      runHomeRefine();
+    }
   },false);
 
-  document.addEventListener('DOMContentLoaded',runRefine,{once:true});
+  document.addEventListener('DOMContentLoaded',()=>{
+    installShowClientDefaults();
+    runRefine();
+    runHomeRefine();
+  },{once:true});
+
+  installShowClientDefaults();
+  setTimeout(installShowClientDefaults,350);
+  setTimeout(installShowClientDefaults,1000);
   runRefine();
+  runHomeRefine();
 })();
