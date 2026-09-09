@@ -1,4 +1,4 @@
-/* DCC premium loader v9 */
+/* DCC premium loader v10 */
 (function(){
   function load(src,done){
     var s=document.createElement('script');
@@ -7,7 +7,7 @@
     s.onerror=function(){console.error('No se pudo cargar',src)};
     document.head.appendChild(s);
   }
-  load('./coach-premium-v8.js?v=9',function(){
-    load('./clients-controls-v9.js?v=9');
+  load('./coach-premium-v8.js?v=10',function(){
+    load('./clients-controls-v10.js?v=10');
   });
 })();
