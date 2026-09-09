@@ -77,6 +77,12 @@
   clientMetricsSync.src='./client-metrics-sync-v10.js?v=20260910-1';
   document.head.appendChild(clientMetricsSync);
 
+  /* Alimentación cliente: acabado premium compacto y coherente con Inicio/Progreso/Check-in. */
+  const clientNutrition=document.createElement('script');
+  clientNutrition.async=false;
+  clientNutrition.src='./client-nutrition-premium-v2.js?v=20260910-1';
+  document.head.appendChild(clientNutrition);
+
   const unify=document.createElement('script');
   unify.src='./progress-metrics-unify.js?v=20260908-2';
   unify.async=true;
