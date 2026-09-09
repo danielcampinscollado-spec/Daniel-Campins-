@@ -1,0 +1,83 @@
+name: Refine client home pending tasks
+
+on:
+  push:
+    paths:
+      - '.github/workflows/refine-client-home-tasks.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Refine pending tasks panel
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          replacements = [
+            (
+              '#client-main .dch-welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:0 0 18px;padding:0 2px}',
+              '#client-main .dch-welcome{display:block;margin:0 0 18px;padding:0 2px}'
+            ),
+            (
+              '#client-main .dch-motto{max-width:116px;padding-bottom:2px;color:#777f8a;font-size:8px;line-height:1.55;letter-spacing:2.6px;text-align:right;text-transform:uppercase}',
+              ''
+            ),
+            (
+              '#client-main .dch-task-row{width:100%;min-height:92px;display:grid;grid-template-columns:50px minmax(0,1fr) 28px;align-items:center;gap:12px;padding:14px 15px;border:0;border-top:1px solid rgba(255,255,255,.075);background:transparent!important;color:#f7f5f0;text-align:left}\n    #client-main .dch-task-row:first-of-type{border-top:0}\n    #client-main .dch-task-label,#client-main .dch-progress-label,#client-main .dch-next-label{margin:0 0 6px;color:#e0ad4c;font-size:9px;font-weight:800;line-height:1.1;letter-spacing:2.3px;text-transform:uppercase}\n    #client-main .dch-task-title{color:#f8f7f3;font-size:17px;font-weight:720;line-height:1.18}\n    #client-main .dch-arrow{color:#e0ad4c;font-size:28px;line-height:1;text-align:right}',
+              '#client-main .dch-task-card{padding:0!important}\n    #client-main .dch-task-head{min-height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:1px solid rgba(255,255,255,.07);color:#e0ad4c;font-size:9px;font-weight:800;letter-spacing:2.3px;text-transform:uppercase}\n    #client-main .dch-task-count{min-width:26px;height:26px;display:grid;place-items:center;padding:0 8px;border:1px solid rgba(217,170,74,.30);border-radius:999px;background:rgba(217,170,74,.07);color:#f0c96b;font-size:10px;letter-spacing:0}\n    #client-main .dch-task-row{width:100%;min-height:68px;display:grid;grid-template-columns:38px minmax(0,1fr) 20px;align-items:center;gap:11px;padding:10px 15px;border:0;border-top:1px solid rgba(255,255,255,.06);background:transparent!important;color:#f7f5f0;text-align:left}\n    #client-main .dch-task-row:first-of-type{border-top:0}\n    #client-main .dch-task-copy{display:block;min-width:0}\n    #client-main .dch-task-title{display:block;color:#f8f7f3;font-size:15px;font-weight:720;line-height:1.18}\n    #client-main .dch-task-meta{display:block;margin-top:3px;color:#8f97a3;font-size:10px;line-height:1.3}\n    #client-main .dch-task-empty{min-height:64px;display:flex;align-items:center;gap:10px;padding:10px 15px;color:#929aa5;font-size:12px}\n    #client-main .dch-task-label,#client-main .dch-progress-label,#client-main .dch-next-label{margin:0 0 6px;color:#e0ad4c;font-size:9px;font-weight:800;line-height:1.1;letter-spacing:2.3px;text-transform:uppercase}\n    #client-main .dch-arrow{color:#e0ad4c;font-size:24px;line-height:1;text-align:right}'
+            ),
+            (
+              '<div class="dch-welcome"><div><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div><div class="dch-motto">DISCIPLINA<br>HOY,<br>RESULTADOS<br>SIEMPRE</div></div>',
+              '<div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div>'
+            ),
+            (
+              'title:"Nuevo entrenamiento",',
+              'title:"Nueva rutina disponible",'
+            ),
+            (
+              'title:"Enviar check-in semanal",',
+              'title:"Check-in semanal pendiente",'
+            ),
+            (
+              'title:"Mensajes sin leer",',
+              'title:"Nuevo mensaje",'
+            ),
+          ]
+
+          for old, new in replacements:
+            if old not in s:
+              raise SystemExit(f'Missing expected snippet: {old[:80]}')
+            s = s.replace(old, new, 1)
+
+          old_tasks = '''    <section class="dch-card">
+      ${tasks.length ? tasks.map(task => `<button type="button" class="dch-task-row" onclick="${task.action}"><span class="dch-iconbox">${task.action.includes("training") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10M4 12H2M22 12h-2"/></svg>` : task.action.includes("food") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3v7M4.5 3v5.5A2.5 2.5 0 0 0 7 11a2.5 2.5 0 0 0 2.5-2.5V3M7 11v10M16 3v18M16 3c3 1.5 3 5 0 7"/></svg>` : task.action.includes("checkin") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 2.5 2.5L16 9"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>`}</span><span><span class="dch-task-label">TAREAS PENDIENTES</span><span class="dch-task-title">${task.title}</span></span><span class="dch-arrow">→</span></button>`).join("") : `<div class="dch-task-row" style="border-top:0"><span class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span><span class="dch-task-label">TAREAS PENDIENTES</span><span class="dch-task-title">Todo al día</span></span><span></span></div>`}
+    </section>'''
+
+          new_tasks = '''    <section class="dch-card dch-task-card">
+      <div class="dch-task-head"><span>TAREAS PENDIENTES</span><span class="dch-task-count">${tasks.length}</span></div>
+      ${tasks.length ? tasks.map(task => `<button type="button" class="dch-task-row" onclick="${task.action}"><span class="dch-iconbox">${task.action.includes("training") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10M4 12H2M22 12h-2"/></svg>` : task.action.includes("food") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3v7M4.5 3v5.5A2.5 2.5 0 0 0 7 11a2.5 2.5 0 0 0 2.5-2.5V3M7 11v10M16 3v18M16 3c3 1.5 3 5 0 7"/></svg>` : task.action.includes("checkin") ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="m8 12 2.5 2.5L16 9"/></svg>` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>`}</span><span class="dch-task-copy"><span class="dch-task-title">${task.title}</span><span class="dch-task-meta">${task.action.includes("training") ? "Tu entrenador ha actualizado tu rutina" : task.action.includes("food") ? "Tu plan de alimentación tiene cambios" : task.action.includes("checkin") ? "Completa el seguimiento de esta semana" : "Tienes una conversación pendiente"}</span></span><span class="dch-arrow">›</span></button>`).join("") : `<div class="dch-task-empty"><span class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m7 12 3 3 7-7"/></svg></span><span>Todo al día</span></div>`}
+    </section>'''
+
+          if old_tasks not in s:
+            raise SystemExit('Missing pending tasks section')
+          s = s.replace(old_tasks, new_tasks, 1)
+
+          p.write_text(s)
+          PY
+
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git commit -m "Improve client pending tasks panel"
+          git push origin main
