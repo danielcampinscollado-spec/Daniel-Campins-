@@ -4,9 +4,10 @@
   const esc=v=>String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 
   function injectCss(){
-    if(document.getElementById("dcc-premium-v5")) return;
+    if(document.getElementById("dcc-premium-v6")) return;
+    document.getElementById("dcc-premium-v5")?.remove();
     const s=document.createElement("style");
-    s.id="dcc-premium-v5";
+    s.id="dcc-premium-v6";
     s.textContent=`
       #coach-main.dcc-premium-dashboard,#coach-main.dcc-premium-clients{background:#07090c!important;padding:6px 12px 88px!important;color:#f6f3ed}
       .dcc-pd,.dcc-cl{max-width:980px;margin:auto}.dcc-pd *,.dcc-cl *{box-sizing:border-box}
@@ -21,16 +22,28 @@
       .dcc-pd-banner{display:flex;align-items:center;gap:12px;min-height:70px;margin-top:10px;padding:10px 14px;border:1px solid rgba(240,201,107,.76);border-radius:17px;background:radial-gradient(ellipse at 90% 45%,rgba(232,178,66,.34),transparent 17%),radial-gradient(ellipse at 70% 70%,rgba(180,122,28,.18),transparent 25%),linear-gradient(100deg,#171006,#090a0b 38%,#171006)}.dcc-pd-trophy{color:${GOLD2};font-size:22px}.dcc-pd-banner small{display:block;color:${GOLD2};font-size:7.3px;letter-spacing:2.3px}.dcc-pd-banner strong{display:block;margin-top:4px;font-family:Georgia,serif;font-size:15px}
 
       .dcc-cl{padding-top:14px}.dcc-cl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:6px 2px 20px}.dcc-cl-head h1{margin:0;font-size:34px;letter-spacing:-1.3px}.dcc-cl-head p{margin:6px 0 0;color:#939aa5;font-size:14px}.dcc-cl-new{border:1px solid #f0c96b;border-radius:15px;padding:12px 16px;background:linear-gradient(135deg,#f0c96b,#d9aa4a);color:#090909;font-weight:800;font-size:12px;white-space:nowrap}
-      .dcc-cl-tools{display:grid;grid-template-columns:1fr 48px;gap:9px}.dcc-cl-search{height:48px;display:flex;align-items:center;gap:10px;padding:0 15px;border:1px solid #333942;border-radius:15px;background:linear-gradient(145deg,#0e1318,#080b0e);color:#8f97a3}.dcc-cl-search input{width:100%;border:0;outline:0;background:none;color:#f5f5f5;font:inherit}.dcc-cl-filter{border:1px solid #333942;border-radius:15px;background:#0d1115;color:#a9b0ba;font-size:19px}
-      .dcc-cl-subtools{display:flex;justify-content:space-between;align-items:center;margin:11px 0 14px}.dcc-cl-tabs{display:flex;border:1px solid #292f36;border-radius:22px;overflow:hidden;background:#090c0f}.dcc-cl-tab{padding:9px 18px;border:0;background:none;color:#9aa1ac;font-size:11px}.dcc-cl-tab.active{border:1px solid ${GOLD2};border-radius:21px;background:radial-gradient(circle at 50% 50%,#d9aa4a35,#15100a);color:${GOLD2};box-shadow:0 0 18px #d9aa4a28}.dcc-cl-sort{padding:9px 13px;border:1px solid #343941;border-radius:15px;background:#0a0d10;color:#e8e8e8;font-size:11px}
-      .dcc-cl-list{display:grid;gap:9px}.dcc-cl-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,.85fr) 112px;align-items:center;gap:13px;min-height:104px;padding:14px 15px;border:1px solid rgba(217,170,74,.68);border-radius:17px;background:radial-gradient(ellipse at 86% 35%,rgba(217,170,74,.10),transparent 23%),linear-gradient(120deg,#0c1014,#080b0e);box-shadow:0 10px 26px #0005}.dcc-cl-info{min-width:0}.dcc-cl-name{font-size:17px;font-weight:800;color:#f5f3ef}.dcc-cl-goal{margin-top:6px;color:${GOLD2};font-size:12px}.dcc-cl-weight{margin-top:4px;color:#a4abb5;font-size:12px}.dcc-cl-training{padding-left:14px;border-left:1px solid #343a42}.dcc-cl-tr-title{display:flex;align-items:center;gap:7px;color:#f1f1ef;font-size:10px}.dcc-cl-dumbbell{color:${GOLD2};font-size:18px}.dcc-cl-progress{display:flex;align-items:center;gap:8px;margin-top:8px}.dcc-cl-track{height:6px;flex:1;border-radius:8px;background:#2a3037;overflow:hidden}.dcc-cl-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#d9aa4a,#f0c96b)}.dcc-cl-pct{font-size:11px}.dcc-cl-manage{min-height:48px;border:1px solid ${GOLD2};border-radius:13px;background:linear-gradient(145deg,#18140c,#0a0b0c);color:${GOLD2};font-size:11px;font-weight:800;line-height:1.25}
+
+      .dcc-cl-tools{display:block;width:100%}
+      .dcc-cl-search{height:54px;width:100%;display:flex;align-items:center;gap:11px;padding:0 16px;border:1px solid rgba(217,170,74,.42);border-radius:17px;background:radial-gradient(circle at 85% 50%,rgba(217,170,74,.08),transparent 28%),linear-gradient(145deg,#0e1318,#080b0e);color:#d8dde4;box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 9px 26px rgba(0,0,0,.18);transition:border-color .18s ease,box-shadow .18s ease}
+      .dcc-cl-search:focus-within{border-color:rgba(240,201,107,.82);box-shadow:0 0 0 3px rgba(217,170,74,.08),0 10px 28px rgba(0,0,0,.22)}
+      .dcc-cl-search-icon{width:20px;height:20px;flex:0 0 20px;color:#dce1e7}
+      #coach-main.dcc-premium-clients .dcc-cl-search input{width:100%!important;height:52px!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;outline:0!important;background:transparent!important;background-color:transparent!important;box-shadow:none!important;color:#f5f5f5!important;font:inherit!important;font-size:14px!important;line-height:52px!important;-webkit-appearance:none!important;appearance:none!important}
+      #coach-main.dcc-premium-clients .dcc-cl-search input::placeholder{color:#737b86!important;opacity:1!important}
+      #coach-main.dcc-premium-clients .dcc-cl-search input:focus{border:0!important;box-shadow:none!important;outline:0!important}
+
+      .dcc-cl-subtools{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 14px}.dcc-cl-tabs{display:flex;min-width:0;border:1px solid #292f36;border-radius:22px;overflow:hidden;background:#090c0f}.dcc-cl-tab{padding:9px 17px;border:0;background:none;color:#9aa1ac;font-size:11px;white-space:nowrap}.dcc-cl-tab.active{border:1px solid ${GOLD2};border-radius:21px;background:radial-gradient(circle at 50% 50%,#d9aa4a35,#15100a);color:${GOLD2};box-shadow:0 0 18px #d9aa4a28}
+      .dcc-cl-sort{height:42px;min-width:86px;padding:0 12px;border:1px solid rgba(217,170,74,.38);border-radius:14px;background:radial-gradient(circle at 75% 25%,rgba(217,170,74,.12),transparent 45%),linear-gradient(145deg,#12161b,#090c10);color:#f1eee8;display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:750;letter-spacing:.3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 7px 20px rgba(0,0,0,.18);transition:.18s ease}
+      .dcc-cl-sort:active{transform:scale(.97)}.dcc-cl-sort svg{width:14px;height:14px;color:${GOLD2};flex:none}.dcc-cl-sort-label{min-width:25px;text-align:center}.dcc-cl-sort-dir{color:${GOLD2};font-size:12px;line-height:1}
+
+      .dcc-cl-list{display:grid;gap:9px}.dcc-cl-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,.85fr) 112px;align-items:center;gap:13px;min-height:104px;padding:14px 15px;border:1px solid rgba(217,170,74,.68);border-radius:17px;background:radial-gradient(ellipse at 86% 35%,rgba(217,170,74,.10),transparent 23%),linear-gradient(120deg,#0c1014,#080b0e);box-shadow:0 10px 26px #0005}.dcc-cl-card.dcc-hidden{display:none!important}.dcc-cl-info{min-width:0}.dcc-cl-name{font-size:17px;font-weight:800;color:#f5f3ef}.dcc-cl-goal{margin-top:6px;color:${GOLD2};font-size:12px}.dcc-cl-weight{margin-top:4px;color:#a4abb5;font-size:12px}.dcc-cl-training{padding-left:14px;border-left:1px solid #343a42}.dcc-cl-tr-title{display:flex;align-items:center;gap:7px;color:#f1f1ef;font-size:10px}.dcc-cl-dumbbell{color:${GOLD2};font-size:18px}.dcc-cl-progress{display:flex;align-items:center;gap:8px;margin-top:8px}.dcc-cl-track{height:6px;flex:1;border-radius:8px;background:#2a3037;overflow:hidden}.dcc-cl-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#d9aa4a,#f0c96b)}.dcc-cl-pct{font-size:11px}.dcc-cl-manage{min-height:48px;border:1px solid ${GOLD2};border-radius:13px;background:linear-gradient(145deg,#18140c,#0a0b0c);color:${GOLD2};font-size:11px;font-weight:800;line-height:1.25}
+      .dcc-cl-empty-filter{display:none;padding:34px 18px;border:1px solid rgba(217,170,74,.26);border-radius:17px;background:linear-gradient(145deg,#101419,#090c0f);text-align:center;color:#9ba2ad;font-size:13px}.dcc-cl-empty-filter.show{display:block}.dcc-cl-empty-filter strong{display:block;margin-bottom:5px;color:#f0c96b;font-size:14px}
 
       #coach .side{height:62px!important;left:14px!important;right:14px!important;bottom:10px!important;border-radius:21px!important;padding:0 7px!important}
       #coach-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;height:100%!important}
       #coach-nav button{height:100%!important;padding:5px 2px!important;font-size:8px!important}
       #coach-nav button svg{width:21px!important;height:21px!important}
       #coach-nav button span{font-size:7.3px!important;margin-top:2px!important}
-      @media(max-width:600px){.dcc-cl-head h1{font-size:31px}.dcc-cl-head p{font-size:12px}.dcc-cl-new{padding:11px 13px}.dcc-cl-card{grid-template-columns:minmax(0,1fr) minmax(108px,.8fr) 88px;gap:9px;padding:12px 11px;min-height:94px}.dcc-cl-name{font-size:15px}.dcc-cl-goal,.dcc-cl-weight{font-size:10.5px}.dcc-cl-training{padding-left:9px}.dcc-cl-manage{font-size:9.5px;padding:5px}.dcc-cl-tab{padding:8px 13px}}
+      @media(max-width:600px){.dcc-cl-head h1{font-size:31px}.dcc-cl-head p{font-size:12px}.dcc-cl-new{padding:11px 13px}.dcc-cl-search{height:52px;border-radius:16px}.dcc-cl-subtools{gap:8px}.dcc-cl-tabs{flex:1}.dcc-cl-tab{flex:1;padding:8px 10px;font-size:10px}.dcc-cl-sort{min-width:78px;height:40px;padding:0 10px}.dcc-cl-card{grid-template-columns:minmax(0,1fr) minmax(108px,.8fr) 88px;gap:9px;padding:12px 11px;min-height:94px}.dcc-cl-name{font-size:15px}.dcc-cl-goal,.dcc-cl-weight{font-size:10.5px}.dcc-cl-training{padding-left:9px}.dcc-cl-manage{font-size:9.5px;padding:5px}}
     `;
     document.head.appendChild(s);
   }
@@ -38,7 +51,12 @@
   function daysSince(v){if(!v)return null;const d=new Date(v);return Number.isFinite(d.getTime())?Math.floor((Date.now()-d.getTime())/86400000):null}
   function latestWorkout(id){const h=data?.workoutHistory?.[id]||[];return h.slice().sort((a,b)=>new Date(b.date)-new Date(a.date))[0]||null}
   function hasRoutine(id){return Array.isArray(data?.routines?.[id])&&data.routines[id].length>0}
-  function pendingCheck(c){const x=data?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}
+  function pendingCheck(c){
+    const x=data?.checkins?.[c.id];
+    if(!x)return c?.status==="Pendiente";
+    if(x.reviewed===true)return false;
+    return !!(x.sentAt||x.updatedAt||x.diet||x.training||x.comment||c?.status==="Pendiente");
+  }
   function trainingProgress(c){const r=data?.routines?.[c.id];if(!Array.isArray(r)||!r.length)return 0;const h=data?.workoutHistory?.[c.id]||[];if(!h.length)return 0;const recent=h.filter(x=>{const d=daysSince(x.date);return d!==null&&d<=30}).length;return Math.min(100,Math.round(recent/Math.max(1,r.length*4)*100))}
 
   function taskRow(i){return `<button class="dcc-pd-row" onclick="${i.action}"><span class="dcc-pd-icon">${i.icon}</span><span class="dcc-pd-copy"><b>${esc(i.title)}</b><span>${esc(i.text)}</span></span><span class="dcc-pd-badge">${esc(i.badge)}</span><span class="dcc-pd-arrow">›</span></button>`}
@@ -53,15 +71,63 @@
 
   function clientCard(c){const p=trainingProgress(c),goal=c.goal||c.objective||c.objetivo||"Objetivo por definir",weight=c.weight||c.peso||"";return `<article class="dcc-cl-card" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?"1":"0"}"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div>${weight?`<div class="dcc-cl-weight">${esc(weight)} kg</div>`:""}</div><div class="dcc-cl-training"><div class="dcc-cl-tr-title"><span class="dcc-cl-dumbbell">⌁</span> Entrenamiento</div><div class="dcc-cl-progress"><div class="dcc-cl-track"><div class="dcc-cl-fill" style="width:${p}%"></div></div><span class="dcc-cl-pct">${p}%</span></div></div><button class="dcc-cl-manage" onclick="openClient('${c.id}')">Gestionar<br>cliente</button></article>`}
 
-  function renderClients(){
-    injectCss();const main=document.getElementById("coach-main");if(!main)return;main.className="dcc-premium-clients";const cs=data?.clients||[];
-    main.innerHTML=`<div class="dcc-cl"><header class="dcc-cl-head"><div><h1>Clientes</h1><p>Gestiona el proceso de cada persona.</p></div><button class="dcc-cl-new" onclick="newClient()">＋ Nuevo cliente</button></header><div class="dcc-cl-tools"><label class="dcc-cl-search">⌕<input id="dccClientSearch" placeholder="Buscar cliente..." oninput="window.dccFilterClients()"></label><button class="dcc-cl-filter" onclick="toast('Filtros próximamente')">▽</button></div><div class="dcc-cl-subtools"><div class="dcc-cl-tabs"><button class="dcc-cl-tab active" onclick="window.dccClientTab('all',this)">Todos</button><button class="dcc-cl-tab" onclick="window.dccClientTab('pending',this)">Pendientes por revisar</button></div><button class="dcc-cl-sort" onclick="window.dccSortClients()">↕ &nbsp; A-Z⌄</button></div><div class="dcc-cl-list" id="dccClientList">${cs.map(clientCard).join("")||'<div class="dcc-cl-empty">Todavía no hay clientes.</div>'}</div></div>`;
-    window.__dccClientMode="all";window.__dccClientSort="az";
+  function sortClientsArray(cs,mode){
+    return cs.slice().sort((a,b)=>{
+      const an=String(a?.name||"");
+      const bn=String(b?.name||"");
+      return mode==="za"
+        ? bn.localeCompare(an,"es",{sensitivity:"base"})
+        : an.localeCompare(bn,"es",{sensitivity:"base"});
+    });
   }
 
-  window.dccFilterClients=function(){const q=(document.getElementById("dccClientSearch")?.value||"").toLowerCase();document.querySelectorAll(".dcc-cl-card").forEach(x=>x.style.display=(x.dataset.name.includes(q)&&(window.__dccClientMode!=="pending"||x.dataset.pending==="1"))?"grid":"none")};
-  window.dccClientTab=function(m,b){window.__dccClientMode=m;document.querySelectorAll(".dcc-cl-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");window.dccFilterClients()};
-  window.dccSortClients=function(){const l=document.getElementById("dccClientList");if(!l)return;window.__dccClientSort=window.__dccClientSort==="az"?"za":"az";[...l.querySelectorAll(".dcc-cl-card")].sort((a,b)=>window.__dccClientSort==="az"?a.dataset.name.localeCompare(b.dataset.name):b.dataset.name.localeCompare(a.dataset.name)).forEach(x=>l.appendChild(x))};
+  function renderClients(){
+    injectCss();const main=document.getElementById("coach-main");if(!main)return;main.className="dcc-premium-clients";
+    window.__dccClientMode=window.__dccClientMode||"all";
+    window.__dccClientSort=window.__dccClientSort||"az";
+    const cs=sortClientsArray(data?.clients||[],window.__dccClientSort);
+    const sortLabel=window.__dccClientSort==="az"?"A–Z":"Z–A";
+    const sortDir=window.__dccClientSort==="az"?"↓":"↑";
+    main.innerHTML=`<div class="dcc-cl"><header class="dcc-cl-head"><div><h1>Clientes</h1><p>Gestiona el proceso de cada persona.</p></div><button class="dcc-cl-new" onclick="newClient()">＋ Nuevo cliente</button></header><div class="dcc-cl-tools"><label class="dcc-cl-search"><svg class="dcc-cl-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><input id="dccClientSearch" type="search" inputmode="search" autocomplete="off" placeholder="Buscar cliente..." oninput="window.dccFilterClients()"></label></div><div class="dcc-cl-subtools"><div class="dcc-cl-tabs"><button class="dcc-cl-tab ${window.__dccClientMode==="all"?"active":""}" onclick="window.dccClientTab('all',this)">Todos</button><button class="dcc-cl-tab ${window.__dccClientMode==="pending"?"active":""}" onclick="window.dccClientTab('pending',this)">Pendientes por revisar</button></div><button class="dcc-cl-sort" type="button" onclick="window.dccSortClients()" aria-label="Cambiar orden de clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 5h8M8 12h6M8 19h4"/><path d="m18 16 2 3 2-3"/></svg><span class="dcc-cl-sort-label">${sortLabel}</span><span class="dcc-cl-sort-dir">${sortDir}</span></button></div><div class="dcc-cl-list" id="dccClientList">${cs.map(clientCard).join("")||'<div class="dcc-cl-empty">Todavía no hay clientes.</div>'}</div><div class="dcc-cl-empty-filter" id="dccClientEmptyFilter"><strong>Sin resultados</strong><span>No hay clientes que coincidan con este filtro.</span></div></div>`;
+    window.dccFilterClients();
+  }
+
+  window.dccFilterClients=function(){
+    const q=(document.getElementById("dccClientSearch")?.value||"").trim().toLocaleLowerCase("es");
+    let visible=0;
+    document.querySelectorAll(".dcc-cl-card").forEach(card=>{
+      const name=(card.dataset.name||"").toLocaleLowerCase("es");
+      const matchesSearch=!q||name.includes(q);
+      const matchesMode=window.__dccClientMode!=="pending"||card.dataset.pending==="1";
+      const show=matchesSearch&&matchesMode;
+      card.classList.toggle("dcc-hidden",!show);
+      if(show)visible++;
+    });
+    const empty=document.getElementById("dccClientEmptyFilter");
+    if(empty)empty.classList.toggle("show",visible===0&&document.querySelectorAll(".dcc-cl-card").length>0);
+  };
+
+  window.dccClientTab=function(mode,button){
+    window.__dccClientMode=mode;
+    document.querySelectorAll(".dcc-cl-tab").forEach(x=>x.classList.remove("active"));
+    button?.classList.add("active");
+    window.dccFilterClients();
+  };
+
+  window.dccSortClients=function(){
+    const list=document.getElementById("dccClientList");if(!list)return;
+    window.__dccClientSort=window.__dccClientSort==="az"?"za":"az";
+    const cards=[...list.querySelectorAll(".dcc-cl-card")];
+    cards.sort((a,b)=>window.__dccClientSort==="az"
+      ? (a.dataset.name||"").localeCompare(b.dataset.name||"","es",{sensitivity:"base"})
+      : (b.dataset.name||"").localeCompare(a.dataset.name||"","es",{sensitivity:"base"})
+    ).forEach(card=>list.appendChild(card));
+    const label=document.querySelector(".dcc-cl-sort-label");
+    const dir=document.querySelector(".dcc-cl-sort-dir");
+    if(label)label.textContent=window.__dccClientSort==="az"?"A–Z":"Z–A";
+    if(dir)dir.textContent=window.__dccClientSort==="az"?"↓":"↑";
+    window.dccFilterClients();
+  };
 
   function svg(i){return {panel:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>',clients:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 20c.5-4 2.3-6 5.5-6s5 2 5.5 6"/></svg>',calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M8 11l2 2 5-5M8 17h7"/></svg>',msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-4-.9L4 20l1.4-3.4A7.3 7.3 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg>'}[i]||""}
 
@@ -86,14 +152,14 @@
 
   function install(){
     injectCss();lockNav();
-    const original=window.showCoach;if(typeof original!=="function"||original.__dccPremiumV5)return;
+    const original=window.showCoach;if(typeof original!=="function"||original.__dccPremiumV6)return;
     const wrapped=function(screen){
       if(screen==="dashboard"){window.currentScreen=screen;renderDashboard();enforceNav();active(screen);return}
       if(screen==="clients"){window.currentScreen=screen;renderClients();enforceNav();active(screen);return}
       const main=document.getElementById("coach-main");if(main)main.classList.remove("dcc-premium-dashboard","dcc-premium-clients");
       const r=original.apply(this,arguments);setTimeout(()=>{enforceNav();active(screen)},0);return r;
     };
-    wrapped.__dccPremiumV5=true;wrapped.__original=original;window.showCoach=wrapped;
+    wrapped.__dccPremiumV6=true;wrapped.__original=original;window.showCoach=wrapped;
     setInterval(enforceNav,500);
   }
 
