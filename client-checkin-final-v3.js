@@ -48,6 +48,7 @@
       #client-main .dcc-cc-send-icon{font-size:16px;line-height:1}
       #client-main .dcc-cc-success{margin:10px 0 0;padding:10px 12px;border:1px solid rgba(72,201,142,.45);border-radius:13px;background:rgba(72,201,142,.09);color:#83e7b3;font-size:11px;font-weight:800;text-align:center;letter-spacing:.15px}
       #client-main .dcc-cc-sent{margin-top:8px!important}
+      #client-main .dcc-cc-row-name{gap:0!important}
     `;document.head.appendChild(s);
   }
 
@@ -68,9 +69,9 @@
       <section class="dcc-cc-card">
         <div class="dcc-cc-card-head"><div class="dcc-cc-card-title"><span class="dcc-cc-card-icon">♥</span> TU SEMANA</div><span class="dcc-cc-hint">Valora cómo ha ido tu semana</span></div>
         <div class="dcc-cc-week">
-          <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">♨</span>Alimentación</div><div class="dcc-cc-options">${option('diet','Mal','Mal',d.diet)}${option('diet','Normal','Normal',d.diet)}${option('diet','Bien','Bien',d.diet)}</div></div>
-          <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">↔</span>Entrenamiento</div><div class="dcc-cc-options">${option('training','Mal','Mal',d.training)}${option('training','Normal','Normal',d.training)}${option('training','Bien','Bien',d.training)}</div></div>
-          <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">ϟ</span>Energía</div><div class="dcc-cc-options">${option('energy','Baja','Baja',d.energy)}${option('energy','Normal','Normal',d.energy)}${option('energy','Alta','Alta',d.energy)}</div></div>
+          <div class="dcc-cc-row"><div class="dcc-cc-row-name">Alimentación</div><div class="dcc-cc-options">${option('diet','Mal','Mal',d.diet)}${option('diet','Normal','Normal',d.diet)}${option('diet','Bien','Bien',d.diet)}</div></div>
+          <div class="dcc-cc-row"><div class="dcc-cc-row-name">Entrenamiento</div><div class="dcc-cc-options">${option('training','Mal','Mal',d.training)}${option('training','Normal','Normal',d.training)}${option('training','Bien','Bien',d.training)}</div></div>
+          <div class="dcc-cc-row"><div class="dcc-cc-row-name">Energía</div><div class="dcc-cc-options">${option('energy','Baja','Baja',d.energy)}${option('energy','Normal','Normal',d.energy)}${option('energy','Alta','Alta',d.energy)}</div></div>
         </div>
       </section>
       <section class="dcc-cc-card"><div class="dcc-cc-comment-head"><div class="dcc-cc-comment-title"><span>💬</span> ¿CÓMO TE HAS ENCONTRADO?</div><span class="dcc-cc-comment-hint">Comparte lo que quieras</span></div><textarea id="dccCheckinComment" class="dcc-cc-comment" maxlength="500" placeholder="Escribe aquí tus sensaciones de la semana..." oninput="dccCheckinDraftV3(this.value)">${esc(d.comment||'')}</textarea></section>
