@@ -28,6 +28,17 @@
     #client-main .dcpr6 .dcpr6-chart{height:170px!important;margin-top:4px!important}
     #client-main .dcpr6 .dcpr6-chart-empty{height:145px!important;padding:14px!important}
 
+    /* Progreso de fuerza: cerrado por defecto y desplegable al pulsar. */
+    #client-main .dcpr6 .dcpr8-force-panel{padding:0!important;overflow:hidden!important}
+    #client-main .dcpr6 .dcpr8-force-toggle{position:relative!important;display:flex!important;align-items:center!important;min-height:70px!important;margin:0!important;padding:14px 48px 14px 16px!important;cursor:pointer!important;user-select:none!important}
+    #client-main .dcpr6 .dcpr8-force-toggle::after{content:'';position:absolute;right:19px;top:50%;width:9px;height:9px;border-right:2px solid #e7b64e;border-bottom:2px solid #e7b64e;transform:translateY(-65%) rotate(45deg);transition:transform .2s ease}
+    #client-main .dcpr6 .dcpr8-force-panel.dcpr8-open .dcpr8-force-toggle::after{transform:translateY(-35%) rotate(225deg)}
+    #client-main .dcpr6 .dcpr8-force-toggle .dcpr6-sub{margin-top:3px!important;color:#8f9aa7!important;font-size:9px!important}
+    #client-main .dcpr6 .dcpr8-force-panel:not(.dcpr8-open) .dcpr6-force-list,
+    #client-main .dcpr6 .dcpr8-force-panel:not(.dcpr8-open) .dcpr6-best{display:none!important}
+    #client-main .dcpr6 .dcpr8-force-panel.dcpr8-open .dcpr6-force-list{margin:0 14px 0!important}
+    #client-main .dcpr6 .dcpr8-force-panel.dcpr8-open .dcpr6-best{margin:8px 14px 14px!important}
+
     @media(max-width:430px){
       #client-main .dcpr6 .dcpr6-metrics{gap:6px!important}
       #client-main .dcpr6 .dcpr6-metric{min-height:110px!important;padding:9px 8px 8px!important;border-radius:17px!important}
@@ -41,7 +52,72 @@
       #client-main .dcpr6 .dcpr6-switch + .dcpr6-panel .dcpr6-chart-badge{padding:5px 8px!important;font-size:9px!important}
       #client-main .dcpr6 .dcpr6-chart{height:148px!important;margin-top:2px!important}
       #client-main .dcpr6 .dcpr6-chart-empty{height:125px!important}
+      #client-main .dcpr6 .dcpr8-force-toggle{min-height:64px!important;padding:12px 42px 12px 13px!important}
+      #client-main .dcpr6 .dcpr8-force-toggle::after{right:16px!important}
     }
   `;
   document.head.appendChild(style);
+
+  function refineProgress(){
+    const root=document.querySelector('#client-main .dcpr6');
+    if(!root) return;
+
+    /* Evita el texto duplicado "% % Grasa": dejamos icono % + palabra Grasa. */
+    const fatButton=root.querySelector('[data-dcpr6-metric="fat"]');
+    if(fatButton){
+      const labels=fatButton.querySelectorAll('span');
+      if(labels.length>1){
+        const label=labels[labels.length-1];
+        if(label.textContent.trim()!=='Grasa') label.textContent='Grasa';
+      }
+    }
+
+    const forceHead=root.querySelector('.dcpr6-force-head');
+    if(!forceHead) return;
+    const panel=forceHead.closest('.dcpr6-panel');
+    if(!panel) return;
+
+    panel.classList.add('dcpr8-force-panel');
+    forceHead.classList.add('dcpr8-force-toggle');
+    forceHead.setAttribute('role','button');
+    forceHead.setAttribute('tabindex','0');
+
+    const applyState=()=>{
+      const open=!!window.dccForceProgressOpen;
+      panel.classList.toggle('dcpr8-open',open);
+      forceHead.setAttribute('aria-expanded',String(open));
+      const sub=forceHead.querySelector('.dcpr6-sub');
+      if(sub) sub.textContent=open?'Variación desde el inicio.':'Pulsa para ver el detalle';
+    };
+
+    if(!forceHead.dataset.dcpr8Bound){
+      forceHead.dataset.dcpr8Bound='1';
+      const toggle=()=>{
+        window.dccForceProgressOpen=!window.dccForceProgressOpen;
+        applyState();
+      };
+      forceHead.addEventListener('click',toggle);
+      forceHead.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){
+          event.preventDefault();
+          toggle();
+        }
+      });
+    }
+
+    applyState();
+  }
+
+  const main=document.getElementById('client-main');
+  if(main){
+    new MutationObserver(()=>refineProgress()).observe(main,{childList:true,subtree:true});
+    refineProgress();
+  }else{
+    document.addEventListener('DOMContentLoaded',()=>{
+      const target=document.getElementById('client-main');
+      if(!target) return;
+      new MutationObserver(()=>refineProgress()).observe(target,{childList:true,subtree:true});
+      refineProgress();
+    },{once:true});
+  }
 })();
