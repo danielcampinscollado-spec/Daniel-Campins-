@@ -93,7 +93,11 @@
   function install(){
     const base=window.showClient;if(typeof base!=='function'||base.__dccCheckinFinalV3)return false;
     const wrapped=function(screen){const r=base.apply(this,arguments);if(screen==='checkin')requestAnimationFrame(()=>render(false));return r};
-    wrapped.__dccCheckinFinalV3=true;wrapped.__base=base;window.showClient=wrapped;return true;
+    wrapped.__dccCheckinFinalV3=true;
+    wrapped.__dccClientCheckinMessagesV1=true;
+    wrapped.__base=base;
+    window.showClient=wrapped;
+    return true;
   }
 
   ensureCss();install();setTimeout(install,350);setTimeout(install,1100);window.addEventListener('load',()=>setTimeout(install,150));
