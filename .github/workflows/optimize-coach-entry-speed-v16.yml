@@ -1,13 +1,10 @@
 name: Optimize coach entry speed v16
-
 on:
   push:
     paths:
       - '.github/workflows/optimize-coach-entry-speed-v16.yml'
-
 permissions:
   contents: write
-
 jobs:
   patch:
     runs-on: ubuntu-latest
@@ -19,49 +16,51 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text()
-          old='''    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
-    await loadMessagesFromSupabase();
-    await loadCheckinsFromSupabase();
-    
-    showCoach("dashboard");'''
-          new='''    // Entramos al panel inmediatamente. La sincronización con Supabase
-    // no debe bloquear la primera pintura del entrenador.
-    showCoach("dashboard");
-
-    Promise.allSettled([
-      loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase(),
-      loadMessagesFromSupabase(),
-      loadCheckinsFromSupabase()
-    ]).then(()=>{
-      // Una única actualización silenciosa cuando ya tenemos los datos frescos.
-      if(currentScreen==="dashboard"){
-        const coachMain=document.getElementById("coach-main");
-        if(coachMain) coachMain.dataset.dccInstant="1";
-        showCoach("dashboard");
-      }
-    });'''
-          count=s.count(old)
+          p = Path('index.html')
+          s = p.read_text()
+          old = '\n'.join([
+              '    await loadDietsFromSupabase();',
+              '    await loadClientsFromSupabase();',
+              '    await loadRoutinesFromSupabase();',
+              '    await loadWorkoutHistoryFromSupabase();',
+              '    await loadWeightsFromSupabase();',
+              '    await loadMessagesFromSupabase();',
+              '    await loadCheckinsFromSupabase();',
+              '    ',
+              '    showCoach("dashboard");'
+          ])
+          new = '\n'.join([
+              '    // Entramos al panel inmediatamente. La sincronización con Supabase',
+              '    // no debe bloquear la primera pintura del entrenador.',
+              '    showCoach("dashboard");',
+              '',
+              '    Promise.allSettled([',
+              '      loadDietsFromSupabase(),',
+              '      loadClientsFromSupabase(),',
+              '      loadRoutinesFromSupabase(),',
+              '      loadWorkoutHistoryFromSupabase(),',
+              '      loadWeightsFromSupabase(),',
+              '      loadMessagesFromSupabase(),',
+              '      loadCheckinsFromSupabase()',
+              '    ]).then(()=>{',
+              '      if(currentScreen==="dashboard"){',
+              '        const coachMain=document.getElementById("coach-main");',
+              '        if(coachMain) coachMain.dataset.dccInstant="1";',
+              '        showCoach("dashboard");',
+              '      }',
+              '    });'
+          ])
+          count = s.count(old)
           if count == 0:
               raise SystemExit('Target coach loading block not found')
-          s=s.replace(old,new)
-          p.write_text(s)
+          p.write_text(s.replace(old, new))
           print(f'Replaced {count} coach loading block(s)')
           PY
       - name: Commit optimized entry
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add index.html
-          git diff --cached --quiet && exit 0
-          git commit -m "Open coach dashboard before background data sync"
+          git diff --cached --quiet || git commit -m 'Open coach dashboard before background data sync'
+          git pull --rebase origin main
           git push origin main
