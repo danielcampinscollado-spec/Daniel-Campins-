@@ -66,6 +66,12 @@
   trainingDaysCompact.src='./training-days-compact-v3.js?v=20260910-1';
   document.head.appendChild(trainingDaysCompact);
 
+  /* Misma imagen de discos de Inicio dentro de la tarjeta Ejercicios. */
+  const trainingRoutinePlate=document.createElement('script');
+  trainingRoutinePlate.async=false;
+  trainingRoutinePlate.src='./training-routine-plate-v1.js?v=20260910-1';
+  document.head.appendChild(trainingRoutinePlate);
+
   const progress=document.createElement('script');
   progress.src='./progress-premium-v5.js?v=20260908-9';
   progress.async=true;
