@@ -1,4 +1,3 @@
-# trigger v8 rerender
 name: Force coach dashboard v8 rerender
 on:
   push:
@@ -20,53 +19,29 @@ jobs:
           index = Path('index.html')
           source = Path('coach-premium-v7.js')
           target = Path('coach-premium-v8.js')
-
           html = index.read_text()
           js = source.read_text()
 
-          old = 'window.showCoach=wrapped}'
-          new = '''window.showCoach=wrapped;
+          boot = [
+              '(function(){',
+              '  function repaintCurrentDashboard(){',
+              '    const main=document.getElementById("coach-main");',
+              '    if(!main || typeof window.showCoach!=="function") return;',
+              '    const t=(main.textContent||"").toUpperCase();',
+              '    const isDashboard=window.currentScreen==="dashboard" || t.includes("RESUMEN GENERAL") || t.includes("CADA CLIENTE ES UN PROCESO") || t.includes("BUENOS DÍAS") || t.includes("BUENAS TARDES") || t.includes("BUENAS NOCHES");',
+              '    if(isDashboard) window.showCoach("dashboard");',
+              '  }',
+              '  setTimeout(repaintCurrentDashboard,80);',
+              '  window.addEventListener("pageshow",()=>setTimeout(repaintCurrentDashboard,30));',
+              '})();'
+          ]
+          target.write_text(js.replace('DCC definitive dashboard loader v7','DCC definitive dashboard loader v8',1) + '\n' + '\n'.join(boot) + '\n')
 
-    // The base app may render the coach dashboard before this override loads.
-    // In that case wrapping showCoach is not enough: repaint the already-visible dashboard now.
-    const mainNow=document.getElementById("coach-main");
-    const currentText=(mainNow?.textContent||"").toUpperCase();
-    const dashboardAlreadyVisible=
-      window.currentScreen==="dashboard" ||
-      currentText.includes("RESUMEN GENERAL") ||
-      currentText.includes("CADA CLIENTE ES UN PROCESO") ||
-      currentText.includes("BUENOS DÍAS") ||
-      currentText.includes("BUENAS TARDES") ||
-      currentText.includes("BUENAS NOCHES");
-
-    if(dashboardAlreadyVisible){
-      requestAnimationFrame(()=>wrapped("dashboard"));
-    }
-  }'''
-
-          if old not in js:
-              raise SystemExit('Could not find showCoach wrapper install point')
-
-          js = js.replace(old, new, 1)
-          js = js.replace('DCC definitive dashboard loader v7', 'DCC definitive dashboard loader v8', 1)
-          target.write_text(js)
-
-          html = re.sub(
-              r'\s*<script\s+src=["\']\./coach-premium-v7\.js[^"\']*["\']\s*></script>\s*',
-              '\n',
-              html,
-              flags=re.I
-          )
-          html = re.sub(
-              r'\s*<script\s+src=["\']\./coach-premium-v8\.js[^"\']*["\']\s*></script>\s*',
-              '\n',
-              html,
-              flags=re.I
-          )
-
-          tag = '<script src="./coach-premium-v8.js?v=20260910-1652"></script>'
+          html = re.sub(r'\s*<script\s+src=["\']\./coach-premium-v7\.js[^"\']*["\']\s*></script>\s*', '\n', html, flags=re.I)
+          html = re.sub(r'\s*<script\s+src=["\']\./coach-premium-v8\.js[^"\']*["\']\s*></script>\s*', '\n', html, flags=re.I)
+          tag = '<script src="./coach-premium-v8.js?v=20260910-1654"></script>'
           if '</body>' not in html:
-              raise SystemExit('No </body> found')
+              raise SystemExit('No body closing tag')
           html = html.replace('</body>', tag + '\n</body>', 1)
           index.write_text(html)
           PY
