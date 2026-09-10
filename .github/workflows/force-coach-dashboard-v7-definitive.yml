@@ -1,0 +1,55 @@
+name: Force coach dashboard v7 definitive
+on:
+  push:
+    paths:
+      - '.github/workflows/force-coach-dashboard-v7-definitive.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Load coach dashboard from a new final script
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          source = Path('coach-premium.js')
+          target = Path('coach-premium-v7.js')
+
+          html = index.read_text()
+          js = source.read_text()
+
+          if 'PANEL DE ENTRENADOR' not in js or 'dcc-premium-v6' not in js:
+              raise SystemExit('Current coach-premium.js is not the expected redesigned version')
+
+          # New filename: Safari cannot reuse the old v5 asset under this URL.
+          target.write_text('/* DCC definitive dashboard loader v7 */\n' + js)
+
+          # Remove every previous coach premium loader from the document.
+          html = re.sub(
+              r'\s*<script\s+src=["\']\./coach-premium(?:-v7)?\.js[^"\']*["\']\s*></script>\s*',
+              '\n',
+              html,
+              flags=re.I
+          )
+
+          # Load it LAST, after every other override/wrapper script.
+          tag = '<script src="./coach-premium-v7.js?v=20260910-1647"></script>'
+          if '</body>' not in html:
+              raise SystemExit('No </body> found in index.html')
+          html = html.replace('</body>', tag + '\n</body>', 1)
+
+          index.write_text(html)
+          PY
+      - name: Commit definitive dashboard loader
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html coach-premium-v7.js
+          git diff --cached --quiet || git commit -m 'Force redesigned coach dashboard from final unique bundle'
+          git pull --rebase origin main
+          git push
