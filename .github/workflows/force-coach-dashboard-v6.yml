@@ -1,0 +1,44 @@
+name: Force coach dashboard v6
+on:
+  push:
+    paths:
+      - '.github/workflows/force-coach-dashboard-v6.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Force fresh coach dashboard script
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text()
+          before = s
+
+          s, count = re.subn(
+              r'<script\s+src=["\']\./coach-premium\.js(?:\?v=[^"\']*)?["\']\s*></script>',
+              '<script src="./coach-premium.js?v=20260910-1631"></script>',
+              s,
+              count=1
+          )
+
+          if count != 1:
+              raise SystemExit(f'Expected one coach-premium script tag, found {count}')
+          if s == before:
+              raise SystemExit('Coach script tag was already current')
+
+          p.write_text(s)
+          PY
+      - name: Commit cache-busting index change
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m 'Force fresh coach dashboard bundle on mobile'
+          git pull --rebase origin main
+          git push
