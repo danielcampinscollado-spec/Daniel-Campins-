@@ -1,0 +1,71 @@
+name: Install client profile preferences v21
+
+on:
+  push:
+    paths:
+      - '.github/workflows/install-client-profile-preferences-v21.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install preferences and height persistence fixes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          admin=Path('client-admin-premium.js')
+          text=admin.read_text()
+          old="function clientHeight(cl){const h=num(cl?.height??cl?.altura);return h!=null?h+' cm':'—'}"
+          new="function clientHeight(cl){const h=num(cl?.height_cm??cl?.heightCm??cl?.height??cl?.altura);return h!=null?h+' cm':'—'}"
+          if old in text:
+              text=text.replace(old,new,1)
+          elif new not in text:
+              raise SystemExit('clientHeight pattern not found')
+          admin.write_text(text)
+
+          sync=Path('checkin-coach-sync-v2.js')
+          text=sync.read_text()
+          loader="""
+
+/* Perfil persistente: altura + alimentos a evitar + borrado definitivo. */
+(function(){
+  if(window.__dccClientProfilePreferencesLoaderV1)return;
+  window.__dccClientProfilePreferencesLoaderV1=true;
+  const existing=[...document.scripts].find(s=>/client-profile-preferences-v1\\.js(?:\\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./client-profile-preferences-v1.js?v=20260910-2335';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar client-profile-preferences-v1.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
+"""
+          if 'client-profile-preferences-v1.js' not in text:
+              text=text.rstrip()+loader
+          sync.write_text(text)
+
+          index=Path('index.html')
+          text=index.read_text()
+          text=re.sub(r'<script src="\./client-admin-premium\.js\?v=[^"]+"></script>', '<script src="./client-admin-premium.js?v=20260910-2335"></script>', text, count=1)
+          text=re.sub(r'<script src="\./checkin-coach-sync-v2\.js\?v=[^"]+"></script>', '<script src="./checkin-coach-sync-v2.js?v=20260910-2335"></script>', text, count=1)
+          index.write_text(text)
+          PY
+
+      - name: Commit fixes
+        run: |
+          git config user.name "danielcampinscollado-spec"
+          git config user.email "danielcampinscollado@gmail.com"
+          git add client-admin-premium.js checkin-coach-sync-v2.js index.html
+          git commit -m "Persist client height and food preferences in coach profile"
+          git push origin main
