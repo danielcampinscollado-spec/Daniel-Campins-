@@ -125,6 +125,8 @@
     return '';
   };
 
+  const allSame = values => values.length > 0 && values.every(value => value === values[0]);
+
   function renderPremiumTraining(){
     const main = document.getElementById('client-main');
     if(!main) return;
@@ -158,14 +160,14 @@
       </button>
     `).join('');
 
-    const rows = exercises.map((exercise,index)=>{
+    const rows = exercises.map(exercise=>{
       const muscle = inferExerciseMuscle(exercise, dayMuscles);
       const image = exerciseImage(exercise);
       const sets = exercise?.sets ? `${escHtml(exercise.sets)} series` : '';
       const reps = exercise?.reps ? `${escHtml(exercise.reps)} repeticiones` : '';
 
       return `
-        <div class="dct-exercise ${index>=4?'dct-extra':''} ${image?'':'dct-no-exercise-image'}">
+        <div class="dct-exercise ${image?'':'dct-no-exercise-image'}">
           <div class="dct-exercise-visual">
             ${image ? `<img src="./${escHtml(image)}" alt="">` : ''}
           </div>
@@ -180,17 +182,12 @@
       `;
     }).join('');
 
-    const viewAll = exercises.length > 4 ? `
-      <button type="button" class="dct-view-all" onclick="
-        const section=this.closest('.dct-exercise-section');
-        const list=section.querySelector('.dct-exercise-list');
-        const open=list.classList.toggle('expanded');
-        this.classList.toggle('expanded',open);
-        this.querySelector('.dct-view-label').textContent=open?'Ver menos':'Ver todos';
-      ">
-        <span class="dct-view-label">Ver todos</span><span class="dct-view-chevron">⌄</span>
-      </button>
-    ` : '';
+    const setValues = exercises.map(ex => String(ex?.sets ?? '').trim()).filter(Boolean);
+    const repValues = exercises.map(ex => String(ex?.reps ?? '').trim()).filter(Boolean);
+    const summaryParts = [`${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}`];
+    if(exercises.length && setValues.length===exercises.length && allSame(setValues)) summaryParts.push(`${escHtml(setValues[0])} series c/u`);
+    if(exercises.length && repValues.length===exercises.length && allSame(repValues)) summaryParts.push(`${escHtml(repValues[0])} repeticiones`);
+    const routineSummary = summaryParts.join(' <span>•</span> ');
 
     const tip = typeof getTodayCoachTip === 'function'
       ? getTodayCoachTip(id)
@@ -198,49 +195,81 @@
 
     main.innerHTML = `
       <style id="dcc-training-premium-v2">
-        #client-main .dct-wrap{width:100%;max-width:820px;margin:0 auto;padding:4px 0 112px;color:#f7f5f0}
-        #client-main .dct-eyebrow{margin:0 0 14px;color:#e0ad4c;font-size:11px;font-weight:850;letter-spacing:3px;text-transform:uppercase}
-        #client-main .dct-days{display:grid;grid-template-columns:repeat(${Math.max(1,Math.min(routine.length,7))},minmax(0,1fr));gap:6px;margin:0 0 14px}
-        #client-main .dct-day{height:58px;min-width:0;padding:0;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(145deg,#14181f,#0c1015);color:#858d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
-        #client-main .dct-day span{font-size:8px;font-weight:850;letter-spacing:1.35px}
-        #client-main .dct-day strong{font-size:19px;line-height:1;font-weight:760}
-        #client-main .dct-day.active{border-color:#e3b447;background:radial-gradient(circle at 50% 0,rgba(240,201,107,.16),transparent 60%),linear-gradient(145deg,#241d10,#15130e);color:#f0c96b;box-shadow:0 0 18px rgba(217,170,74,.13),inset 0 1px 0 rgba(255,255,255,.04)}
-        #client-main .dct-card{position:relative;margin:0 0 12px;border:1px solid rgba(217,170,74,.72);border-radius:20px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.11),transparent 40%),linear-gradient(145deg,#171b21,#0b0f14 72%);box-shadow:0 14px 34px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.035);overflow:hidden}
-        #client-main .dct-muscles{min-height:142px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(132px,.85fr);align-items:center;gap:10px;padding:18px 18px 16px}
-        #client-main .dct-muscles:after{content:"";position:absolute;width:190px;height:190px;right:-90px;top:-95px;border:1px solid rgba(217,170,74,.14);border-radius:50%;pointer-events:none}
-        #client-main .dct-card-label{margin:0 0 9px;color:#e0ad4c;font-size:9px;font-weight:850;letter-spacing:2.5px;text-transform:uppercase}
-        #client-main .dct-muscle-title{margin:0;color:#f8f7f3;font-size:24px;font-weight:780;line-height:1.08;letter-spacing:-.55px}
-        #client-main .dct-muscle-line{width:34px;height:2px;margin:12px 0 10px;border-radius:99px;background:#e0ad4c}
-        #client-main .dct-muscle-sub{margin:0;color:#98a0ac;font-size:12px;line-height:1.45}
-        #client-main .dct-muscle-visuals{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:flex-end;gap:5px;min-width:0}
-        #client-main .dct-muscle-visual{width:50%;max-width:102px;aspect-ratio:.78;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;border-radius:13px;background:linear-gradient(145deg,rgba(255,255,255,.02),rgba(217,170,74,.025))}
-        #client-main .dct-muscle-visual img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block;filter:drop-shadow(0 8px 14px rgba(0,0,0,.32))}
-        #client-main .dct-tip{min-height:78px;display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;padding:14px 16px}
-        #client-main .dct-tip-icon{width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.36);border-radius:12px;background:rgba(217,170,74,.07);color:#f0c96b;font-size:20px}
-        #client-main .dct-tip-text{margin:0;color:#c1c7d0;font-size:12px;line-height:1.45}
-        #client-main .dct-exercise-section{margin-top:17px}
-        #client-main .dct-exercise-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 8px}
-        #client-main .dct-exercise-head-left{color:#aeb5bf;font-size:9px;font-weight:850;letter-spacing:2.4px;text-transform:uppercase}
-        #client-main .dct-exercise-head-right{display:flex;align-items:center;gap:10px;color:#8f97a3;font-size:10px}
-        #client-main .dct-view-all{min-height:34px;padding:0 12px;border:1px solid rgba(217,170,74,.70);border-radius:999px;background:rgba(217,170,74,.045);color:#f0c96b;font-size:10px;font-weight:800;display:flex;align-items:center;gap:7px}
-        #client-main .dct-view-chevron{font-size:15px;line-height:1;transition:transform .2s ease}
-        #client-main .dct-view-all.expanded .dct-view-chevron{transform:rotate(180deg)}
-        #client-main .dct-exercise-list:not(.expanded) .dct-extra{display:none}
-        #client-main .dct-exercise-list{display:grid;gap:8px}
-        #client-main .dct-exercise{min-height:88px;display:grid;grid-template-columns:66px minmax(0,1fr);align-items:center;gap:13px;padding:10px 12px;border:1px solid rgba(217,170,74,.70);border-radius:18px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.085),transparent 38%),linear-gradient(145deg,#15191f,#0b0f14 74%);box-shadow:0 10px 25px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.025)}
+        #client-main .dct-wrap{width:100%;max-width:820px;margin:0 auto;padding:3px 0 112px;color:#f7f5f0}
+        #client-main .dct-eyebrow{margin:0 0 12px;color:#e0ad4c;font-size:11px;font-weight:850;letter-spacing:3px;text-transform:uppercase}
+        #client-main .dct-days{display:grid;grid-template-columns:repeat(${Math.max(1,Math.min(routine.length,7))},minmax(0,1fr));gap:5px;margin:0 0 12px}
+        #client-main .dct-day{height:54px;min-width:0;padding:0;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(145deg,#14181f,#0c1015);color:#858d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+        #client-main .dct-day span{font-size:7.5px;font-weight:850;letter-spacing:1.25px}
+        #client-main .dct-day strong{font-size:18px;line-height:1;font-weight:760}
+        #client-main .dct-day.active{border-color:#e3b447;background:radial-gradient(circle at 50% 0,rgba(240,201,107,.16),transparent 60%),linear-gradient(145deg,#241d10,#15130e);color:#f0c96b;box-shadow:0 0 17px rgba(217,170,74,.12),inset 0 1px 0 rgba(255,255,255,.04)}
+
+        #client-main .dct-card{position:relative;margin:0 0 10px;border:1px solid rgba(217,170,74,.70);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.095),transparent 40%),linear-gradient(145deg,#171b21,#0b0f14 72%);box-shadow:0 12px 28px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.03);overflow:hidden}
+        #client-main .dct-card-label{margin:0 0 7px;color:#e0ad4c;font-size:9px;font-weight:850;letter-spacing:2.5px;text-transform:uppercase}
+
+        #client-main .dct-muscles{min-height:112px;display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.95fr);align-items:center;gap:12px;padding:13px 15px}
+        #client-main .dct-muscles:after{content:"";position:absolute;width:160px;height:160px;right:-76px;top:-82px;border:1px solid rgba(217,170,74,.12);border-radius:50%;pointer-events:none}
+        #client-main .dct-muscle-title{margin:0;color:#f8f7f3;font-size:22px;font-weight:780;line-height:1.08;letter-spacing:-.45px}
+        #client-main .dct-muscle-line{width:30px;height:2px;margin:10px 0 0;border-radius:99px;background:#e0ad4c}
+        #client-main .dct-muscle-visuals{position:relative;z-index:1;display:flex;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+        #client-main .dct-muscle-visual{width:50%;max-width:92px;height:86px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;border:1px solid rgba(217,170,74,.13);border-radius:13px;background:linear-gradient(145deg,rgba(255,255,255,.018),rgba(217,170,74,.018))}
+        #client-main .dct-muscle-visual img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block;filter:drop-shadow(0 7px 12px rgba(0,0,0,.28))}
+
+        #client-main .dct-tip{min-height:68px;display:grid;grid-template-columns:38px minmax(0,1fr);align-items:center;gap:11px;padding:11px 14px}
+        #client-main .dct-tip-icon{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.34);border-radius:11px;background:rgba(217,170,74,.065);color:#f0c96b;font-size:18px}
+        #client-main .dct-tip-text{margin:0;color:#c1c7d0;font-size:11.5px;line-height:1.42}
+
+        #client-main .dct-routine-card{margin-top:12px;padding:14px;border:1px solid rgba(217,170,74,.76);border-radius:20px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.085),transparent 40%),linear-gradient(145deg,#15191f,#0a0e13 74%);box-shadow:0 13px 30px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.03)}
+        #client-main .dct-routine-kicker{margin:0 0 11px;color:#e0ad4c;font-size:9px;font-weight:850;letter-spacing:2.5px;text-transform:uppercase}
+        #client-main .dct-routine-summary{display:grid;grid-template-columns:52px minmax(0,1fr);align-items:center;gap:12px}
+        #client-main .dct-routine-icon{width:52px;height:52px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.30);border-radius:14px;background:rgba(217,170,74,.05);color:#f0c96b}
+        #client-main .dct-routine-icon svg{width:28px;height:28px}
+        #client-main .dct-routine-title{margin:0;color:#f8f7f3;font-size:19px;font-weight:780;line-height:1.08;letter-spacing:-.3px}
+        #client-main .dct-routine-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:7px;color:#969faa;font-size:11px;line-height:1.3}
+        #client-main .dct-routine-meta span{color:#d9aa4a}
+        #client-main .dct-routine-actions{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(128px,.9fr);gap:9px;margin-top:13px}
+        #client-main .dct-start{min-height:52px;padding:10px 13px;border:1px solid #f3cf6c;border-radius:15px;background:linear-gradient(135deg,#f0c45d,#dda93e 62%,#edc25b);color:#15110a;font-size:14px;font-weight:850;box-shadow:0 9px 24px rgba(217,170,74,.17),inset 0 1px 0 rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;gap:9px}
+        #client-main .dct-start svg{width:18px;height:18px;fill:currentColor}
+        #client-main .dct-view-exercises{min-height:52px;padding:10px 12px;border:1px solid rgba(224,173,76,.88);border-radius:15px;background:rgba(9,12,16,.68);color:#f7f5f0;font-size:13px;font-weight:760;display:flex;align-items:center;justify-content:center;gap:8px}
+        #client-main .dct-view-chevron{width:9px;height:9px;border-right:2px solid #e0ad4c;border-bottom:2px solid #e0ad4c;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
+        #client-main .dct-routine-card.open .dct-view-chevron{transform:rotate(225deg) translate(-1px,-1px)}
+        #client-main .dct-exercise-list{display:none;gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid rgba(255,255,255,.07)}
+        #client-main .dct-routine-card.open .dct-exercise-list{display:grid}
+
+        #client-main .dct-exercise{min-height:80px;display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;gap:11px;padding:9px 10px;border:1px solid rgba(217,170,74,.42);border-radius:16px;background:linear-gradient(145deg,#12171d,#0a0e12 76%);box-shadow:0 7px 18px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.02)}
         #client-main .dct-exercise.dct-no-exercise-image{grid-template-columns:minmax(0,1fr)}
         #client-main .dct-exercise.dct-no-exercise-image .dct-exercise-visual{display:none}
-        #client-main .dct-exercise-visual{width:66px;height:66px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(217,170,74,.25);border-radius:14px;background:rgba(217,170,74,.025)}
+        #client-main .dct-exercise-visual{width:58px;height:58px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(217,170,74,.22);border-radius:13px;background:rgba(217,170,74,.02)}
         #client-main .dct-exercise-visual img{width:100%;height:100%;object-fit:contain;display:block}
         #client-main .dct-exercise-copy{min-width:0}
-        #client-main .dct-exercise-name{margin:0 0 7px;color:#f8f7f3;font-size:16px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        #client-main .dct-muscle-badge{display:inline-flex;align-items:center;min-height:24px;padding:0 11px;margin:0 0 7px;border:1px solid rgba(224,173,76,.82);border-radius:999px;color:#f0c96b;background:rgba(217,170,74,.035);font-size:8.5px;font-weight:850;letter-spacing:1.4px}
-        #client-main .dct-exercise-meta{display:flex;align-items:center;gap:7px;color:#98a0ac;font-size:11px;line-height:1.25}
+        #client-main .dct-exercise-name{margin:0 0 6px;color:#f8f7f3;font-size:14px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        #client-main .dct-muscle-badge{display:inline-flex;align-items:center;min-height:21px;padding:0 9px;margin:0 0 6px;border:1px solid rgba(224,173,76,.72);border-radius:999px;color:#f0c96b;background:rgba(217,170,74,.025);font-size:7.5px;font-weight:850;letter-spacing:1.25px}
+        #client-main .dct-exercise-meta{display:flex;align-items:center;gap:6px;color:#98a0ac;font-size:10px;line-height:1.25}
         #client-main .dct-exercise-meta span{color:#d9aa4a}
-        #client-main .dct-start{width:100%;min-height:58px;margin-top:13px;padding:12px 16px;border:1px solid #f2cb6a;border-radius:17px;background:linear-gradient(135deg,#f0c45d,#dda93e 62%,#edc25b);color:#15110a;font-size:16px;font-weight:850;box-shadow:0 10px 28px rgba(217,170,74,.18),inset 0 1px 0 rgba(255,255,255,.30)}
-        #client-main .dct-start span{margin-left:10px;font-size:23px;vertical-align:-2px}
-        #client-main .dct-empty{padding:22px 16px;text-align:center;color:#9098a4;font-size:13px;line-height:1.45;border:1px solid rgba(217,170,74,.28);border-radius:18px;background:linear-gradient(145deg,#14181e,#0c1015)}
-        @media(max-width:390px){#client-main .dct-days{gap:4px}#client-main .dct-day{height:54px;border-radius:12px}#client-main .dct-day span{font-size:7px;letter-spacing:1px}#client-main .dct-day strong{font-size:17px}#client-main .dct-muscles{min-height:130px;grid-template-columns:minmax(0,1.1fr) minmax(118px,.9fr);padding:15px}#client-main .dct-muscle-title{font-size:21px}#client-main .dct-muscle-sub{font-size:11px}#client-main .dct-exercise{grid-template-columns:58px minmax(0,1fr);gap:11px;min-height:80px;padding:9px 10px}#client-main .dct-exercise.dct-no-exercise-image{grid-template-columns:minmax(0,1fr)}#client-main .dct-exercise-visual{width:58px;height:58px}#client-main .dct-exercise-name{font-size:14px}#client-main .dct-exercise-meta{font-size:10px}}
+        #client-main .dct-empty{padding:20px 14px;text-align:center;color:#9098a4;font-size:12px;line-height:1.45;border:1px solid rgba(217,170,74,.28);border-radius:17px;background:linear-gradient(145deg,#14181e,#0c1015)}
+
+        @media(max-width:390px){
+          #client-main .dct-days{gap:4px}
+          #client-main .dct-day{height:51px;border-radius:12px}
+          #client-main .dct-day span{font-size:7px;letter-spacing:1px}
+          #client-main .dct-day strong{font-size:17px}
+          #client-main .dct-muscles{min-height:104px;grid-template-columns:minmax(0,1fr) minmax(132px,.92fr);gap:8px;padding:12px 13px}
+          #client-main .dct-muscle-title{font-size:19px}
+          #client-main .dct-muscle-visual{height:78px;border-radius:11px}
+          #client-main .dct-tip{min-height:64px;padding:10px 12px}
+          #client-main .dct-routine-card{padding:12px}
+          #client-main .dct-routine-summary{grid-template-columns:46px minmax(0,1fr);gap:10px}
+          #client-main .dct-routine-icon{width:46px;height:46px;border-radius:12px}
+          #client-main .dct-routine-icon svg{width:25px;height:25px}
+          #client-main .dct-routine-title{font-size:17px}
+          #client-main .dct-routine-meta{font-size:10px}
+          #client-main .dct-routine-actions{grid-template-columns:minmax(0,1.5fr) minmax(116px,.9fr);gap:7px}
+          #client-main .dct-start,#client-main .dct-view-exercises{min-height:48px;font-size:12px}
+          #client-main .dct-exercise{grid-template-columns:54px minmax(0,1fr);min-height:74px;gap:9px;padding:8px 9px}
+          #client-main .dct-exercise.dct-no-exercise-image{grid-template-columns:minmax(0,1fr)}
+          #client-main .dct-exercise-visual{width:54px;height:54px}
+          #client-main .dct-exercise-name{font-size:13px}
+          #client-main .dct-exercise-meta{font-size:9.5px}
+        }
       </style>
 
       <div class="dct-wrap">
@@ -253,7 +282,6 @@
               <div class="dct-card-label">MÚSCULOS DE HOY</div>
               <h2 class="dct-muscle-title">${escHtml(muscleTitle)}</h2>
               <div class="dct-muscle-line"></div>
-              <p class="dct-muscle-sub">Enfoca tu esfuerzo y cuida la técnica en cada repetición.</p>
             </div>
             <div class="dct-muscle-visuals">${muscleVisuals}</div>
           </section>
@@ -261,24 +289,45 @@
           <section class="dct-card dct-tip">
             <div class="dct-tip-icon">✦</div>
             <div>
-              <div class="dct-card-label" style="margin-bottom:5px">CONSEJO DE HOY</div>
+              <div class="dct-card-label" style="margin-bottom:4px">CONSEJO DE HOY</div>
               <p class="dct-tip-text">${escHtml(tip)}</p>
             </div>
           </section>
 
-          <section class="dct-exercise-section">
-            <div class="dct-exercise-head">
-              <div class="dct-exercise-head-left">EJERCICIOS</div>
-              <div class="dct-exercise-head-right">
-                <span>${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</span>${viewAll}
+          ${exercises.length ? `
+            <section class="dct-routine-card">
+              <div class="dct-routine-kicker">EJERCICIOS</div>
+              <div class="dct-routine-summary">
+                <div class="dct-routine-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10M4 12H2M22 12h-2"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="dct-routine-title">${escHtml(muscleTitle)}</h3>
+                  <div class="dct-routine-meta">${routineSummary}</div>
+                </div>
               </div>
-            </div>
 
-            ${exercises.length ? `
+              <div class="dct-routine-actions">
+                <button type="button" class="dct-start" onclick="startWorkout(${selectedDayIndex})">
+                  <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5-10-6.5Z"/></svg>
+                  <span>Empezar entrenamiento</span>
+                </button>
+                <button type="button" class="dct-view-exercises" aria-expanded="false" onclick="
+                  const card=this.closest('.dct-routine-card');
+                  const open=card.classList.toggle('open');
+                  this.setAttribute('aria-expanded',String(open));
+                  this.querySelector('.dct-view-label').textContent=open?'Ocultar ejercicios':'Ver ejercicios';
+                ">
+                  <span class="dct-view-label">Ver ejercicios</span>
+                  <span class="dct-view-chevron" aria-hidden="true"></span>
+                </button>
+              </div>
+
               <div class="dct-exercise-list">${rows}</div>
-              <button type="button" class="dct-start" onclick="startWorkout(${selectedDayIndex})">Empezar entrenamiento <span>→</span></button>
-            ` : '<div class="dct-empty">Todavía no tienes una rutina de entrenamiento programada.</div>'}
-          </section>
+            </section>
+          ` : '<div class="dct-empty">Todavía no tienes una rutina de entrenamiento programada.</div>'}
         ` : '<div class="dct-empty">Todavía no tienes una rutina de entrenamiento programada.</div>'}
       </div>
     `;
