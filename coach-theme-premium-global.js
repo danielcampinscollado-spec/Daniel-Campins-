@@ -3,9 +3,8 @@
   const ID='dcc-coach-theme-premium-global';
 
   function install(){
-    let s=document.getElementById(ID);
-    if(s) s.remove();
-    s=document.createElement('style');
+    if(document.getElementById(ID)) return;
+    const s=document.createElement('style');
     s.id=ID;
     s.textContent=`
       html body #coach{
@@ -101,7 +100,6 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
-      /* BUSCADOR DE CLIENTES: una sola barra real, sin input interior enano. */
       html body #coach #coach-main.dcc-final-clients .dcc-fcl-search{
         position:relative!important;
         width:100%!important;
@@ -218,7 +216,8 @@
   function forceClientSearch(){
     const input=document.getElementById('dccClientSearch');
     const wrap=input?.closest('.dcc-fcl-search');
-    if(!input||!wrap)return;
+    if(!input||!wrap||input.dataset.dccSearchStable==='1')return;
+    input.dataset.dccSearchStable='1';
     input.style.setProperty('all','unset','important');
     input.style.setProperty('display','block','important');
     input.style.setProperty('flex','1 1 auto','important');
@@ -233,5 +232,10 @@
   }
 
   install();
-  [120,350,700,1200,2200].forEach(ms=>setTimeout(()=>{install();forceClientSearch()},ms));
+  forceClientSearch();
+
+  if(!window.__dccCoachThemeObserver){
+    window.__dccCoachThemeObserver=new MutationObserver(()=>forceClientSearch());
+    window.__dccCoachThemeObserver.observe(document.documentElement,{childList:true,subtree:true});
+  }
 })();
