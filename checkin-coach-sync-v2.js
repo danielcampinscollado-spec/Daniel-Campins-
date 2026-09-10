@@ -328,3 +328,16 @@
   script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-form-fix-v15.js');
   (document.head||document.documentElement).appendChild(script);
 })();
+
+/* Perfil persistente: altura + alimentos a evitar + borrado definitivo. */
+(function(){
+  if(window.__dccClientProfilePreferencesLoaderV1)return;
+  window.__dccClientProfilePreferencesLoaderV1=true;
+  const existing=[...document.scripts].find(s=>/client-profile-preferences-v1\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./client-profile-preferences-v1.js?v=20260910-2335';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar client-profile-preferences-v1.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
