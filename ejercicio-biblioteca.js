@@ -60,6 +60,12 @@
   inlineEditor.async=true;
   document.head.appendChild(inlineEditor);
 
+  /* Selector superior preparado para mostrar hasta 7 días sin perder aire. */
+  const trainingDaysCompact=document.createElement('script');
+  trainingDaysCompact.async=false;
+  trainingDaysCompact.src='./training-days-compact-v3.js?v=20260910-1';
+  document.head.appendChild(trainingDaysCompact);
+
   const progress=document.createElement('script');
   progress.src='./progress-premium-v5.js?v=20260908-9';
   progress.async=true;
