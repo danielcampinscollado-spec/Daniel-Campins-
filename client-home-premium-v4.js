@@ -1,4 +1,4 @@
-/* DCC — Inicio cliente premium v4: encabezado elegante + efectos premium dorados */
+/* DCC — Inicio cliente premium v4: tipografía elegante + efectos premium dorados */
 (function(){
   if(document.getElementById('dcc-client-home-premium-v4-css')) return;
 
@@ -6,7 +6,7 @@
   style.id='dcc-client-home-premium-v4-css';
   style.textContent=`
     /* ===============================
-       CONTENEDOR / AMBIENTE
+       AMBIENTE GENERAL
     =============================== */
     #client-main .dch-wrap{
       position:relative!important;
@@ -18,16 +18,14 @@
       position:absolute;
       z-index:-1;
       pointer-events:none;
-      top:-36px;
-      right:-78px;
-      width:360px;
-      height:250px;
+      top:-34px;
+      right:-74px;
+      width:340px;
+      height:220px;
       background:
-        radial-gradient(ellipse at 70% 20%,rgba(240,201,107,.11) 0%,rgba(217,170,74,.055) 26%,transparent 62%),
-        linear-gradient(152deg,transparent 18%,rgba(240,201,107,.045) 39%,rgba(240,201,107,.012) 54%,transparent 70%);
-      filter:blur(2px);
-      opacity:.92;
-      transform:translateZ(0);
+        radial-gradient(ellipse at 77% 18%,rgba(240,201,107,.085) 0%,rgba(217,170,74,.035) 34%,transparent 66%);
+      filter:blur(5px);
+      opacity:.82;
     }
 
     /* ===============================
@@ -35,13 +33,13 @@
     =============================== */
     #client-main .dch-welcome{
       position:relative!important;
-      min-height:76px!important;
-      margin:0 0 14px!important;
-      padding:5px 2px 8px!important;
+      min-height:70px!important;
+      margin:0 0 13px!important;
+      padding:4px 2px 8px!important;
       overflow:visible!important;
       background:
-        linear-gradient(152deg,transparent 53%,rgba(240,201,107,.055) 65%,transparent 78%),
-        radial-gradient(ellipse at 94% 17%,rgba(240,201,107,.10),transparent 48%)!important;
+        linear-gradient(154deg,transparent 57%,rgba(240,201,107,.028) 69%,transparent 79%),
+        radial-gradient(ellipse at 96% 10%,rgba(240,201,107,.065),transparent 48%)!important;
     }
 
     #client-main .dch-eyebrow{
@@ -49,23 +47,23 @@
       color:#e7b64d!important;
       font-size:10px!important;
       line-height:1!important;
-      font-weight:850!important;
-      letter-spacing:3.1px!important;
+      font-weight:820!important;
+      letter-spacing:3.2px!important;
       text-transform:uppercase!important;
-      text-shadow:0 0 14px rgba(231,182,77,.10);
+      text-shadow:0 0 12px rgba(231,182,77,.08);
     }
 
     #client-main .dch-name{
       margin:0!important;
-      max-width:72%!important;
-      color:#f7f5f0!important;
-      font-size:31px!important;
-      line-height:1.03!important;
-      font-weight:650!important;
-      letter-spacing:-.85px!important;
+      max-width:68%!important;
+      color:#f6f4ef!important;
+      font-size:27px!important;
+      line-height:1.04!important;
+      font-weight:520!important;
+      letter-spacing:-.42px!important;
       white-space:normal!important;
       text-wrap:balance!important;
-      text-shadow:0 2px 18px rgba(0,0,0,.28);
+      text-shadow:0 2px 16px rgba(0,0,0,.22);
     }
 
     #client-main .dch-welcome::before{
@@ -73,46 +71,47 @@
       position:absolute;
       left:2px;
       bottom:0;
-      width:27px;
-      height:2px;
+      width:24px;
+      height:1.5px;
       border-radius:999px;
       background:linear-gradient(90deg,#f0c96b,#d9aa4a);
-      box-shadow:0 0 12px rgba(240,201,107,.28);
+      box-shadow:0 0 10px rgba(240,201,107,.22);
     }
 
     #client-main .dch-welcome::after{
       content:'DISCIPLINA\\A HOY, RESULTADOS\\A SIEMPRE';
       white-space:pre;
       position:absolute;
-      right:3px;
-      top:11px;
-      width:112px;
-      color:#8f9298;
-      font-size:7px;
-      line-height:1.75;
-      font-weight:600;
-      letter-spacing:2.2px;
+      right:4px;
+      top:10px;
+      width:108px;
+      color:#8b8f96;
+      font-size:6.6px;
+      line-height:1.78;
+      font-weight:560;
+      letter-spacing:2.15px;
       text-align:left;
-      opacity:.82;
+      opacity:.76;
       pointer-events:none;
-      text-shadow:0 0 16px rgba(240,201,107,.08);
+      text-shadow:0 0 14px rgba(240,201,107,.055);
     }
 
     /* ===============================
        TARJETA TAREAS PENDIENTES
+       Ondas fluidas doradas, sin círculos ni haces rectos
     =============================== */
     #client-main .dch-task-card{
       position:relative!important;
-      border-color:rgba(236,185,78,.78)!important;
+      border-color:rgba(236,185,78,.74)!important;
       background:
-        radial-gradient(ellipse at 95% 18%,rgba(240,201,107,.15),transparent 31%),
-        radial-gradient(ellipse at 8% 90%,rgba(217,170,74,.06),transparent 34%),
-        linear-gradient(145deg,#171b21 0%,#0c1116 58%,#070a0d 100%)!important;
+        radial-gradient(ellipse at 0% 0%,rgba(240,201,107,.095),transparent 26%),
+        radial-gradient(ellipse at 98% 12%,rgba(240,201,107,.075),transparent 28%),
+        linear-gradient(145deg,#171b21 0%,#0d1116 58%,#080b0e 100%)!important;
       box-shadow:
-        0 16px 38px rgba(0,0,0,.31),
-        inset 0 1px 0 rgba(255,255,255,.045),
-        inset 0 0 28px rgba(217,170,74,.025),
-        0 0 28px rgba(217,170,74,.07)!important;
+        0 16px 36px rgba(0,0,0,.30),
+        inset 0 1px 0 rgba(255,255,255,.038),
+        inset 0 0 28px rgba(217,170,74,.018),
+        0 0 24px rgba(217,170,74,.045)!important;
       overflow:hidden!important;
       transform:translateZ(0);
     }
@@ -122,16 +121,14 @@
       position:absolute;
       pointer-events:none;
       z-index:0;
-      right:-52px;
-      top:-42px;
-      width:330px;
-      height:245px;
-      background:
-        radial-gradient(ellipse at 78% 25%,rgba(255,220,126,.13) 0%,rgba(217,170,74,.055) 28%,transparent 62%),
-        linear-gradient(146deg,transparent 26%,rgba(255,222,139,.07) 40%,rgba(217,170,74,.025) 48%,transparent 59%);
-      filter:blur(7px);
-      opacity:.88;
-      transform:rotate(-4deg);
+      left:-28px;
+      top:-34px;
+      width:180px;
+      height:120px;
+      border-radius:50%;
+      background:radial-gradient(ellipse,rgba(247,208,116,.105) 0%,rgba(217,170,74,.032) 42%,transparent 72%);
+      filter:blur(10px);
+      opacity:.9;
     }
 
     #client-main .dch-task-card::after{
@@ -139,32 +136,30 @@
       position:absolute;
       pointer-events:none;
       z-index:1;
-      right:-46px;
-      top:4px;
-      width:330px;
-      height:180px;
-      border-radius:0;
-      background:
-        linear-gradient(148deg,transparent 0 38%,rgba(255,220,128,.28) 39.2%,rgba(240,201,107,.07) 40.5%,transparent 42.5%),
-        linear-gradient(153deg,transparent 0 49%,rgba(239,188,76,.20) 50%,rgba(239,188,76,.045) 51.3%,transparent 53.2%),
-        linear-gradient(158deg,transparent 0 60%,rgba(217,170,74,.13) 61%,rgba(217,170,74,.03) 62.2%,transparent 64.4%);
-      transform:rotate(-2deg);
-      opacity:.62;
-      filter:blur(.35px) drop-shadow(0 0 8px rgba(240,201,107,.08));
+      right:-16px;
+      bottom:-18px;
+      width:62%;
+      height:78%;
+      background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20420%20170'%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'1'%20x2%3D'1'%20y2%3D'0'%3E%0A%20%20%20%20%3Cstop%20offset%3D'0'%20stop-color%3D'%23d9aa4a'%20stop-opacity%3D'0'%2F%3E%0A%20%20%20%20%3Cstop%20offset%3D'.58'%20stop-color%3D'%23d9aa4a'%20stop-opacity%3D'.18'%2F%3E%0A%20%20%20%20%3Cstop%20offset%3D'1'%20stop-color%3D'%23f0c96b'%20stop-opacity%3D'.82'%2F%3E%0A%20%20%3C%2FlinearGradient%3E%0A%3C%2Fdefs%3E%0A%3Cg%20fill%3D'none'%20stroke%3D'url(%23g)'%20stroke-width%3D'1.15'%20stroke-linecap%3D'round'%3E%0A%20%20%3Cpath%20d%3D'M25%20164%20C125%20148%20208%20117%20278%2082%20C337%2053%20376%2032%20423%207'%2F%3E%0A%20%20%3Cpath%20d%3D'M22%20156%20C122%20141%20204%20111%20275%2077%20C337%2048%20379%2027%20425%203'%20opacity%3D'.72'%2F%3E%0A%20%20%3Cpath%20d%3D'M18%20148%20C118%20134%20200%20105%20272%2072%20C338%2042%20380%2021%20428%20-2'%20opacity%3D'.50'%2F%3E%0A%20%20%3Cpath%20d%3D'M15%20140%20C113%20127%20196%2099%20270%2066%20C338%2036%20383%2014%20431%20-8'%20opacity%3D'.32'%2F%3E%0A%20%20%3Cpath%20d%3D'M11%20132%20C108%20120%20190%2093%20267%2060%20C338%2029%20385%208%20434%20-14'%20opacity%3D'.20'%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+      background-repeat:no-repeat;
+      background-position:right bottom;
+      background-size:100% 100%;
+      opacity:.72;
+      filter:drop-shadow(0 0 7px rgba(240,201,107,.12));
       mix-blend-mode:screen;
     }
 
     #client-main .dch-task-head{
       position:relative!important;
       z-index:2!important;
-      min-height:56px!important;
+      min-height:54px!important;
       padding:0 17px!important;
-      border-bottom:1px solid rgba(255,255,255,.075)!important;
+      border-bottom:1px solid rgba(255,255,255,.07)!important;
       color:#efbd54!important;
-      font-size:10px!important;
-      font-weight:850!important;
-      letter-spacing:2.7px!important;
-      text-shadow:0 0 13px rgba(239,189,84,.11);
+      font-size:9.5px!important;
+      font-weight:830!important;
+      letter-spacing:2.65px!important;
+      text-shadow:0 0 11px rgba(239,189,84,.09);
     }
 
     #client-main .dch-task-head::after{
@@ -172,70 +167,60 @@
       position:absolute;
       left:17px;
       bottom:-1px;
-      width:38px;
+      width:34px;
       height:1px;
-      background:linear-gradient(90deg,#efbd54,rgba(239,189,84,.2),transparent);
-      box-shadow:0 0 9px rgba(233,184,77,.32);
+      background:linear-gradient(90deg,#efbd54,rgba(239,189,84,.15),transparent);
+      box-shadow:0 0 8px rgba(233,184,77,.24);
     }
 
     #client-main .dch-task-count{
       min-width:31px!important;
       height:31px!important;
       padding:0 9px!important;
-      border-color:rgba(240,201,107,.48)!important;
-      background:
-        radial-gradient(circle at 50% 12%,rgba(240,201,107,.17),transparent 65%),
-        linear-gradient(145deg,rgba(217,170,74,.17),rgba(217,170,74,.055))!important;
+      border-color:rgba(240,201,107,.42)!important;
+      background:linear-gradient(145deg,rgba(217,170,74,.14),rgba(217,170,74,.045))!important;
       color:#f4cb69!important;
-      font-size:12px!important;
-      font-weight:800!important;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.045),
-        0 0 14px rgba(217,170,74,.07)!important;
+      font-size:11.5px!important;
+      font-weight:780!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 12px rgba(217,170,74,.05)!important;
     }
 
     #client-main .dch-task-empty{
       position:relative!important;
       z-index:2!important;
-      min-height:94px!important;
+      min-height:92px!important;
       display:grid!important;
       grid-template-columns:48px minmax(0,1fr)!important;
       align-items:center!important;
       gap:14px!important;
-      padding:15px 17px!important;
+      padding:14px 17px!important;
       color:#f7f5f0!important;
     }
 
     #client-main .dch-task-empty .dch-iconbox{
       width:48px!important;
       height:48px!important;
-      border:1px solid rgba(240,201,107,.82)!important;
+      border:1px solid rgba(240,201,107,.78)!important;
       border-radius:15px!important;
-      background:
-        radial-gradient(circle at 50% 10%,rgba(255,226,146,.30),transparent 57%),
-        linear-gradient(145deg,#2b220f,#11100c)!important;
+      background:radial-gradient(circle at 50% 8%,rgba(255,226,146,.27),transparent 57%),linear-gradient(145deg,#2a210f,#11100c)!important;
       color:#f4cb69!important;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,224,141,.07),
-        inset 0 0 18px rgba(240,201,107,.045),
-        0 0 22px rgba(217,170,74,.16)!important;
+      box-shadow:inset 0 0 0 1px rgba(255,224,141,.055),0 0 20px rgba(217,170,74,.14)!important;
     }
 
     #client-main .dch-task-empty .dch-iconbox svg{
-      width:23px!important;
-      height:23px!important;
-      stroke-width:2!important;
-      filter:drop-shadow(0 0 5px rgba(240,201,107,.15));
+      width:22px!important;
+      height:22px!important;
+      stroke-width:1.9!important;
+      filter:drop-shadow(0 0 4px rgba(240,201,107,.12));
     }
 
     #client-main .dch-task-empty > span:last-child{
       display:block!important;
       color:#f8f7f3!important;
-      font-size:18px!important;
+      font-size:17px!important;
       line-height:1.15!important;
-      font-weight:720!important;
-      letter-spacing:-.25px!important;
-      text-shadow:0 2px 12px rgba(0,0,0,.24);
+      font-weight:680!important;
+      letter-spacing:-.18px!important;
     }
 
     #client-main .dch-task-empty > span:last-child::after{
@@ -243,57 +228,49 @@
       display:block;
       margin-top:6px;
       color:#959da8;
-      font-size:11px;
+      font-size:10.8px;
       line-height:1.35;
-      font-weight:500;
+      font-weight:490;
       letter-spacing:0;
     }
 
     #client-main .dch-task-row{
       position:relative!important;
       z-index:2!important;
-      min-height:78px!important;
+      min-height:76px!important;
       grid-template-columns:44px minmax(0,1fr) 18px!important;
       gap:12px!important;
-      padding:12px 17px!important;
+      padding:11px 17px!important;
     }
 
     #client-main .dch-task-row .dch-iconbox{
       width:44px!important;
       height:44px!important;
-      border-color:rgba(240,201,107,.58)!important;
-      background:
-        radial-gradient(circle at 50% 10%,rgba(240,201,107,.16),transparent 65%),
-        linear-gradient(145deg,rgba(217,170,74,.13),rgba(10,13,16,.94))!important;
-      box-shadow:0 0 16px rgba(217,170,74,.07)!important;
+      border-color:rgba(240,201,107,.52)!important;
+      background:linear-gradient(145deg,rgba(217,170,74,.11),rgba(10,13,16,.94))!important;
+      box-shadow:0 0 14px rgba(217,170,74,.055)!important;
     }
 
     #client-main .dch-task-title{
-      font-size:15.5px!important;
-      font-weight:740!important;
+      font-size:15px!important;
+      font-weight:690!important;
     }
 
     #client-main .dch-task-meta{
-      margin-top:5px!important;
+      margin-top:4px!important;
       color:#929aa5!important;
-      font-size:10.5px!important;
+      font-size:10.3px!important;
       line-height:1.35!important;
     }
 
     /* ===============================
-       RESTO DE TARJETAS: EFECTO SUTIL
+       RESTO DE TARJETAS
     =============================== */
     #client-main .dch-progress{
       position:relative!important;
       overflow:hidden!important;
-      background:
-        radial-gradient(circle at 11% 50%,rgba(240,201,107,.055),transparent 31%),
-        radial-gradient(circle at 98% 0%,rgba(217,170,74,.085),transparent 35%),
-        linear-gradient(145deg,#171b21 0%,#0e1217 58%,#090c10 100%)!important;
-      box-shadow:
-        0 14px 30px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.035),
-        0 0 20px rgba(217,170,74,.035)!important;
+      background:radial-gradient(circle at 98% 0%,rgba(217,170,74,.065),transparent 34%),linear-gradient(145deg,#171b21 0%,#0e1217 58%,#090c10 100%)!important;
+      box-shadow:0 14px 30px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.032),0 0 18px rgba(217,170,74,.028)!important;
     }
 
     #client-main .dch-progress::before{
@@ -305,77 +282,72 @@
       width:180px;
       height:140px;
       border-radius:50%;
-      background:radial-gradient(circle,rgba(240,201,107,.075),transparent 68%);
+      background:radial-gradient(circle,rgba(240,201,107,.055),transparent 68%);
       filter:blur(5px);
     }
 
     #client-main .dch-next{
       position:relative!important;
-      box-shadow:
-        0 16px 34px rgba(0,0,0,.28),
-        inset 0 1px 0 rgba(255,255,255,.035),
-        0 0 22px rgba(217,170,74,.045)!important;
+      box-shadow:0 16px 34px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.032),0 0 20px rgba(217,170,74,.035)!important;
     }
 
     #client-main .dch-stat{
-      box-shadow:
-        0 11px 25px rgba(0,0,0,.23),
-        inset 0 1px 0 rgba(255,255,255,.032),
-        0 0 16px rgba(217,170,74,.026)!important;
+      box-shadow:0 11px 25px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.028),0 0 14px rgba(217,170,74,.022)!important;
     }
 
     @media(max-width:390px){
       #client-main .dch-wrap::before{
-        right:-104px;
-        top:-32px;
-        width:320px;
-        height:220px;
-        opacity:.78;
+        right:-96px;
+        top:-28px;
+        width:300px;
+        height:205px;
+        opacity:.70;
       }
       #client-main .dch-welcome{
-        min-height:69px!important;
+        min-height:66px!important;
         margin-bottom:12px!important;
       }
       #client-main .dch-name{
-        max-width:70%!important;
-        font-size:27px!important;
-        letter-spacing:-.65px!important;
+        max-width:69%!important;
+        font-size:25px!important;
+        font-weight:510!important;
+        letter-spacing:-.30px!important;
       }
       #client-main .dch-welcome::after{
         right:0;
-        top:10px;
-        width:102px;
-        font-size:6.2px;
+        top:9px;
+        width:99px;
+        font-size:6px;
         letter-spacing:1.8px;
       }
       #client-main .dch-task-head{
-        min-height:52px!important;
+        min-height:51px!important;
         padding:0 14px!important;
-        font-size:9px!important;
+        font-size:8.8px!important;
       }
       #client-main .dch-task-head::after{left:14px!important}
       #client-main .dch-task-empty{
-        min-height:88px!important;
-        grid-template-columns:44px minmax(0,1fr)!important;
+        min-height:86px!important;
+        grid-template-columns:43px minmax(0,1fr)!important;
         gap:12px!important;
-        padding:13px 14px!important;
+        padding:12px 14px!important;
       }
       #client-main .dch-task-empty .dch-iconbox{
-        width:44px!important;
-        height:44px!important;
+        width:43px!important;
+        height:43px!important;
       }
       #client-main .dch-task-empty > span:last-child{
-        font-size:16px!important;
+        font-size:15.5px!important;
       }
       #client-main .dch-task-empty > span:last-child::after{
-        font-size:10px!important;
+        font-size:9.8px!important;
       }
       #client-main .dch-task-card::after{
-        right:-72px;
-        top:8px;
-        width:300px;
-        height:170px;
-        opacity:.55;
+        right:-24px;
+        bottom:-20px;
+        width:66%;
+        height:76%;
+        opacity:.66;
       }
     }
 
