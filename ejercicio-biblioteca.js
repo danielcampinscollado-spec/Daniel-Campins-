@@ -71,10 +71,10 @@
   clientProgress.src='./client-progress-premium-v6.js?v=20260910-5';
   document.head.appendChild(clientProgress);
 
-  /* Inicio cliente: encabezado y tareas premium coherentes con el diseño aprobado. */
+  /* Inicio cliente: encabezado, tareas y efectos premium dorados. */
   const clientHomePremium=document.createElement('script');
   clientHomePremium.async=false;
-  clientHomePremium.src='./client-home-premium-v4.js?v=20260910-1';
+  clientHomePremium.src='./client-home-premium-v4.js?v=20260910-2';
   document.head.appendChild(clientHomePremium);
 
   /* Sincronización de métricas entre Inicio, Check-in y Progreso. */
