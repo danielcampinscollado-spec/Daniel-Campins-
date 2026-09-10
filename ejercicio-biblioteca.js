@@ -103,6 +103,12 @@
   messageSync.async=true;
   document.head.appendChild(messageSync);
 
+  /* Entrada estable en Mensajes: no saltar automáticamente al final. */
+  const messagePositionFix=document.createElement('script');
+  messagePositionFix.src='./messages-position-stable-v4.js?v=20260910-1';
+  messagePositionFix.async=true;
+  document.head.appendChild(messagePositionFix);
+
   const finalShell=document.createElement('script');
   finalShell.src='./coach-premium-final-v2.js?v=20260908-1';
   finalShell.async=true;
