@@ -1,0 +1,79 @@
+name: Optimize client entry speed v17
+
+on:
+  push:
+    paths:
+      - '.github/workflows/optimize-client-entry-speed-v17.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Open client home before Supabase refresh
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text()
+
+          old = '''    buildClientNav();
+
+    await Promise.all([
+  loadDietsFromSupabase(),
+  loadClientsFromSupabase(),
+  loadRoutinesFromSupabase(),
+  loadWorkoutHistoryFromSupabase(),
+  loadWeightsFromSupabase(),
+  loadNotificationStateFromSupabase(),
+  loadMessagesFromSupabase()
+]);
+
+await loadCheckinsFromSupabase();
+
+showClient("home");'''
+
+          new = '''    buildClientNav();
+
+    // Abrimos el inicio del cliente inmediatamente con los datos locales.
+    // La sincronización remota no debe bloquear la primera pintura.
+    showClient("home");
+
+    Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadClientsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadNotificationStateFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]).then(()=>{
+      // Refrescamos solo si el usuario sigue en Inicio.
+      if(currentApp==="client" && currentScreen==="home"){
+        showClient("home");
+      }
+    });'''
+
+          count = s.count(old)
+          if count != 1:
+              raise SystemExit(f'Expected 1 client loading block, found {count}')
+
+          p.write_text(s.replace(old, new, 1))
+          print('Client entry optimized')
+          PY
+      - name: Commit optimized client entry
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Open client home before background data sync"
+          git pull --rebase origin main
+          git push origin main
