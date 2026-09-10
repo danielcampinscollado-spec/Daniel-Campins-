@@ -13,6 +13,7 @@
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
   const fmt=v=>{const n=Number(v);return Number.isFinite(n)?n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1}):'—'};
+  const changePct=(current,previous)=>{const c=num(current),p=num(previous);return c==null||p==null||Math.abs(p)<.0001?null:((c-p)/Math.abs(p))*100};
   const save=()=>{try{if(typeof saveData==='function')return saveData();if(typeof window.saveData==='function')return window.saveData()}catch(e){console.error(e)}};
   const notify=t=>{try{if(typeof toast==='function')return toast(t);if(typeof window.toast==='function')return window.toast(t)}catch(e){}console.log(t)};
 
@@ -177,11 +178,11 @@
       if(start)start.textContent=`Inicio ${fmt(initial)}%`;
       if(value)value.textContent=`${fmt(current)}%`;
       if(chip){
-        const delta=current-initial;
+        const delta=current-initial,deltaPct=changePct(current,initial);
         chip.classList.remove('neutral','dcc-fat-good','dcc-fat-bad');
         if(Math.abs(delta)<.05){chip.textContent='Sin cambios';chip.classList.add('neutral')}
-        else if(delta<0){chip.textContent=`↓ ${fmt(Math.abs(delta))} pts desde el inicio`;chip.classList.add('dcc-fat-good')}
-        else{chip.textContent=`↑ ${fmt(Math.abs(delta))} pts desde el inicio`;chip.classList.add('dcc-fat-bad')}
+        else if(delta<0){chip.textContent=`↓ ${fmt(Math.abs(deltaPct))} % desde el inicio`;chip.classList.add('dcc-fat-good')}
+        else{chip.textContent=`↑ ${fmt(Math.abs(deltaPct))} % desde el inicio`;chip.classList.add('dcc-fat-bad')}
       }
     }
 

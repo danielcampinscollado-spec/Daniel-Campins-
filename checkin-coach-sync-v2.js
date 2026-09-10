@@ -7,6 +7,7 @@
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function num(v){const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null}
   function fmt(v){const n=Number(v);return Number.isFinite(n)?n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1}):'—'}
+  function changePct(current,previous){const c=num(current),p=num(previous);if(c==null||p==null||Math.abs(p)<.0001)return null;return((c-p)/Math.abs(p))*100}
 
   function injectStyles(){
     if(document.getElementById('dcc-checkin-history-v4-css'))return;
@@ -138,10 +139,10 @@
       if(side){
         side.classList.remove('good','bad','neutral');
         if(series.length>=2){
-          const previous=series[series.length-2].v,latest=series[series.length-1].v,delta=latest-previous;
+          const previous=series[series.length-2].v,latest=series[series.length-1].v,delta=latest-previous,deltaPct=changePct(latest,previous);
           if(Math.abs(delta)<.05){side.classList.add('neutral');side.innerHTML='Sin cambios<span>desde el anterior</span>'}
-          else if(delta<0){side.classList.add('good');side.innerHTML=`↓ ${fmt(Math.abs(delta))} pts<span>desde el anterior</span>`}
-          else{side.classList.add('bad');side.innerHTML=`↑ ${fmt(Math.abs(delta))} pts<span>desde el anterior</span>`}
+          else if(delta<0){side.classList.add('good');side.innerHTML=`↓ ${fmt(Math.abs(deltaPct))} %<span>desde el anterior</span>`}
+          else{side.classList.add('bad');side.innerHTML=`↑ ${fmt(Math.abs(deltaPct))} %<span>desde el anterior</span>`}
         }else{side.classList.add('neutral');side.textContent='Sin histórico'}
       }
     }
@@ -174,15 +175,15 @@
     injectStyles();
     const root=document.querySelector('#coach-main .dcc-ca-wrap');if(!root)return;
     const series=fatSeries(id);if(!series.length)return;
-    const initial=series[0].v,current=series[series.length-1].v,delta=current-initial;
+    const initial=series[0].v,current=series[series.length-1].v,delta=current-initial,deltaPct=changePct(current,initial);
     const metric=[...root.querySelectorAll('.dcc-ca-metric')].find(el=>/% de grasa/i.test(el.querySelector('small')?.textContent||''));
     if(metric){
       const value=metric.querySelector('b'),trend=metric.querySelector('.dcc-ca-trend');if(value)value.textContent=`${fmt(current)} %`;
       if(trend){
         trend.classList.remove('good','bad');
         if(Math.abs(delta)<.05)trend.textContent='Sin cambios desde el inicio';
-        else if(delta<0){trend.textContent=`↓ ${fmt(Math.abs(delta))} pts desde el inicio`;trend.classList.add('good')}
-        else{trend.textContent=`↑ ${fmt(Math.abs(delta))} pts desde el inicio`;trend.classList.add('bad')}
+        else if(delta<0){trend.textContent=`↓ ${fmt(Math.abs(deltaPct))} % desde el inicio`;trend.classList.add('good')}
+        else{trend.textContent=`↑ ${fmt(Math.abs(deltaPct))} % desde el inicio`;trend.classList.add('bad')}
       }
     }
 
@@ -200,7 +201,7 @@
     const history=document.createElement('div');history.className='dcc-bfh-history';
     const rows=series.map((item,i)=>{
       let deltaHtml='<span class="dcc-bfh-delta">Inicio</span>';
-      if(i>0){const change=item.v-series[i-1].v;if(Math.abs(change)<.05)deltaHtml='<span class="dcc-bfh-delta">Sin cambios</span>';else if(change<0)deltaHtml=`<span class="dcc-bfh-delta good">↓ ${fmt(Math.abs(change))} pts</span>`;else deltaHtml=`<span class="dcc-bfh-delta bad">↑ ${fmt(Math.abs(change))} pts</span>`}
+      if(i>0){const previous=series[i-1].v,change=item.v-previous,changePctValue=changePct(item.v,previous);if(Math.abs(change)<.05)deltaHtml='<span class="dcc-bfh-delta">Sin cambios</span>';else if(change<0)deltaHtml=`<span class="dcc-bfh-delta good">↓ ${fmt(Math.abs(changePctValue))} %</span>`;else deltaHtml=`<span class="dcc-bfh-delta bad">↑ ${fmt(Math.abs(changePctValue))} %</span>`}
       return `<div class="dcc-bfh-row"><div><small>${i===0?'Inicio':historyDate(item.at)}</small><b>${fmt(item.v)} %</b></div>${deltaHtml}</div>`;
     }).join('');
     history.innerHTML=`<div class="dcc-bfh-head"><b>Historial de % de grasa</b><span>${series.length} registros</span></div><div class="dcc-bfh-list">${rows}</div>`;

@@ -92,7 +92,7 @@
   /* Sincronización de métricas entre Inicio, Check-in y Progreso. */
   const clientMetricsSync=document.createElement('script');
   clientMetricsSync.async=false;
-  clientMetricsSync.src='./client-metrics-sync-v10.js?v=20260910-1';
+  clientMetricsSync.src='./client-metrics-sync-v10.js?v=20260910-fatpct-v1';
   document.head.appendChild(clientMetricsSync);
 
   /* Alimentación cliente: acabado premium compacto y coherente con Inicio/Progreso/Check-in. */
