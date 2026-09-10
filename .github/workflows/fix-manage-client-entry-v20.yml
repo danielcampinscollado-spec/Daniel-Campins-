@@ -1,0 +1,55 @@
+name: Fix coach client management entry v20
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-manage-client-entry-v20.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fix client admin wrapper ordering
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          admin = Path('client-admin-premium.js')
+          text = admin.read_text()
+          old = "function install(){const old=window.openClient;if(typeof old!=='function'||old.__dccAdmin)return;const fn=id=>render(id,'summary');fn.__dccAdmin=true;fn.__legacy=old;window.openClient=fn;window.showClientAdmin=fn}"
+          new = "function install(){const old=window.openClient;if(typeof old==='function'&&old.__dccClientAdminPremium)return;const fn=id=>render(id,'summary');fn.__dccAdmin=true;fn.__dccClientAdminPremium=true;fn.__legacy=old;window.openClient=fn;window.showClientAdmin=fn}"
+          if old not in text:
+              raise SystemExit('client-admin install pattern not found')
+          admin.write_text(text.replace(old, new, 1))
+
+          sync = Path('checkin-coach-sync-v2.js')
+          text = sync.read_text()
+          old = "wrappedOpen.__dccBodyFatHistoryV4=true;wrappedOpen.__dccAdmin=true;wrappedOpen.__base=opener;window.openClient=wrappedOpen;window.showClientAdmin=wrappedOpen;"
+          new = "wrappedOpen.__dccBodyFatHistoryV4=true;wrappedOpen.__dccAdmin=!!opener.__dccClientAdminPremium;wrappedOpen.__dccClientAdminPremium=!!opener.__dccClientAdminPremium;wrappedOpen.__base=opener;window.openClient=wrappedOpen;window.showClientAdmin=wrappedOpen;"
+          if old not in text:
+              raise SystemExit('checkin wrapper pattern not found')
+          sync.write_text(text.replace(old, new, 1))
+
+          index = Path('index.html')
+          text = index.read_text()
+          text = text.replace('<script src="./client-admin-premium.js?v=1"></script>', '<script src="./client-admin-premium.js?v=20260910-2250"></script>', 1)
+          text = text.replace('<script src="./checkin-coach-sync-v2.js?v=1"></script>', '<script src="./checkin-coach-sync-v2.js?v=20260910-2250"></script>', 1)
+          index.write_text(text)
+          PY
+
+      - name: Commit fix
+        run: |
+          git config user.name "danielcampinscollado-spec"
+          git config user.email "danielcampinscollado@gmail.com"
+          git add client-admin-premium.js checkin-coach-sync-v2.js index.html
+          git commit -m "Fix coach client management button at source"
+          git push origin main
