@@ -100,6 +100,31 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
+      /* Ficha de cliente: nombre más contenido y selector activo con el degradado premium de la app. */
+      html body #coach #coach-main.dcc-ca .dcc-ca-head h1{
+        font-size:30px!important;
+        line-height:1.04!important;
+        font-weight:760!important;
+        letter-spacing:-.72px!important;
+      }
+      html body #coach #coach-main.dcc-ca .dcc-ca-tabs{
+        padding:4px!important;
+        border-color:rgba(217,170,74,.36)!important;
+        background:radial-gradient(circle at 88% 0,rgba(217,170,74,.055),transparent 38%),linear-gradient(145deg,#0e1418,#080c0f)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 10px 24px rgba(0,0,0,.16)!important;
+      }
+      html body #coach #coach-main.dcc-ca .dcc-ca-tab{
+        color:#9da6b0!important;
+        transition:background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease!important;
+      }
+      html body #coach #coach-main.dcc-ca .dcc-ca-tab.active{
+        color:#f2c967!important;
+        border-color:rgba(240,201,107,.70)!important;
+        background:radial-gradient(circle at 50% 0,rgba(240,201,107,.20),transparent 72%),linear-gradient(145deg,#2a2111 0%,#17130d 55%,#0d0d0b 100%)!important;
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 0 18px rgba(217,170,74,.11)!important;
+        text-shadow:0 0 12px rgba(240,201,107,.12)!important;
+      }
+
       html body #coach #coach-main.dcc-final-clients .dcc-fcl-search{
         position:relative!important;
         width:100%!important;
@@ -209,6 +234,13 @@
       html body #coach #coach-main .dcc-msg-card{border-radius:18px!important}
       html body #coach #coach-main.dcc-ca .dcc-ca-card,
       html body #coach #coach-main.dcc-ca .dcc-p5-section{border-radius:20px!important}
+
+      @media(max-width:520px){
+        html body #coach #coach-main.dcc-ca .dcc-ca-head h1{
+          font-size:27px!important;
+          letter-spacing:-.58px!important;
+        }
+      }
     `;
     document.head.appendChild(s);
   }
