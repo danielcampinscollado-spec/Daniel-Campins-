@@ -1,6 +1,49 @@
-/* DCC — Disco premium en tarjeta de ejercicios */
+/* DCC — Entrenamiento: ilustraciones precargadas + disco premium */
 (function(){
   'use strict';
+
+  /*
+    Las ilustraciones musculares se crean al entrar en Entrenamiento. Si el
+    navegador empieza a descargarlas en ese momento, Safari las pinta con un
+    pequeño retraso. Las calentamos al cargar la app para que estén en caché
+    antes de abrir la pestaña.
+  */
+  const illustrationAssets=[
+    './pecho.png',
+    './triceps.png',
+    './espalda.png',
+    './hombros.png',
+    './biceps.png',
+    './cuadriceps.png',
+    './isquios-femoral.png',
+    './gluteos.png',
+    './gemelos.png',
+    './core-abdomen.png',
+    './lumbar-cuello.png',
+    './assets/next-workout-plate.jpg'
+  ];
+
+  if(!window.__dccTrainingIllustrationPreload){
+    window.__dccTrainingIllustrationPreload=[];
+
+    illustrationAssets.forEach((src,index)=>{
+      if(!document.querySelector(`link[data-dcc-training-preload="${src}"]`)){
+        const link=document.createElement('link');
+        link.rel='preload';
+        link.as='image';
+        link.href=src;
+        link.dataset.dccTrainingPreload=src;
+        if(index<2 || src.includes('next-workout-plate')) link.fetchPriority='high';
+        document.head.appendChild(link);
+      }
+
+      const img=new Image();
+      img.decoding='async';
+      if(index<2 || src.includes('next-workout-plate')) img.fetchPriority='high';
+      img.src=src;
+      window.__dccTrainingIllustrationPreload.push(img);
+    });
+  }
 
   if(document.getElementById('dcc-training-routine-plate-v1')) return;
 
