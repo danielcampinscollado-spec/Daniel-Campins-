@@ -16,5 +16,5 @@
   }
 
   loadOnce('./client-progress-final-v9.js?v=20260910-3','progress-final-v9');
-  loadOnce('./client-metrics-sync-v10.js?v=20260910-1','metrics-sync-v10');
+  loadOnce('./client-metrics-sync-v10.js?v=20260910-bfh11','metrics-sync-v10');
 })();
