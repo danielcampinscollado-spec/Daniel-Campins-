@@ -1,3 +1,4 @@
+# trigger v8 rerender
 name: Force coach dashboard v8 rerender
 on:
   push:
