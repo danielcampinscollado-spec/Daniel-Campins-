@@ -1,8 +1,8 @@
-/* DCC calendar sync v14 — fuerza la agenda a reflejar Supabase sin cache obsoleta */
+/* DCC calendar sync v14.1 — refresca Supabase sin devolver el calendario al mes anterior */
 (function(){
   'use strict';
-  if(window.__dccCalendarSyncV14)return;
-  window.__dccCalendarSyncV14=true;
+  if(window.__dccCalendarSyncV141)return;
+  window.__dccCalendarSyncV141=true;
 
   const cache=window.__dccCalendarSessionsByMonth=window.__dccCalendarSessionsByMonth||{};
   let syncing=false;
@@ -19,6 +19,7 @@
     if(window.__dccCalendarSelected){const d=new Date(window.__dccCalendarSelected+'T12:00:00');if(Number.isFinite(d.getTime()))return d}
     return new Date();
   }
+  function dateKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
   function monthKey(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 
   async function forceMonthSync(){
@@ -39,13 +40,18 @@
       if(error)throw error;
       cache[key]=rows||[];
 
-      const sel=selectedDate();
+      let sel=selectedDate();
+      if(sel.getFullYear()!==m.getFullYear()||sel.getMonth()!==m.getMonth()){
+        sel=new Date(m.getFullYear(),m.getMonth(),1,12);
+        window.__dccCalendarSelected=dateKey(sel);
+      }
+
       const redraw=window.dccCalendarSelect?.__dccCalendarSyncBase||window.dccCalendarSelect;
       if(typeof redraw==='function'&&window.currentScreen==='calendar'){
         redraw(sel.getFullYear(),sel.getMonth(),sel.getDate());
       }
     }catch(e){
-      console.error('DCC sincronización agenda v14:',e);
+      console.error('DCC sincronización agenda v14.1:',e);
     }finally{
       syncing=false;
     }
@@ -53,33 +59,33 @@
 
   function wrapAsync(name){
     const current=window[name];
-    if(typeof current!=='function'||current.__dccCalendarSyncV14)return;
+    if(typeof current!=='function'||current.__dccCalendarSyncV141)return;
     const wrapped=async function(){
       const result=await current.apply(this,arguments);
       if(window.currentScreen==='calendar')await forceMonthSync();
       return result;
     };
-    wrapped.__dccCalendarSyncV14=true;
-    wrapped.__dccCalendarSyncBase=current;
+    wrapped.__dccCalendarSyncV141=true;
+    wrapped.__dccCalendarSyncBase=current.__dccCalendarSyncBase||current;
     window[name]=wrapped;
   }
 
   function wrapImmediate(name){
     const current=window[name];
-    if(typeof current!=='function'||current.__dccCalendarSyncV14)return;
+    if(typeof current!=='function'||current.__dccCalendarSyncV141)return;
     const wrapped=function(){
       const result=current.apply(this,arguments);
       if(window.currentScreen==='calendar')setTimeout(forceMonthSync,0);
       return result;
     };
-    wrapped.__dccCalendarSyncV14=true;
-    wrapped.__dccCalendarSyncBase=current;
+    wrapped.__dccCalendarSyncV141=true;
+    wrapped.__dccCalendarSyncBase=current.__dccCalendarSyncBase||current;
     window[name]=wrapped;
   }
 
   function install(attempt){
     if(!window.__dccCoachCalendarV12||typeof window.dccCalendarSelect!=='function'){
-      if((attempt||0)<50)setTimeout(()=>install((attempt||0)+1),80);
+      if((attempt||0)<60)setTimeout(()=>install((attempt||0)+1),80);
       return;
     }
     wrapAsync('dccCalendarSaveSession');
@@ -89,13 +95,13 @@
     wrapImmediate('dccCalendarSetView');
 
     const show=window.showCoach;
-    if(typeof show==='function'&&!show.__dccCalendarSyncV14){
+    if(typeof show==='function'&&!show.__dccCalendarSyncV141){
       const wrapped=function(screen){
         const result=show.apply(this,arguments);
         if(screen==='calendar')setTimeout(forceMonthSync,0);
         return result;
       };
-      wrapped.__dccCalendarSyncV14=true;
+      wrapped.__dccCalendarSyncV141=true;
       wrapped.__base=show;
       window.showCoach=wrapped;
     }
