@@ -1,3 +1,4 @@
+# trigger 2026-09-10 20:39 CEST
 name: Optimize client entry speed v17
 
 on:
@@ -62,11 +63,11 @@ showClient("home");'''
     });'''
 
           count = s.count(old)
-          if count != 1:
-              raise SystemExit(f'Expected 1 client loading block, found {count}')
+          if count == 0:
+              raise SystemExit('Client loading block not found')
 
-          p.write_text(s.replace(old, new, 1))
-          print('Client entry optimized')
+          p.write_text(s.replace(old, new))
+          print(f'Client entry optimized in {count} block(s)')
           PY
       - name: Commit optimized client entry
         run: |
