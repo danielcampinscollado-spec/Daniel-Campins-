@@ -162,3 +162,16 @@
   script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-alignment-v13.js');
   (document.head||document.documentElement).appendChild(script);
 })();
+
+/* Fuerza la agenda a refrescar las sesiones guardadas desde Supabase. */
+(function(){
+  if(window.__dccCalendarSyncLoaderV14)return;
+  window.__dccCalendarSyncLoaderV14=true;
+  const existing=[...document.scripts].find(s=>/coach-calendar-sync-v14\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./coach-calendar-sync-v14.js?v=20260910-2145';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-sync-v14.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
