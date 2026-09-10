@@ -28,7 +28,7 @@ jobs:
           text = index.read_text()
 
           pattern = re.compile(
-              r'async function loadClientsFromSupabase\(\)\{.*?\n\}\nasync function loadWorkoutHistoryFromSupabase\(\)\{',
+              r'async function loadClientsFromSupabase\(\)\{.*?\n\}\s*async function loadWorkoutHistoryFromSupabase\(\)\{',
               re.S
           )
           replacement = r"""async function loadClientsFromSupabase(){
