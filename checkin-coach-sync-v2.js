@@ -226,7 +226,7 @@
         syncBodyFatClient(id).then(()=>patchClientAdmin(id,'summary'));
         return result;
       };
-      wrappedOpen.__dccBodyFatHistoryV4=true;wrappedOpen.__dccAdmin=true;wrappedOpen.__base=opener;window.openClient=wrappedOpen;window.showClientAdmin=wrappedOpen;
+      wrappedOpen.__dccBodyFatHistoryV4=true;wrappedOpen.__dccAdmin=!!opener.__dccClientAdminPremium;wrappedOpen.__dccClientAdminPremium=!!opener.__dccClientAdminPremium;wrappedOpen.__base=opener;window.openClient=wrappedOpen;window.showClientAdmin=wrappedOpen;
     }
   }
 
