@@ -1,10 +1,35 @@
-/* DCC — Inicio cliente premium v4: encabezado más elegante + tareas premium */
+/* DCC — Inicio cliente premium v4: encabezado elegante + efectos premium dorados */
 (function(){
   if(document.getElementById('dcc-client-home-premium-v4-css')) return;
 
   const style=document.createElement('style');
   style.id='dcc-client-home-premium-v4-css';
   style.textContent=`
+    /* ===============================
+       CONTENEDOR / AMBIENTE
+    =============================== */
+    #client-main .dch-wrap{
+      position:relative!important;
+      isolation:isolate!important;
+    }
+
+    #client-main .dch-wrap::before{
+      content:'';
+      position:absolute;
+      z-index:-1;
+      pointer-events:none;
+      top:-36px;
+      right:-78px;
+      width:360px;
+      height:250px;
+      background:
+        radial-gradient(ellipse at 70% 20%,rgba(240,201,107,.11) 0%,rgba(217,170,74,.055) 26%,transparent 62%),
+        linear-gradient(152deg,transparent 18%,rgba(240,201,107,.045) 39%,rgba(240,201,107,.012) 54%,transparent 70%);
+      filter:blur(2px);
+      opacity:.92;
+      transform:translateZ(0);
+    }
+
     /* ===============================
        ENCABEZADO CLIENTE
     =============================== */
@@ -13,6 +38,10 @@
       min-height:76px!important;
       margin:0 0 14px!important;
       padding:5px 2px 8px!important;
+      overflow:visible!important;
+      background:
+        linear-gradient(152deg,transparent 53%,rgba(240,201,107,.055) 65%,transparent 78%),
+        radial-gradient(ellipse at 94% 17%,rgba(240,201,107,.10),transparent 48%)!important;
     }
 
     #client-main .dch-eyebrow{
@@ -23,6 +52,7 @@
       font-weight:850!important;
       letter-spacing:3.1px!important;
       text-transform:uppercase!important;
+      text-shadow:0 0 14px rgba(231,182,77,.10);
     }
 
     #client-main .dch-name{
@@ -35,6 +65,7 @@
       letter-spacing:-.85px!important;
       white-space:normal!important;
       text-wrap:balance!important;
+      text-shadow:0 2px 18px rgba(0,0,0,.28);
     }
 
     #client-main .dch-welcome::before{
@@ -46,7 +77,7 @@
       height:2px;
       border-radius:999px;
       background:linear-gradient(90deg,#f0c96b,#d9aa4a);
-      box-shadow:0 0 10px rgba(240,201,107,.18);
+      box-shadow:0 0 12px rgba(240,201,107,.28);
     }
 
     #client-main .dch-welcome::after{
@@ -64,6 +95,7 @@
       text-align:left;
       opacity:.82;
       pointer-events:none;
+      text-shadow:0 0 16px rgba(240,201,107,.08);
     }
 
     /* ===============================
@@ -71,35 +103,54 @@
     =============================== */
     #client-main .dch-task-card{
       position:relative!important;
-      border-color:rgba(236,185,78,.74)!important;
+      border-color:rgba(236,185,78,.78)!important;
       background:
-        radial-gradient(circle at 91% 18%,rgba(240,201,107,.14),transparent 30%),
-        radial-gradient(circle at 6% 92%,rgba(217,170,74,.055),transparent 30%),
-        linear-gradient(145deg,#151a20 0%,#0c1116 58%,#070a0d 100%)!important;
+        radial-gradient(circle at 92% 12%,rgba(240,201,107,.17),transparent 30%),
+        radial-gradient(circle at 9% 95%,rgba(217,170,74,.075),transparent 31%),
+        linear-gradient(145deg,#171b21 0%,#0c1116 58%,#070a0d 100%)!important;
       box-shadow:
-        0 15px 34px rgba(0,0,0,.28),
-        inset 0 1px 0 rgba(255,255,255,.035),
-        0 0 24px rgba(217,170,74,.055)!important;
+        0 16px 38px rgba(0,0,0,.31),
+        inset 0 1px 0 rgba(255,255,255,.045),
+        inset 0 0 28px rgba(217,170,74,.025),
+        0 0 28px rgba(217,170,74,.07)!important;
       overflow:hidden!important;
+      transform:translateZ(0);
+    }
+
+    #client-main .dch-task-card::before{
+      content:'';
+      position:absolute;
+      pointer-events:none;
+      z-index:0;
+      left:-88px;
+      top:-78px;
+      width:255px;
+      height:210px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(240,201,107,.115) 0%,rgba(217,170,74,.045) 31%,transparent 67%);
+      filter:blur(7px);
+      opacity:.9;
     }
 
     #client-main .dch-task-card::after{
       content:'';
       position:absolute;
-      right:-36px;
-      bottom:-42px;
-      width:210px;
-      height:120px;
-      border-radius:50%;
-      border:1px solid rgba(240,201,107,.13);
-      box-shadow:
-        0 -8px 0 -7px rgba(240,201,107,.13),
-        0 -16px 0 -15px rgba(240,201,107,.11),
-        0 -24px 0 -23px rgba(240,201,107,.09),
-        0 -32px 0 -31px rgba(240,201,107,.07);
-      transform:rotate(-14deg);
       pointer-events:none;
-      opacity:.75;
+      z-index:0;
+      right:-56px;
+      bottom:-55px;
+      width:285px;
+      height:175px;
+      border-radius:50%;
+      background:
+        repeating-radial-gradient(
+          ellipse at 83% 86%,
+          rgba(240,201,107,.22) 0 1px,
+          transparent 1.3px 10px
+        );
+      transform:rotate(-13deg) scaleX(1.08);
+      opacity:.27;
+      filter:drop-shadow(0 0 5px rgba(240,201,107,.13));
     }
 
     #client-main .dch-task-head{
@@ -112,6 +163,7 @@
       font-size:10px!important;
       font-weight:850!important;
       letter-spacing:2.7px!important;
+      text-shadow:0 0 13px rgba(239,189,84,.11);
     }
 
     #client-main .dch-task-head::after{
@@ -119,22 +171,26 @@
       position:absolute;
       left:17px;
       bottom:-1px;
-      width:31px;
+      width:38px;
       height:1px;
-      background:linear-gradient(90deg,#e9b84d,transparent);
-      box-shadow:0 0 8px rgba(233,184,77,.24);
+      background:linear-gradient(90deg,#efbd54,rgba(239,189,84,.2),transparent);
+      box-shadow:0 0 9px rgba(233,184,77,.32);
     }
 
     #client-main .dch-task-count{
       min-width:31px!important;
       height:31px!important;
       padding:0 9px!important;
-      border-color:rgba(240,201,107,.43)!important;
-      background:linear-gradient(145deg,rgba(217,170,74,.16),rgba(217,170,74,.055))!important;
+      border-color:rgba(240,201,107,.48)!important;
+      background:
+        radial-gradient(circle at 50% 12%,rgba(240,201,107,.17),transparent 65%),
+        linear-gradient(145deg,rgba(217,170,74,.17),rgba(217,170,74,.055))!important;
       color:#f4cb69!important;
       font-size:12px!important;
       font-weight:800!important;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.045),
+        0 0 14px rgba(217,170,74,.07)!important;
     }
 
     #client-main .dch-task-empty{
@@ -152,21 +208,23 @@
     #client-main .dch-task-empty .dch-iconbox{
       width:48px!important;
       height:48px!important;
-      border:1px solid rgba(240,201,107,.73)!important;
+      border:1px solid rgba(240,201,107,.82)!important;
       border-radius:15px!important;
       background:
-        radial-gradient(circle at 50% 15%,rgba(240,201,107,.28),transparent 63%),
-        linear-gradient(145deg,#2a210f,#12100b)!important;
-      color:#f0c96b!important;
+        radial-gradient(circle at 50% 10%,rgba(255,226,146,.30),transparent 57%),
+        linear-gradient(145deg,#2b220f,#11100c)!important;
+      color:#f4cb69!important;
       box-shadow:
-        inset 0 0 0 1px rgba(255,224,141,.06),
-        0 0 18px rgba(217,170,74,.14)!important;
+        inset 0 0 0 1px rgba(255,224,141,.07),
+        inset 0 0 18px rgba(240,201,107,.045),
+        0 0 22px rgba(217,170,74,.16)!important;
     }
 
     #client-main .dch-task-empty .dch-iconbox svg{
       width:23px!important;
       height:23px!important;
       stroke-width:2!important;
+      filter:drop-shadow(0 0 5px rgba(240,201,107,.15));
     }
 
     #client-main .dch-task-empty > span:last-child{
@@ -176,6 +234,7 @@
       line-height:1.15!important;
       font-weight:720!important;
       letter-spacing:-.25px!important;
+      text-shadow:0 2px 12px rgba(0,0,0,.24);
     }
 
     #client-main .dch-task-empty > span:last-child::after{
@@ -201,8 +260,11 @@
     #client-main .dch-task-row .dch-iconbox{
       width:44px!important;
       height:44px!important;
-      border-color:rgba(240,201,107,.50)!important;
-      background:linear-gradient(145deg,rgba(217,170,74,.13),rgba(10,13,16,.94))!important;
+      border-color:rgba(240,201,107,.58)!important;
+      background:
+        radial-gradient(circle at 50% 10%,rgba(240,201,107,.16),transparent 65%),
+        linear-gradient(145deg,rgba(217,170,74,.13),rgba(10,13,16,.94))!important;
+      box-shadow:0 0 16px rgba(217,170,74,.07)!important;
     }
 
     #client-main .dch-task-title{
@@ -217,7 +279,58 @@
       line-height:1.35!important;
     }
 
+    /* ===============================
+       RESTO DE TARJETAS: EFECTO SUTIL
+    =============================== */
+    #client-main .dch-progress{
+      position:relative!important;
+      overflow:hidden!important;
+      background:
+        radial-gradient(circle at 11% 50%,rgba(240,201,107,.055),transparent 31%),
+        radial-gradient(circle at 98% 0%,rgba(217,170,74,.085),transparent 35%),
+        linear-gradient(145deg,#171b21 0%,#0e1217 58%,#090c10 100%)!important;
+      box-shadow:
+        0 14px 30px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.035),
+        0 0 20px rgba(217,170,74,.035)!important;
+    }
+
+    #client-main .dch-progress::before{
+      content:'';
+      position:absolute;
+      pointer-events:none;
+      right:-48px;
+      top:-62px;
+      width:180px;
+      height:140px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(240,201,107,.075),transparent 68%);
+      filter:blur(5px);
+    }
+
+    #client-main .dch-next{
+      position:relative!important;
+      box-shadow:
+        0 16px 34px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.035),
+        0 0 22px rgba(217,170,74,.045)!important;
+    }
+
+    #client-main .dch-stat{
+      box-shadow:
+        0 11px 25px rgba(0,0,0,.23),
+        inset 0 1px 0 rgba(255,255,255,.032),
+        0 0 16px rgba(217,170,74,.026)!important;
+    }
+
     @media(max-width:390px){
+      #client-main .dch-wrap::before{
+        right:-104px;
+        top:-32px;
+        width:320px;
+        height:220px;
+        opacity:.78;
+      }
       #client-main .dch-welcome{
         min-height:69px!important;
         margin-bottom:12px!important;
@@ -255,6 +368,19 @@
       }
       #client-main .dch-task-empty > span:last-child::after{
         font-size:10px!important;
+      }
+      #client-main .dch-task-card::after{
+        right:-72px;
+        bottom:-52px;
+        opacity:.22;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      #client-main .dch-wrap::before,
+      #client-main .dch-task-card::before,
+      #client-main .dch-task-card::after{
+        filter:none!important;
       }
     }
   `;
