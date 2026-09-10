@@ -49,7 +49,7 @@
       z-index:1;
     }
 
-    /* Encabezado editorial: nombre pequeño, fino y limpio */
+    /* Encabezado editorial */
     html body #client-main .dch-welcome{
       position:relative!important;
       min-height:56px!important;
@@ -59,13 +59,14 @@
       background:transparent!important;
     }
 
+    /* BIENVENIDO: mismo tratamiento que ALIMENTACIÓN */
     html body #client-main .dch-eyebrow{
       margin:0 0 7px!important;
-      color:#e9b94f!important;
-      font-size:9.5px!important;
-      line-height:1!important;
-      font-weight:760!important;
-      letter-spacing:3.25px!important;
+      color:#e9b74d!important;
+      font-size:11px!important;
+      line-height:1.2!important;
+      font-weight:850!important;
+      letter-spacing:3px!important;
       text-transform:uppercase!important;
     }
 
@@ -113,6 +114,17 @@
       text-align:left;
       opacity:.76;
       pointer-events:none;
+    }
+
+    /* Peso y grasa: tarjetas puramente informativas */
+    html body #client-main .dch-stat{
+      grid-template-columns:38px minmax(0,1fr)!important;
+      cursor:default!important;
+      box-shadow:0 11px 25px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.027),0 0 14px rgba(217,170,74,.02)!important;
+    }
+
+    html body #client-main .dch-stat .dch-chevron{
+      display:none!important;
     }
 
     /* Tareas pendientes: menos altura y más lujo visual */
@@ -271,18 +283,22 @@
     html body #client-main .dch-task-title{font-size:13px!important;font-weight:620!important}
     html body #client-main .dch-task-meta{margin-top:3px!important;color:#929aa5!important;font-size:9.2px!important;line-height:1.3!important}
 
-    /* Mantener el resto de Inicio coherente */
+    /* Progreso de fuerza: tarjeta puramente informativa */
     html body #client-main .dch-progress{
       position:relative!important;
       overflow:hidden!important;
+      grid-template-columns:50px minmax(0,1fr)!important;
+      cursor:default!important;
       background:radial-gradient(circle at 98% 0%,rgba(217,170,74,.06),transparent 34%),linear-gradient(145deg,#171b21 0%,#0e1217 58%,#090c10 100%)!important;
       box-shadow:0 14px 30px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.03),0 0 18px rgba(217,170,74,.025)!important;
+    }
+    html body #client-main .dch-progress .dch-chevron{
+      display:none!important;
     }
     html body #client-main .dch-progress::before{
       content:'';position:absolute;pointer-events:none;right:-48px;top:-62px;width:180px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(240,201,107,.05),transparent 68%);filter:blur(5px)
     }
     html body #client-main .dch-next{position:relative!important;box-shadow:0 16px 34px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.03),0 0 20px rgba(217,170,74,.03)!important}
-    html body #client-main .dch-stat{box-shadow:0 11px 25px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.027),0 0 14px rgba(217,170,74,.02)!important}
 
     @media(max-width:390px){
       html body #client-main .dch-wrap::before{right:-22px;top:-38px;width:330px;height:160px;opacity:.88}
@@ -290,6 +306,8 @@
       html body #client-main .dch-name,
       html body #client-main .dch-welcome .dch-name{font-size:19px!important;font-weight:300!important;letter-spacing:.08px!important}
       html body #client-main .dch-welcome::after{right:0;top:7px;width:98px;font-size:5.8px;letter-spacing:1.8px}
+      html body #client-main .dch-stat{grid-template-columns:34px minmax(0,1fr)!important}
+      html body #client-main .dch-progress{grid-template-columns:50px minmax(0,1fr)!important}
       html body #client-main .dch-task-head{height:34px!important;min-height:34px!important;padding:0 12px!important;font-size:8px!important}
       html body #client-main .dch-task-head::after{left:12px!important}
       html body #client-main .dch-task-empty{min-height:53px!important;grid-template-columns:32px minmax(0,1fr)!important;gap:9px!important;padding:6px 12px!important}
@@ -301,25 +319,42 @@
   `;
   document.head.appendChild(style);
 
-  /* El renderer del Inicio sustituye nodos: reafirmar la tipografía tras cada render. */
-  const enforceLuxuryHeader=()=>{
+  /* El renderer del Inicio sustituye nodos: reafirmar estilos y comportamiento tras cada render. */
+  const enforceHomePresentation=()=>{
     const name=document.querySelector('#client-main .dch-name');
-    if(!name) return;
-    name.style.setProperty('font-family','"Avenir Next","Helvetica Neue",-apple-system,BlinkMacSystemFont,Arial,sans-serif','important');
-    name.style.setProperty('font-size',window.matchMedia('(max-width:390px)').matches?'19px':'20px','important');
-    name.style.setProperty('font-weight','300','important');
-    name.style.setProperty('line-height','1.14','important');
-    name.style.setProperty('letter-spacing','.08px','important');
-    name.style.setProperty('text-shadow','none','important');
+    if(name){
+      name.style.setProperty('font-family','"Avenir Next","Helvetica Neue",-apple-system,BlinkMacSystemFont,Arial,sans-serif','important');
+      name.style.setProperty('font-size',window.matchMedia('(max-width:390px)').matches?'19px':'20px','important');
+      name.style.setProperty('font-weight','300','important');
+      name.style.setProperty('line-height','1.14','important');
+      name.style.setProperty('letter-spacing','.08px','important');
+      name.style.setProperty('text-shadow','none','important');
+    }
+
+    /* Peso, grasa y progreso de fuerza son información, no accesos directos. */
+    document.querySelectorAll('#client-main .dch-stat').forEach(card=>{
+      card.removeAttribute('onclick');
+      card.style.cursor='default';
+    });
+
+    const progress=document.querySelector('#client-main .dch-progress');
+    if(progress){
+      progress.removeAttribute('onclick');
+      progress.style.cursor='default';
+      const sub=progress.querySelector('.dch-progress-sub');
+      if(sub && sub.textContent.includes('Consulta el detalle en Progreso.')){
+        sub.textContent='Tu rendimiento está avanzando. Sigue manteniendo esta progresión.';
+      }
+    }
   };
 
-  enforceLuxuryHeader();
+  enforceHomePresentation();
   const root=document.getElementById('client-main');
   if(root && !window.__dccLuxuryHomeObserver){
     let raf=0;
     const observer=new MutationObserver(()=>{
       cancelAnimationFrame(raf);
-      raf=requestAnimationFrame(enforceLuxuryHeader);
+      raf=requestAnimationFrame(enforceHomePresentation);
     });
     observer.observe(root,{childList:true,subtree:true});
     window.__dccLuxuryHomeObserver=observer;
