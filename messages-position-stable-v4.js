@@ -1,4 +1,4 @@
-/* DCC — Mensajes: entrada estable sin saltar al final del chat */
+/* DCC — Mensajes: entrada estable sin vibraciones */
 (function(){
   'use strict';
 
@@ -8,6 +8,15 @@
     document.body.scrollTop=0;
   };
 
+  let topFrame=0;
+  function stabilizeInitialEntry(){
+    if(topFrame)return;
+    topFrame=requestAnimationFrame(()=>{
+      topFrame=0;
+      topNow();
+    });
+  }
+
   const isMessagesAction=button=>{
     if(!button)return false;
     const action=button.getAttribute('onclick')||'';
@@ -15,90 +24,38 @@
     return /show(?:Client|Coach)\s*\(\s*['"]messages['"]\s*\)/i.test(action)||/mensajes/i.test(text);
   };
 
-  function stabilizeInitialEntry(){
-    topNow();
-    requestAnimationFrame(()=>{
-      topNow();
-      requestAnimationFrame(topNow);
-    });
-    /* La sincronización con Supabase puede volver a pintar la pantalla unos ms después. */
-    setTimeout(topNow,90);
-    setTimeout(topNow,260);
-  }
-
-  /* Al entrar desde la navegación inferior, la pantalla empieza siempre arriba. */
+  /* Una sola corrección de posición al entrar en Mensajes. Nada de reintentos
+     posteriores: en iPhone esos scrollTo repetidos provocaban el efecto de vibración. */
   document.addEventListener('click',event=>{
     const button=event.target.closest('#client-nav button,#coach-nav button');
     if(!isMessagesAction(button))return;
     stabilizeInitialEntry();
   },true);
 
-  function wrapClient(){
-    const current=window.showClient;
-    if(typeof current!=='function'||current.__dccMessagesPositionStable)return;
+  function wrap(name){
+    const current=window[name];
+    if(typeof current!=='function'||current.__dccMessagesPositionStableV5)return;
 
     const wrapped=function(screen){
-      const entering=screen==='messages'&&window.currentScreen!=='messages';
-      if(entering)topNow();
       const result=current.apply(this,arguments);
-      if(entering)stabilizeInitialEntry();
+      if(screen==='messages')stabilizeInitialEntry();
       return result;
     };
-    wrapped.__dccMessagesPositionStable=true;
+
+    wrapped.__dccMessagesPositionStableV5=true;
     wrapped.__base=current;
-    window.showClient=wrapped;
-  }
-
-  function wrapCoach(){
-    const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccMessagesPositionStable)return;
-
-    const wrapped=function(screen){
-      const entering=screen==='messages'&&window.currentScreen!=='messages';
-      if(entering)topNow();
-      const result=current.apply(this,arguments);
-      if(entering)stabilizeInitialEntry();
-      return result;
-    };
-    wrapped.__dccMessagesPositionStable=true;
-    wrapped.__base=current;
-    window.showCoach=wrapped;
-  }
-
-  function wrapOpenChat(){
-    const current=window.dccOpenChat;
-    if(typeof current!=='function'||current.__dccMessagesPositionStable)return;
-
-    const wrapped=function(id){
-      const alreadyOpen=String(window.__dccOpenChat??'')===String(id)&&!!document.getElementById('dccChatInput');
-      if(!alreadyOpen)topNow();
-      const result=current.apply(this,arguments);
-      if(!alreadyOpen){
-        requestAnimationFrame(()=>{
-          topNow();
-          const stream=document.getElementById('dccChatStream');
-          if(stream)stream.scrollTop=0;
-        });
-        setTimeout(()=>{
-          if(String(window.__dccOpenChat??'')!==String(id))return;
-          topNow();
-          const stream=document.getElementById('dccChatStream');
-          if(stream)stream.scrollTop=0;
-        },180);
-      }
-      return result;
-    };
-    wrapped.__dccMessagesPositionStable=true;
-    wrapped.__base=current;
-    window.dccOpenChat=wrapped;
+    window[name]=wrapped;
   }
 
   function install(){
-    wrapClient();
-    wrapCoach();
-    wrapOpenChat();
+    wrap('showClient');
+    wrap('showCoach');
   }
 
   install();
-  [120,350,800,1500].forEach(ms=>setTimeout(install,ms));
+  setTimeout(install,250);
+  setTimeout(install,800);
+
+  /* Importante: no se fuerza el scroll de la ventana al abrir una conversación.
+     El propio chat gestiona su contenido y así la transición de cliente queda fija. */
 })();
