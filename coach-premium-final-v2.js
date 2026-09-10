@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260910-1918-legacy-bridge';
+  const BUILD='20260910-1932-legacy-bridge';
   window.__dccLegacyCoachBridge=BUILD;
 
   function isCoachDashboardVisible(){
@@ -37,12 +37,24 @@
     (document.head||document.documentElement).appendChild(patch);
   }
 
+  function loadCoachUI(){
+    const existing=[...document.scripts].find(s=>/coach-ui-v11\.js(?:\?|$)/.test(s.src||''));
+    if(existing) return;
+    const ui=document.createElement('script');
+    ui.src='./coach-ui-v11.js?v=20260910-1932';
+    ui.async=false;
+    ui.dataset.dccCoachUi=BUILD;
+    ui.onerror=()=>console.error('DCC legacy bridge: no se pudo cargar coach-ui-v11.js');
+    (document.head||document.documentElement).appendChild(ui);
+  }
+
   function loadCurrentCoach(){
     document.getElementById('dcc-coach-final-v2-css')?.remove();
     loadPanelState();
 
     const current=[...document.scripts].find(s=>/coach-premium-v8\.js(?:\?|$)/.test(s.src||''));
     if(current){
+      loadCoachUI();
       setTimeout(forceDashboard,60);
       setTimeout(forceDashboard,220);
       return;
@@ -54,6 +66,7 @@
     s.dataset.dccLegacyBridge=BUILD;
     s.onload=()=>{
       loadPanelState();
+      loadCoachUI();
       setTimeout(forceDashboard,20);
       setTimeout(forceDashboard,120);
       setTimeout(forceDashboard,400);
