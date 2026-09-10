@@ -1,0 +1,146 @@
+name: Fix client persistence and foods v23
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-client-persistence-and-foods-v23.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Make Supabase authoritative and install native food preferences
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          text = index.read_text()
+
+          pattern = re.compile(r"async function loadClientsFromSupabase\(\)\{.*?\n\}\n\nasync function loadWorkoutHistoryFromSupabase", re.S)
+          replacement = r'''async function loadClientsFromSupabase(){
+
+  try{
+
+    const { data:clients,error } = await supabaseClient
+      .from("clients")
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at")
+      .order("created_at",{ascending:true});
+
+    if(error){
+      console.error("Error cargando clientes:",error);
+      return;
+    }
+
+    const supabaseClients = clients || [];
+    const previousById = new Map((data.clients || []).map(c => [String(c.id), c]));
+
+    // Supabase es la fuente de verdad. Los clientes borrados del servidor
+    // NO se vuelven a crear desde localStorage.
+    data.clients = supabaseClients.map(row=>{
+      const previous = previousById.get(String(row.id)) || {};
+      return {
+        ...previous,
+        id:row.id,
+        name:row.name,
+        goal:row.goal || "",
+        weight:Number(row.weight)||0,
+        initial:Number(row.initial_weight)||Number(row.weight)||0,
+        bodyFatInitial:row.initial_body_fat != null ? Number(row.initial_body_fat) : null,
+        age:row.age != null ? Number(row.age) : null,
+        height:row.height_cm != null ? Number(row.height_cm) : null,
+        heightCm:row.height_cm != null ? Number(row.height_cm) : null,
+        height_cm:row.height_cm != null ? Number(row.height_cm) : null,
+        foodsToAvoid:String(row.foods_to_avoid || ""),
+        foods_to_avoid:String(row.foods_to_avoid || ""),
+        plan:row.plan || "",
+        status:row.status || "Pendiente",
+        created_at:row.created_at || previous.created_at || null
+      };
+    });
+
+    const validIds = new Set(data.clients.map(c=>String(c.id)));
+    ["checkins","diets","routines","weights","workoutHistory","bodyFatHistory","messages","notificationState"].forEach(key=>{
+      const obj=data[key];
+      if(!obj || typeof obj!=="object" || Array.isArray(obj)) return;
+      Object.keys(obj).forEach(id=>{ if(!validIds.has(String(id))) delete obj[id]; });
+    });
+
+    saveData();
+
+  }catch(e){
+
+    console.error(
+      "Error conectando con Supabase para clientes:",
+      e
+    );
+
+  }
+
+}
+
+async function loadWorkoutHistoryFromSupabase'''
+          text, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit('loadClientsFromSupabase pattern not found')
+
+          # Cargar el módulo de preferencias de forma directa, no mediante un loader dinámico.
+          direct = '<script src="./client-profile-preferences-v1.js?v=20260910-2358"></script>'
+          if direct not in text:
+              text = text.replace('</body>', direct + '\n</body>', 1)
+
+          index.write_text(text)
+
+          # Crear una versión única del alta de cliente para evitar cualquier versión anterior en Safari.
+          src = Path('new-client-premium-v1.js').read_text()
+          src = src.replace('/* DCC — Nuevo cliente premium v1 */', '/* DCC — Nuevo cliente premium v2: alimentos nativos + persistencia */', 1)
+          src = src.replace('__dccNewClientPremiumV1', '__dccNewClientPremiumV2')
+          src = src.replace('dcc-new-client-premium-v1-css', 'dcc-new-client-premium-v2-css')
+
+          src = src.replace("      goal:'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 12 20 4M17 4h3v3\"/></svg>'\n", "      goal:'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 12 20 4M17 4h3v3\"/></svg>',\n      food:'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\"><path d=\"M7 3v7M4.5 3v4.5A2.5 2.5 0 0 0 7 10v11M9.5 3v4.5A2.5 2.5 0 0 1 7 10\"/><path d=\"M16 3v18M16 3c3 2.7 3.5 7.2 0 10\"/><path d=\"M3 21 21 3\"/></svg>'\n", 1)
+
+          src = src.replace("      #dcc-new-client-premium .dcc-nc-input:focus,#dcc-new-client-premium .dcc-nc-select:focus{border-color:${GOLD2}!important;box-shadow:0 0 0 3px rgba(217,170,74,.10)!important}\n", "      #dcc-new-client-premium .dcc-nc-input:focus,#dcc-new-client-premium .dcc-nc-select:focus{border-color:${GOLD2}!important;box-shadow:0 0 0 3px rgba(217,170,74,.10)!important}\n      #dcc-new-client-premium .dcc-nc-textarea{width:100%;min-height:88px;margin:0!important;padding:13px 14px!important;border:1px solid rgba(163,174,186,.42)!important;border-radius:14px!important;outline:0!important;background:linear-gradient(145deg,#11171d,#0b1015)!important;color:#f5f2ec!important;-webkit-text-fill-color:#f5f2ec!important;font:600 14px/1.45 inherit!important;resize:vertical;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important}\n      #dcc-new-client-premium .dcc-nc-textarea::placeholder{color:#6f7782!important;-webkit-text-fill-color:#6f7782!important;opacity:1}\n      #dcc-new-client-premium .dcc-nc-textarea:focus{border-color:${GOLD2}!important;box-shadow:0 0 0 3px rgba(217,170,74,.10)!important}\n", 1)
+
+          marker = '''        <button type="button" id="dcc-create-client-btn" class="dcc-nc-create" onclick="createClient()">Crear cliente <span>→</span></button>'''
+          field = '''        <label class="dcc-nc-field">
+          <span class="dcc-nc-label">${icon('food')}<span>Alimentos a evitar</span></span>
+          <textarea class="dcc-nc-textarea" id="new-foods-avoid" placeholder="Ej. cebolla, aceitunas, marisco"></textarea>
+        </label>
+
+        <button type="button" id="dcc-create-client-btn" class="dcc-nc-create" onclick="createClient()">Crear cliente <span>→</span></button>'''
+          if marker not in src:
+              raise SystemExit('create client button marker not found')
+          src = src.replace(marker, field, 1)
+
+          src = src.replace("    const goal=document.getElementById('new-goal')?.value.trim()||'';\n", "    const goal=document.getElementById('new-goal')?.value.trim()||'';\n    const foodsToAvoid=document.getElementById('new-foods-avoid')?.value.trim()||'';\n", 1)
+          src = src.replace("        height_cm:height,\n        plan:'',", "        height_cm:height,\n        foods_to_avoid:foodsToAvoid,\n        plan:'',", 1)
+          src = src.replace("      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,heightCm:height,plan:'',status:'Pendiente'});", "      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,height:height,heightCm:height,height_cm:height,foodsToAvoid,foods_to_avoid:foodsToAvoid,plan:'',status:'Pendiente'});", 1)
+          src = src.replace("select('id,age,height_cm')", "select('id,age,height_cm,foods_to_avoid')")
+          src = src.replace("if(c){c.age=row.age!=null?Number(row.age):null;c.heightCm=row.height_cm!=null?Number(row.height_cm):null}", "if(c){c.age=row.age!=null?Number(row.age):null;c.height=row.height_cm!=null?Number(row.height_cm):null;c.heightCm=row.height_cm!=null?Number(row.height_cm):null;c.height_cm=row.height_cm!=null?Number(row.height_cm):null;c.foodsToAvoid=String(row.foods_to_avoid||'');c.foods_to_avoid=String(row.foods_to_avoid||'')}")
+          Path('new-client-premium-v2.js').write_text(src)
+
+          # La v2 se carga al final y sobrescribe de forma determinista cualquier alta antigua.
+          text = index.read_text()
+          tag = '<script src="./new-client-premium-v2.js?v=20260910-2358"></script>'
+          if tag not in text:
+              text = text.replace('<script src="./client-profile-preferences-v1.js?v=20260910-2358"></script>', tag + '\n<script src="./client-profile-preferences-v1.js?v=20260910-2358"></script>', 1)
+          index.write_text(text)
+          PY
+
+      - name: Commit definitive client persistence fix
+        run: |
+          git config user.name "danielcampinscollado-spec"
+          git config user.email "danielcampinscollado@gmail.com"
+          git add index.html new-client-premium-v2.js
+          git commit -m "Make client deletion permanent and add native food preferences"
+          git push origin main
