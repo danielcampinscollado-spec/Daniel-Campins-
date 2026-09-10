@@ -1,0 +1,79 @@
+name: Force coach dashboard v8 rerender
+on:
+  push:
+    paths:
+      - '.github/workflows/force-coach-dashboard-v8-rerender.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Force already visible coach dashboard to rerender
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          source = Path('coach-premium-v7.js')
+          target = Path('coach-premium-v8.js')
+
+          html = index.read_text()
+          js = source.read_text()
+
+          old = 'window.showCoach=wrapped}'
+          new = '''window.showCoach=wrapped;
+
+    // The base app may render the coach dashboard before this override loads.
+    // In that case wrapping showCoach is not enough: repaint the already-visible dashboard now.
+    const mainNow=document.getElementById("coach-main");
+    const currentText=(mainNow?.textContent||"").toUpperCase();
+    const dashboardAlreadyVisible=
+      window.currentScreen==="dashboard" ||
+      currentText.includes("RESUMEN GENERAL") ||
+      currentText.includes("CADA CLIENTE ES UN PROCESO") ||
+      currentText.includes("BUENOS DÍAS") ||
+      currentText.includes("BUENAS TARDES") ||
+      currentText.includes("BUENAS NOCHES");
+
+    if(dashboardAlreadyVisible){
+      requestAnimationFrame(()=>wrapped("dashboard"));
+    }
+  }'''
+
+          if old not in js:
+              raise SystemExit('Could not find showCoach wrapper install point')
+
+          js = js.replace(old, new, 1)
+          js = js.replace('DCC definitive dashboard loader v7', 'DCC definitive dashboard loader v8', 1)
+          target.write_text(js)
+
+          html = re.sub(
+              r'\s*<script\s+src=["\']\./coach-premium-v7\.js[^"\']*["\']\s*></script>\s*',
+              '\n',
+              html,
+              flags=re.I
+          )
+          html = re.sub(
+              r'\s*<script\s+src=["\']\./coach-premium-v8\.js[^"\']*["\']\s*></script>\s*',
+              '\n',
+              html,
+              flags=re.I
+          )
+
+          tag = '<script src="./coach-premium-v8.js?v=20260910-1652"></script>'
+          if '</body>' not in html:
+              raise SystemExit('No </body> found')
+          html = html.replace('</body>', tag + '\n</body>', 1)
+          index.write_text(html)
+          PY
+      - name: Commit immediate dashboard rerender
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html coach-premium-v8.js
+          git diff --cached --quiet || git commit -m 'Rerender coach dashboard after premium override loads'
+          git pull --rebase origin main
+          git push
