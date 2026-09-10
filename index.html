@@ -6157,15 +6157,25 @@ showClient("home");
 
     buildCoachNav();
 
-    await loadDietsFromSupabase();
-    await loadClientsFromSupabase();
-    await loadRoutinesFromSupabase();
-    await loadWorkoutHistoryFromSupabase();
-    await loadWeightsFromSupabase();
-    await loadMessagesFromSupabase();
-    await loadCheckinsFromSupabase();
-    
+    // Entramos al panel inmediatamente. La sincronización con Supabase
+    // no debe bloquear la primera pintura del entrenador.
     showCoach("dashboard");
+
+    Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadClientsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]).then(()=>{
+      if(currentScreen==="dashboard"){
+        const coachMain=document.getElementById("coach-main");
+        if(coachMain) coachMain.dataset.dccInstant="1";
+        showCoach("dashboard");
+      }
+    });
 
   }
 
