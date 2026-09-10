@@ -149,3 +149,16 @@
   script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-v12.js');
   (document.head||document.documentElement).appendChild(script);
 })();
+
+/* Corrige la alineación semanal del calendario en móvil. */
+(function(){
+  if(window.__dccCalendarAlignmentLoaderV13)return;
+  window.__dccCalendarAlignmentLoaderV13=true;
+  const existing=[...document.scripts].find(s=>/coach-calendar-alignment-v13\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./coach-calendar-alignment-v13.js?v=20260910-2128';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-alignment-v13.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
