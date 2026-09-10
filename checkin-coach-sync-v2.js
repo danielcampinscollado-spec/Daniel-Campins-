@@ -175,3 +175,16 @@
   script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-sync-v14.js');
   (document.head||document.documentElement).appendChild(script);
 })();
+
+/* Corrige Fecha/Hora del formulario de sesión en Safari móvil. */
+(function(){
+  if(window.__dccCalendarFormFixLoaderV15)return;
+  window.__dccCalendarFormFixLoaderV15=true;
+  const existing=[...document.scripts].find(s=>/coach-calendar-form-fix-v15\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./coach-calendar-form-fix-v15.js?v=20260910-2130';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-form-fix-v15.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
