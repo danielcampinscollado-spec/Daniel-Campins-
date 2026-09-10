@@ -9,7 +9,7 @@
     try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}
     return window.supabaseClient||null;
   }
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]))}
 
   async function syncCheckinsFromDatabase(){
     const db=database();if(!db)return false;
@@ -122,4 +122,17 @@
   setTimeout(install,300);
   setTimeout(install,1000);
   window.addEventListener('load',()=>setTimeout(()=>{install();syncCheckinsFromDatabase()},120));
+})();
+
+/* Carga del formulario premium de alta de cliente. */
+(function(){
+  if(window.__dccNewClientLoaderV1)return;
+  window.__dccNewClientLoaderV1=true;
+  const existing=[...document.scripts].find(s=>/new-client-premium-v1\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./new-client-premium-v1.js?v=20260910-2045';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar new-client-premium-v1.js');
+  (document.head||document.documentElement).appendChild(script);
 })();
