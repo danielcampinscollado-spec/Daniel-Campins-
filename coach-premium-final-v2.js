@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260910-1700-legacy-bridge';
+  const BUILD='20260910-1918-legacy-bridge';
   window.__dccLegacyCoachBridge=BUILD;
 
   function isCoachDashboardVisible(){
@@ -12,6 +12,7 @@
     return window.currentScreen==='dashboard' ||
       text.includes('CADA CLIENTE ES UN PROCESO') ||
       text.includes('RESUMEN GENERAL') ||
+      text.includes('PANEL DE ENTRENADOR') ||
       text.includes('BUENOS DÍAS') ||
       text.includes('BUENAS TARDES') ||
       text.includes('BUENAS NOCHES');
@@ -25,8 +26,20 @@
     }
   }
 
+  function loadPanelState(){
+    const existing=[...document.scripts].find(s=>/coach-panel-state-v10\.js(?:\?|$)/.test(s.src||''));
+    if(existing) return;
+    const patch=document.createElement('script');
+    patch.src='./coach-panel-state-v10.js?v=20260910-1918';
+    patch.async=false;
+    patch.dataset.dccPanelState=BUILD;
+    patch.onerror=()=>console.error('DCC legacy bridge: no se pudo cargar coach-panel-state-v10.js');
+    (document.head||document.documentElement).appendChild(patch);
+  }
+
   function loadCurrentCoach(){
     document.getElementById('dcc-coach-final-v2-css')?.remove();
+    loadPanelState();
 
     const current=[...document.scripts].find(s=>/coach-premium-v8\.js(?:\?|$)/.test(s.src||''));
     if(current){
@@ -36,10 +49,11 @@
     }
 
     const s=document.createElement('script');
-    s.src='./coach-premium-v8.js?v=20260910-1700';
+    s.src='./coach-premium-v8.js?v=20260910-1817';
     s.async=false;
     s.dataset.dccLegacyBridge=BUILD;
     s.onload=()=>{
+      loadPanelState();
       setTimeout(forceDashboard,20);
       setTimeout(forceDashboard,120);
       setTimeout(forceDashboard,400);
