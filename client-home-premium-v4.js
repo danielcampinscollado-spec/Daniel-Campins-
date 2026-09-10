@@ -105,8 +105,8 @@
       position:relative!important;
       border-color:rgba(236,185,78,.78)!important;
       background:
-        radial-gradient(circle at 92% 12%,rgba(240,201,107,.17),transparent 30%),
-        radial-gradient(circle at 9% 95%,rgba(217,170,74,.075),transparent 31%),
+        radial-gradient(ellipse at 95% 18%,rgba(240,201,107,.15),transparent 31%),
+        radial-gradient(ellipse at 8% 90%,rgba(217,170,74,.06),transparent 34%),
         linear-gradient(145deg,#171b21 0%,#0c1116 58%,#070a0d 100%)!important;
       box-shadow:
         0 16px 38px rgba(0,0,0,.31),
@@ -122,35 +122,36 @@
       position:absolute;
       pointer-events:none;
       z-index:0;
-      left:-88px;
-      top:-78px;
-      width:255px;
-      height:210px;
-      border-radius:50%;
-      background:radial-gradient(circle,rgba(240,201,107,.115) 0%,rgba(217,170,74,.045) 31%,transparent 67%);
+      right:-52px;
+      top:-42px;
+      width:330px;
+      height:245px;
+      background:
+        radial-gradient(ellipse at 78% 25%,rgba(255,220,126,.13) 0%,rgba(217,170,74,.055) 28%,transparent 62%),
+        linear-gradient(146deg,transparent 26%,rgba(255,222,139,.07) 40%,rgba(217,170,74,.025) 48%,transparent 59%);
       filter:blur(7px);
-      opacity:.9;
+      opacity:.88;
+      transform:rotate(-4deg);
     }
 
     #client-main .dch-task-card::after{
       content:'';
       position:absolute;
       pointer-events:none;
-      z-index:0;
-      right:-56px;
-      bottom:-55px;
-      width:285px;
-      height:175px;
-      border-radius:50%;
+      z-index:1;
+      right:-46px;
+      top:4px;
+      width:330px;
+      height:180px;
+      border-radius:0;
       background:
-        repeating-radial-gradient(
-          ellipse at 83% 86%,
-          rgba(240,201,107,.22) 0 1px,
-          transparent 1.3px 10px
-        );
-      transform:rotate(-13deg) scaleX(1.08);
-      opacity:.27;
-      filter:drop-shadow(0 0 5px rgba(240,201,107,.13));
+        linear-gradient(148deg,transparent 0 38%,rgba(255,220,128,.28) 39.2%,rgba(240,201,107,.07) 40.5%,transparent 42.5%),
+        linear-gradient(153deg,transparent 0 49%,rgba(239,188,76,.20) 50%,rgba(239,188,76,.045) 51.3%,transparent 53.2%),
+        linear-gradient(158deg,transparent 0 60%,rgba(217,170,74,.13) 61%,rgba(217,170,74,.03) 62.2%,transparent 64.4%);
+      transform:rotate(-2deg);
+      opacity:.62;
+      filter:blur(.35px) drop-shadow(0 0 8px rgba(240,201,107,.08));
+      mix-blend-mode:screen;
     }
 
     #client-main .dch-task-head{
@@ -371,8 +372,10 @@
       }
       #client-main .dch-task-card::after{
         right:-72px;
-        bottom:-52px;
-        opacity:.22;
+        top:8px;
+        width:300px;
+        height:170px;
+        opacity:.55;
       }
     }
 
