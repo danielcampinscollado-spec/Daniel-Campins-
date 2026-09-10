@@ -57,10 +57,10 @@
     if(++tries<80) setTimeout(ensure,100);
   })();
 
-  /* Mantener abierta la comida del cliente al cambiar Opción 1/2/3. */
+  /* Cambio de opción de comida sin rerender completo ni parpadeo. */
   if(!document.querySelector('script[data-dcc-nutrition-option-state]')){
     const nutritionState=document.createElement('script');
-    nutritionState.src='./client-nutrition-option-state-v3.js?v=20260910-1';
+    nutritionState.src='./client-nutrition-option-state-v3.js?v=20260910-2';
     nutritionState.dataset.dccNutritionOptionState='1';
     nutritionState.async=false;
     document.head.appendChild(nutritionState);
