@@ -1,0 +1,87 @@
+name: Body fat display percentage v22
+
+on:
+  push:
+    paths:
+      - '.github/workflows/body-fat-display-percent-v22.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Display body-fat difference directly as percent
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'Pattern not found: {label}')
+              return text.replace(old, new, 1)
+
+          path = Path('checkin-coach-sync-v2.js')
+          text = path.read_text()
+          text = text.replace("  function changePct(current,previous){const c=num(current),p=num(previous);if(c==null||p==null||Math.abs(p)<.0001)return null;return((c-p)/Math.abs(p))*100}\n", "", 1)
+          text = replace_once(text,
+              "          const previous=series[series.length-2].v,latest=series[series.length-1].v,delta=latest-previous,deltaPct=changePct(latest,previous);",
+              "          const previous=series[series.length-2].v,latest=series[series.length-1].v,delta=latest-previous;",
+              'coach review delta')
+          text = text.replace("${fmt(Math.abs(deltaPct))} %<span>desde el anterior</span>", "${fmt(Math.abs(delta))} %<span>desde el anterior</span>", 2)
+          text = replace_once(text,
+              "    const initial=series[0].v,current=series[series.length-1].v,delta=current-initial,deltaPct=changePct(current,initial);",
+              "    const initial=series[0].v,current=series[series.length-1].v,delta=current-initial;",
+              'coach admin delta')
+          text = text.replace("${fmt(Math.abs(deltaPct))} % desde el inicio", "${fmt(Math.abs(delta))} % desde el inicio", 2)
+          old_history = "      if(i>0){const previous=series[i-1].v,change=item.v-previous,changePctValue=changePct(item.v,previous);if(Math.abs(change)<.05)deltaHtml='<span class=\"dcc-bfh-delta\">Sin cambios</span>';else if(change<0)deltaHtml=`<span class=\"dcc-bfh-delta good\">↓ ${fmt(Math.abs(changePctValue))} %</span>`;else deltaHtml=`<span class=\"dcc-bfh-delta bad\">↑ ${fmt(Math.abs(changePctValue))} %</span>`}"
+          new_history = "      if(i>0){const change=item.v-series[i-1].v;if(Math.abs(change)<.05)deltaHtml='<span class=\"dcc-bfh-delta\">Sin cambios</span>';else if(change<0)deltaHtml=`<span class=\"dcc-bfh-delta good\">↓ ${fmt(Math.abs(change))} %</span>`;else deltaHtml=`<span class=\"dcc-bfh-delta bad\">↑ ${fmt(Math.abs(change))} %</span>`}"
+          text = replace_once(text, old_history, new_history, 'coach history delta')
+          path.write_text(text)
+
+          path = Path('client-metrics-sync-v10.js')
+          text = path.read_text()
+          text = text.replace("  const changePct=(current,previous)=>{const c=num(current),p=num(previous);return c==null||p==null||Math.abs(p)<.0001?null:((c-p)/Math.abs(p))*100};\n", "", 1)
+          text = replace_once(text,
+              "        const delta=current-initial,deltaPct=changePct(current,initial);",
+              "        const delta=current-initial;",
+              'client delta')
+          text = text.replace("${fmt(Math.abs(deltaPct))} % desde el inicio", "${fmt(Math.abs(delta))} % desde el inicio", 2)
+          path.write_text(text)
+
+          path = Path('client-admin-premium.js')
+          text = path.read_text()
+          old = "function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';const shown=u==='%'&&Math.abs(b)>.0001?Math.abs(d/b*100):Math.abs(d);return`${d>0?'↑':'↓'} ${shown.toFixed(1).replace('.',',')} ${u} desde el inicio`}"
+          new = "function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';return`${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} ${u} desde el inicio`}"
+          text = replace_once(text, old, new, 'client admin trend')
+          path.write_text(text)
+
+          path = Path('index.html')
+          text = path.read_text()
+          text = text.replace('./client-admin-premium.js?v=20260910-fatpct-v1','./client-admin-premium.js?v=20260910-fatpct-v2')
+          text = text.replace('./checkin-coach-sync-v2.js?v=20260910-fatpct-v1','./checkin-coach-sync-v2.js?v=20260910-fatpct-v2')
+          path.write_text(text)
+
+          path = Path('ejercicio-biblioteca.js')
+          text = path.read_text().replace('./client-metrics-sync-v10.js?v=20260910-fatpct-v1','./client-metrics-sync-v10.js?v=20260910-fatpct-v2')
+          path.write_text(text)
+
+          path = Path('client-progress-stable-v8.js')
+          text = path.read_text().replace('./client-metrics-sync-v10.js?v=20260910-fatpct-v1','./client-metrics-sync-v10.js?v=20260910-fatpct-v2')
+          path.write_text(text)
+          PY
+
+      - name: Commit display fix
+        run: |
+          git config user.name "danielcampinscollado-spec"
+          git config user.email "danielcampinscollado@gmail.com"
+          git add checkin-coach-sync-v2.js client-metrics-sync-v10.js client-admin-premium.js index.html ejercicio-biblioteca.js client-progress-stable-v8.js
+          git commit -m "Display body fat differences with percent sign"
+          git push origin main
