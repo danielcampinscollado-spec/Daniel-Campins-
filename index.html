@@ -5225,137 +5225,48 @@ async function loadDietsFromSupabase(){
 
 }
 async function loadClientsFromSupabase(){
-
   try{
-
-    const { data:clients,error } = await supabaseClient
+    const {data:clients,error}=await supabaseClient
       .from("clients")
-      .select("id,name,goal,weight,initial_weight,initial_body_fat,plan,status")      .order("created_at",{ascending:true});
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at")
+      .order("created_at",{ascending:true});
+    if(error){console.error("Error cargando clientes:",error);return}
 
-    if(error){
-      console.error("Error cargando clientes:",error);
-      return;
-    }
-
-    const supabaseClients = clients || [];
-
-    /*
-      1. Actualizar los clientes que ya existen en Supabase.
-    */
-
-    supabaseClients.forEach(row=>{
-
-      const existing = data.clients.find(
-        c => c.id === row.id
-      );
-
-      const clientData = {
+    const previous=new Map((data.clients||[]).map(c=>[String(c.id),c]));
+    data.clients=(clients||[]).map(row=>{
+      const old=previous.get(String(row.id))||{};
+      return {
+        ...old,
         id:row.id,
         name:row.name,
-        goal:row.goal,
+        goal:row.goal||"",
         weight:Number(row.weight)||0,
         initial:Number(row.initial_weight)||Number(row.weight)||0,
-        
-        bodyFatInitial:
-  row.initial_body_fat != null
-    ? Number(row.initial_body_fat)
-    : null,
-        
-        plan:row.plan || "",
-        status:row.status || "Pendiente"
+        bodyFatInitial:row.initial_body_fat!=null?Number(row.initial_body_fat):null,
+        age:row.age!=null?Number(row.age):null,
+        height:row.height_cm!=null?Number(row.height_cm):null,
+        heightCm:row.height_cm!=null?Number(row.height_cm):null,
+        height_cm:row.height_cm!=null?Number(row.height_cm):null,
+        foodsToAvoid:String(row.foods_to_avoid||""),
+        foods_to_avoid:String(row.foods_to_avoid||""),
+        plan:row.plan||"",
+        status:row.status||"Pendiente",
+        created_at:row.created_at||old.created_at||null
       };
-
-      if(existing){
-
-        Object.assign(existing,clientData);
-
-      }else{
-
-        data.clients.push(clientData);
-
-      }
-const localCheckin = data.checkins?.[row.id];
-
-if(localCheckin?.reviewed){
-  const savedClient = data.clients.find(
-    c => c.id === row.id
-  );
-
-  if(savedClient){
-    savedClient.status="Revisado";
-  }
-}
     });
 
-
-    /*
-      2. Buscar clientes que están en localStorage
-         pero todavía no existen en Supabase.
-    */
-
-    const supabaseIds = new Set(
-      supabaseClients.map(c => c.id)
-    );
-
-    const localOnlyClients = data.clients.filter(
-      c => !supabaseIds.has(c.id)
-    );
-
-
-    /*
-      3. Crear esos clientes en Supabase.
-    */
-
-    for(const c of localOnlyClients){
-
-      const { error:insertError } = await supabaseClient
-        .from("clients")
-        .insert({
-          id:c.id,
-          name:c.name,
-          goal:c.goal || "",
-          weight:Number(c.weight)||0,
-          initial_weight:Number(c.initial)||Number(c.weight)||0,
-          plan:c.plan || "",
-          status:c.status || "Pendiente"
-        });
-
-      if(insertError){
-
-        console.error(
-          "Error sincronizando cliente con Supabase:",
-          c.name,
-          insertError
-        );
-
-        toast(
-          "No se pudo sincronizar a " + c.name
-        );
-
-      }else{
-
-        console.log(
-          "Cliente sincronizado con Supabase:",
-          c.name
-        );
-
-      }
-
-    }
+    const valid=new Set(data.clients.map(c=>String(c.id)));
+    ["checkins","diets","routines","weights","workoutHistory","bodyFatHistory","messages","notificationState"].forEach(key=>{
+      const obj=data[key];
+      if(!obj||typeof obj!=="object"||Array.isArray(obj))return;
+      Object.keys(obj).forEach(id=>{if(!valid.has(String(id)))delete obj[id]});
+    });
 
     saveData();
-
   }catch(e){
-
-    console.error(
-      "Error conectando con Supabase para clientes:",
-      e
-    );
-
+    console.error("Error conectando con Supabase para clientes:",e);
   }
-
 }
-
 async function loadWorkoutHistoryFromSupabase(){
   try{
 
@@ -16786,7 +16697,7 @@ async function sendClientCheckin(){
     }
 }
 </script>
-<script src="./client-admin-premium.js?v=20260910-2335"></script>
+<script src="./client-admin-premium.js?v=20260910-2405"></script>
 
 <style id="dcc-diet-pdf-compact">
 .diet-pdf-card{

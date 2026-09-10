@@ -271,7 +271,7 @@
   const existing=[...document.scripts].find(s=>/new-client-premium-v1\.js(?:\?|$)/.test(s.src||''));
   if(existing)return;
   const script=document.createElement('script');
-  script.src='./new-client-premium-v1.js?v=20260910-2045';
+  script.src='./new-client-premium-v1.js?v=20260910-2405';
   script.async=false;
   script.onerror=()=>console.error('DCC: no se pudo cargar new-client-premium-v1.js');
   (document.head||document.documentElement).appendChild(script);
@@ -336,7 +336,7 @@
   const existing=[...document.scripts].find(s=>/client-profile-preferences-v1\.js(?:\?|$)/.test(s.src||''));
   if(existing)return;
   const script=document.createElement('script');
-  script.src='./client-profile-preferences-v1.js?v=20260910-2335';
+  script.src='./client-profile-preferences-v1.js?v=20260910-2405';
   script.async=false;
   script.onerror=()=>console.error('DCC: no se pudo cargar client-profile-preferences-v1.js');
   (document.head||document.documentElement).appendChild(script);

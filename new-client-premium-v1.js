@@ -146,6 +146,11 @@
           </span>
         </label>
 
+        <label class="dcc-nc-field">
+  <span class="dcc-nc-label"><span>Alimentos a evitar</span></span>
+  <input class="dcc-nc-input" id="new-foods-avoid" placeholder="Ej. cebolla, aceitunas, marisco">
+</label>
+
         <button type="button" id="dcc-create-client-btn" class="dcc-nc-create" onclick="createClient()">Crear cliente <span>→</span></button>
       </div>
     `);
@@ -160,6 +165,7 @@
     const heightText=document.getElementById('new-height')?.value.trim()||'';
     const bodyFatText=document.getElementById('new-body-fat')?.value.trim()||'';
     const goal=document.getElementById('new-goal')?.value.trim()||'';
+    const foodsToAvoid=document.getElementById('new-foods-avoid')?.value.trim()||'';
 
     if(!name||!weightText||!ageText||!heightText||!bodyFatText||!goal){notify('Completa todos los campos');return}
 
@@ -190,6 +196,7 @@
         initial_body_fat:bodyFat,
         age,
         height_cm:height,
+        foods_to_avoid:foodsToAvoid,
         plan:'',
         status:'Pendiente'
       });
@@ -197,7 +204,7 @@
 
       const d=appData();
       d.clients=Array.isArray(d.clients)?d.clients:[];
-      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,heightCm:height,plan:'',status:'Pendiente'});
+      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,height:height,heightCm:height,height_cm:height,foodsToAvoid,foods_to_avoid:foodsToAvoid,plan:'',status:'Pendiente'});
       d.weights=d.weights||{};d.weights[id]=[weight];
       d.checkins=d.checkins||{};d.checkins[id]={weight:(typeof money==='function'?money(weight):String(weight))+' kg',bodyFat,diet:'Pendiente',training:'Pendiente',comment:'Pendiente de revisión.',reviewed:false};
       d.diets=d.diets||{};d.diets[id]={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
@@ -221,7 +228,7 @@
   if(typeof baseLoad==='function'&&!baseLoad.__dccAgeHeightV1){
     const wrapped=async function(){
       const db=database();
-      const extra=db?db.from('clients').select('id,age,height_cm'):Promise.resolve({data:[],error:null});
+      const extra=db?db.from('clients').select('id,age,height_cm,foods_to_avoid'):Promise.resolve({data:[],error:null});
       const result=await baseLoad.apply(this,arguments);
       try{
         const {data:rows,error}=await extra;
@@ -229,7 +236,7 @@
           const d=appData();
           (rows||[]).forEach(row=>{
             const c=(d.clients||[]).find(x=>String(x.id)===String(row.id));
-            if(c){c.age=row.age!=null?Number(row.age):null;c.heightCm=row.height_cm!=null?Number(row.height_cm):null}
+            if(c){c.age=row.age!=null?Number(row.age):null;c.height=row.height_cm!=null?Number(row.height_cm):null;c.heightCm=row.height_cm!=null?Number(row.height_cm):null;c.height_cm=row.height_cm!=null?Number(row.height_cm):null;c.foodsToAvoid=String(row.foods_to_avoid||'');c.foods_to_avoid=String(row.foods_to_avoid||'')}
           });
           try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
         }
