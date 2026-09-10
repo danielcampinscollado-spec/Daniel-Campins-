@@ -136,3 +136,16 @@
   script.onerror=()=>console.error('DCC: no se pudo cargar new-client-premium-v1.js');
   (document.head||document.documentElement).appendChild(script);
 })();
+
+/* Carga del calendario funcional con sesiones reales. */
+(function(){
+  if(window.__dccCalendarLoaderV12)return;
+  window.__dccCalendarLoaderV12=true;
+  const existing=[...document.scripts].find(s=>/coach-calendar-v12\.js(?:\?|$)/.test(s.src||''));
+  if(existing)return;
+  const script=document.createElement('script');
+  script.src='./coach-calendar-v12.js?v=20260910-2115';
+  script.async=false;
+  script.onerror=()=>console.error('DCC: no se pudo cargar coach-calendar-v12.js');
+  (document.head||document.documentElement).appendChild(script);
+})();
