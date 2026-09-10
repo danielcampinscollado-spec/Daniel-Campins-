@@ -1,16 +1,14 @@
 /* DCC — navegación inferior premium unificada + acabado visual global entrenador */
 (function(){
   function install(){
-    const old=document.getElementById('dcc-nav-premium-global-css');
-    if(old)old.remove();
+    if(document.getElementById('dcc-nav-premium-global-css')) return;
 
     const s=document.createElement('style');
     s.id='dcc-nav-premium-global-css';
     s.textContent=`
       /* =========================================================
          TEMA PREMIUM GLOBAL — PANEL DE ENTRENADOR
-         Se instala desde el mismo archivo de la barra inferior,
-         que sabemos que sí está cargando correctamente.
+         Se instala una sola vez para evitar saltos visuales.
       ========================================================= */
       html body #coach,
       html body #coach #coach-main{
@@ -21,7 +19,6 @@
         color:#f6f3ed!important;
       }
 
-      /* Tarjetas principales: mismo borde dorado + mismo degradado */
       html body #coach #coach-main .dcc-fcl-card,
       html body #coach #coach-main .dcc-ci-card,
       html body #coach #coach-main .dcc-msg-card,
@@ -40,7 +37,6 @@
           0 12px 30px rgba(0,0,0,.22)!important;
       }
 
-      /* Clientes: borde algo más marcado para conservar la estética aprobada */
       html body #coach #coach-main .dcc-fcl-card{
         border-color:rgba(240,201,107,.82)!important;
         background:
@@ -48,7 +44,6 @@
           linear-gradient(135deg,#10161a 0%,#090d10 62%,#171107 100%)!important;
       }
 
-      /* Check-in y Mensajes: quitar aspecto gris/negro plano */
       html body #coach #coach-main .dcc-ci-card,
       html body #coach #coach-main .dcc-msg-card{
         border-color:rgba(224,173,76,.66)!important;
@@ -57,7 +52,6 @@
           linear-gradient(140deg,#10161b 0%,#090d10 60%,#130f08 100%)!important;
       }
 
-      /* Buscadores, selectores y pestañas: misma familia visual */
       html body #coach #coach-main .dcc-fcl-search,
       html body #coach #coach-main .dcc-fcl-tabs,
       html body #coach #coach-main .dcc-fcl-sort,
@@ -73,7 +67,6 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.02)!important;
       }
 
-      /* Superficies interiores: dorado más suave para no saturar */
       html body #coach #coach-main .dcc-ca-activity-item,
       html body #coach #coach-main .dcc-diet-meal,
       html body #coach #coach-main .dcc-diet-food,
@@ -93,7 +86,6 @@
           linear-gradient(145deg,#0e1418,#080c0f)!important;
       }
 
-      /* Panel principal: conservar diseño aprobado pero con el mismo material */
       html body #coach #coach-main .dcc-fd-hero,
       html body #coach #coach-main .dcc-fd-stats,
       html body #coach #coach-main .dcc-fd-card,
@@ -102,7 +94,6 @@
         box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 12px 30px rgba(0,0,0,.22)!important;
       }
 
-      /* Modales / revisión de check-in */
       html body .dcc-ci-review{
         border-color:rgba(240,201,107,.94)!important;
         background:
@@ -110,7 +101,6 @@
           linear-gradient(150deg,#151b20,#080c0f 70%)!important;
       }
 
-      /* Mensajes: burbuja del entrenador mantiene el dorado */
       html body #coach #coach-main .dcc-chat-row.mine .dcc-chat-bubble{
         border-color:rgba(240,201,107,.76)!important;
         background:
@@ -118,7 +108,6 @@
           linear-gradient(145deg,#211a0f,#100e0a)!important;
       }
 
-      /* Inputs antiguos / vacíos: evitar blanco o gris plano */
       html body #coach #coach-main .ghost,
       html body #coach #coach-main .empty,
       html body #coach #coach-main .dcc-fcl-empty,
@@ -285,9 +274,4 @@
   }
 
   install();
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-  window.addEventListener('load',()=>setTimeout(install,80));
-  setTimeout(install,500);
-  setTimeout(install,1400);
-  setTimeout(install,2600);
 })();
