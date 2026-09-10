@@ -1,10 +1,10 @@
-/* DCC calendar form fix v18 — Nueva sesión independiente, estable y con fecha/hora vacías */
+/* DCC calendar form fix v19 — captura directa del botón Nueva sesión */
 (function(){
   'use strict';
-  if(window.__dccCalendarFormFixV18)return;
-  window.__dccCalendarFormFixV18=true;
+  if(window.__dccCalendarFormFixV19)return;
+  window.__dccCalendarFormFixV19=true;
 
-  const STYLE_ID='dcc-calendar-form-fix-v18-css';
+  const STYLE_ID='dcc-calendar-form-fix-v19-css';
   const OVERLAY_ID='dcc-session-standalone-overlay';
 
   function appData(){try{return data||{}}catch(e){return window.data||{}}}
@@ -12,7 +12,7 @@
     try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}
     return window.supabaseClient||null;
   }
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]))}
   function notify(t){try{if(typeof toast==='function')return toast(t)}catch(e){};try{window.toast?.(t)}catch(e){}}
 
   function injectCss(){
@@ -20,7 +20,8 @@
     const s=document.createElement('style');
     s.id=STYLE_ID;
     s.textContent=`
-      #${OVERLAY_ID}{position:fixed;inset:0;z-index:30000;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));background:rgba(0,0,0,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+      .dcc-cal-new{position:relative!important;z-index:50!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
+      #${OVERLAY_ID}{position:fixed;inset:0;z-index:50000;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));background:rgba(0,0,0,.82);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
       #${OVERLAY_ID} .dcc-session-card{width:min(100%,560px);max-height:calc(100dvh - 44px);overflow:auto;box-sizing:border-box;padding:22px;border:1px solid rgba(240,201,107,.78);border-radius:26px;background:radial-gradient(circle at 95% 0,rgba(240,201,107,.10),transparent 28%),linear-gradient(145deg,#11171d,#080b0f);color:#f5f3ef;box-shadow:0 28px 80px rgba(0,0,0,.58),0 0 30px rgba(217,170,74,.08)}
       #${OVERLAY_ID} *{box-sizing:border-box}
       #${OVERLAY_ID} .head{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:12px;align-items:start;margin-bottom:20px}
@@ -45,7 +46,8 @@
   }
 
   function closeStandalone(){
-    document.getElementById(OVERLAY_ID)?.remove();
+    const old=document.getElementById(OVERLAY_ID);
+    if(old)old.remove();
     document.body.classList.remove('dcc-session-open');
   }
 
@@ -55,13 +57,10 @@
     const db=database();
     if(!db)return [];
     try{
-      const {data:rows,error}=await db.from('clients').select('id,name').order('name',{ascending:true});
-      if(error)throw error;
-      return rows||[];
-    }catch(e){
-      console.error('DCC calendario cargando clientes:',e);
-      return [];
-    }
+      const res=await db.from('clients').select('id,name').order('name',{ascending:true});
+      if(res.error)throw res.error;
+      return res.data||[];
+    }catch(e){console.error('DCC calendario cargando clientes:',e);return []}
   }
 
   async function populateClients(){
@@ -69,45 +68,24 @@
     if(!select)return;
     const clients=await getClients();
     if(!document.getElementById(OVERLAY_ID))return;
-    if(!clients.length){
-      select.innerHTML='<option value="" selected>No hay clientes disponibles</option>';
-      return;
-    }
+    if(!clients.length){select.innerHTML='<option value="" selected>No hay clientes disponibles</option>';return}
     select.innerHTML='<option value="" disabled selected>Selecciona un cliente</option>'+clients.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
   }
 
   function openStandalone(){
-    injectCss();
-    closeStandalone();
-
-    const overlay=document.createElement('div');
-    overlay.id=OVERLAY_ID;
-    overlay.innerHTML=`
-      <div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title">
-        <div class="head">
-          <div><h2 id="dcc-session-title">Nueva sesión</h2><p class="sub">Programa una sesión para un cliente</p></div>
-          <button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button>
-        </div>
-        <label>Cliente
-          <select id="dcc-cal-client"><option value="" selected>Cargando clientes…</option></select>
-        </label>
-        <div class="row">
-          <label>Fecha<input id="dcc-cal-date" type="date" value=""></label>
-          <label>Hora<input id="dcc-cal-time" type="time" value=""></label>
-        </div>
-        <label>Tipo de sesión
-          <select id="dcc-cal-type"><option>Entrenamiento</option><option>Check-in</option><option>Revisión</option><option>Consulta</option></select>
-        </label>
-        <label>Notas<textarea id="dcc-cal-notes" placeholder="Ej. Pierna · revisar técnica de sentadilla"></textarea></label>
-        <button id="dcc-cal-save" type="button" class="save">Guardar sesión →</button>
-      </div>`;
-
-    document.body.appendChild(overlay);
-    document.body.classList.add('dcc-session-open');
-    document.getElementById('dcc-session-close')?.addEventListener('click',closeStandalone);
-    overlay.addEventListener('click',e=>{if(e.target===overlay)closeStandalone()});
-    document.getElementById('dcc-cal-save')?.addEventListener('click',saveStandalone);
-    populateClients();
+    try{
+      injectCss();
+      closeStandalone();
+      const overlay=document.createElement('div');
+      overlay.id=OVERLAY_ID;
+      overlay.innerHTML=`<div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title"><div class="head"><div><h2 id="dcc-session-title">Nueva sesión</h2><p class="sub">Programa una sesión para un cliente</p></div><button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="" selected>Cargando clientes…</option></select></label><div class="row"><label>Fecha<input id="dcc-cal-date" type="date" value=""></label><label>Hora<input id="dcc-cal-time" type="time" value=""></label></div><label>Tipo de sesión<select id="dcc-cal-type"><option>Entrenamiento</option><option>Check-in</option><option>Revisión</option><option>Consulta</option></select></label><label>Notas<textarea id="dcc-cal-notes" placeholder="Ej. Pierna · revisar técnica de sentadilla"></textarea></label><button id="dcc-cal-save" type="button" class="save">Guardar sesión →</button></div>`;
+      document.body.appendChild(overlay);
+      document.body.classList.add('dcc-session-open');
+      document.getElementById('dcc-session-close')?.addEventListener('click',closeStandalone);
+      overlay.addEventListener('click',e=>{if(e.target===overlay)closeStandalone()});
+      document.getElementById('dcc-cal-save')?.addEventListener('click',saveStandalone);
+      populateClients();
+    }catch(e){console.error('DCC abriendo Nueva sesión:',e);notify('No se pudo abrir Nueva sesión')}
   }
 
   async function saveStandalone(){
@@ -117,41 +95,57 @@
     const sessionType=document.getElementById('dcc-cal-type')?.value||'Entrenamiento';
     const notes=document.getElementById('dcc-cal-notes')?.value.trim()||'';
     if(!clientId||!sessionDate||!sessionTime){notify('Selecciona cliente, fecha y hora');return}
-
-    const db=database();
-    if(!db){notify('No se pudo conectar con la agenda');return}
-    const button=document.getElementById('dcc-cal-save');
-    if(button){button.disabled=true;button.textContent='Guardando…'}
-
+    const db=database();if(!db){notify('No se pudo conectar con la agenda');return}
+    const button=document.getElementById('dcc-cal-save');if(button){button.disabled=true;button.textContent='Guardando…'}
     try{
-      const {error}=await db.from('coach_calendar_sessions').insert({client_id:clientId,session_date:sessionDate,session_time:sessionTime,session_type:sessionType,notes});
-      if(error)throw error;
-
+      const res=await db.from('coach_calendar_sessions').insert({client_id:clientId,session_date:sessionDate,session_time:sessionTime,session_type:sessionType,notes});
+      if(res.error)throw res.error;
       const d=new Date(sessionDate+'T12:00:00');
       window.__dccCalendarSelected=sessionDate;
       window.__dccCalendarMonthTs=new Date(d.getFullYear(),d.getMonth(),1,12).getTime();
-      const key=sessionDate.slice(0,7);
-      if(window.__dccCalendarSessionsByMonth)delete window.__dccCalendarSessionsByMonth[key];
-      closeStandalone();
-      notify('Sesión guardada');
+      if(window.__dccCalendarSessionsByMonth)delete window.__dccCalendarSessionsByMonth[sessionDate.slice(0,7)];
+      closeStandalone();notify('Sesión guardada');
       if(typeof window.dccCalendarSelect==='function')window.dccCalendarSelect(d.getFullYear(),d.getMonth(),d.getDate());
       else if(typeof window.showCoach==='function')window.showCoach('calendar');
-    }catch(e){
-      console.error('DCC guardando sesión:',e);
-      notify('No se pudo guardar la sesión');
-      if(button){button.disabled=false;button.textContent='Guardar sesión →'}
-    }
+    }catch(e){console.error('DCC guardando sesión:',e);notify('No se pudo guardar la sesión');if(button){button.disabled=false;button.textContent='Guardar sesión →'}}
   }
 
-  function install(){
-    openStandalone.__dccCalendarNewSessionV18=true;
-    window.dccCalendarNewSession=openStandalone;
-    window.dccCalendarCloseModal=closeStandalone;
+  function directHandler(e){
+    e.preventDefault();
+    e.stopPropagation();
+    openStandalone();
   }
 
-  install();
-  setTimeout(install,150);
-  setTimeout(install,500);
-  setTimeout(install,1200);
-  window.addEventListener('pageshow',()=>setTimeout(install,50));
+  function wireButton(){
+    injectCss();
+    const btn=document.querySelector('.dcc-cal-new');
+    if(!btn||btn.__dccV19Bound)return;
+    btn.__dccV19Bound=true;
+    btn.removeAttribute('onclick');
+    btn.onclick=null;
+    btn.addEventListener('click',directHandler,false);
+  }
+
+  function captureHandler(e){
+    const target=e.target && e.target.closest ? e.target.closest('.dcc-cal-new') : null;
+    if(!target)return;
+    e.preventDefault();
+    e.stopPropagation();
+    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    openStandalone();
+  }
+
+  window.dccCalendarNewSession=openStandalone;
+  window.dccCalendarCloseModal=closeStandalone;
+  injectCss();
+  document.addEventListener('click',captureHandler,true);
+  wireButton();
+
+  const root=document.getElementById('coach-main')||document.body;
+  const observer=new MutationObserver(()=>wireButton());
+  observer.observe(root,{childList:true,subtree:true});
+  setTimeout(wireButton,100);
+  setTimeout(wireButton,500);
+  setTimeout(wireButton,1200);
+  window.addEventListener('pageshow',()=>setTimeout(wireButton,50));
 })();
