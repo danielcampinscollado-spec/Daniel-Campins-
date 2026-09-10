@@ -112,6 +112,40 @@
       -webkit-backdrop-filter:blur(3px);
     }
 
+    /* Sesión activa: versión compacta aprobada del botón "Ver técnica". */
+    @media(max-width:520px){
+      #client-main .dwa3-actions{
+        grid-template-columns:max-content 116px!important;
+        justify-content:space-between!important;
+        align-items:center!important;
+        gap:12px!important;
+      }
+
+      #client-main .dwa3-tech{
+        width:auto!important;
+        min-width:0!important;
+        min-height:40px!important;
+        padding:0 17px!important;
+        gap:8px!important;
+        border-radius:13px!important;
+        font-size:11px!important;
+        white-space:nowrap!important;
+      }
+
+      #client-main .dwa3-tech svg{
+        width:17px!important;
+        height:17px!important;
+      }
+
+      #client-main .dwa3-elapsed{
+        width:116px!important;
+        min-height:40px!important;
+        grid-template-columns:27px minmax(0,1fr)!important;
+        padding:6px 9px!important;
+        border-radius:13px!important;
+      }
+    }
+
     @media(max-width:390px){
       #client-main .dct-routine-card::before{
         width:48%;
@@ -121,6 +155,21 @@
       #client-main .dct-routine-card::after{
         width:100%;
         height:142px;
+      }
+
+      #client-main .dwa3-actions{
+        grid-template-columns:max-content 112px!important;
+        gap:10px!important;
+      }
+
+      #client-main .dwa3-tech{
+        min-height:39px!important;
+        padding:0 15px!important;
+      }
+
+      #client-main .dwa3-elapsed{
+        width:112px!important;
+        min-height:39px!important;
       }
     }
   `;
