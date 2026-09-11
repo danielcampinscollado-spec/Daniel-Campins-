@@ -1,0 +1,32 @@
+name: Emergency restore index
+on:
+  push:
+    paths:
+      - '.github/workflows/emergency-restore-index-20260911.yml'
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - name: Restore stable index and load visual fix
+        run: |
+          git checkout f068634821563cdb820a297b4e199ed6ce9097ff -- index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          needle='<script src="./training-actions-hotfix-v2.js?v=20260911-2"></script>'
+          insert=needle+'\n<script src="./workout-muscle-visual-fix-v1.js?v=20260911-2246"></script>'
+          if 'workout-muscle-visual-fix-v1.js' not in s:
+              s=s.replace(needle,insert)
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Restore stable index and load workout visual fix"
+          git push
