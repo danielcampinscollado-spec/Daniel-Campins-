@@ -1,11 +1,12 @@
-/* DCC — arranque estable + hotfixes de auditoría v2 */
+/* DCC — arranque estable + hotfixes de auditoría v3 */
 (function(){
   'use strict';
 
-  if(window.__dccAuditBootstrapV2)return;
-  window.__dccAuditBootstrapV2=true;
+  if(window.__dccAuditBootstrapV3)return;
+  window.__dccAuditBootstrapV3=true;
 
   const baseSrc='./coach-client-plan-status-v1-base.js?v=20260911-audit2';
+  const authSrc='./auth-premium-v1.js?v=20260911-auth1';
 
   function appData(){
     try{return data||{}}catch(_){return window.data||{}}
@@ -231,11 +232,22 @@
     cleanMalformedCss();
   }
 
+  function loadSecureAuth(){
+    if(window.__dccSecureAuthScriptRequested)return;
+    window.__dccSecureAuthScriptRequested=true;
+    const auth=document.createElement('script');
+    auth.src=authSrc;
+    auth.async=false;
+    auth.onerror=()=>console.error('DCC audit — no se pudo cargar la capa de autenticación');
+    document.head.appendChild(auth);
+  }
+
   const script=document.createElement('script');
   script.src=baseSrc;
   script.async=false;
   script.onload=()=>{
     installHotfixes();
+    loadSecureAuth();
     setTimeout(installHotfixes,0);
     setTimeout(installHotfixes,250);
   };
