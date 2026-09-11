@@ -306,7 +306,7 @@
     const constancyPct=monthlyTarget?Math.min(100,monthWorkouts/monthlyTarget*100):null;
 
     const weightChip=weightChange!==0?`${weightChange>0?'+':''}${fmt(weightChange)} kg ${weightChange<0?'↓':'↑'}`:'Sin cambios';
-    const fatChip=bodyFatChange!=null?`${bodyFatChange>0?'+':''}${fmt(bodyFatChange)} pts ${bodyFatChange<0?'↓':'↑'}`:'Sin datos';
+    const fatChip=bodyFatChange!=null?`${bodyFatChange>0?'+':''}${fmt(bodyFatChange)} % ${bodyFatChange<0?'↓':'↑'}`:'Sin datos';
     const forceChip=averageStrength!=null?`${improvedRows.length} ${improvedRows.length===1?'ejercicio mejorado':'ejercicios mejorados'}`:'Sin datos suficientes';
     const rows=(improvedRows.length?improvedRows:strengthRows).slice(0,4);
     const best=improvedRows[0]||null;

@@ -345,7 +345,7 @@
       window.dccFilterClients?.();patchFilterButton();return;
     }
     const add=e.target.closest?.('#coach-main .dcc-diet-add-food');
-    if(add){const c=currentProfileClient(),foods=foodsToAvoid(c);if(foods)notify(`Aviso: no incluir ${foods}`)}
+    if(add&&!window.dccDietAddFood?.__dccNativeAvoidWarning){const c=currentProfileClient(),foods=foodsToAvoid(c);if(foods)notify(`Aviso: no incluir ${foods}`)}
     setTimeout(schedule,0);setTimeout(schedule,120);
   },true);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById(METRIC_OVERLAY))closeMetric()});

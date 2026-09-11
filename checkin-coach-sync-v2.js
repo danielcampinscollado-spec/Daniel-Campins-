@@ -235,12 +235,20 @@
     if(typeof current!=='function'||current.__dccReviewedSyncV2)return false;
     const wrapped=async function(id){
       const db=database(),now=new Date().toISOString();
+      if(!db){
+        try{if(typeof toast==='function')toast('No hay conexión con el servidor');else window.toast?.('No hay conexión con el servidor')}catch(_){}
+        return false;
+      }
       try{
-        if(db){
-          const {error}=await db.from('client_checkins').update({reviewed:true,updated_at:now}).eq('client_id',id);if(error)throw error;
-          const {error:clientError}=await db.from('clients').update({status:'Revisado'}).eq('id',id);if(clientError)console.warn('DCC estado cliente revisado:',clientError);
-        }
-      }catch(e){console.error('DCC sincronización revisión check-in:',e)}
+        const {data:updated,error}=await db.from('client_checkins').update({reviewed:true,updated_at:now}).eq('client_id',id).select('client_id');
+        if(error)throw error;
+        if(!Array.isArray(updated)||!updated.length)throw new Error('El servidor no confirmó la revisión');
+        const {error:clientError}=await db.from('clients').update({status:'Revisado'}).eq('id',id);if(clientError)console.warn('DCC estado cliente revisado:',clientError);
+      }catch(e){
+        console.error('DCC sincronización revisión check-in:',e);
+        try{if(typeof toast==='function')toast('No se pudo marcar como revisado');else window.toast?.('No se pudo marcar como revisado')}catch(_){}
+        return false;
+      }
       const x=appData()?.checkins?.[id];if(x){x.reviewed=true;x.reviewedAt=now}
       return current.apply(this,arguments);
     };

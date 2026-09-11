@@ -5111,6 +5111,7 @@ function resetWeeklyCheckinIfNeeded(){
 
   checkin.diet="";
   checkin.training="";
+  checkin.energy="";
   checkin.comment="";
   checkin.reviewed=false;
   checkin.preparedWeekKey=weekKey;
@@ -5407,7 +5408,7 @@ async function loadCheckinsFromSupabase(){
 
     const { data:checkins,error } = await supabaseClient
       .from("client_checkins")
-      .select("client_id,weight,diet,training,comment,reviewed,body_fat,sent_at,updated_at");
+      .select("client_id,weight,diet,training,energy,comment,reviewed,body_fat,sent_at,updated_at");
 
     if(error){
       console.error("Error cargando check-ins:",error);
@@ -5427,6 +5428,7 @@ async function loadCheckinsFromSupabase(){
         weight:row.weight || previous.weight || "",
         diet:row.diet || "",
         training:row.training || "",
+        energy:row.energy || "",
         comment:row.comment || "",
         reviewed:!!row.reviewed,
         bodyFat:

@@ -55,28 +55,27 @@
     const input=document.getElementById('dccChatInput');
     const text=input?.value?.trim();
     if(!text)return;
+    const db=window.supabaseClient||null;
+    if(!db){
+      try{if(typeof toast==='function')toast('No hay conexión con el servidor');else window.toast?.('No hay conexión con el servidor')}catch(_){}
+      return;
+    }
     if(input)input.disabled=true;
 
     try{
-      if(window.supabaseClient){
-        const {error}=await window.supabaseClient
-          .from('client_messages')
-          .insert({client_id:id,sender:'Daniel',message:text});
-        if(error)throw error;
-
-        /* Recargamos la tabla para conservar fecha/orden canónicos y evitar duplicados. */
-        await refreshFromSupabase();
-      }else{
-        appendLegacyLocal(id,text);
-      }
+      const {error}=await db.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
+      if(error)throw error;
+      if(input)input.value='';
+      /* Recargamos la tabla para conservar fecha/orden canónicos y evitar duplicados. */
+      await refreshFromSupabase();
+      if(window.__dccOpenChat===id&&typeof window.dccOpenChat==='function')window.dccOpenChat(id);
     }catch(e){
-      console.error('DCC — no se pudo enviar por Supabase, guardado local:',e);
-      appendLegacyLocal(id,text);
+      console.error('DCC — no se pudo enviar el mensaje:',e);
+      try{if(typeof toast==='function')toast('No se pudo enviar el mensaje');else window.toast?.('No se pudo enviar el mensaje')}catch(_){}
+      if(input){input.disabled=false;input.focus?.({preventScroll:true})}
+      return;
     }
-
-    if(window.__dccOpenChat===id&&typeof window.dccOpenChat==='function'){
-      window.dccOpenChat(id);
-    }
+    if(input)input.disabled=false;
   }
 
   function installChatHooks(){
