@@ -1,0 +1,30 @@
+name: Client admin syntax hotfix v31
+on:
+  push:
+    paths:
+      - '.github/workflows/run-hotfix-client-admin-v31.yml'
+      - '.github/scripts/hotfix_client_admin_v31.py'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python3 .github/scripts/hotfix_client_admin_v31.py
+      - name: Syntax check critical JavaScript
+        run: |
+          node --check client-admin-premium.js
+          node --check new-client-premium-v1.js
+          node --check coach-client-plan-status-v1.js
+          node --check coach-panel-state-v10.js
+          node --check client-profile-preferences-v1.js
+      - run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client-admin-premium.js
+          git commit -m "Fix client admin routine save syntax"
+          git push
