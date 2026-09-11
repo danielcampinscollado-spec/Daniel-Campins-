@@ -5077,7 +5077,7 @@ function getCurrentWeekKey(){
   monday.setDate(now.getDate() + diff);
   monday.setHours(0,0,0,0);
 
-  return monday.toISOString().slice(0,10);
+  return monday.getFullYear()+"-"+String(monday.getMonth()+1).padStart(2,"0")+"-"+String(monday.getDate()).padStart(2,"0");
 }
 
 
@@ -5274,7 +5274,7 @@ async function loadWorkoutHistoryFromSupabase(){
     const { data:history, error } = await supabaseClient
       .from("workout_history")
       .select("client_id,workout_date,duration,exercises")
-      .order("workout_date",{ascending:false});
+      .order("workout_date",{ascending:true});
 
     if(error){
       console.error("Error cargando historial de entrenamientos:",error);
@@ -10602,23 +10602,21 @@ const totalDays =
 
   };
 
-  /* Guardar definitivamente en Supabase */
+  /* Guardar definitivamente en Supabase antes de confirmar la sesión local. */
 
-  const {error}=await supabaseClient
-    .from("workout_history")
-    .insert(workoutData);
-
-  if(error){
-
+  try{
+    if(!supabaseClient) throw new Error("Sin conexión con Supabase");
+    const {error}=await supabaseClient
+      .from("workout_history")
+      .insert(workoutData);
+    if(error) throw error;
+  }catch(error){
     console.error(
       "Error guardando entrenamiento en Supabase:",
       error
     );
-
-    toast("No se pudo guardar el entrenamiento");
-
+    toast("No se pudo guardar el entrenamiento. Inténtalo de nuevo.");
     return;
-
   }
 
   /* Mantener también copia local */
