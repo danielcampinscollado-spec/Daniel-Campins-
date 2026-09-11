@@ -4,7 +4,7 @@
   if(window.__dccClientMetricsSyncV11Loaded) return;
   window.__dccClientMetricsSyncV11Loaded=true;
 
-  const appData=()=>{try{return data||{}}catch(e){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const activeId=()=>{try{return currentClientId||null}catch(e){return window.currentClientId||null}};
   const activeClient=()=>{
     const id=activeId();

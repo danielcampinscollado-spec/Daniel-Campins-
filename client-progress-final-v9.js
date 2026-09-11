@@ -4,7 +4,7 @@
   if(window.__dccClientProgressFinalV9Loaded) return;
   window.__dccClientProgressFinalV9Loaded=true;
 
-  const appData=()=>{try{return data||{}}catch(e){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const activeId=()=>{try{return currentClientId||null}catch(e){return window.currentClientId||null}};
   const activeClient=()=>{
     const id=activeId();

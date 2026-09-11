@@ -4,7 +4,7 @@
   if(window.__dccClientDeletePersistV2Loaded)return;
   window.__dccClientDeletePersistV2Loaded=true;
 
-  const appData=()=>{try{return data||{}}catch(e){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
   const notify=t=>{try{if(typeof toast==='function')return toast(t);if(typeof window.toast==='function')return window.toast(t)}catch(e){}alert(t)};
   const save=()=>{try{if(typeof saveData==='function')return saveData();if(typeof window.saveData==='function')return window.saveData()}catch(e){console.error(e)}};
