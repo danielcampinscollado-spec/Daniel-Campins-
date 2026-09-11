@@ -122,23 +122,35 @@
   }
 
   function loadThemeSystem(){
-    if(window.__dccThemeSystemV1||document.querySelector('script[data-dcc-theme-system="v1"]'))return;
+    if(window.__dccThemeSystemV1||window.__dccThemeSystemV2||document.querySelector('script[data-dcc-theme-system="v1"]'))return;
     const script=document.createElement('script');
     script.src='./dcc-theme-system-v1.js';
     script.async=false;
     script.dataset.dccThemeSystem='v1';
+    script.onload=loadPremiumPolish;
     script.onerror=()=>console.warn('DCC theme system: no se pudo cargar');
+    document.head.appendChild(script);
+  }
+
+  function loadPremiumPolish(){
+    if(window.__dccThemePremiumPolishV3||document.querySelector('script[data-dcc-theme-polish="v3"]'))return;
+    const script=document.createElement('script');
+    script.src='./dcc-theme-premium-polish-v3.js';
+    script.async=false;
+    script.dataset.dccThemePolish='v3';
+    script.onerror=()=>console.warn('DCC premium polish: no se pudo cargar');
     document.head.appendChild(script);
   }
 
   installTrainingRefinements();
   loadThemeSystem();
+  setTimeout(loadPremiumPolish,0);
   const main=document.getElementById('client-main');
   if(main&&!main.__dccClientTrainingRefinementsObserverV8){
     const observer=new MutationObserver(schedule);observer.observe(main,{childList:true,subtree:true});main.__dccClientTrainingRefinementsObserverV8=observer;
   }
   window.addEventListener('dcc:exercise-library-ready',schedule);
-  document.addEventListener('DOMContentLoaded',()=>{installTrainingRefinements();loadThemeSystem();schedule();});
+  document.addEventListener('DOMContentLoaded',()=>{installTrainingRefinements();loadThemeSystem();loadPremiumPolish();schedule();});
   schedule();
 
   window.__dccRuntimeBridgeReady=true;
