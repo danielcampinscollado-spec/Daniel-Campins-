@@ -1,0 +1,133 @@
+name: Fix training premium actions at root
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-training-premium-actions-root.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch training premium actions directly
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('training-premium-v2.js')
+          s = p.read_text()
+
+          s = s.replace(
+            '<button type="button" class="dct-day ${index===selectedDayIndex?\'active\':\'\'}" onclick="window.trainingDayTab=${index};showClient(\'training\');">',
+            '<button type="button" class="dct-day ${index===selectedDayIndex?\'active\':\'\'}" data-day-index="${index}">'
+          )
+
+          s = s.replace(
+            '<button type="button" class="dct-start" onclick="startWorkout(${selectedDayIndex})">',
+            '<button type="button" class="dct-start" data-day-index="${selectedDayIndex}">'
+          )
+
+          old_view = '''<button type="button" class="dct-view-exercises" aria-expanded="false" onclick="
+                  const card=this.closest('.dct-routine-card');
+                  const open=card.classList.toggle('open');
+                  this.setAttribute('aria-expanded',String(open));
+                  this.querySelector('.dct-view-label').textContent=open?'Ocultar ejercicios':'Ver ejercicios';
+                ">'''
+          s = s.replace(old_view, '<button type="button" class="dct-view-exercises" aria-expanded="false">')
+
+          s = s.replace(
+            '#client-main .dct-routine-actions{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(128px,.9fr);gap:9px;margin-top:13px}',
+            '#client-main .dct-routine-actions{position:relative;z-index:5;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(128px,.9fr);gap:9px;margin-top:13px;pointer-events:auto}'
+          )
+          s = s.replace(
+            '#client-main .dct-start{min-height:52px;',
+            '#client-main .dct-start{position:relative;z-index:6;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:52px;'
+          )
+          s = s.replace(
+            '#client-main .dct-view-exercises{min-height:52px;',
+            '#client-main .dct-view-exercises{position:relative;z-index:6;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:52px;'
+          )
+
+          marker = '''    `;
+  }
+
+  window.showClient = function(screen){'''
+          binding = '''    `;
+
+    // Eventos enlazados directamente tras cada render. Sin onclick embebidos ni hotfixes globales.
+    main.querySelectorAll('.dct-day[data-day-index]').forEach(button => {
+      button.addEventListener('click', function(event){
+        event.preventDefault();
+        const next = Number(this.dataset.dayIndex);
+        if(Number.isFinite(next)){
+          window.trainingDayTab = next;
+          window.showClient('training');
+        }
+      });
+    });
+
+    const viewButton = main.querySelector('.dct-view-exercises');
+    if(viewButton){
+      viewButton.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        const card = this.closest('.dct-routine-card');
+        if(!card) return;
+        const open = card.classList.toggle('open');
+        this.setAttribute('aria-expanded', String(open));
+        const label = this.querySelector('.dct-view-label');
+        if(label) label.textContent = open ? 'Ocultar ejercicios' : 'Ver ejercicios';
+      });
+    }
+
+    const startButton = main.querySelector('.dct-start');
+    if(startButton){
+      startButton.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        const next = Number(this.dataset.dayIndex);
+        const dayIndex = Number.isFinite(next) ? next : selectedDayIndex;
+        let fn = null;
+        if(typeof window.startWorkout === 'function') fn = window.startWorkout;
+        if(!fn){
+          try{
+            fn = (typeof startWorkout === 'function') ? startWorkout : null;
+          }catch(_){ fn = null; }
+        }
+        if(typeof fn === 'function'){
+          fn(dayIndex);
+        }else{
+          console.error('DCC: startWorkout no disponible desde training-premium-v2');
+          if(typeof window.toast === 'function') window.toast('No se pudo iniciar el entrenamiento.');
+        }
+      });
+    }
+  }
+
+  window.showClient = function(screen){'''
+
+          if marker not in s:
+            raise SystemExit('No se encontró el cierre de renderPremiumTraining')
+          s = s.replace(marker, binding, 1)
+          p.write_text(s)
+
+          # Limpiar los hotfixes anteriores del index y forzar recarga del módulo raíz.
+          idx = Path('index.html')
+          h = idx.read_text()
+          h = re.sub(r'\n?<script src="\./training-actions-hotfix-v1\.js[^\"]*"></script>', '', h)
+          h = re.sub(r'\n?<script src="\./training-actions-hotfix-v2\.js[^\"]*"></script>', '', h)
+          h = re.sub(r'<script src="\./training-premium-v2\.js\?v=[^"]+"></script>', '<script src="./training-premium-v2.js?v=20260911-1627"></script>', h)
+          idx.write_text(h)
+          PY
+
+      - name: Commit root fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add training-premium-v2.js index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Fix training buttons in premium module root'
+          git push
