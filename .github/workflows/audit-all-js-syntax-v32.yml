@@ -1,0 +1,19 @@
+name: Full JavaScript syntax audit v32
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-all-js-syntax-v32.yml'
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every root JavaScript file
+        shell: bash
+        run: |
+          failed=0
+          while IFS= read -r file; do
+            echo "Checking $file"
+            if ! node --check "$file"; then failed=1; fi
+          done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
+          exit "$failed"
