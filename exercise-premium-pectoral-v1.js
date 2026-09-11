@@ -11,7 +11,8 @@
     'press-inclinado-mancuernas':'./entrenamientos/ilustraciones/premium-press-inclinado-mancuernas.svg?v=20260911-2',
     'press-convergente-maquina':'./entrenamientos/ilustraciones/premium-press-convergente-maquina.svg?v=20260911-2',
     'aperturas-pec-deck':'./entrenamientos/ilustraciones/premium-aperturas-pec-deck.svg?v=20260911-2',
-    'flexiones':'./entrenamientos/ilustraciones/premium-flexiones.svg?v=20260911-2'
+    'flexiones':'./entrenamientos/ilustraciones/premium-flexiones.svg?v=20260911-2',
+    'pullover-mancuerna':'./entrenamientos/ilustraciones/pullover-mancuerna.webp?v=20260911-1'
   };
 
   function apply(){
@@ -32,6 +33,7 @@
   }
 
   window.addEventListener('dcc:exercise-library-ready',apply);
+  window.addEventListener('dcc:exercise-guidance-ready',apply);
   apply();
   setTimeout(apply,250);
   setTimeout(apply,1000);
