@@ -1,22 +1,24 @@
-/* DCC calendar form fix v19 — captura directa del botón Nueva sesión */
+/* DCC calendar form fix v20 — Nueva sesión estable, accesible y aislada */
 (function(){
   'use strict';
-  if(window.__dccCalendarFormFixV19)return;
-  window.__dccCalendarFormFixV19=true;
+  if(window.__dccCalendarFormFixV20)return;
+  window.__dccCalendarFormFixV20=true;
 
-  const STYLE_ID='dcc-calendar-form-fix-v19-css';
+  const STYLE_ID='dcc-calendar-form-fix-v20-css';
   const OVERLAY_ID='dcc-session-standalone-overlay';
+  const baseCalendarClose=typeof window.dccCalendarCloseModal==='function'?window.dccCalendarCloseModal:null;
 
   function appData(){try{return data||{}}catch(e){return window.data||{}}}
   function database(){
     try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}
     return window.supabaseClient||null;
   }
-  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]))}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function notify(t){try{if(typeof toast==='function')return toast(t)}catch(e){};try{window.toast?.(t)}catch(e){}}
 
   function injectCss(){
     if(document.getElementById(STYLE_ID))return;
+    document.getElementById('dcc-calendar-form-fix-v19-css')?.remove();
     const s=document.createElement('style');
     s.id=STYLE_ID;
     s.textContent=`
@@ -39,6 +41,7 @@
       #${OVERLAY_ID} input[type="date"]::-webkit-date-and-time-value,#${OVERLAY_ID} input[type="time"]::-webkit-date-and-time-value{text-align:center;min-width:0}
       #${OVERLAY_ID} .save{width:100%;height:56px;margin-top:3px;border:1px solid #f3ce6a;border-radius:17px;background:linear-gradient(135deg,#d9a83d,#f4d679 52%,#dfad42);color:#15110a;font-size:16px;font-weight:900;box-shadow:0 10px 28px rgba(217,170,74,.16)}
       #${OVERLAY_ID} .save:disabled{opacity:.6}
+      #${OVERLAY_ID} button:focus-visible,#${OVERLAY_ID} input:focus-visible,#${OVERLAY_ID} select:focus-visible,#${OVERLAY_ID} textarea:focus-visible{outline:2px solid #f0c96b;outline-offset:2px}
       body.dcc-session-open{overflow:hidden}
       @media(max-width:390px){#${OVERLAY_ID}{padding:10px}#${OVERLAY_ID} .dcc-session-card{padding:18px;max-height:calc(100dvh - 20px)}#${OVERLAY_ID} h2{font-size:24px}#${OVERLAY_ID} .row{gap:8px}#${OVERLAY_ID} input[type="date"],#${OVERLAY_ID} input[type="time"]{padding-left:10px;padding-right:10px;font-size:13px}}
     `;
@@ -51,11 +54,15 @@
     document.body.classList.remove('dcc-session-open');
   }
 
+  function closeAnyCalendarModal(){
+    if(document.getElementById(OVERLAY_ID)){closeStandalone();return}
+    if(baseCalendarClose&&baseCalendarClose!==closeAnyCalendarModal){try{return baseCalendarClose()}catch(e){console.warn('DCC cerrando modal de calendario:',e)}}
+  }
+
   async function getClients(){
     const local=appData().clients||[];
-    if(local.length)return local;
-    const db=database();
-    if(!db)return [];
+    if(local.length)return local.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
+    const db=database();if(!db)return [];
     try{
       const res=await db.from('clients').select('id,name').order('name',{ascending:true});
       if(res.error)throw res.error;
@@ -64,23 +71,20 @@
   }
 
   async function populateClients(){
-    const select=document.getElementById('dcc-cal-client');
-    if(!select)return;
+    const select=document.getElementById('dcc-cal-client');if(!select)return;
     const clients=await getClients();
     if(!document.getElementById(OVERLAY_ID))return;
     if(!clients.length){select.innerHTML='<option value="" selected>No hay clientes disponibles</option>';return}
     select.innerHTML='<option value="" disabled selected>Selecciona un cliente</option>'+clients.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+    requestAnimationFrame(()=>select.focus({preventScroll:true}));
   }
 
   function openStandalone(){
     try{
-      injectCss();
-      closeStandalone();
-      const overlay=document.createElement('div');
-      overlay.id=OVERLAY_ID;
-      overlay.innerHTML=`<div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title"><div class="head"><div><h2 id="dcc-session-title">Nueva sesión</h2><p class="sub">Programa una sesión para un cliente</p></div><button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="" selected>Cargando clientes…</option></select></label><div class="row"><label>Fecha<input id="dcc-cal-date" type="date" value=""></label><label>Hora<input id="dcc-cal-time" type="time" value=""></label></div><label>Tipo de sesión<select id="dcc-cal-type"><option>Entrenamiento</option><option>Check-in</option><option>Revisión</option><option>Consulta</option></select></label><label>Notas<textarea id="dcc-cal-notes" placeholder="Ej. Pierna · revisar técnica de sentadilla"></textarea></label><button id="dcc-cal-save" type="button" class="save">Guardar sesión →</button></div>`;
-      document.body.appendChild(overlay);
-      document.body.classList.add('dcc-session-open');
+      injectCss();closeStandalone();
+      const overlay=document.createElement('div');overlay.id=OVERLAY_ID;
+      overlay.innerHTML=`<div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title"><div class="head"><div><h2 id="dcc-session-title">Nueva sesión</h2><p class="sub">Programa una sesión para un cliente</p></div><button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="" selected>Cargando clientes…</option></select></label><div class="row"><label>Fecha<input id="dcc-cal-date" type="date" value=""></label><label>Hora<input id="dcc-cal-time" type="time" value=""></label></div><label>Tipo de sesión<select id="dcc-cal-type"><option>Entrenamiento</option><option>Check-in</option><option>Revisión</option><option>Consulta</option></select></label><label>Notas<textarea id="dcc-cal-notes" maxlength="500" placeholder="Ej. Pierna · revisar técnica de sentadilla"></textarea></label><button id="dcc-cal-save" type="button" class="save">Guardar sesión →</button></div>`;
+      document.body.appendChild(overlay);document.body.classList.add('dcc-session-open');
       document.getElementById('dcc-session-close')?.addEventListener('click',closeStandalone);
       overlay.addEventListener('click',e=>{if(e.target===overlay)closeStandalone()});
       document.getElementById('dcc-cal-save')?.addEventListener('click',saveStandalone);
@@ -110,42 +114,24 @@
     }catch(e){console.error('DCC guardando sesión:',e);notify('No se pudo guardar la sesión');if(button){button.disabled=false;button.textContent='Guardar sesión →'}}
   }
 
-  function directHandler(e){
-    e.preventDefault();
-    e.stopPropagation();
-    openStandalone();
-  }
-
+  function directHandler(e){e.preventDefault();e.stopPropagation();openStandalone()}
   function wireButton(){
-    injectCss();
-    const btn=document.querySelector('.dcc-cal-new');
-    if(!btn||btn.__dccV19Bound)return;
-    btn.__dccV19Bound=true;
-    btn.removeAttribute('onclick');
-    btn.onclick=null;
-    btn.addEventListener('click',directHandler,false);
+    injectCss();const btn=document.querySelector('.dcc-cal-new');
+    if(!btn||btn.__dccV20Bound)return;
+    btn.__dccV20Bound=true;btn.removeAttribute('onclick');btn.onclick=null;btn.addEventListener('click',directHandler,false);btn.setAttribute('aria-label','Nueva sesión');
   }
-
   function captureHandler(e){
-    const target=e.target && e.target.closest ? e.target.closest('.dcc-cal-new') : null;
-    if(!target)return;
-    e.preventDefault();
-    e.stopPropagation();
-    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-    openStandalone();
+    const target=e.target?.closest?.('.dcc-cal-new');if(!target)return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();openStandalone();
   }
+  function keyHandler(e){if(e.key==='Escape'&&document.getElementById(OVERLAY_ID))closeStandalone()}
 
   window.dccCalendarNewSession=openStandalone;
-  window.dccCalendarCloseModal=closeStandalone;
-  injectCss();
-  document.addEventListener('click',captureHandler,true);
+  window.dccCalendarCloseModal=closeAnyCalendarModal;
+  injectCss();document.addEventListener('click',captureHandler,true);document.addEventListener('keydown',keyHandler);
   wireButton();
-
   const root=document.getElementById('coach-main')||document.body;
-  const observer=new MutationObserver(()=>wireButton());
-  observer.observe(root,{childList:true,subtree:true});
-  setTimeout(wireButton,100);
-  setTimeout(wireButton,500);
-  setTimeout(wireButton,1200);
+  new MutationObserver(()=>wireButton()).observe(root,{childList:true,subtree:true});
+  setTimeout(wireButton,100);setTimeout(wireButton,500);setTimeout(wireButton,1200);
   window.addEventListener('pageshow',()=>setTimeout(wireButton,50));
 })();
