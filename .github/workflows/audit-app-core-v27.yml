@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - .github/workflows/audit-app-core-v27.yml
+      - .github/scripts/audit_v27.py
 
 permissions:
   contents: write
@@ -17,13 +18,27 @@ jobs:
         with:
           fetch-depth: 0
       - name: Apply audited patches
-        run: python3 .github/scripts/audit_v27.py
+        shell: bash
+        run: |
+          set +e
+          python3 .github/scripts/audit_v27.py > .github/audit-v27.log 2>&1
+          status=$?
+          cat .github/audit-v27.log
+          if [ $status -ne 0 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/audit-v27.log
+            git commit -m "Record audit v27 patch failure" || true
+            git push origin HEAD:main || true
+            exit $status
+          fi
       - name: Commit audited fixes
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add new-client-premium-v1.js coach-premium-v8.js coach-ui-v11.js coach-premium-core-v9.js client-admin-premium.js coach-client-plan-status-v1.js client-metrics-sync-v10.js coach-calendar-v12.js coach-calendar-form-fix-v15.js index.html
+          rm -f .github/audit-v27.log
+          git add -A new-client-premium-v1.js coach-premium-v8.js coach-ui-v11.js coach-premium-core-v9.js client-admin-premium.js coach-client-plan-status-v1.js client-metrics-sync-v10.js coach-calendar-v12.js coach-calendar-form-fix-v15.js index.html .github/audit-v27.log
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
