@@ -1,0 +1,43 @@
+name: Workout history integrity v36
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/workout_history_integrity_v36.py'
+      - '.github/workflows/run-workout-history-integrity-v36.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply workout history corrections
+        run: python3 .github/scripts/workout_history_integrity_v36.py
+      - name: Validate every root JavaScript file
+        shell: bash
+        run: |
+          failed=0
+          while IFS= read -r file; do
+            if ! node --check "$file"; then failed=1; fi
+          done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
+          exit "$failed"
+      - name: Validate index source markers
+        shell: bash
+        run: |
+          grep -Fq '.order("workout_date",{ascending:true});' index.html
+          grep -Fq 'monday.getFullYear()+"-"+String(monday.getMonth()+1).padStart(2,"0")' index.html
+          grep -Fq 'No se pudo guardar el entrenamiento. Inténtalo de nuevo.' index.html
+      - name: Commit correction
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix workout history order and weekly date integrity"
+          git push
