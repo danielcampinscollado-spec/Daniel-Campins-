@@ -1,14 +1,14 @@
 /* DCC — Inicio cliente premium: diseño aprobado compacto */
 (function(){
   'use strict';
-  if(window.__dccClientHomePremiumApprovedV2)return;
-  window.__dccClientHomePremiumApprovedV2=true;
+  if(window.__dccClientHomePremiumApprovedV3)return;
+  window.__dccClientHomePremiumApprovedV3=true;
 
-  const STYLE_ID='dcc-client-home-premium-approved-v2-css';
+  const STYLE_ID='dcc-client-home-premium-approved-v3-css';
 
   function installStyles(){
     if(document.getElementById(STYLE_ID))return;
-    ['dcc-client-home-premium-v4-css','dcc-client-home-premium-approved-v1-css'].forEach(id=>document.getElementById(id)?.remove());
+    ['dcc-client-home-premium-v4-css','dcc-client-home-premium-approved-v1-css','dcc-client-home-premium-approved-v2-css'].forEach(id=>document.getElementById(id)?.remove());
 
     const style=document.createElement('style');
     style.id=STYLE_ID;
@@ -52,7 +52,6 @@
         font-weight:400!important;letter-spacing:-.15px!important;text-shadow:none!important;
       }
 
-      /* Estadísticas: compactas y con etiquetas siempre legibles. */
       #client-main .dch-stat{
         grid-template-columns:40px minmax(0,1fr)!important;gap:12px!important;min-height:88px!important;height:88px!important;
         padding:14px 13px!important;align-items:center!important;cursor:default!important;overflow:hidden!important;
@@ -67,7 +66,6 @@
         color:var(--dcc-text)!important;font-size:25px!important;line-height:1!important;font-weight:500!important;letter-spacing:-.45px!important;
       }
 
-      /* Encabezados dorados: una única jerarquía. */
       #client-main .dch-task-head,
       #client-main .dch-progress [class*="label"],#client-main .dch-progress [class*="eyebrow"],
       #client-main .dch-next [class*="label"],#client-main .dch-next [class*="eyebrow"],#client-main .dch-next [class*="kicker"]{
@@ -75,7 +73,6 @@
         letter-spacing:2.45px!important;text-transform:uppercase!important;
       }
 
-      /* Tareas pendientes: misma proporción compacta del diseño aprobado. */
       #client-main .dch-task-card{padding:0!important;overflow:hidden!important}
       #client-main .dch-task-head{min-height:36px!important;height:36px!important;padding:0 14px!important}
       #client-main .dch-task-empty{
@@ -92,7 +89,6 @@
         font-size:9.7px!important;line-height:1.3!important;font-weight:400!important;letter-spacing:0!important;
       }
 
-      /* Progreso: alineación y altura idénticas a la propuesta. */
       #client-main .dch-progress{
         grid-template-columns:40px minmax(0,1fr)!important;column-gap:18px!important;min-height:92px!important;
         padding:14px!important;align-items:center!important;cursor:default!important;
@@ -106,18 +102,29 @@
         margin-top:6px!important;color:var(--dcc-muted)!important;font-size:9.8px!important;line-height:1.34!important;font-weight:400!important;letter-spacing:0!important;
       }
 
-      /* Próximo entrenamiento: texto completo, sin puntos suspensivos. */
       #client-main .dch-next{
         grid-template-columns:40px minmax(0,1fr)!important;column-gap:18px!important;min-height:104px!important;
         padding:15px 14px!important;align-items:center!important;
       }
       #client-main .dch-next .dch-iconbox{width:38px!important;height:38px!important}
+
+      /* Aprobado: encabezado en una sola línea. */
+      #client-main .dch-next [class*="label"],
+      #client-main .dch-next [class*="eyebrow"],
+      #client-main .dch-next [class*="kicker"]{
+        white-space:nowrap!important;
+        font-size:8.8px!important;
+        letter-spacing:2px!important;
+        line-height:1!important;
+      }
+
+      /* Aprobado: Pectoral · Hombro más fino y elegante. */
       #client-main .dch-next h1,#client-main .dch-next h2,#client-main .dch-next h3,#client-main .dch-next [class*="title"]{
-        margin-top:5px!important;color:var(--dcc-text)!important;font-size:16px!important;line-height:1.18!important;font-weight:450!important;
-        letter-spacing:-.12px!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;max-width:none!important;
+        margin-top:7px!important;color:var(--dcc-text)!important;font-size:16px!important;line-height:1.18!important;font-weight:400!important;
+        letter-spacing:-.08px!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;max-width:none!important;
       }
       #client-main .dch-next p,#client-main .dch-next [class*="sub"]{
-        margin-top:6px!important;color:var(--dcc-muted)!important;font-size:10px!important;line-height:1.3!important;font-weight:400!important;
+        margin-top:7px!important;color:var(--dcc-muted)!important;font-size:10px!important;line-height:1.3!important;font-weight:400!important;
       }
       #client-main .dch-next button,#client-main .dch-next [class*="button"],#client-main .dch-next [class*="btn"]{
         min-height:40px!important;height:40px!important;padding:0 14px!important;border-radius:13px!important;font-size:12px!important;
@@ -138,7 +145,9 @@
         #client-main .dch-progress,#client-main .dch-next{grid-template-columns:38px minmax(0,1fr)!important;column-gap:16px!important;padding-left:12px!important;padding-right:12px!important}
         #client-main .dch-progress{min-height:88px!important}
         #client-main .dch-next{min-height:100px!important}
-        #client-main .dch-progress h1,#client-main .dch-progress h2,#client-main .dch-progress h3,#client-main .dch-progress [class*="title"],#client-main .dch-next h1,#client-main .dch-next h2,#client-main .dch-next h3,#client-main .dch-next [class*="title"]{font-size:15.5px!important}
+        #client-main .dch-progress h1,#client-main .dch-progress h2,#client-main .dch-progress h3,#client-main .dch-progress [class*="title"]{font-size:15.5px!important}
+        #client-main .dch-next h1,#client-main .dch-next h2,#client-main .dch-next h3,#client-main .dch-next [class*="title"]{font-size:15.5px!important;font-weight:400!important}
+        #client-main .dch-next [class*="label"],#client-main .dch-next [class*="eyebrow"],#client-main .dch-next [class*="kicker"]{font-size:8.2px!important;letter-spacing:1.65px!important}
       }
     `;
     document.head.appendChild(style);
@@ -165,13 +174,13 @@
   document.addEventListener('DOMContentLoaded',apply);
 
   const main=document.getElementById('client-main');
-  if(main&&!window.__dccClientHomePremiumApprovedObserverV2){
+  if(main&&!window.__dccClientHomePremiumApprovedObserverV3){
     let frame=0;
     const observer=new MutationObserver(()=>{
       cancelAnimationFrame(frame);
       frame=requestAnimationFrame(refineContent);
     });
     observer.observe(main,{childList:true,subtree:true});
-    window.__dccClientHomePremiumApprovedObserverV2=observer;
+    window.__dccClientHomePremiumApprovedObserverV3=observer;
   }
 })();
