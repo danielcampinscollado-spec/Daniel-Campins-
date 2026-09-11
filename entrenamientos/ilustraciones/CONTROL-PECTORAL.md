@@ -9,32 +9,45 @@ Objetivo: 18/18 ilustraciones individuales validadas antes de integrarlas en la 
 - APROBADO: validada; no volver a generar salvo petición expresa.
 - RECHAZADO: no cuenta y debe regenerarse.
 
-## Regla operativa
-1. Seleccionar únicamente el primer ID PENDIENTE.
-2. Generar UNA sola imagen para ese ID.
-3. No usar el número visual como identificador: siempre usar el ID exacto.
-4. No avanzar el estado hasta validación.
-5. Un ID APROBADO queda bloqueado contra repeticiones.
-6. No crear mosaicos, catálogos ni varias ilustraciones en una misma imagen.
-7. Antes de integrar en la app deben estar los 18 IDs en APROBADO.
-8. Para ejercicios en máquina, priorizar estética/arquitectura tipo Hammer Strength cuando corresponda.
+## BLOQUEO DURO — NO GENERAR
+Los siguientes IDs están APROBADOS y quedan prohibidos para nuevas generaciones salvo petición expresa del usuario:
+- `press-banca-barra`
+- `press-banca-mancuernas`
+- `press-inclinado-barra`
+- `press-inclinado-mancuernas`
+- `press-pecho-maquina`
+- `press-inclinado-maquina`
+- `press-convergente-maquina`
+- `aperturas-pec-deck`
+- `cruces-polea-alta`
+- `flexiones`
 
-## Aprobadas explícitamente por el usuario
-- [x] `press-banca-barra` — APROBADO
-- [x] `press-banca-mancuernas` — APROBADO
-- [x] `press-inclinado-barra` — APROBADO
-- [x] `press-inclinado-mancuernas` — APROBADO
-- [x] `press-pecho-maquina` — APROBADO
-- [x] `press-inclinado-maquina` — APROBADO — versión Hammer Strength
-- [x] `press-convergente-maquina` — APROBADO — estilo Hammer Strength
-- [x] `aperturas-pec-deck` — APROBADO
-- [x] `cruces-polea-alta` — APROBADO
-- [x] `flexiones` — APROBADO
-
-## Imágenes aprobadas visualmente pero NO pertenecen a los 18 IDs canónicos actuales
+También están aprobadas visualmente y NO deben repetirse aunque no pertenezcan al catálogo canónico actual:
 - Press declinado con barra
 - Aperturas inclinadas con mancuernas
 - Fondos en paralelas
+
+## COLA ÚNICA AUTORIZADA — EN ESTE ORDEN
+Solo se puede generar el primer elemento PENDIENTE de esta cola:
+1. `cruces-polea-media`
+2. `cruces-polea-baja`
+3. `press-declinado-maquina`
+4. `press-pecho-iso-lateral`
+5. `press-inclinado-iso-lateral`
+6. `press-banca-multipower`
+7. `press-inclinado-multipower`
+8. `aperturas-polea-banco`
+
+## Regla operativa obligatoria
+1. Leer este archivo antes de cada generación.
+2. Generar únicamente el primer ID PENDIENTE de la cola autorizada.
+3. Generar UNA sola imagen para ese ID.
+4. No usar números visuales como identificador; usar siempre el ID exacto.
+5. No avanzar hasta que el usuario apruebe explícitamente la imagen.
+6. Tras aprobación, cambiar ese ID a APROBADO y eliminarlo de la cola antes de generar el siguiente.
+7. No crear mosaicos, trípticos, catálogos ni varias ilustraciones en una misma imagen.
+8. Si el generador devuelve otro ejercicio distinto del ID solicitado, la salida se descarta automáticamente y NO modifica el estado.
+9. Para ejercicios en máquina, priorizar estética/arquitectura tipo Hammer Strength cuando corresponda.
 
 ## Checklist canónico 18/18
 - [x] `press-banca-barra` — APROBADO
