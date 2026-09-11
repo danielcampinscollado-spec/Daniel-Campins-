@@ -1,0 +1,41 @@
+name: Metric editor ownership v35
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/stabilize_metric_editor_v35.py'
+      - '.github/workflows/run-stabilize-metric-editor-v35.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Stabilize metric editor ownership
+        run: python3 .github/scripts/stabilize_metric_editor_v35.py
+      - name: Validate every root JavaScript file
+        shell: bash
+        run: |
+          failed=0
+          while IFS= read -r file; do
+            if ! node --check "$file"; then failed=1; fi
+          done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
+          exit "$failed"
+      - name: Verify premium editor is never overwritten
+        run: |
+          grep -Fq 'if(current.__dccQualityV5||current.__dccMetricsV11)return true;' client-metrics-sync-v10.js
+          ! grep -Fq "window.prompt('Introduce tu % de grasa actual:')" client-metrics-sync-v10.js
+      - name: Commit correction
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client-metrics-sync-v10.js
+          git commit -m "Keep premium body fat editor authoritative"
+          git push
