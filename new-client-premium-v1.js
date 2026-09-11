@@ -128,7 +128,7 @@
         </div>
 
         <label class="dcc-nc-field">
-          <span class="dcc-nc-label">${icon('fat')}<span>% de grasa inicial</span></span>
+          <span class="dcc-nc-label">${icon('fat')}<span>Grasa corporal inicial</span></span>
           <input class="dcc-nc-input" id="new-body-fat" inputmode="decimal" placeholder="Ej. 18,5">
         </label>
 
@@ -177,7 +177,7 @@
     if(!Number.isFinite(weight)||weight<=0||weight>=500){notify('Introduce un peso válido');return}
     if(!Number.isInteger(age)||age<10||age>100){notify('Introduce una edad válida');return}
     if(!Number.isFinite(height)||height<100||height>250){notify('Introduce una altura válida');return}
-    if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){notify('Introduce un % de grasa válido');return}
+    if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){notify('Introduce un porcentaje de grasa válido');return}
 
     const db=database();
     if(!db){notify('No se pudo conectar con la base de datos');return}
@@ -186,6 +186,7 @@
     if(button){button.disabled=true;button.innerHTML='Creando cliente…'}
 
     const id='client_'+Date.now();
+    const createdAt=new Date().toISOString();
     try{
       const {error}=await db.from('clients').insert({
         id,
@@ -198,23 +199,67 @@
         height_cm:height,
         foods_to_avoid:foodsToAvoid,
         plan:'',
-        status:'Pendiente'
+        status:'Pendiente',
+        created_at:createdAt
       });
       if(error)throw error;
 
+      const initialWrites=await Promise.all([
+        db.from('client_weights').insert({client_id:id,weight,recorded_at:createdAt}),
+        db.from('client_body_fat_history').insert({client_id:id,body_fat:bodyFat,recorded_at:createdAt}),
+        db.from('client_checkins').upsert({
+          client_id:id,
+          weight:String(weight).replace('.',',')+' kg',
+          body_fat:bodyFat,
+          updated_at:createdAt
+        },{onConflict:'client_id'})
+      ]);
+      const failed=initialWrites.find(x=>x?.error);
+      if(failed){
+        await db.from('clients').delete().eq('id',id);
+        throw failed.error;
+      }
+
       const d=appData();
       d.clients=Array.isArray(d.clients)?d.clients:[];
-      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,height:height,heightCm:height,height_cm:height,foodsToAvoid,foods_to_avoid:foodsToAvoid,plan:'',status:'Pendiente'});
+      d.clients.push({
+        id,name,goal,weight,
+        initial:weight,initial_weight:weight,
+        bodyFatInitial:bodyFat,initial_body_fat:bodyFat,
+        age,height,heightCm:height,height_cm:height,
+        foodsToAvoid,foods_to_avoid:foodsToAvoid,
+        plan:'',status:'Pendiente',created_at:createdAt
+      });
       d.weights=d.weights||{};d.weights[id]=[weight];
-      d.checkins=d.checkins||{};d.checkins[id]={weight:(typeof money==='function'?money(weight):String(weight))+' kg',bodyFat,diet:'Pendiente',training:'Pendiente',comment:'Pendiente de revisión.',reviewed:false};
-      d.diets=d.diets||{};d.diets[id]={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
+      d.bodyFatHistory=d.bodyFatHistory||{};
+      d.bodyFatHistory[id]=[{bodyFat,body_fat:bodyFat,recorded_at:createdAt}];
+      d.checkins=d.checkins||{};
+      d.checkins[id]={
+        weight:(typeof money==='function'?money(weight):String(weight))+' kg',
+        bodyFat,body_fat:bodyFat,
+        diet:'Pendiente',training:'Pendiente',energy:'Pendiente',
+        comment:'Pendiente de revisión.',reviewed:false,
+        updatedAt:createdAt,updated_at:createdAt
+      };
+      d.diets=d.diets||{};
+      d.diets[id]={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
       d.routines=d.routines||{};d.routines[id]=[];
       d.messages=d.messages||{};d.messages[id]=[];
 
       try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
       cleanupModal();
       try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(e){}
-      try{if(typeof showCoach==='function')showCoach('clients');else window.showCoach?.('clients')}catch(e){}
+
+      window.selectedClient=id;
+      window.__dccClientAdminId=id;
+      try{
+        if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');
+        else if(typeof window.openClient==='function')window.openClient(id);
+        else if(typeof showCoach==='function')showCoach('clients');
+      }catch(e){
+        console.error('DCC abriendo cliente recién creado:',e);
+        window.showCoach?.('clients');
+      }
       notify('Cliente creado correctamente');
     }catch(e){
       console.error('DCC creando cliente:',e);
@@ -222,6 +267,7 @@
       if(button){button.disabled=false;button.innerHTML='Crear cliente <span>→</span>'}
     }
   };
+  window.createClient.__dccAuditCreateFlowV11=true;
 
   /* Mantener edad y altura sincronizadas desde Supabase sin añadir espera. */
   const baseLoad=window.loadClientsFromSupabase;

@@ -88,30 +88,48 @@
     const clients=Array.isArray(appData()?.clients)?appData().clients:[];
     const pending=clients.filter(pendingCheck).length;
     const missingRoutine=clients.filter(c=>!hasRoutine(c.id)).length;
-    const missingDiet=clients.filter(c=>!hasDiet(c.id)).length;
-    const total=pending+missingRoutine+missingDiet;
+    const missingDietClients=clients.filter(c=>!hasDiet(c.id));
+    const total=pending+missingRoutine+missingDietClients.length;
     const tasks=main.querySelector('#dccP9Tasks');
-    const badge=tasks?.querySelector('.dcc-p9-count');if(badge)badge.textContent=String(total);
-    const inner=tasks?.querySelector('.dcc-p9-inner');if(inner){
-      inner.querySelectorAll('.dcc-audit-diet-row').forEach(x=>x.remove());
-      const empt=inner.querySelector('.dcc-p9-empty');if(empt&&total>0)empt.remove();
-      clients.filter(c=>!hasDiet(c.id)).slice(0,6).forEach(c=>{
-        const row=taskRow(c,'ASIGNAR DIETA','PENDIENTE',()=>{
-          window.selectedClient=c.id;window.__dccClientAdminId=c.id;
-          if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(c.id,'food');
-          else window.openClient?.(c.id);
+    const badge=tasks?.querySelector('.dcc-p9-count');
+    if(badge&&badge.textContent!==String(total))badge.textContent=String(total);
+
+    const inner=tasks?.querySelector('.dcc-p9-inner');
+    if(inner){
+      const visible=missingDietClients.slice(0,6);
+      const signature=visible.map(c=>String(c.id)).join('|');
+      if(tasks?.dataset.dccAuditDietSignature!==signature){
+        inner.querySelectorAll('.dcc-audit-diet-row').forEach(x=>x.remove());
+        const empt=inner.querySelector('.dcc-p9-empty');
+        if(empt&&total>0)empt.remove();
+        visible.forEach(c=>{
+          const row=taskRow(c,'CREAR ALIMENTACIÓN','PENDIENTE',()=>{
+            window.selectedClient=c.id;
+            window.__dccClientAdminId=c.id;
+            if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(c.id,'food');
+            else window.openClient?.(c.id);
+          });
+          row.classList.add('dcc-audit-diet-row');
+          inner.appendChild(row);
         });
-        row.classList.add('dcc-audit-diet-row');inner.appendChild(row);
-      });
+        if(tasks)tasks.dataset.dccAuditDietSignature=signature;
+      }
     }
 
-    const attention=clients.filter(c=>{const gap=daysSince(workoutDate(latestWorkout(c.id)));return gap!==null&&gap>=7});
+    const attention=clients.filter(c=>{
+      const gap=daysSince(workoutDate(latestWorkout(c.id)));
+      return gap!==null&&gap>=7;
+    });
     const att=main.querySelector('#dccP9Attention');
     const title=att?.querySelector('.dcc-p9-head-title');
     if(title){
       let count=title.querySelector('.dcc-audit-attention');
-      if(!count){count=document.createElement('span');count.className='dcc-p9-count dcc-audit-attention';title.appendChild(count)}
-      count.textContent=String(attention.length);
+      if(!count){
+        count=document.createElement('span');
+        count.className='dcc-p9-count dcc-audit-attention';
+        title.appendChild(count);
+      }
+      if(count.textContent!==String(attention.length))count.textContent=String(attention.length);
     }
   }
 
@@ -131,7 +149,7 @@
       const weight=latestWeight(client.id,client),el=card.querySelector('.dcc-cl-weight');
       if(weight!=null){
         const value=`${weight.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})} kg`;
-        if(el)el.textContent=value;
+        if(el){if(el.textContent!==value)el.textContent=value;}
         else{const div=document.createElement('div');div.className='dcc-cl-weight';div.textContent=value;card.querySelector('.dcc-cl-info')?.appendChild(div)}
       }
     });
@@ -150,7 +168,7 @@
     const id=String(window.__dccClientAdminId||window.selectedClient||'');if(!id)return;
     main.querySelectorAll('.dcc-ca-info').forEach(row=>{
       const label=(row.querySelector('span')?.textContent||'').trim().toLowerCase();
-      if(label==='último check-in'){const b=row.querySelector('b');if(b)b.textContent=checkinLabel(id)}
+      if(label==='último check-in'){const b=row.querySelector('b'),value=checkinLabel(id);if(b&&b.textContent!==value)b.textContent=value}
     });
   }
 
@@ -229,7 +247,7 @@
   function watch(){
     const main=document.getElementById('coach-main');
     if(!main){setTimeout(watch,80);return}
-    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(schedule).observe(main,{childList:true,subtree:true});
     schedule();
   }
 
@@ -237,5 +255,5 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
   window.addEventListener('load',schedule,{once:true});
   window.addEventListener('pageshow',schedule);
-  setInterval(schedule,1200);
+  window.dccQualityRefresh=schedule;
 })();
