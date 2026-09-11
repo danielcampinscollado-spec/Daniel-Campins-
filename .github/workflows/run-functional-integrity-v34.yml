@@ -1,0 +1,49 @@
+name: Functional integrity v34
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/functional_integrity_v34.py'
+      - '.github/workflows/run-functional-integrity-v34.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply functional integrity corrections
+        run: python3 .github/scripts/functional_integrity_v34.py
+      - name: Validate every root JavaScript file
+        shell: bash
+        run: |
+          failed=0
+          while IFS= read -r file; do
+            echo "Checking $file"
+            if ! node --check "$file"; then failed=1; fi
+          done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
+          exit "$failed"
+      - name: Validate patched source markers
+        shell: bash
+        run: |
+          grep -Fq 'energy:row.energy || ""' index.html
+          grep -Fq "if(add&&!window.dccDietAddFood?.__dccNativeAvoidWarning)" coach-client-plan-status-v1.js
+          grep -Fq "No se pudo marcar como revisado" checkin-coach-sync-v2.js
+          grep -Fq "No se pudo enviar el mensaje" messages-sync-fix.js
+          grep -Fq "bodyFatHistory?.[id]" progress-premium-v5.js
+      - name: Commit corrections
+        run: |
+          if git diff --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html checkin-coach-sync-v2.js coach-client-plan-status-v1.js messages-sync-fix.js client-progress-premium-v6.js progress-premium-v5.js client-checkin-final-v3.js
+          git commit -m "Harden check-ins messages and progress integrity"
+          git push
