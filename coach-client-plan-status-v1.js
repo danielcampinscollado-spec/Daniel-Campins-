@@ -1,12 +1,13 @@
-/* DCC — arranque estable + hotfixes de auditoría v3 */
+/* DCC — arranque estable + hotfixes de auditoría v4 */
 (function(){
   'use strict';
 
-  if(window.__dccAuditBootstrapV3)return;
-  window.__dccAuditBootstrapV3=true;
+  if(window.__dccAuditBootstrapV4)return;
+  window.__dccAuditBootstrapV4=true;
 
   const baseSrc='./coach-client-plan-status-v1-base.js?v=20260911-audit2';
   const authSrc='./auth-premium-v1.js?v=20260911-auth1';
+  const exercisePremiumSrc='./exercise-premium-pectoral-v1.js?v=20260911-1';
 
   function appData(){
     try{return data||{}}catch(_){return window.data||{}}
@@ -242,11 +243,22 @@
     document.head.appendChild(auth);
   }
 
+  function loadPremiumExercises(){
+    if(window.__dccPremiumExerciseScriptRequested)return;
+    window.__dccPremiumExerciseScriptRequested=true;
+    const premium=document.createElement('script');
+    premium.src=exercisePremiumSrc;
+    premium.async=false;
+    premium.onerror=()=>console.error('DCC audit — no se pudieron cargar las ilustraciones premium');
+    document.head.appendChild(premium);
+  }
+
   const script=document.createElement('script');
   script.src=baseSrc;
   script.async=false;
   script.onload=()=>{
     installHotfixes();
+    loadPremiumExercises();
     loadSecureAuth();
     setTimeout(installHotfixes,0);
     setTimeout(installHotfixes,250);
