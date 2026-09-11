@@ -10,6 +10,7 @@ Objetivo: 24/24 ilustraciones individuales validadas antes de integrarlas defini
 4. Una salida con otro ejercicio, collage, tríptico o postura incorrecta se descarta y no cambia el estado.
 5. Los ejercicios de máquina usarán preferentemente arquitectura tipo Hammer Strength cuando corresponda.
 6. Cada ejercicio tendrá un asset individual para la app.
+7. Cada ejercicio asignado a un cliente debe incluir un `clientAdvice`/`tips` técnico visible en la pantalla de entrenamiento y durante la sesión activa.
 
 ## Biblioteca definitiva Pectoral — 24
 - [x] `press-banca-barra` — APROBADO
@@ -35,11 +36,11 @@ Objetivo: 24/24 ilustraciones individuales validadas antes de integrarlas defini
 - [ ] `aperturas-polea-banco` — PENDIENTE
 - [x] `flexiones` — APROBADO
 - [x] `fondos-paralelas-pectoral` — APROBADO
-- [ ] `pullover-mancuerna` — PENDIENTE
+- [x] `pullover-mancuerna` — APROBADO — plantilla DCC negro/dorado con ejecución, consejos y errores comunes
 
 ## Progreso real
-13/24 APROBADOS.
-11/24 PENDIENTES.
+14/24 APROBADOS.
+10/24 PENDIENTES.
 
 ## Cola de generación pendiente
 1. `press-declinado-mancuernas`
@@ -52,7 +53,6 @@ Objetivo: 24/24 ilustraciones individuales validadas antes de integrarlas defini
 8. `cruces-polea-media`
 9. `cruces-polea-baja`
 10. `aperturas-polea-banco`
-11. `pullover-mancuerna`
 
 ## Criterios de aprobación
 - Ejercicio y equipo exactos.
@@ -60,3 +60,4 @@ Objetivo: 24/24 ilustraciones individuales validadas antes de integrarlas defini
 - Pectoral resaltado en dorado.
 - Estética premium negra/dorada consistente.
 - Asset individual limpio y apto para tarjeta de la app.
+- Consejo técnico específico disponible para el cliente.
