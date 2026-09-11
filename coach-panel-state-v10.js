@@ -225,7 +225,7 @@
   function enhance(){
     injectCss();installCreateFlow();patchNewClientForm();
     const main=document.getElementById('coach-main');if(!main)return;
-    if(main.classList.contains('dcc-p9-dashboard')){colorCounters(main);closeNewAccordions(main);patchTasks(main)}
+    if(main.classList.contains('dcc-p9-dashboard')){colorCounters(main);closeNewAccordions(main)}
     if(main.classList.contains('dcc-premium-clients'))patchClientCards(main);
     patchClientAdmin(main);
   }

@@ -119,7 +119,7 @@
     if(!dietReady(id))pending.push({kind:'diet',title:'Alimentación sin terminar',sub:'Completa la alimentación de entrenamiento y descanso.'});
     if(!routineReady(id))pending.push({kind:'routine',title:'Rutina sin terminar',sub:'Completa todos los días y ejercicios de entrenamiento.'});
     const active=String(tab||root.querySelector('.dcc-ca-tab.active')?.textContent||'summary').toLowerCase();
-    const foods=foodsToAvoid(c),wantFood=active==='summary'||active.includes('resumen'),wantDiet=(active==='food'||active.includes('alimenta'))&&!!foods;
+    const foods=foodsToAvoid(c),nativeFoods=[...root.querySelectorAll('.dcc-ca-info span')].some(x=>(x.textContent||'').trim().toLowerCase()==='alimentos a evitar'),nativeDiet=!!root.querySelector('.dcc-native-avoid-warning'),wantFood=(active==='summary'||active.includes('resumen'))&&!nativeFoods,wantDiet=(active==='food'||active.includes('alimenta'))&&!!foods&&!nativeDiet;
     const sig=[id,active,pending.map(p=>p.kind).join(','),foods,checkinLabel(id)].join('|');
     const complete=(pending.length===0||!!root.querySelector('.dcc-v5-plan'))&&(!wantFood||!!root.querySelector('.dcc-v5-foods'))&&(!wantDiet||!!root.querySelector('.dcc-v5-diet-warning'));
     if(root.dataset.dccV5ProfileSig===sig&&complete)return;
@@ -167,14 +167,18 @@
       if(!dietReady(c.id))tasks.push({id:c.id,kind:'diet',title:'CREAR ALIMENTACIÓN',name:c.name});
       if(!routineReady(c.id))tasks.push({id:c.id,kind:'routine',title:'CREAR RUTINA',name:c.name});
     });
-    const count=panel.querySelector('.dcc-p9-count');if(count)count.textContent=String(tasks.length);
+    const count=panel.querySelector('.dcc-p9-count');if(count&&count.textContent!==String(tasks.length))count.textContent=String(tasks.length);
+    const taskStat=[...document.querySelectorAll('#coach-main .dcc-p9-stat')].find(x=>/tareas pendientes/i.test(x.textContent||''));
+    const taskStrong=taskStat?.querySelector('strong');if(taskStrong&&taskStrong.textContent!==String(tasks.length))taskStrong.textContent=String(tasks.length);
     const body=panel.querySelector('.dcc-p9-body');
     if(body){const sig=tasks.map(t=>`${t.id}:${t.kind}:${t.name}`).join('|');if(panel.dataset.dccV5TaskSig!==sig){body.innerHTML=tasks.length?`<div class="dcc-p9-inner">${tasks.slice(0,16).map(taskHtml).join('')}</div>`:`<div class="dcc-p9-inner"><div class="dcc-p9-empty"><span class="dcc-p9-empty-i">✓</span><span>Todo al día. No hay tareas pendientes.</span></div></div>`;panel.dataset.dccV5TaskSig=sig}}
 
     const attention=document.getElementById('dccP9Attention');
     if(attention){
       const n=(appData().clients||[]).filter(c=>{const gap=daysSince(latestWorkout(c.id)?.date??latestWorkout(c.id)?.workout_date);return gap!=null&&gap>=7}).length;
-      const title=attention.querySelector('.dcc-p9-head-title');if(title){let badge=title.querySelector('.dcc-p9-count');if(!badge){badge=document.createElement('span');badge.className='dcc-p9-count';title.appendChild(badge)}badge.textContent=String(n)}
+      const attentionStat=[...document.querySelectorAll('#coach-main .dcc-p9-stat')].find(x=>/requieren atención/i.test(x.textContent||''));
+      const attentionStrong=attentionStat?.querySelector('strong');if(attentionStrong&&attentionStrong.textContent!==String(n))attentionStrong.textContent=String(n);
+      const title=attention.querySelector('.dcc-p9-head-title');if(title){let badge=title.querySelector('.dcc-p9-count');if(!badge){badge=document.createElement('span');badge.className='dcc-p9-count';title.appendChild(badge)}if(badge.textContent!==String(n))badge.textContent=String(n)}
     }
   }
 
@@ -347,9 +351,11 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById(METRIC_OVERLAY))closeMetric()});
 
   function boot(){
-    addCss();installWrappers();schedule();
-    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true});
-    setInterval(schedule,1500);
+    addCss();installWrappers();
+    const observe=()=>{const main=document.getElementById('coach-main');if(!main){setTimeout(observe,100);return}new MutationObserver(schedule).observe(main,{childList:true,subtree:true});schedule()};
+    observe();
+    window.addEventListener('pageshow',schedule);
+    window.dccPlanStatusRefresh=schedule;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();

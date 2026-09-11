@@ -58,7 +58,7 @@
 
   function installCreateFlow(){
     const base=window.createClient;
-    if(typeof base!=='function'||base.__dccProfileFlowV2)return;
+    if(typeof base!=='function'||base.__dccProfileFlowV2||base.__dccAuditCreateFlowV11)return;
     const wrapped=async function(){
       const before=new Set((appData().clients||[]).map(c=>String(c.id)));
       const result=await base.apply(this,arguments);
@@ -142,7 +142,7 @@
         return;
       }
       const add=event.target.closest?.('#coach-main .dcc-diet-add-food');
-      if(add){const c=clientFor(clientId()),f=foods(c);if(f)alert(`Aviso del cliente\nNo incluir: ${f}.`)}
+      if(add&&!window.dccDietAddFood?.__dccNativeAvoidWarning){const c=clientFor(clientId()),f=foods(c);if(f)alert(`Aviso del cliente\nNo incluir: ${f}.`)}
     },true);
   }
 
@@ -150,15 +150,17 @@
   function schedule(){
     if(busy)return;busy=true;
     requestAnimationFrame(()=>{
-      busy=false;loadPlanStatus();installCreateFlow();patchNewClientLabel();patchProfile();
-      const id=clientId();if(id)syncProfile(id).then(patchProfile);
+      busy=false;
+      loadPlanStatus();
+      if(!window.createClient?.__dccAuditCreateFlowV11)installCreateFlow();
+      patchNewClientLabel();
     });
   }
 
   function boot(){
-    css();loadPlanStatus();installCreateFlow();installDeleteGuard();schedule();
-    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true});
-    setInterval(()=>{loadPlanStatus();installCreateFlow();schedule()},1000);
+    css();loadPlanStatus();installDeleteGuard();schedule();
+    window.addEventListener('pageshow',schedule);
+    window.dccProfilePreferencesRefresh=schedule;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
