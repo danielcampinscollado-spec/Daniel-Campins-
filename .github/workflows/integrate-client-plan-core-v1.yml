@@ -1,0 +1,158 @@
+name: Integrate client plan workflow into core
+
+on:
+  push:
+    paths:
+      - '.github/workflows/integrate-client-plan-core-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch active app sources
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new, count=1):
+              p=Path(path)
+              s=p.read_text()
+              n=s.count(old)
+              if n < count:
+                  raise SystemExit(f'{path}: expected at least {count} match(es), found {n}: {old[:100]!r}')
+              s=s.replace(old,new,count)
+              p.write_text(s)
+              print(f'patched {path}: {old[:70]!r}')
+
+          # 1) El formulario premium que realmente se ve en iPhone.
+          replace('new-client-premium-v1.js',
+                  '<span class="dcc-nc-label">${icon(\'fat\')}<span>% de grasa inicial</span></span>',
+                  '<span class="dcc-nc-label">${icon(\'fat\')}<span>Grasa corporal inicial</span></span>')
+
+          old_success="""      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
+      cleanupModal();
+      try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(e){}
+      try{if(typeof showCoach==='function')showCoach('clients');else window.showCoach?.('clients')}catch(e){}
+      notify('Cliente creado correctamente');"""
+          new_success="""      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
+      window.selectedClient=id;
+      window.__dccClientAdminId=id;
+      cleanupModal();
+      try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(e){}
+      requestAnimationFrame(()=>{
+        try{
+          if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');
+          else if(typeof window.openClient==='function')window.openClient(id);
+          else if(typeof showCoach==='function')showCoach('clients');
+        }catch(e){console.error('DCC continuando perfil nuevo cliente:',e)}
+      });
+      notify('Cliente creado correctamente · completa alimentación y rutina');"""
+          replace('new-client-premium-v1.js', old_success, new_success)
+
+          # 2) Integrar avisos y alimentos directamente en el render premium del perfil.
+          marker="function normalizeOptions(m){if(Array.isArray(m?.options)&&m.options.length)return m.options;if(Array.isArray(m?.foods))return[{name:'Opción 1',foods:m.foods}];return[{name:'Opción 1',foods:[]}]}"
+          helpers=r"""window.__dccCorePlanIntegratedV1=true;
+function coreMealReady(m){const os=normalizeOptions(m);return os.some(o=>Array.isArray(o?.foods)&&o.foods.length>0)}
+function coreDietReady(id){const x=data?.diets?.[id];return !!x&&['training','rest'].every(t=>{const ms=x?.[t]?.meals;return Array.isArray(ms)&&ms.length>0&&ms.every(coreMealReady)})}
+function coreRoutineReady(id){const ds=routineDays(id);return ds.length>0&&ds.every(d=>Array.isArray(d?.exercises)&&d.exercises.length>0)}
+function coreAvoidText(cl){return String(cl?.foods_to_avoid??cl?.foodsToAvoid??'').trim()}
+function decorateProfile(id,tab,cl){
+  const root=document.querySelector('#coach-main .dcc-ca-wrap');if(!root)return;
+  root.querySelectorAll('.dcc-core-plan-warning,.dcc-core-food-warning,.dcc-core-diet-warning').forEach(x=>x.remove());
+  const pending=[];
+  if(!coreDietReady(id))pending.push({tab:'food',title:'Alimentación sin terminar',sub:'Completa la alimentación de entrenamiento y descanso.'});
+  if(!coreRoutineReady(id))pending.push({tab:'training',title:'Rutina sin terminar',sub:'Completa los días y ejercicios de entrenamiento.'});
+  if(pending.length){
+    const box=document.createElement('section');box.className='dcc-ca-card dcc-core-plan-warning';
+    box.style.cssText='border-color:rgba(240,201,107,.72);background:radial-gradient(circle at 95% 0,rgba(240,201,107,.10),transparent 38%),linear-gradient(145deg,#12171b,#090d10)';
+    box.innerHTML=`<div style="color:${G2};font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:9px">⚠ Plan pendiente de completar</div><div style="display:grid;gap:7px">${pending.map(p=>`<button type="button" onclick="dccClientAdmin('${esc(id)}','${p.tab}')" style="width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 11px;border:1px solid #303943;border-radius:12px;background:#0a0f13;color:#f5f3ef;text-align:left"><span><b style="display:block;font-size:12px">${p.title}</b><small style="display:block;margin-top:3px;color:#929ba6;font-size:9px">${p.sub}</small></span><span style="color:${G2};font-size:18px">›</span></button>`).join('')}</div>`;
+    root.querySelector('.dcc-ca-metrics')?.insertAdjacentElement('afterend',box);
+  }
+  const avoid=coreAvoidText(cl);
+  if(tab==='summary'){
+    const general=[...root.querySelectorAll('.dcc-ca-card')].find(x=>/información general/i.test(x.querySelector('h2')?.textContent||''));
+    if(general){const card=document.createElement('div');card.className='dcc-core-food-warning';card.style.cssText='margin-top:12px;padding:11px 12px;border:1px solid rgba(224,173,76,.44);border-radius:14px;background:linear-gradient(145deg,rgba(217,170,74,.075),rgba(8,12,15,.92))';card.innerHTML=`<small style="display:block;color:${G2};font-size:9px;font-weight:850;letter-spacing:1.2px;text-transform:uppercase">Alimentos a evitar</small><b style="display:block;margin-top:5px;font-size:12px;line-height:1.4">${avoid?esc(avoid):'Sin alimentos indicados'}</b>`;general.appendChild(card)}
+  }
+  if(tab==='food'&&avoid){const sw=root.querySelector('.dcc-diet-switch');if(sw){const w=document.createElement('div');w.className='dcc-core-diet-warning';w.style.cssText='margin:0 0 11px;padding:11px 12px;border:1px solid rgba(240,201,107,.62);border-radius:15px;background:linear-gradient(145deg,#15140f,#0b0d0e)';w.innerHTML=`<b style="display:block;color:${G2};font-size:11px">Aviso del cliente</b><p style="margin:4px 0 0;color:#e8e5de;font-size:10px;line-height:1.4">No incluir: ${esc(avoid)}.</p>`;sw.parentNode.insertBefore(w,sw)}}
+}
+"""+marker
+          replace('client-admin-premium.js', marker, helpers)
+          replace('client-admin-premium.js',
+                  "window.selectedClient=id;const main=document.getElementById('coach-main')",
+                  "window.selectedClient=id;window.__dccClientAdminId=id;const main=document.getElementById('coach-main')")
+          old_render_end="<div>${pane(id,tab,cl,{initial,current,fi,fc})}</div></div>`}function pane"
+          new_render_end="<div>${pane(id,tab,cl,{initial,current,fi,fc})}</div></div>`;decorateProfile(id,tab,cl)}function pane"
+          replace('client-admin-premium.js', old_render_end, new_render_end)
+
+          # 3) El panel premium definitivo debe crear DOS tareas cuando falten dieta y rutina.
+          old_helpers="""  function hasRoutine(id){const r=getData()?.routines?.[id];return Array.isArray(r)&&r.length>0}
+  function pendingCheck(c){const x=getData()?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}"""
+          new_helpers="""  function mealReady(m){if(Array.isArray(m?.options)&&m.options.length)return m.options.some(o=>Array.isArray(o?.foods)&&o.foods.length>0);return Array.isArray(m?.foods)&&m.foods.length>0}
+  function dietReady(id){const x=getData()?.diets?.[id];return !!x&&['training','rest'].every(t=>{const ms=x?.[t]?.meals;return Array.isArray(ms)&&ms.length>0&&ms.every(mealReady)})}
+  function routineReady(id){const r=getData()?.routines?.[id];return Array.isArray(r)&&r.length>0&&r.every(d=>Array.isArray(d?.exercises)&&d.exercises.length>0)}
+  function hasRoutine(id){return routineReady(id)}
+  function pendingCheck(c){const x=getData()?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}"""
+          replace('coach-premium-core-v9.js', old_helpers, new_helpers)
+          replace('coach-premium-core-v9.js',
+                  "      if(!hasRoutine(c.id))tasks.push({icon:'＋',title:'ASIGNAR RUTINA',text:c.name,badge:'PENDIENTE',action:`openClient('${esc(c.id)}')`});",
+                  "      if(!dietReady(c.id))tasks.push({icon:'🍴',title:'CREAR ALIMENTACIÓN',text:c.name,badge:'PENDIENTE',action:`dccClientAdmin('${esc(c.id)}','food')`});\n      if(!routineReady(c.id))tasks.push({icon:'＋',title:'CREAR RUTINA',text:c.name,badge:'PENDIENTE',action:`dccClientAdmin('${esc(c.id)}','training')`});")
+
+          # 4) El render inmediato debe contar también ambas tareas desde el primer frame.
+          old_instant="""  function hasRoutine(id){const r=getData()?.routines?.[id];return Array.isArray(r)&&r.length>0}
+  function pendingCheck(c){const x=getData()?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}"""
+          new_instant="""  function instantMealReady(m){if(Array.isArray(m?.options)&&m.options.length)return m.options.some(o=>Array.isArray(o?.foods)&&o.foods.length>0);return Array.isArray(m?.foods)&&m.foods.length>0}
+  function instantDietReady(id){const x=getData()?.diets?.[id];return !!x&&['training','rest'].every(t=>{const ms=x?.[t]?.meals;return Array.isArray(ms)&&ms.length>0&&ms.every(instantMealReady)})}
+  function hasRoutine(id){const r=getData()?.routines?.[id];return Array.isArray(r)&&r.length>0&&r.every(d=>Array.isArray(d?.exercises)&&d.exercises.length>0)}
+  function pendingCheck(c){const x=getData()?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}"""
+          replace('coach-premium-v8.js', old_instant, new_instant)
+          replace('coach-premium-v8.js',
+                  "cs.forEach(c=>{if(pendingCheck(c))tasks++;if(!hasRoutine(c.id))tasks++;const gap=daysSince(latestWorkout(c.id)?.date);if(gap!==null&&gap>=7)attention++});",
+                  "cs.forEach(c=>{if(pendingCheck(c))tasks++;if(!instantDietReady(c.id))tasks++;if(!hasRoutine(c.id))tasks++;const gap=daysSince(latestWorkout(c.id)?.date);if(gap!==null&&gap>=7)attention++});")
+
+          # 5) Evitar que las capas DOM antiguas vuelvan a pisar el render integrado.
+          for path, funcs in {
+              'coach-client-plan-status-v1.js':['renderProfileWarnings','renderFoods','patchDashboard','patchNewClientForm','installCreateFlow'],
+              'client-profile-preferences-v1.js':['patchNewClientLabel','installCreateFlow','patchProfile'],
+          }.items():
+              p=Path(path);s=p.read_text()
+              for fn in funcs:
+                  needle=f'  function {fn}(){{'
+                  if needle in s:
+                      s=s.replace(needle,needle+'\n    if(window.__dccCorePlanIntegratedV1)return;',1)
+                  else:
+                      # Some functions have parameters.
+                      import re
+                      pat=re.compile(rf'(  function {re.escape(fn)}\([^)]*\)\{{)')
+                      s,n=pat.subn(r'\1\n    if(window.__dccCorePlanIntegratedV1)return;',s,count=1)
+                      if not n: raise SystemExit(f'{path}: function {fn} not found')
+              p.write_text(s)
+
+          # 6) Cache-bust de los tres scripts que ahora contienen la lógica real.
+          replace('index.html','./client-admin-premium.js?v=20260910-2405','./client-admin-premium.js?v=20260911-0715')
+          replace('checkin-coach-sync-v2.js','./new-client-premium-v1.js?v=20260910-2405','./new-client-premium-v1.js?v=20260911-0715')
+          replace('coach-premium-v8.js','./coach-premium-core-v9.js?v=20260910-2015','./coach-premium-core-v9.js?v=20260911-0715')
+          PY
+
+      - name: Validate JavaScript syntax
+        run: |
+          node --check new-client-premium-v1.js
+          node --check client-admin-premium.js
+          node --check coach-premium-core-v9.js
+          node --check coach-premium-v8.js
+          node --check coach-client-plan-status-v1.js
+          node --check client-profile-preferences-v1.js
+
+      - name: Commit active-source fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add new-client-premium-v1.js client-admin-premium.js coach-premium-core-v9.js coach-premium-v8.js coach-client-plan-status-v1.js client-profile-preferences-v1.js checkin-coach-sync-v2.js index.html
+          git commit -m "Integrate client onboarding and plan alerts into active core"
+          git push
