@@ -8,7 +8,7 @@
   const seenAccordions=new WeakSet();
   let raf=0;
 
-  const appData=()=>{try{return data||{}}catch(e){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]||c));
