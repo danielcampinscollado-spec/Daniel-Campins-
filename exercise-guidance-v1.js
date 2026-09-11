@@ -80,18 +80,46 @@
 
   function cleanupLegacyAdvice(){
     document.querySelectorAll('.dcc-exercise-client-advice,.dcc-active-exercise-advice').forEach(el=>el.remove());
-    const old=document.getElementById('dcc-active-exercise-advice-style');
-    if(old)old.remove();
+    document.getElementById('dcc-active-exercise-advice-style')?.remove();
+  }
+
+  function syncNativeWorkoutTip(){
+    cleanupLegacyAdvice();
+    const workout=window.activeWorkout;
+    if(!workout)return;
+    const ex=workout.exercises?.[Number(workout.currentExercise)||0];
+    if(!ex)return;
+    const body=document.querySelector('#client-main .dwa3-tip .dwa3-tip-body');
+    if(body){
+      const advice=adviceFor(ex);
+      if(body.textContent!==advice)body.textContent=advice;
+    }
   }
 
   window.dccExerciseAdvice=adviceFor;
 
-  function boot(){
-    enrichLibrary();
-    cleanupLegacyAdvice();
+  let queued=false;
+  function schedule(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      syncNativeWorkoutTip();
+    });
   }
 
-  window.addEventListener('dcc:exercise-library-ready',boot);
+  function boot(){
+    enrichLibrary();
+    syncNativeWorkoutTip();
+    const main=document.getElementById('client-main');
+    if(main&&!main.__dccExerciseAdviceObserverV3){
+      const observer=new MutationObserver(schedule);
+      observer.observe(main,{childList:true,subtree:true});
+      main.__dccExerciseAdviceObserverV3=observer;
+    }
+  }
+
+  window.addEventListener('dcc:exercise-library-ready',()=>{enrichLibrary();schedule();});
   document.addEventListener('DOMContentLoaded',boot);
   boot();
   setTimeout(boot,300);
