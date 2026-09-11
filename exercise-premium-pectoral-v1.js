@@ -5,13 +5,13 @@
   window.__dccPremiumPectoralV1=true;
 
   const images={
-    'press-banca-barra':'./entrenamientos/ilustraciones/premium-press-banca-barra.svg?v=20260911-1',
-    'press-banca-mancuernas':'./entrenamientos/ilustraciones/premium-press-banca-mancuernas.svg?v=20260911-1',
-    'press-inclinado-barra':'./entrenamientos/ilustraciones/premium-press-inclinado-barra.svg?v=20260911-1',
-    'press-inclinado-mancuernas':'./entrenamientos/ilustraciones/premium-press-inclinado-mancuernas.svg?v=20260911-1',
-    'press-convergente-maquina':'./entrenamientos/ilustraciones/premium-press-convergente-maquina.svg?v=20260911-1',
-    'aperturas-pec-deck':'./entrenamientos/ilustraciones/premium-aperturas-pec-deck.svg?v=20260911-1',
-    'flexiones':'./entrenamientos/ilustraciones/premium-flexiones.svg?v=20260911-1'
+    'press-banca-barra':'./entrenamientos/ilustraciones/premium-press-banca-barra.svg?v=20260911-2',
+    'press-banca-mancuernas':'./entrenamientos/ilustraciones/premium-press-banca-mancuernas.svg?v=20260911-2',
+    'press-inclinado-barra':'./entrenamientos/ilustraciones/premium-press-inclinado-barra.svg?v=20260911-2',
+    'press-inclinado-mancuernas':'./entrenamientos/ilustraciones/premium-press-inclinado-mancuernas.svg?v=20260911-2',
+    'press-convergente-maquina':'./entrenamientos/ilustraciones/premium-press-convergente-maquina.svg?v=20260911-2',
+    'aperturas-pec-deck':'./entrenamientos/ilustraciones/premium-aperturas-pec-deck.svg?v=20260911-2',
+    'flexiones':'./entrenamientos/ilustraciones/premium-flexiones.svg?v=20260911-2'
   };
 
   function apply(){
