@@ -228,7 +228,7 @@ s = sub1(
 s = sub1(s, r"function memberSince\(cl\)\{.*?\}function clientAge", "function memberSince(cl){const r=cl?.created_at??cl?.createdAt??cl?.joined_at;if(!r)return'—';const d=new Date(r);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})}function clientAge", "valid member date", re.S)
 s = sub1(
     s,
-    r"function workouts30\(id\)\{.*?\}function normalizeOptions",
+    r"function workouts30\(id\)\{.*?\}\s*function normalizeOptions",
     "function workoutStamp(x){return x?.workout_date??x?.date??x?.created_at??null}function workouts30(id){const h=data?.workoutHistory?.[id]||[],cut=Date.now()-30*864e5;return h.filter(x=>{const t=new Date(workoutStamp(x)||0).getTime();return Number.isFinite(t)&&t>=cut})}function lastWorkout(id){const h=data?.workoutHistory?.[id]||[];if(!h.length)return'Sin sesiones';const last=h.slice().sort((a,b)=>new Date(workoutStamp(b)||0)-new Date(workoutStamp(a)||0))[0],d=new Date(workoutStamp(last)||0);return Number.isFinite(d.getTime())?d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}):'Registrada'}function lastCheckin(id){const x=data?.checkins?.[id]||{},raw=x.sentAt??x.sent_at;if(!raw)return'Sin check-in';const d=new Date(raw);if(!Number.isFinite(d.getTime()))return x.reviewed?'Revisado':'Pendiente';return`${x.reviewed?'Revisado':'Pendiente'} · ${d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}`}function normalizeOptions",
     "real activity and checkin",
     re.S,
