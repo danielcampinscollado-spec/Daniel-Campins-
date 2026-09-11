@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 3
+          fetch-depth: 0
       - name: Restore stable index and load visual fix
         run: |
           git checkout f068634821563cdb820a297b4e199ed6ce9097ff -- index.html
