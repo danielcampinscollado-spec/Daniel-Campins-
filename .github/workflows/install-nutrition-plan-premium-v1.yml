@@ -1,0 +1,38 @@
+name: Install premium nutrition plan flow
+on:
+  push:
+    paths:
+      - 'nutrition-plan-premium-v1.js'
+      - '.github/workflows/install-nutrition-plan-premium-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Insert premium nutrition script
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="./nutrition-plan-premium-v1.js?v=20260911-1"></script>'
+          if tag not in s:
+              needle='<script src="./client-admin-premium.js?v=20260910-2405"></script>'
+              if needle not in s:
+                  raise SystemExit('client-admin script tag not found')
+              s=s.replace(needle, needle+'\n'+tag, 1)
+              p.write_text(s)
+          PY
+      - name: Commit installation
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Load premium nutrition plan management flow'
+          git push origin main
