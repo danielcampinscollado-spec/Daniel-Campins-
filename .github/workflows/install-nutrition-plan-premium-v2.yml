@@ -1,0 +1,36 @@
+name: Install safe premium nutrition flow
+on:
+  push:
+    paths:
+      - 'nutrition-plan-premium-v2.js'
+      - '.github/workflows/install-nutrition-plan-premium-v2.yml'
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject script safely
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          tag='<script src="./nutrition-plan-premium-v2.js?v=20260911-1"></script>'
+          if tag not in s:
+              anchor='<script src="./client-admin-premium.js?v=20260910-2405"></script>'
+              if anchor not in s:
+                  raise SystemExit('client-admin anchor not found')
+              s=s.replace(anchor, anchor+'\n'+tag, 1)
+              p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'Load safe premium nutrition flow'
+            git push
+          fi
