@@ -5,8 +5,8 @@
 */
 (function(){
   'use strict';
-  if(window.__dccStableRuntimeBridgeV3)return;
-  window.__dccStableRuntimeBridgeV3=true;
+  if(window.__dccStableRuntimeBridgeV4)return;
+  window.__dccStableRuntimeBridgeV4=true;
 
   function bridgeAccessor(name,getter,setter){
     try{
@@ -86,80 +86,25 @@
   }
 
   function installClientRefinements(){
-    if(document.getElementById('dcc-client-refinements-20260911-v3'))return;
-    const old=document.getElementById('dcc-client-refinements-20260911');
-    if(old)old.remove();
+    if(document.getElementById('dcc-client-refinements-20260911-v4'))return;
+    document.getElementById('dcc-client-refinements-20260911')?.remove();
+    document.getElementById('dcc-client-refinements-20260911-v3')?.remove();
     const style=document.createElement('style');
-    style.id='dcc-client-refinements-20260911-v3';
+    style.id='dcc-client-refinements-20260911-v4';
     style.textContent=`
-      #client-main .dch-task-empty{
-        min-height:64px!important;
-        grid-template-columns:38px minmax(0,1fr)!important;
-        gap:11px!important;
-        padding:10px 15px!important;
-        align-items:center!important;
-      }
+      #client-main .dch-task-empty{min-height:64px!important;grid-template-columns:38px minmax(0,1fr)!important;gap:11px!important;padding:10px 15px!important;align-items:center!important}
       #client-main .dch-task-empty .dch-iconbox{width:38px!important;height:38px!important}
-
-      #client-main .dct3-days{
-        grid-template-columns:repeat(7,minmax(0,1fr))!important;
-        gap:4px!important;
-        margin-bottom:11px!important;
-      }
-      #client-main .dct3-day{
-        height:44px!important;
-        min-height:44px!important;
-        padding:0 1px!important;
-        border-radius:11px!important;
-        gap:2px!important;
-      }
+      #client-main .dct3-days{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;margin-bottom:11px!important}
+      #client-main .dct3-day{height:44px!important;min-height:44px!important;padding:0 1px!important;border-radius:11px!important;gap:2px!important}
       #client-main .dct3-day span{font-size:6px!important;line-height:1!important;letter-spacing:.8px!important}
       #client-main .dct3-day b{font-size:14px!important;line-height:1!important}
-
-      /* Acciones más compactas y premium: sin dos botones gigantes ocupando toda la tarjeta. */
-      #client-main .dct3-actions{
-        display:flex!important;
-        align-items:center!important;
-        justify-content:flex-start!important;
-        flex-wrap:wrap!important;
-        gap:8px!important;
-        margin-top:12px!important;
-      }
-      #client-main .dct3-start,
-      #client-main .dct3-view{
-        width:auto!important;
-        min-width:0!important;
-        min-height:39px!important;
-        height:39px!important;
-        padding:0 14px!important;
-        border-radius:12px!important;
-        font-size:10.5px!important;
-        line-height:1!important;
-        font-weight:780!important;
-        letter-spacing:.05px!important;
-        box-shadow:none!important;
-      }
-      #client-main .dct3-start{
-        border:1px solid rgba(240,201,107,.82)!important;
-        background:linear-gradient(145deg,rgba(217,170,74,.12),rgba(12,15,19,.98))!important;
-        color:#f1c861!important;
-      }
-      #client-main .dct3-view{
-        border:1px solid rgba(255,255,255,.13)!important;
-        background:linear-gradient(145deg,#12171d,#0a0e13)!important;
-        color:#c3c9d1!important;
-      }
-
-      #client-main .dcc-active-exercise-advice,
-      #client-main .dcc-exercise-client-advice{display:none!important}
-
+      #client-main .dct3-actions{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:wrap!important;gap:8px!important;margin-top:12px!important}
+      #client-main .dct3-start,#client-main .dct3-view{width:auto!important;min-width:0!important;min-height:39px!important;height:39px!important;padding:0 14px!important;border-radius:12px!important;font-size:10.5px!important;line-height:1!important;font-weight:780!important;letter-spacing:.05px!important;box-shadow:none!important}
+      #client-main .dct3-start{border:1px solid rgba(240,201,107,.82)!important;background:linear-gradient(145deg,rgba(217,170,74,.12),rgba(12,15,19,.98))!important;color:#f1c861!important}
+      #client-main .dct3-view{border:1px solid rgba(255,255,255,.13)!important;background:linear-gradient(145deg,#12171d,#0a0e13)!important;color:#c3c9d1!important}
+      #client-main .dcc-active-exercise-advice,#client-main .dcc-exercise-client-advice{display:none!important}
       @media(max-width:390px){
-        #client-main .dch-task-empty{
-          min-height:60px!important;
-          grid-template-columns:36px minmax(0,1fr)!important;
-          gap:10px!important;
-          padding:9px 14px!important;
-        }
+        #client-main .dch-task-empty{min-height:60px!important;grid-template-columns:36px minmax(0,1fr)!important;gap:10px!important;padding:9px 14px!important}
         #client-main .dch-task-empty .dch-iconbox{width:36px!important;height:36px!important}
         #client-main .dct3-days{gap:3px!important}
         #client-main .dct3-day{height:41px!important;min-height:41px!important;border-radius:10px!important}
@@ -187,6 +132,15 @@
     }catch(error){console.warn('DCC advice sync:',error);}
   }
 
+  function refineTrainingLabels(){
+    try{
+      document.querySelectorAll('#client-main .dct3-title, #client-main .dct3-routine h3').forEach(el=>{
+        const next=(el.textContent||'').replace(/\bPecho\b/gi,'Pectoral');
+        if(next!==el.textContent)el.textContent=next;
+      });
+    }catch(error){console.warn('DCC training label refinement:',error);}
+  }
+
   function refineExerciseRows(){
     try{
       document.querySelectorAll('#client-main .dct3-exercise').forEach(row=>{
@@ -207,16 +161,17 @@
     adviceQueued=true;
     requestAnimationFrame(()=>{
       syncWorkoutAdvice();
+      refineTrainingLabels();
       refineExerciseRows();
     });
   }
 
   installClientRefinements();
   const main=document.getElementById('client-main');
-  if(main&&!main.__dccClientRefinementsObserverV3){
+  if(main&&!main.__dccClientRefinementsObserverV4){
     const observer=new MutationObserver(scheduleAdviceSync);
     observer.observe(main,{childList:true,subtree:true});
-    main.__dccClientRefinementsObserverV3=observer;
+    main.__dccClientRefinementsObserverV4=observer;
   }
   window.addEventListener('dcc:exercise-library-ready',scheduleAdviceSync);
   document.addEventListener('DOMContentLoaded',()=>{
