@@ -1,14 +1,19 @@
-/* DCC — arranque estable + hotfixes de auditoría v1 */
+/* DCC — arranque estable + hotfixes de auditoría v2 */
 (function(){
   'use strict';
 
-  if(window.__dccAuditBootstrapV1)return;
-  window.__dccAuditBootstrapV1=true;
+  if(window.__dccAuditBootstrapV2)return;
+  window.__dccAuditBootstrapV2=true;
 
-  const baseSrc='./coach-client-plan-status-v1-base.js?v=20260911-audit1';
+  const baseSrc='./coach-client-plan-status-v1-base.js?v=20260911-audit2';
 
   function appData(){
     try{return data||{}}catch(_){return window.data||{}}
+  }
+
+  function database(){
+    try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}
+    return window.supabaseClient||null;
   }
 
   function saveLocal(){
@@ -37,7 +42,7 @@
   }
 
   function installOrderedLoaders(){
-    if(window.__dccOrderedLoadersV1)return;
+    if(window.__dccOrderedLoadersV2)return;
 
     const clientsBase=window.loadClientsFromSupabase;
     if(typeof clientsBase!=='function')return;
@@ -54,7 +59,7 @@
         .finally(()=>{clientsInFlight=null});
       return clientsInFlight;
     });
-    clientsWrapped.__dccAuditOrderedV1=true;
+    clientsWrapped.__dccAuditOrderedV2=true;
     window.loadClientsFromSupabase=clientsWrapped;
 
     [
@@ -68,21 +73,21 @@
       'loadNotificationStateFromSupabase'
     ].forEach(name=>{
       const base=window[name];
-      if(typeof base!=='function'||base.__dccAuditOrderedV1)return;
+      if(typeof base!=='function'||base.__dccAuditOrderedV2)return;
       const wrapped=copyMarkers(base,async function(){
         if(!clientsReady)await window.loadClientsFromSupabase();
         return base.apply(this,arguments);
       });
-      wrapped.__dccAuditOrderedV1=true;
+      wrapped.__dccAuditOrderedV2=true;
       window[name]=wrapped;
     });
 
-    window.__dccOrderedLoadersV1=true;
+    window.__dccOrderedLoadersV2=true;
   }
 
   function installManualExerciseFix(){
     const base=window.continueTrainingExerciseSelection;
-    if(typeof base!=='function'||base.__dccAuditManualV1)return;
+    if(typeof base!=='function'||base.__dccAuditManualV2)return;
 
     const wrapped=copyMarkers(base,function(id,dayIndex){
       const d=appData();
@@ -108,13 +113,13 @@
 
       return base.apply(this,arguments);
     });
-    wrapped.__dccAuditManualV1=true;
+    wrapped.__dccAuditManualV2=true;
     window.continueTrainingExerciseSelection=wrapped;
   }
 
   function installBodyFatBlankFix(){
     const base=window.updateClientBodyFat;
-    if(typeof base!=='function'||base.__dccAuditBlankFatV1)return;
+    if(typeof base!=='function'||base.__dccAuditBlankFatV2)return;
 
     const wrapped=copyMarkers(base,function(){
       const result=base.apply(this,arguments);
@@ -128,14 +133,102 @@
       });
       return result;
     });
-    wrapped.__dccAuditBlankFatV1=true;
+    wrapped.__dccAuditBlankFatV2=true;
     window.updateClientBodyFat=wrapped;
+  }
+
+  function installLegacyAddExerciseFix(){
+    if(window.addExercise?.__dccAuditSafeVideoV2)return;
+
+    const safeAddExercise=async function(id,dayIndex){
+      const d=appData();
+      const day=d?.routines?.[id]?.[dayIndex];
+      if(!day){notify('No se encontró el día');return;}
+      if(!Array.isArray(day.exercises))day.exercises=[];
+
+      const name=prompt('Nombre del ejercicio:');
+      if(!name?.trim())return;
+      const sets=prompt('Series:');
+      if(sets===null||!sets.trim())return;
+      const reps=prompt('Repeticiones:');
+      if(reps===null||!reps.trim())return;
+      const restBetweenSets=prompt('Descanso entre series (segundos):','0');
+      if(restBetweenSets===null)return;
+      const restBetweenExercises=prompt('Descanso después del ejercicio (segundos):','0');
+      if(restBetweenExercises===null)return;
+      const video=prompt('Enlace al vídeo del ejercicio (opcional):');
+
+      const exercise={
+        name:name.trim(),
+        sets:sets.trim(),
+        reps:reps.trim(),
+        restBetweenSets:Math.max(0,parseInt(restBetweenSets,10)||0),
+        restBetweenExercises:Math.max(0,parseInt(restBetweenExercises,10)||0),
+        videoUrl:video===null?'':video.trim()
+      };
+
+      day.exercises.push(exercise);
+      saveLocal();
+
+      try{
+        if(typeof saveRoutineToSupabase==='function'){
+          const ok=await saveRoutineToSupabase(id);
+          if(!ok){
+            day.exercises.pop();
+            saveLocal();
+            notify('No se pudo sincronizar el ejercicio');
+            return;
+          }
+        }else{
+          const db=database();
+          if(db){
+            const {error}=await db.from('client_routines').upsert({
+              client_id:id,
+              routine:d.routines[id],
+              updated_at:new Date().toISOString()
+            },{onConflict:'client_id'});
+            if(error)throw error;
+          }
+        }
+      }catch(error){
+        console.error('DCC audit — guardando ejercicio:',error);
+        day.exercises.pop();
+        saveLocal();
+        notify('No se pudo guardar el ejercicio');
+        return;
+      }
+
+      try{
+        if(typeof showCoach==='function')showCoach('routines');
+      }catch(_){}
+      notify('Ejercicio guardado');
+    };
+
+    safeAddExercise.__dccAuditSafeVideoV2=true;
+    window.addExercise=safeAddExercise;
+  }
+
+  function cleanMalformedCss(){
+    if(window.__dccAuditCssCleanV2)return;
+    try{
+      [...document.querySelectorAll('style')].forEach(style=>{
+        const text=style.textContent||'';
+        if(text.includes('/* ===== FIN ELEVATE ===== */')&&/FIN ELEVATE[^]*?\n#\s*\n\/\* ===== MÓVIL ===== \*\//.test(text)){
+          style.textContent=text.replace(/(\/\* ===== FIN ELEVATE ===== \*\/\s*)#\s*(\/\* ===== MÓVIL ===== \*\/)/,'$1$2');
+        }
+      });
+      window.__dccAuditCssCleanV2=true;
+    }catch(error){
+      console.warn('DCC audit — limpieza CSS:',error);
+    }
   }
 
   function installHotfixes(){
     installOrderedLoaders();
     installManualExerciseFix();
     installBodyFatBlankFix();
+    installLegacyAddExerciseFix();
+    cleanMalformedCss();
   }
 
   const script=document.createElement('script');
