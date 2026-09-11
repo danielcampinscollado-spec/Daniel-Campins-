@@ -23,12 +23,16 @@ for filename, edits in replacements.items():
     s = p.read_text(encoding='utf-8')
     original = s
     for old, new in edits:
-        count = s.count(old)
-        if count != 1:
-            raise SystemExit(f'{filename}: expected exactly one match, found {count}')
-        s = s.replace(old, new, 1)
+        old_count = s.count(old)
+        new_count = s.count(new)
+        if old_count == 1:
+            s = s.replace(old, new, 1)
+        elif old_count == 0 and new_count >= 1:
+            pass
+        else:
+            raise SystemExit(f'{filename}: unexpected syntax state old={old_count} new={new_count}')
     if s != original:
         p.write_text(s, encoding='utf-8')
         changed.append(filename)
 
-print('fixed:', ', '.join(changed))
+print('fixed:', ', '.join(changed) if changed else 'none')
