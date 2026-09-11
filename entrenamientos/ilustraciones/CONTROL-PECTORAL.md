@@ -17,32 +17,33 @@ Objetivo: 18/18 ilustraciones individuales validadas antes de integrarlas en la 
 5. Un ID APROBADO queda bloqueado contra repeticiones.
 6. No crear mosaicos, catálogos ni varias ilustraciones en una misma imagen.
 7. Antes de integrar en la app deben estar los 18 IDs en APROBADO.
+8. Para ejercicios en máquina, priorizar estética/arquitectura tipo Hammer Strength cuando corresponda.
 
-## Aprobadas explícitamente por el usuario (10 imágenes aportadas)
-Estas imágenes quedan registradas como aprobadas visualmente. Solo se asignan a un ID canónico cuando existe correspondencia exacta con `ejercicios.json`.
-
-- [x] `press-banca-barra` — APROBADO — imagen aportada: Press de banca plano con barra (#1)
-- [x] `press-inclinado-barra` — APROBADO — imagen aportada: Press inclinado con barra (#2)
-- [x] `press-inclinado-mancuernas` — APROBADO — imagen aportada: Press inclinado con mancuernas (#3)
-- [x] `press-pecho-maquina` — APROBADO — imagen aportada: Press de pecho en máquina (#5)
-- [x] `aperturas-pec-deck` — APROBADO — imagen aportada: Aperturas en máquina Pec Deck (#8)
-- [x] `cruces-polea-alta` — APROBADO — imagen aportada: Cruce de poleas con poleas superiores (#11)
-- [x] `flexiones` — APROBADO — imagen aportada: Flexiones de pecho (#12)
-
-## Imágenes aprobadas visualmente pero NO pertenecen a los 18 IDs canónicos actuales
-Se conservan como material aprobado, pero no cuentan para completar el 18/18 hasta que el catálogo canónico incluya esos ejercicios o se decida sustituir un ID.
-- Press declinado con barra (#4)
-- Aperturas inclinadas con mancuernas (#6)
-- Fondos en paralelas (#9)
-
-## Checklist canónico 18/18
+## Aprobadas explícitamente por el usuario
 - [x] `press-banca-barra` — APROBADO
-- [ ] `press-banca-mancuernas` — PENDIENTE
+- [x] `press-banca-mancuernas` — APROBADO
 - [x] `press-inclinado-barra` — APROBADO
 - [x] `press-inclinado-mancuernas` — APROBADO
 - [x] `press-pecho-maquina` — APROBADO
-- [ ] `press-inclinado-maquina` — PENDIENTE
-- [ ] `press-convergente-maquina` — PENDIENTE
+- [x] `press-inclinado-maquina` — APROBADO — versión Hammer Strength
+- [x] `press-convergente-maquina` — APROBADO — estilo Hammer Strength
+- [x] `aperturas-pec-deck` — APROBADO
+- [x] `cruces-polea-alta` — APROBADO
+- [x] `flexiones` — APROBADO
+
+## Imágenes aprobadas visualmente pero NO pertenecen a los 18 IDs canónicos actuales
+- Press declinado con barra
+- Aperturas inclinadas con mancuernas
+- Fondos en paralelas
+
+## Checklist canónico 18/18
+- [x] `press-banca-barra` — APROBADO
+- [x] `press-banca-mancuernas` — APROBADO
+- [x] `press-inclinado-barra` — APROBADO
+- [x] `press-inclinado-mancuernas` — APROBADO
+- [x] `press-pecho-maquina` — APROBADO
+- [x] `press-inclinado-maquina` — APROBADO
+- [x] `press-convergente-maquina` — APROBADO
 - [x] `aperturas-pec-deck` — APROBADO
 - [ ] `cruces-polea-media` — PENDIENTE
 - [x] `cruces-polea-alta` — APROBADO
@@ -56,8 +57,8 @@ Se conservan como material aprobado, pero no cuentan para completar el 18/18 has
 - [ ] `aperturas-polea-banco` — PENDIENTE
 
 ## Progreso
-7/18 IDs canónicos APROBADOS.
-11/18 PENDIENTES.
+10/18 IDs canónicos APROBADOS.
+8/18 PENDIENTES.
 3 imágenes adicionales aprobadas visualmente fuera del catálogo canónico actual.
 
 ## Criterios de aprobación
