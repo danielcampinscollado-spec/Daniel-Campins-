@@ -5,8 +5,8 @@
 */
 (function(){
   'use strict';
-  if(window.__dccStableRuntimeBridgeV6)return;
-  window.__dccStableRuntimeBridgeV6=true;
+  if(window.__dccStableRuntimeBridgeV7)return;
+  window.__dccStableRuntimeBridgeV7=true;
 
   function bridgeAccessor(name,getter,setter){
     try{
@@ -64,12 +64,90 @@
   }
 
   function installClientRefinements(){
-    if(document.getElementById('dcc-client-refinements-20260911-v6'))return;
-    ['dcc-client-refinements-20260911','dcc-client-refinements-20260911-v3','dcc-client-refinements-20260911-v4','dcc-client-refinements-20260911-v5'].forEach(id=>document.getElementById(id)?.remove());
+    if(document.getElementById('dcc-client-refinements-20260911-v7'))return;
+    ['dcc-client-refinements-20260911','dcc-client-refinements-20260911-v3','dcc-client-refinements-20260911-v4','dcc-client-refinements-20260911-v5','dcc-client-refinements-20260911-v6'].forEach(id=>document.getElementById(id)?.remove());
     const style=document.createElement('style');
-    style.id='dcc-client-refinements-20260911-v6';
+    style.id='dcc-client-refinements-20260911-v7';
     style.textContent=`
-      /* Inicio: icono intacto; SOLO el texto vacío se desplaza hasta la columna editorial común. */
+      /* Sistema tipográfico único para Inicio cliente. */
+      #client-main .dch-wrap,
+      #client-main .dch-wrap button,
+      #client-main .dch-wrap input{
+        font-family:"Avenir Next","Helvetica Neue",-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
+        font-synthesis:none!important;
+        -webkit-font-smoothing:antialiased!important;
+      }
+
+      /* Cabeceras editoriales: una sola altura, grosor y espaciado. */
+      #client-main .dch-eyebrow,
+      #client-main .dch-task-head,
+      #client-main .dch-wrap [class*="eyebrow"],
+      #client-main .dch-wrap [class*="kicker"]{
+        font-size:10px!important;
+        line-height:1.15!important;
+        font-weight:800!important;
+        letter-spacing:2.2px!important;
+        text-transform:uppercase!important;
+      }
+
+      /* Nombre: deja de verse excesivamente fino. */
+      #client-main .dch-name,
+      #client-main .dch-welcome .dch-name{
+        font-size:20px!important;
+        line-height:1.15!important;
+        font-weight:500!important;
+        letter-spacing:0!important;
+      }
+
+      /* Títulos principales de tarjetas: mismo peso visual. */
+      #client-main .dch-task-empty > span:last-child,
+      #client-main .dch-progress h1,
+      #client-main .dch-progress h2,
+      #client-main .dch-progress h3,
+      #client-main .dch-next h1,
+      #client-main .dch-next h2,
+      #client-main .dch-next h3,
+      #client-main .dch-progress [class*="title"],
+      #client-main .dch-next [class*="title"]{
+        font-size:17px!important;
+        line-height:1.15!important;
+        font-weight:700!important;
+        letter-spacing:-.15px!important;
+      }
+
+      /* Texto secundario coherente en todas las tarjetas. */
+      #client-main .dch-task-empty > span:last-child::after,
+      #client-main .dch-task-meta,
+      #client-main .dch-progress [class*="sub"],
+      #client-main .dch-next [class*="sub"],
+      #client-main .dch-progress p,
+      #client-main .dch-next p{
+        font-size:10.5px!important;
+        line-height:1.4!important;
+        font-weight:450!important;
+        letter-spacing:0!important;
+      }
+
+      /* Etiquetas pequeñas de estadísticas y tarjetas: mismo lenguaje. */
+      #client-main .dch-stat [class*="label"],
+      #client-main .dch-progress [class*="label"],
+      #client-main .dch-next [class*="label"]{
+        font-size:9.5px!important;
+        line-height:1.2!important;
+        font-weight:750!important;
+        letter-spacing:1.7px!important;
+        text-transform:uppercase!important;
+      }
+
+      /* Datos grandes: misma contundencia. */
+      #client-main .dch-stat [class*="value"],
+      #client-main .dch-stat strong,
+      #client-main .dch-stat b{
+        font-weight:700!important;
+        letter-spacing:-.35px!important;
+      }
+
+      /* Inicio: mantener la alineación editorial común ya corregida. */
       #client-main .dch-task-empty{min-height:64px!important;grid-template-columns:38px minmax(0,1fr)!important;gap:11px!important;padding:10px 15px!important;align-items:center!important}
       #client-main .dch-task-empty .dch-iconbox{width:38px!important;height:38px!important}
       #client-main .dch-task-empty > span:last-child{margin-left:31px!important;max-width:calc(100% - 31px)!important}
@@ -85,9 +163,11 @@
       #client-main .dcc-active-exercise-advice,#client-main .dcc-exercise-client-advice{display:none!important}
 
       @media(max-width:390px){
+        #client-main .dch-name,#client-main .dch-welcome .dch-name{font-size:19px!important;font-weight:500!important}
         #client-main .dch-task-empty{min-height:60px!important;grid-template-columns:36px minmax(0,1fr)!important;gap:10px!important;padding:9px 14px!important}
         #client-main .dch-task-empty .dch-iconbox{width:36px!important;height:36px!important}
-        #client-main .dch-task-empty > span:last-child{margin-left:32px!important;max-width:calc(100% - 32px)!important}
+        #client-main .dch-task-empty > span:last-child{margin-left:32px!important;max-width:calc(100% - 32px)!important;font-size:16px!important}
+        #client-main .dch-task-empty > span:last-child::after{font-size:10px!important}
         #client-main .dct3-days{gap:3px!important}
         #client-main .dct3-day{height:41px!important;min-height:41px!important;border-radius:10px!important}
         #client-main .dct3-day span{font-size:5.5px!important;letter-spacing:.65px!important}
@@ -135,8 +215,8 @@
 
   installClientRefinements();
   const main=document.getElementById('client-main');
-  if(main&&!main.__dccClientRefinementsObserverV6){
-    const observer=new MutationObserver(scheduleAdviceSync);observer.observe(main,{childList:true,subtree:true});main.__dccClientRefinementsObserverV6=observer;
+  if(main&&!main.__dccClientRefinementsObserverV7){
+    const observer=new MutationObserver(scheduleAdviceSync);observer.observe(main,{childList:true,subtree:true});main.__dccClientRefinementsObserverV7=observer;
   }
   window.addEventListener('dcc:exercise-library-ready',scheduleAdviceSync);
   document.addEventListener('DOMContentLoaded',()=>{installClientRefinements();scheduleAdviceSync();});
