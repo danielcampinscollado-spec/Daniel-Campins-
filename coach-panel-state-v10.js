@@ -9,6 +9,7 @@
   let raf=0;
 
   const appData=()=>{try{return data||{}}catch(e){return window.data||{}};
+  const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]||c));
 
@@ -153,8 +154,59 @@
     });
   }
 
+  function patchNewClientForm(){
+    const root=document.getElementById('dcc-new-client-premium');if(!root)return;
+    const fat=[...root.querySelectorAll('.dcc-nc-label span:last-child')].find(x=>/%\s*de\s*grasa\s*inicial/i.test(x.textContent||''));
+    if(fat)fat.textContent='Grasa corporal inicial';
+  }
+
+  function chainHas(fn,marker,depth=0){
+    if(typeof fn!=='function'||depth>8)return false;
+    if(fn[marker])return true;
+    return chainHas(fn.__base,marker,depth+1)||chainHas(fn.__original,marker,depth+1)||chainHas(fn.__legacy,marker,depth+1);
+  }
+
+  function installCreateFlow(){
+    const base=window.createClient;
+    if(typeof base!=='function'||chainHas(base,'__dccAuditCreateFlowV11'))return;
+    const wrapped=async function(){
+      const before=new Set((appData().clients||[]).map(c=>String(c.id)));
+      const result=await base.apply(this,arguments);
+      const created=(appData().clients||[]).find(c=>!before.has(String(c.id)));
+      if(!created)return result;
+
+      const id=String(created.id),weight=num(created.weight??created.initial??created.initial_weight),fat=num(created.bodyFatInitial??created.initial_body_fat??created.bodyFat??created.body_fat),createdAt=created.created_at||new Date().toISOString();
+      created.created_at=createdAt;
+      if(weight!=null){created.initial=created.initial??weight;created.initial_weight=created.initial_weight??weight}
+      if(fat!=null){created.bodyFatInitial=created.bodyFatInitial??fat;created.initial_body_fat=created.initial_body_fat??fat}
+      const d=appData();d.bodyFatHistory=d.bodyFatHistory||{};
+      if(fat!=null&&!Array.isArray(d.bodyFatHistory[id]))d.bodyFatHistory[id]=[{bodyFat:fat,body_fat:fat,recorded_at:createdAt}];
+      if(d.checkins?.[id]){d.checkins[id].updatedAt=d.checkins[id].updatedAt||createdAt;d.checkins[id].updated_at=d.checkins[id].updated_at||createdAt;d.checkins[id].body_fat=d.checkins[id].body_fat??fat}
+      try{if(typeof saveData==='function')saveData();else window.saveData?.()}catch(e){}
+
+      const db=database();
+      if(db){
+        try{
+          const writes=[];
+          if(weight!=null)writes.push(db.from('client_weights').insert({client_id:id,weight,recorded_at:createdAt}));
+          if(fat!=null)writes.push(db.from('client_body_fat_history').insert({client_id:id,body_fat:fat,recorded_at:createdAt}));
+          writes.push(db.from('client_checkins').upsert({client_id:id,weight:weight!=null?String(weight).replace('.',',')+' kg':'',body_fat:fat,updated_at:createdAt},{onConflict:'client_id'}));
+          const settled=await Promise.all(writes);const failed=settled.find(x=>x?.error);if(failed)console.error('DCC inicialización de cliente:',failed.error);
+        }catch(e){console.error('DCC inicialización de cliente:',e)}
+      }
+
+      window.selectedClient=id;window.__dccClientAdminId=id;
+      setTimeout(()=>{
+        try{if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');else window.openClient?.(id)}catch(e){console.error(e)}
+      },80);
+      return result;
+    };
+    wrapped.__dccAuditCreateFlowV11=true;wrapped.__base=base;window.createClient=wrapped;
+  }
+
   function enhance(){
-    injectCss();const main=document.getElementById('coach-main');if(!main)return;
+    injectCss();installCreateFlow();patchNewClientForm();
+    const main=document.getElementById('coach-main');if(!main)return;
     if(main.classList.contains('dcc-p9-dashboard')){colorCounters(main);closeNewAccordions(main);patchTasks(main)}
     if(main.classList.contains('dcc-premium-clients'))patchClientCards(main);
     patchClientAdmin(main);
@@ -177,11 +229,11 @@
   function watch(){
     const main=document.getElementById('coach-main');
     if(!main){setTimeout(watch,80);return}
-    new MutationObserver(schedule).observe(main,{childList:true,subtree:true,characterData:true});
+    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true});
     schedule();
   }
 
-  injectCss();installManageGuard();
+  injectCss();installManageGuard();installCreateFlow();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watch,{once:true});else watch();
   window.addEventListener('load',schedule,{once:true});
   window.addEventListener('pageshow',schedule);
