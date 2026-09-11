@@ -1,0 +1,249 @@
+name: Source stability audit v28
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/audit-source-stability-v28.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply source-level stability fixes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new, label):
+              p=Path(path)
+              s=p.read_text(encoding='utf-8')
+              count=s.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected 1 occurrence, found {count}')
+              p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          # New client: remove runtime dependence for the fixes the coach explicitly requested.
+          replace_once(
+              'new-client-premium-v1.js',
+              "${icon('fat')}<span>% de grasa inicial</span>",
+              "${icon('fat')}<span>Grasa corporal inicial</span>",
+              'fat label'
+          )
+          replace_once(
+              'new-client-premium-v1.js',
+              "if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){notify('Introduce un % de grasa válido');return}",
+              "if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){notify('Introduce un porcentaje de grasa válido');return}",
+              'fat validation copy'
+          )
+
+          old="""    const id='client_'+Date.now();
+    try{
+      const {error}=await db.from('clients').insert({
+        id,
+        name,
+        goal,
+        weight,
+        initial_weight:weight,
+        initial_body_fat:bodyFat,
+        age,
+        height_cm:height,
+        foods_to_avoid:foodsToAvoid,
+        plan:'',
+        status:'Pendiente'
+      });
+      if(error)throw error;
+
+      const d=appData();
+      d.clients=Array.isArray(d.clients)?d.clients:[];
+      d.clients.push({id,name,goal,weight,initial:weight,bodyFatInitial:bodyFat,age,height:height,heightCm:height,height_cm:height,foodsToAvoid,foods_to_avoid:foodsToAvoid,plan:'',status:'Pendiente'});
+      d.weights=d.weights||{};d.weights[id]=[weight];
+      d.checkins=d.checkins||{};d.checkins[id]={weight:(typeof money==='function'?money(weight):String(weight))+' kg',bodyFat,diet:'Pendiente',training:'Pendiente',comment:'Pendiente de revisión.',reviewed:false};
+      d.diets=d.diets||{};d.diets[id]={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
+      d.routines=d.routines||{};d.routines[id]=[];
+      d.messages=d.messages||{};d.messages[id]=[];
+
+      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
+      cleanupModal();
+      try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(e){}
+      try{if(typeof showCoach==='function')showCoach('clients');else window.showCoach?.('clients')}catch(e){}
+      notify('Cliente creado correctamente');
+"""
+          new="""    const id='client_'+Date.now();
+    const createdAt=new Date().toISOString();
+    try{
+      const {error}=await db.from('clients').insert({
+        id,
+        name,
+        goal,
+        weight,
+        initial_weight:weight,
+        initial_body_fat:bodyFat,
+        age,
+        height_cm:height,
+        foods_to_avoid:foodsToAvoid,
+        plan:'',
+        status:'Pendiente',
+        created_at:createdAt
+      });
+      if(error)throw error;
+
+      const writes=await Promise.all([
+        db.from('client_weights').insert({client_id:id,weight,recorded_at:createdAt}),
+        db.from('client_body_fat_history').insert({client_id:id,body_fat:bodyFat,recorded_at:createdAt}),
+        db.from('client_checkins').upsert({client_id:id,weight:String(weight).replace('.',',')+' kg',body_fat:bodyFat,updated_at:createdAt},{onConflict:'client_id'})
+      ]);
+      const failed=writes.find(x=>x?.error);
+      if(failed){await db.from('clients').delete().eq('id',id);throw failed.error}
+
+      const d=appData();
+      d.clients=Array.isArray(d.clients)?d.clients:[];
+      d.clients.push({id,name,goal,weight,initial:weight,initial_weight:weight,bodyFatInitial:bodyFat,initial_body_fat:bodyFat,age,height,heightCm:height,height_cm:height,foodsToAvoid,foods_to_avoid:foodsToAvoid,plan:'',status:'Pendiente',created_at:createdAt});
+      d.weights=d.weights||{};d.weights[id]=[weight];
+      d.bodyFatHistory=d.bodyFatHistory||{};d.bodyFatHistory[id]=[{bodyFat,body_fat:bodyFat,recorded_at:createdAt}];
+      d.checkins=d.checkins||{};d.checkins[id]={weight:(typeof money==='function'?money(weight):String(weight))+' kg',bodyFat,body_fat:bodyFat,diet:'Pendiente',training:'Pendiente',energy:'Pendiente',comment:'Pendiente de revisión.',reviewed:false,updatedAt:createdAt,updated_at:createdAt};
+      d.diets=d.diets||{};d.diets[id]={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
+      d.routines=d.routines||{};d.routines[id]=[];
+      d.messages=d.messages||{};d.messages[id]=[];
+
+      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){}
+      cleanupModal();
+      try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(e){}
+      window.selectedClient=id;window.__dccClientAdminId=id;
+      try{
+        if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');
+        else if(typeof window.openClient==='function')window.openClient(id);
+        else if(typeof showCoach==='function')showCoach('clients');
+      }catch(e){console.error('DCC abriendo cliente recién creado:',e);window.showCoach?.('clients')}
+      notify('Cliente creado correctamente');
+"""
+          replace_once('new-client-premium-v1.js',old,new,'native create client flow')
+          replace_once(
+              'new-client-premium-v1.js',
+              "  };\n\n  /* Mantener edad y altura sincronizadas desde Supabase sin añadir espera. */",
+              "  };\n  window.createClient.__dccAuditCreateFlowV11=true;\n\n  /* Mantener edad y altura sincronizadas desde Supabase sin añadir espera. */",
+              'native create marker'
+          )
+
+          # Coach audit layer: fix escaping and eliminate a MutationObserver/render loop.
+          replace_once(
+              'coach-panel-state-v10.js',
+              "'\\\"':'&quot'",
+              "'\\\"':'&quot;'",
+              'html quote escaping'
+          )
+
+          old_tasks="""  function patchTasks(main){
+    const clients=Array.isArray(appData()?.clients)?appData().clients:[];
+    const pending=clients.filter(pendingCheck).length;
+    const missingRoutine=clients.filter(c=>!hasRoutine(c.id)).length;
+    const missingDiet=clients.filter(c=>!hasDiet(c.id)).length;
+    const total=pending+missingRoutine+missingDiet;
+    const tasks=main.querySelector('#dccP9Tasks');
+    const badge=tasks?.querySelector('.dcc-p9-count');if(badge)badge.textContent=String(total);
+    const inner=tasks?.querySelector('.dcc-p9-inner');if(inner){
+      inner.querySelectorAll('.dcc-audit-diet-row').forEach(x=>x.remove());
+      const empt=inner.querySelector('.dcc-p9-empty');if(empt&&total>0)empt.remove();
+      clients.filter(c=>!hasDiet(c.id)).slice(0,6).forEach(c=>{
+        const row=taskRow(c,'ASIGNAR DIETA','PENDIENTE',()=>{
+          window.selectedClient=c.id;window.__dccClientAdminId=c.id;
+          if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(c.id,'food');
+          else window.openClient?.(c.id);
+        });
+        row.classList.add('dcc-audit-diet-row');inner.appendChild(row);
+      });
+    }
+
+    const attention=clients.filter(c=>{const gap=daysSince(workoutDate(latestWorkout(c.id)));return gap!==null&&gap>=7});
+    const att=main.querySelector('#dccP9Attention');
+    const title=att?.querySelector('.dcc-p9-head-title');
+    if(title){
+      let count=title.querySelector('.dcc-audit-attention');
+      if(!count){count=document.createElement('span');count.className='dcc-p9-count dcc-audit-attention';title.appendChild(count)}
+      count.textContent=String(attention.length);
+    }
+  }
+"""
+          new_tasks="""  function patchTasks(main){
+    const clients=Array.isArray(appData()?.clients)?appData().clients:[];
+    const pending=clients.filter(pendingCheck).length;
+    const missingRoutine=clients.filter(c=>!hasRoutine(c.id)).length;
+    const missingDietClients=clients.filter(c=>!hasDiet(c.id));
+    const total=pending+missingRoutine+missingDietClients.length;
+    const tasks=main.querySelector('#dccP9Tasks');
+    const badge=tasks?.querySelector('.dcc-p9-count');
+    if(badge&&badge.textContent!==String(total))badge.textContent=String(total);
+    const inner=tasks?.querySelector('.dcc-p9-inner');
+    if(inner){
+      const signature=missingDietClients.slice(0,6).map(c=>String(c.id)).join('|');
+      if(tasks?.dataset.dccAuditDietSignature!==signature){
+        inner.querySelectorAll('.dcc-audit-diet-row').forEach(x=>x.remove());
+        const empt=inner.querySelector('.dcc-p9-empty');if(empt&&total>0)empt.remove();
+        missingDietClients.slice(0,6).forEach(c=>{
+          const row=taskRow(c,'CREAR ALIMENTACIÓN','PENDIENTE',()=>{
+            window.selectedClient=c.id;window.__dccClientAdminId=c.id;
+            if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(c.id,'food');
+            else window.openClient?.(c.id);
+          });
+          row.classList.add('dcc-audit-diet-row');inner.appendChild(row);
+        });
+        if(tasks)tasks.dataset.dccAuditDietSignature=signature;
+      }
+    }
+
+    const attention=clients.filter(c=>{const gap=daysSince(workoutDate(latestWorkout(c.id)));return gap!==null&&gap>=7});
+    const att=main.querySelector('#dccP9Attention');
+    const title=att?.querySelector('.dcc-p9-head-title');
+    if(title){
+      let count=title.querySelector('.dcc-audit-attention');
+      if(!count){count=document.createElement('span');count.className='dcc-p9-count dcc-audit-attention';title.appendChild(count)}
+      if(count.textContent!==String(attention.length))count.textContent=String(attention.length);
+    }
+  }
+"""
+          replace_once('coach-panel-state-v10.js',old_tasks,new_tasks,'idempotent coach tasks')
+
+          replace_once(
+              'coach-panel-state-v10.js',
+              "        if(el)el.textContent=value;",
+              "        if(el){if(el.textContent!==value)el.textContent=value;}",
+              'idempotent client weight'
+          )
+          replace_once(
+              'coach-panel-state-v10.js',
+              "      if(label==='último check-in'){const b=row.querySelector('b');if(b)b.textContent=checkinLabel(id)}",
+              "      if(label==='último check-in'){const b=row.querySelector('b'),value=checkinLabel(id);if(b&&b.textContent!==value)b.textContent=value}",
+              'idempotent checkin label'
+          )
+          replace_once(
+              'coach-panel-state-v10.js',
+              "    new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,characterData:true});",
+              "    new MutationObserver(schedule).observe(main,{childList:true,subtree:true});",
+              'scoped observer'
+          )
+          replace_once(
+              'coach-panel-state-v10.js',
+              "  window.addEventListener('pageshow',schedule);\n  setInterval(schedule,1200);",
+              "  window.addEventListener('pageshow',schedule);\n  window.dccQualityRefresh=schedule;",
+              'remove polling loop'
+          )
+          PY
+      - name: Commit audited source fixes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No source changes needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add new-client-premium-v1.js coach-panel-state-v10.js
+          git commit -m "Stabilize native client creation and coach task refresh"
+          git push
