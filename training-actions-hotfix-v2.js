@@ -5,41 +5,20 @@
 */
 (function(){
   'use strict';
-  if(window.__dccStableRuntimeBridgeV5)return;
-  window.__dccStableRuntimeBridgeV5=true;
+  if(window.__dccStableRuntimeBridgeV6)return;
+  window.__dccStableRuntimeBridgeV6=true;
 
   function bridgeAccessor(name,getter,setter){
     try{
       const descriptor=Object.getOwnPropertyDescriptor(window,name);
       if(descriptor && descriptor.configurable===false)return;
-      Object.defineProperty(window,name,{
-        configurable:true,
-        enumerable:true,
-        get:getter,
-        set:setter||function(){}
-      });
-    }catch(error){
-      console.warn('DCC runtime bridge:',name,error);
-    }
+      Object.defineProperty(window,name,{configurable:true,enumerable:true,get:getter,set:setter||function(){}});
+    }catch(error){console.warn('DCC runtime bridge:',name,error);}
   }
 
-  try{
-    if(typeof data!=='undefined'){
-      bridgeAccessor('data',()=>data,value=>{data=value;});
-    }
-  }catch(error){console.warn('DCC runtime bridge data:',error);}
-
-  try{
-    if(typeof currentClientId!=='undefined'){
-      bridgeAccessor('currentClientId',()=>currentClientId,value=>{currentClientId=value;});
-    }
-  }catch(error){console.warn('DCC runtime bridge client:',error);}
-
-  try{
-    if(typeof supabaseClient!=='undefined' && supabaseClient){
-      bridgeAccessor('supabaseClient',()=>supabaseClient);
-    }
-  }catch(error){console.warn('DCC runtime bridge supabase:',error);}
+  try{if(typeof data!=='undefined')bridgeAccessor('data',()=>data,value=>{data=value;});}catch(error){console.warn('DCC runtime bridge data:',error);}
+  try{if(typeof currentClientId!=='undefined')bridgeAccessor('currentClientId',()=>currentClientId,value=>{currentClientId=value;});}catch(error){console.warn('DCC runtime bridge client:',error);}
+  try{if(typeof supabaseClient!=='undefined'&&supabaseClient)bridgeAccessor('supabaseClient',()=>supabaseClient);}catch(error){console.warn('DCC runtime bridge supabase:',error);}
 
   const norm=value=>String(value||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 
@@ -55,7 +34,6 @@
     if(/hip thrust|gluteo|abduccion/.test(n))return 'Glúteo';
     if(/gemelo|pantorrilla/.test(n))return 'Gemelo';
     if(/abdominal|core|plancha|crunch/.test(n))return 'Core';
-
     const first=String(current||'').split(/[·,+/&]/)[0].trim();
     const f=norm(first);
     if(f==='pecho'||f==='pectoral')return 'Pectoral';
@@ -86,16 +64,16 @@
   }
 
   function installClientRefinements(){
-    if(document.getElementById('dcc-client-refinements-20260911-v5'))return;
-    document.getElementById('dcc-client-refinements-20260911')?.remove();
-    document.getElementById('dcc-client-refinements-20260911-v3')?.remove();
-    document.getElementById('dcc-client-refinements-20260911-v4')?.remove();
+    if(document.getElementById('dcc-client-refinements-20260911-v6'))return;
+    ['dcc-client-refinements-20260911','dcc-client-refinements-20260911-v3','dcc-client-refinements-20260911-v4','dcc-client-refinements-20260911-v5'].forEach(id=>document.getElementById(id)?.remove());
     const style=document.createElement('style');
-    style.id='dcc-client-refinements-20260911-v5';
+    style.id='dcc-client-refinements-20260911-v6';
     style.textContent=`
-      /* Inicio: alinear el texto de "Todo al día" con la columna de Progreso y Próximo entrenamiento. */
-      #client-main .dch-task-empty{min-height:64px!important;grid-template-columns:50px minmax(0,1fr)!important;gap:12px!important;padding:10px 15px!important;align-items:center!important}
-      #client-main .dch-task-empty .dch-iconbox{width:38px!important;height:38px!important;justify-self:center!important}
+      /* Inicio: icono intacto; SOLO el texto vacío se desplaza hasta la columna editorial común. */
+      #client-main .dch-task-empty{min-height:64px!important;grid-template-columns:38px minmax(0,1fr)!important;gap:11px!important;padding:10px 15px!important;align-items:center!important}
+      #client-main .dch-task-empty .dch-iconbox{width:38px!important;height:38px!important}
+      #client-main .dch-task-empty > span:last-child{margin-left:31px!important;max-width:calc(100% - 31px)!important}
+
       #client-main .dct3-days{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;margin-bottom:11px!important}
       #client-main .dct3-day{height:44px!important;min-height:44px!important;padding:0 1px!important;border-radius:11px!important;gap:2px!important}
       #client-main .dct3-day span{font-size:6px!important;line-height:1!important;letter-spacing:.8px!important}
@@ -105,9 +83,11 @@
       #client-main .dct3-start{border:1px solid rgba(240,201,107,.82)!important;background:linear-gradient(145deg,rgba(217,170,74,.12),rgba(12,15,19,.98))!important;color:#f1c861!important}
       #client-main .dct3-view{border:1px solid rgba(255,255,255,.13)!important;background:linear-gradient(145deg,#12171d,#0a0e13)!important;color:#c3c9d1!important}
       #client-main .dcc-active-exercise-advice,#client-main .dcc-exercise-client-advice{display:none!important}
+
       @media(max-width:390px){
-        #client-main .dch-task-empty{min-height:60px!important;grid-template-columns:50px minmax(0,1fr)!important;gap:12px!important;padding:9px 15px!important}
-        #client-main .dch-task-empty .dch-iconbox{width:36px!important;height:36px!important;justify-self:center!important}
+        #client-main .dch-task-empty{min-height:60px!important;grid-template-columns:36px minmax(0,1fr)!important;gap:10px!important;padding:9px 14px!important}
+        #client-main .dch-task-empty .dch-iconbox{width:36px!important;height:36px!important}
+        #client-main .dch-task-empty > span:last-child{margin-left:32px!important;max-width:calc(100% - 32px)!important}
         #client-main .dct3-days{gap:3px!important}
         #client-main .dct3-day{height:41px!important;min-height:41px!important;border-radius:10px!important}
         #client-main .dct3-day span{font-size:5.5px!important;letter-spacing:.65px!important}
@@ -122,8 +102,7 @@
   function syncWorkoutAdvice(){
     adviceQueued=false;
     try{
-      const workout=window.activeWorkout;
-      if(!workout)return;
+      const workout=window.activeWorkout;if(!workout)return;
       const exercise=workout.exercises?.[Number(workout.currentExercise)||0];
       const body=document.querySelector('#client-main .dwa3-tip .dwa3-tip-body');
       const adviceFn=window.dccExerciseAdvice;
@@ -135,51 +114,32 @@
   }
 
   function refineTrainingLabels(){
-    try{
-      document.querySelectorAll('#client-main .dct3-title, #client-main .dct3-routine h3').forEach(el=>{
-        const next=(el.textContent||'').replace(/\bPecho\b/gi,'Pectoral');
-        if(next!==el.textContent)el.textContent=next;
-      });
-    }catch(error){console.warn('DCC training label refinement:',error);}
+    try{document.querySelectorAll('#client-main .dct3-title, #client-main .dct3-routine h3').forEach(el=>{const next=(el.textContent||'').replace(/\bPecho\b/gi,'Pectoral');if(next!==el.textContent)el.textContent=next;});}catch(error){console.warn('DCC training label refinement:',error);}
   }
 
   function refineExerciseRows(){
     try{
       document.querySelectorAll('#client-main .dct3-exercise').forEach(row=>{
         const name=row.querySelector('strong')?.textContent||'';
-        const label=row.querySelector('small');
-        if(!label)return;
-        const primary=primaryMuscle(name,label.textContent);
-        if(primary)label.textContent=primary.toUpperCase();
-        const img=row.querySelector('.dct3-ex-img img');
-        const src=muscleImage(primary);
-        if(img&&src&&img.getAttribute('src')!==src)img.setAttribute('src',src);
+        const label=row.querySelector('small');if(!label)return;
+        const primary=primaryMuscle(name,label.textContent);if(primary)label.textContent=primary.toUpperCase();
+        const img=row.querySelector('.dct3-ex-img img');const src=muscleImage(primary);if(img&&src&&img.getAttribute('src')!==src)img.setAttribute('src',src);
       });
     }catch(error){console.warn('DCC primary muscle refinement:',error);}
   }
 
   function scheduleAdviceSync(){
-    if(adviceQueued)return;
-    adviceQueued=true;
-    requestAnimationFrame(()=>{
-      syncWorkoutAdvice();
-      refineTrainingLabels();
-      refineExerciseRows();
-    });
+    if(adviceQueued)return;adviceQueued=true;
+    requestAnimationFrame(()=>{syncWorkoutAdvice();refineTrainingLabels();refineExerciseRows();});
   }
 
   installClientRefinements();
   const main=document.getElementById('client-main');
-  if(main&&!main.__dccClientRefinementsObserverV5){
-    const observer=new MutationObserver(scheduleAdviceSync);
-    observer.observe(main,{childList:true,subtree:true});
-    main.__dccClientRefinementsObserverV5=observer;
+  if(main&&!main.__dccClientRefinementsObserverV6){
+    const observer=new MutationObserver(scheduleAdviceSync);observer.observe(main,{childList:true,subtree:true});main.__dccClientRefinementsObserverV6=observer;
   }
   window.addEventListener('dcc:exercise-library-ready',scheduleAdviceSync);
-  document.addEventListener('DOMContentLoaded',()=>{
-    installClientRefinements();
-    scheduleAdviceSync();
-  });
+  document.addEventListener('DOMContentLoaded',()=>{installClientRefinements();scheduleAdviceSync();});
   scheduleAdviceSync();
 
   window.__dccRuntimeBridgeReady=true;
