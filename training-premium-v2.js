@@ -155,7 +155,7 @@
     `).join('');
 
     const dayTabs = routine.slice(0,7).map((day,index)=>`
-      <button type="button" class="dct-day ${index===selectedDayIndex?'active':''}" onclick="window.trainingDayTab=${index};showClient('training');">
+      <button type="button" class="dct-day ${index===selectedDayIndex?'active':''}" data-day-index="${index}">
         <span>DÍA</span><strong>${index+1}</strong>
       </button>
     `).join('');
@@ -226,10 +226,10 @@
         #client-main .dct-routine-title{margin:0;color:#f8f7f3;font-size:19px;font-weight:780;line-height:1.08;letter-spacing:-.3px}
         #client-main .dct-routine-meta{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:7px;color:#969faa;font-size:11px;line-height:1.3}
         #client-main .dct-routine-meta span{color:#d9aa4a}
-        #client-main .dct-routine-actions{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(128px,.9fr);gap:9px;margin-top:13px}
-        #client-main .dct-start{min-height:52px;padding:10px 13px;border:1px solid #f3cf6c;border-radius:15px;background:linear-gradient(135deg,#f0c45d,#dda93e 62%,#edc25b);color:#15110a;font-size:14px;font-weight:850;box-shadow:0 9px 24px rgba(217,170,74,.17),inset 0 1px 0 rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;gap:9px}
+        #client-main .dct-routine-actions{position:relative;z-index:5;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(128px,.9fr);gap:9px;margin-top:13px;pointer-events:auto}
+        #client-main .dct-start{position:relative;z-index:6;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:52px;padding:10px 13px;border:1px solid #f3cf6c;border-radius:15px;background:linear-gradient(135deg,#f0c45d,#dda93e 62%,#edc25b);color:#15110a;font-size:14px;font-weight:850;box-shadow:0 9px 24px rgba(217,170,74,.17),inset 0 1px 0 rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;gap:9px}
         #client-main .dct-start svg{width:18px;height:18px;fill:currentColor}
-        #client-main .dct-view-exercises{min-height:52px;padding:10px 12px;border:1px solid rgba(224,173,76,.88);border-radius:15px;background:rgba(9,12,16,.68);color:#f7f5f0;font-size:13px;font-weight:760;display:flex;align-items:center;justify-content:center;gap:8px}
+        #client-main .dct-view-exercises{position:relative;z-index:6;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:52px;padding:10px 12px;border:1px solid rgba(224,173,76,.88);border-radius:15px;background:rgba(9,12,16,.68);color:#f7f5f0;font-size:13px;font-weight:760;display:flex;align-items:center;justify-content:center;gap:8px}
         #client-main .dct-view-chevron{width:9px;height:9px;border-right:2px solid #e0ad4c;border-bottom:2px solid #e0ad4c;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
         #client-main .dct-routine-card.open .dct-view-chevron{transform:rotate(225deg) translate(-1px,-1px)}
         #client-main .dct-exercise-list{display:none;gap:8px;margin-top:13px;padding-top:13px;border-top:1px solid rgba(255,255,255,.07)}
@@ -310,16 +310,11 @@
               </div>
 
               <div class="dct-routine-actions">
-                <button type="button" class="dct-start" onclick="startWorkout(${selectedDayIndex})">
+                <button type="button" class="dct-start" data-day-index="${selectedDayIndex}">
                   <svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5-10-6.5Z"/></svg>
                   <span>Empezar entrenamiento</span>
                 </button>
-                <button type="button" class="dct-view-exercises" aria-expanded="false" onclick="
-                  const card=this.closest('.dct-routine-card');
-                  const open=card.classList.toggle('open');
-                  this.setAttribute('aria-expanded',String(open));
-                  this.querySelector('.dct-view-label').textContent=open?'Ocultar ejercicios':'Ver ejercicios';
-                ">
+                <button type="button" class="dct-view-exercises" aria-expanded="false">
                   <span class="dct-view-label">Ver ejercicios</span>
                   <span class="dct-view-chevron" aria-hidden="true"></span>
                 </button>
@@ -331,6 +326,53 @@
         ` : '<div class="dct-empty">Todavía no tienes una rutina de entrenamiento programada.</div>'}
       </div>
     `;
+
+    main.querySelectorAll('.dct-day[data-day-index]').forEach(button => {
+      button.addEventListener('click', function(event){
+        event.preventDefault();
+        const next = Number(this.dataset.dayIndex);
+        if(Number.isFinite(next)){
+          window.trainingDayTab = next;
+          window.showClient('training');
+        }
+      });
+    });
+
+    const viewButton = main.querySelector('.dct-view-exercises');
+    if(viewButton){
+      viewButton.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        const card = this.closest('.dct-routine-card');
+        if(!card) return;
+        const open = card.classList.toggle('open');
+        this.setAttribute('aria-expanded', String(open));
+        const label = this.querySelector('.dct-view-label');
+        if(label) label.textContent = open ? 'Ocultar ejercicios' : 'Ver ejercicios';
+      });
+    }
+
+    const startButton = main.querySelector('.dct-start');
+    if(startButton){
+      startButton.addEventListener('click', function(event){
+        event.preventDefault();
+        event.stopPropagation();
+        const next = Number(this.dataset.dayIndex);
+        const dayIndex = Number.isFinite(next) ? next : selectedDayIndex;
+        let fn = null;
+        if(typeof window.startWorkout === 'function') fn = window.startWorkout;
+        if(!fn){
+          try{ fn = (typeof startWorkout === 'function') ? startWorkout : null; }
+          catch(_){ fn = null; }
+        }
+        if(typeof fn === 'function'){
+          fn(dayIndex);
+        }else{
+          console.error('DCC: startWorkout no disponible desde training-premium-v2');
+          if(typeof window.toast === 'function') window.toast('No se pudo iniciar el entrenamiento.');
+        }
+      });
+    }
   }
 
   window.showClient = function(screen){
