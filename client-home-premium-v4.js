@@ -1,14 +1,14 @@
 /* DCC — Inicio cliente premium: diseño aprobado compacto */
 (function(){
   'use strict';
-  if(window.__dccClientHomePremiumApprovedV3)return;
-  window.__dccClientHomePremiumApprovedV3=true;
+  if(window.__dccClientHomePremiumApprovedV4)return;
+  window.__dccClientHomePremiumApprovedV4=true;
 
-  const STYLE_ID='dcc-client-home-premium-approved-v3-css';
+  const STYLE_ID='dcc-client-home-premium-approved-v4-css';
 
   function installStyles(){
     if(document.getElementById(STYLE_ID))return;
-    ['dcc-client-home-premium-v4-css','dcc-client-home-premium-approved-v1-css','dcc-client-home-premium-approved-v2-css'].forEach(id=>document.getElementById(id)?.remove());
+    ['dcc-client-home-premium-v4-css','dcc-client-home-premium-approved-v1-css','dcc-client-home-premium-approved-v2-css','dcc-client-home-premium-approved-v3-css'].forEach(id=>document.getElementById(id)?.remove());
 
     const style=document.createElement('style');
     style.id=STYLE_ID;
@@ -108,7 +108,6 @@
       }
       #client-main .dch-next .dch-iconbox{width:38px!important;height:38px!important}
 
-      /* Aprobado: encabezado en una sola línea. */
       #client-main .dch-next [class*="label"],
       #client-main .dch-next [class*="eyebrow"],
       #client-main .dch-next [class*="kicker"]{
@@ -118,7 +117,6 @@
         line-height:1!important;
       }
 
-      /* Aprobado: Pectoral · Hombro más fino y elegante. */
       #client-main .dch-next h1,#client-main .dch-next h2,#client-main .dch-next h3,#client-main .dch-next [class*="title"]{
         margin-top:7px!important;color:var(--dcc-text)!important;font-size:16px!important;line-height:1.18!important;font-weight:400!important;
         letter-spacing:-.08px!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;max-width:none!important;
@@ -153,15 +151,38 @@
     document.head.appendChild(style);
   }
 
+  function forceNextWorkoutTypography(root){
+    root.querySelectorAll('.dch-next *').forEach(el=>{
+      const text=(el.textContent||'').trim();
+      if(!text)return;
+
+      if(el.children.length===0&&/\bPecho\b/i.test(text)){
+        el.textContent=text.replace(/\bPecho\b/gi,'Pectoral');
+      }
+
+      const finalText=(el.textContent||'').trim();
+      if(el.children.length===0&&/^Pectoral\s*[·•\-]\s*Hombro/i.test(finalText)){
+        el.style.setProperty('font-weight','400','important');
+        el.style.setProperty('font-size','16px','important');
+        el.style.setProperty('letter-spacing','-0.08px','important');
+        el.style.setProperty('font-family','Avenir Next, Helvetica Neue, -apple-system, BlinkMacSystemFont, Segoe UI, Arial, sans-serif','important');
+        el.style.setProperty('white-space','nowrap','important');
+      }
+
+      if(el.children.length===0&&/TU\s+PRÓXIMO\s+ENTRENAMIENTO/i.test(finalText)){
+        el.style.setProperty('white-space','nowrap','important');
+        el.style.setProperty('font-size','8.8px','important');
+        el.style.setProperty('letter-spacing','2px','important');
+        el.style.setProperty('line-height','1','important');
+      }
+    });
+  }
+
   function refineContent(){
     const root=document.querySelector('#client-main .dch-wrap');
     if(!root)return;
 
-    root.querySelectorAll('.dch-next *').forEach(el=>{
-      if(el.children.length===0&&/\bPecho\b/i.test(el.textContent||'')){
-        el.textContent=(el.textContent||'').replace(/\bPecho\b/gi,'Pectoral');
-      }
-    });
+    forceNextWorkoutTypography(root);
 
     root.querySelectorAll('.dch-stat,.dch-progress').forEach(el=>{
       el.removeAttribute('onclick');
@@ -174,13 +195,13 @@
   document.addEventListener('DOMContentLoaded',apply);
 
   const main=document.getElementById('client-main');
-  if(main&&!window.__dccClientHomePremiumApprovedObserverV3){
+  if(main&&!window.__dccClientHomePremiumApprovedObserverV4){
     let frame=0;
     const observer=new MutationObserver(()=>{
       cancelAnimationFrame(frame);
       frame=requestAnimationFrame(refineContent);
     });
     observer.observe(main,{childList:true,subtree:true});
-    window.__dccClientHomePremiumApprovedObserverV3=observer;
+    window.__dccClientHomePremiumApprovedObserverV4=observer;
   }
 })();
