@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "grupo": "Pectoral",
+  "total": 24,
+  "objetivo": "Biblioteca práctica y suficientemente amplia para que entrenador y cliente puedan elegir ejercicios habituales sin duplicados innecesarios.",
+  "criterios": [
+    "Ejercicios habituales y reconocibles en gimnasios comerciales",
+    "Cobertura de barra, mancuernas, máquinas, Hammer/iso-lateral, poleas, multipower y peso corporal",
+    "Variantes útiles por plano: horizontal, inclinado y declinado",
+    "Aislamientos diferenciados por trayectoria",
+    "Un ID estable y una ilustración individual por ejercicio"
+  ],
+  "ejercicios": [
+    {"id":"press-banca-barra","nombre":"Press de banca con barra","equipo":"Barra y banco plano","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-banca-barra.webp"},
+    {"id":"press-banca-mancuernas","nombre":"Press de banca con mancuernas","equipo":"Mancuernas y banco plano","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-banca-mancuernas.webp"},
+    {"id":"press-inclinado-barra","nombre":"Press inclinado con barra","equipo":"Barra y banco inclinado","enfoque":"Pectoral superior","patron":"empuje_inclinado","ilustracion":"ilustraciones/press-inclinado-barra.webp"},
+    {"id":"press-inclinado-mancuernas","nombre":"Press inclinado con mancuernas","equipo":"Mancuernas y banco inclinado","enfoque":"Pectoral superior","patron":"empuje_inclinado","ilustracion":"ilustraciones/press-inclinado-mancuernas.webp"},
+    {"id":"press-declinado-barra","nombre":"Press declinado con barra","equipo":"Barra y banco declinado","enfoque":"Pectoral inferior","patron":"empuje_declinado","ilustracion":"ilustraciones/press-declinado-barra.webp"},
+    {"id":"press-declinado-mancuernas","nombre":"Press declinado con mancuernas","equipo":"Mancuernas y banco declinado","enfoque":"Pectoral inferior","patron":"empuje_declinado","ilustracion":"ilustraciones/press-declinado-mancuernas.webp"},
+    {"id":"press-pecho-maquina","nombre":"Press de pecho en máquina","equipo":"Máquina de press","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-pecho-maquina.webp"},
+    {"id":"press-inclinado-maquina","nombre":"Press inclinado en máquina","equipo":"Máquina tipo Hammer Strength","enfoque":"Pectoral superior","patron":"empuje_inclinado","ilustracion":"ilustraciones/press-inclinado-maquina.webp"},
+    {"id":"press-declinado-maquina","nombre":"Press declinado en máquina","equipo":"Máquina tipo Hammer Strength","enfoque":"Pectoral inferior","patron":"empuje_declinado","ilustracion":"ilustraciones/press-declinado-maquina.webp"},
+    {"id":"press-convergente-maquina","nombre":"Press convergente en máquina","equipo":"Máquina convergente tipo Hammer Strength","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-convergente-maquina.webp"},
+    {"id":"press-pecho-iso-lateral","nombre":"Press de pecho iso-lateral","equipo":"Máquina de palancas iso-lateral","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-pecho-iso-lateral.webp"},
+    {"id":"press-inclinado-iso-lateral","nombre":"Press inclinado iso-lateral","equipo":"Máquina de palancas iso-lateral","enfoque":"Pectoral superior","patron":"empuje_inclinado","ilustracion":"ilustraciones/press-inclinado-iso-lateral.webp"},
+    {"id":"press-banca-multipower","nombre":"Press de banca en multipower","equipo":"Multipower y banco plano","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/press-banca-multipower.webp"},
+    {"id":"press-inclinado-multipower","nombre":"Press inclinado en multipower","equipo":"Multipower y banco inclinado","enfoque":"Pectoral superior","patron":"empuje_inclinado","ilustracion":"ilustraciones/press-inclinado-multipower.webp"},
+    {"id":"aperturas-pec-deck","nombre":"Aperturas en máquina Pec Deck","equipo":"Pec Deck","enfoque":"Pectoral general","patron":"aislamiento","ilustracion":"ilustraciones/aperturas-pec-deck.webp"},
+    {"id":"aperturas-mancuernas-plano","nombre":"Aperturas con mancuernas en banco plano","equipo":"Mancuernas y banco plano","enfoque":"Pectoral general","patron":"aislamiento","ilustracion":"ilustraciones/aperturas-mancuernas-plano.webp"},
+    {"id":"aperturas-inclinadas-mancuernas","nombre":"Aperturas inclinadas con mancuernas","equipo":"Mancuernas y banco inclinado","enfoque":"Pectoral superior","patron":"aislamiento","ilustracion":"ilustraciones/aperturas-inclinadas-mancuernas.webp"},
+    {"id":"cruces-polea-media","nombre":"Cruces en polea a media altura","equipo":"Polea doble","enfoque":"Pectoral general","patron":"aislamiento","ilustracion":"ilustraciones/cruces-polea-media.webp"},
+    {"id":"cruces-polea-alta","nombre":"Cruces en polea desde arriba","equipo":"Polea doble","enfoque":"Pectoral inferior/medio","patron":"aislamiento","ilustracion":"ilustraciones/cruces-polea-alta.webp"},
+    {"id":"cruces-polea-baja","nombre":"Cruces en polea desde abajo","equipo":"Polea doble","enfoque":"Pectoral superior","patron":"aislamiento","ilustracion":"ilustraciones/cruces-polea-baja.webp"},
+    {"id":"aperturas-polea-banco","nombre":"Aperturas con poleas en banco","equipo":"Poleas y banco","enfoque":"Pectoral general","patron":"aislamiento","ilustracion":"ilustraciones/aperturas-polea-banco.webp"},
+    {"id":"flexiones","nombre":"Flexiones de pecho","equipo":"Peso corporal","enfoque":"Pectoral general","patron":"empuje_horizontal","ilustracion":"ilustraciones/flexiones.webp"},
+    {"id":"fondos-paralelas-pectoral","nombre":"Fondos en paralelas con enfoque en pectoral","equipo":"Barras paralelas","enfoque":"Pectoral inferior","patron":"empuje_vertical_inclinado","ilustracion":"ilustraciones/fondos-paralelas-pectoral.webp"},
+    {"id":"pullover-mancuerna","nombre":"Pullover con mancuerna en banco","equipo":"Mancuerna y banco","enfoque":"Pectoral / dorsal según técnica","patron":"pullover","ilustracion":"ilustraciones/pullover-mancuerna.webp"}
+  ]
+}
