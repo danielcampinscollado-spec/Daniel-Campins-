@@ -8,6 +8,7 @@
   const baseSrc='./coach-client-plan-status-v1-base.js?v=20260911-audit2';
   const authSrc='./auth-premium-v1.js?v=20260911-auth1';
   const exercisePremiumSrc='./exercise-premium-pectoral-v1.js?v=20260911-1';
+  const exerciseGuidanceSrc='./exercise-guidance-v1.js?v=20260911-1';
 
   function appData(){
     try{return data||{}}catch(_){return window.data||{}}
@@ -253,12 +254,23 @@
     document.head.appendChild(premium);
   }
 
+  function loadExerciseGuidance(){
+    if(window.__dccExerciseGuidanceScriptRequested)return;
+    window.__dccExerciseGuidanceScriptRequested=true;
+    const guidance=document.createElement('script');
+    guidance.src=exerciseGuidanceSrc;
+    guidance.async=false;
+    guidance.onerror=()=>console.error('DCC audit — no se pudo cargar la guía de ejercicios');
+    document.head.appendChild(guidance);
+  }
+
   const script=document.createElement('script');
   script.src=baseSrc;
   script.async=false;
   script.onload=()=>{
     installHotfixes();
     loadPremiumExercises();
+    loadExerciseGuidance();
     loadSecureAuth();
     setTimeout(installHotfixes,0);
     setTimeout(installHotfixes,250);
