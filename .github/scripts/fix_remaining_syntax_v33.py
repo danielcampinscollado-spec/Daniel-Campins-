@@ -1,24 +1,14 @@
 from pathlib import Path
 
+appdata_old = "const appData=()=>{try{return data||{}}catch(e){return window.data||{}};"
+appdata_new = "const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};"
+
 replacements = {
-    'client-delete-persist-v1.js': [
-        (
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}};",
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};"
-        )
-    ],
-    'client-metrics-sync-v10.js': [
-        (
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}};",
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};"
-        )
-    ],
-    'client-progress-final-v9.js': [
-        (
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}};",
-            "const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};"
-        )
-    ],
+    'client-delete-persist-v1.js': [(appdata_old, appdata_new)],
+    'client-metrics-sync-v10.js': [(appdata_old, appdata_new)],
+    'client-progress-final-v9.js': [(appdata_old, appdata_new)],
+    'client-profile-preferences-v1.js': [(appdata_old, appdata_new)],
+    'coach-panel-state-v10.js': [(appdata_old, appdata_new)],
     'progress-premium.js': [
         (
             "window.dccProgressMetric=(id,m)=>{window.__dccProgressMetric=m;renderProgress(id)};window.dccProgressAll=b=>{const g=b.closest('.dcc-p-section').querySelector('.dcc-p-grid');g.classList.toggle('show-all');b.textContent=g.classList.contains('show-all')?'Ver menos ‹':'Ver todos ›'}\n}\nfunction install()",
