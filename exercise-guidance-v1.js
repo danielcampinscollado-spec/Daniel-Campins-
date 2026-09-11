@@ -1,11 +1,11 @@
-/* DCC — consejo técnico estable v2
-   El consejo NO se muestra en listados ni descripciones.
-   Solo aparece durante la sesión activa del ejercicio.
+/* DCC — consejo técnico estable v3
+   Los consejos viven en los datos del ejercicio y solo se muestran
+   dentro de la pestaña desplegable de la sesión activa.
 */
 (function(){
   'use strict';
-  if(window.__dccExerciseGuidanceStableV2)return;
-  window.__dccExerciseGuidanceStableV2=true;
+  if(window.__dccExerciseGuidanceStableV3)return;
+  window.__dccExerciseGuidanceStableV3=true;
 
   const exact={
     'press-banca-barra':'Mantén los pies firmes, retrae las escápulas y baja la barra con control hasta el pecho sin perder la posición de los hombros.',
@@ -35,7 +35,6 @@
   };
 
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function fallback(ex){
     const n=norm([ex?.name,ex?.muscle,ex?.equipment,ex?.category].filter(Boolean).join(' '));
@@ -68,7 +67,6 @@
     const id=String(ex?.id??hit?.id??'');
     return String(ex?.clientAdvice||hit?.clientAdvice||exact[id]||fallback(hit)).trim();
   }
-  window.dccExerciseAdvice=adviceFor;
 
   function enrichLibrary(){
     const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
@@ -80,66 +78,21 @@
     });
   }
 
-  function removeListAdvice(){
-    document.querySelectorAll('.dcc-exercise-client-advice').forEach(el=>el.remove());
+  function cleanupLegacyAdvice(){
+    document.querySelectorAll('.dcc-exercise-client-advice,.dcc-active-exercise-advice').forEach(el=>el.remove());
+    const old=document.getElementById('dcc-active-exercise-advice-style');
+    if(old)old.remove();
   }
 
-  function ensureStyle(){
-    if(document.getElementById('dcc-active-exercise-advice-style'))return;
-    const style=document.createElement('style');
-    style.id='dcc-active-exercise-advice-style';
-    style.textContent=`
-      #client-main .dcc-active-exercise-advice{margin:0 0 12px;padding:13px 14px;border:1px solid rgba(224,173,76,.48);border-radius:16px;background:linear-gradient(145deg,rgba(217,170,74,.08),rgba(10,14,18,.97));box-shadow:0 10px 24px rgba(0,0,0,.18)}
-      #client-main .dcc-active-exercise-advice b{display:block;margin-bottom:5px;color:#e0ad4c;font-size:9px;font-weight:900;letter-spacing:1.8px;text-transform:uppercase}
-      #client-main .dcc-active-exercise-advice p{margin:0;color:#e7e4dd;font-size:11.5px;line-height:1.48}
-    `;
-    document.head.appendChild(style);
-  }
-
-  function renderActiveAdvice(){
-    removeListAdvice();
-    ensureStyle();
-    const main=document.getElementById('client-main');
-    if(!main)return;
-    const workout=window.activeWorkout;
-    if(!workout){main.querySelectorAll('.dcc-active-exercise-advice').forEach(x=>x.remove());return;}
-    const ex=workout.exercises?.[Number(workout.currentExercise)||0];
-    if(!ex)return;
-    const advice=adviceFor(ex);
-    let box=main.querySelector('.dcc-active-exercise-advice');
-    if(!box){box=document.createElement('section');box.className='dcc-active-exercise-advice';}
-    const sig=`${workout.currentExercise}|${norm(ex?.name)}|${advice}`;
-    if(box.dataset.sig!==sig){box.dataset.sig=sig;box.innerHTML=`<b>Consejo del ejercicio</b><p>${esc(advice)}</p>`;}
-
-    /* Preferimos colocarlo justo antes del bloque donde el cliente registra la serie. */
-    const input=main.querySelector('#workout-kg');
-    const anchor=input?.closest('.card')||main.querySelector('.card');
-    if(anchor&&box.parentNode!==anchor.parentNode)anchor.parentNode.insertBefore(box,anchor);
-    else if(anchor&&box.nextSibling!==anchor)anchor.parentNode.insertBefore(box,anchor);
-    else if(!anchor&&!box.isConnected)main.prepend(box);
-  }
-
-  let queued=false;
-  function schedule(){
-    if(queued)return;queued=true;
-    requestAnimationFrame(()=>{queued=false;renderActiveAdvice();});
-  }
+  window.dccExerciseAdvice=adviceFor;
 
   function boot(){
     enrichLibrary();
-    removeListAdvice();
-    renderActiveAdvice();
-    const main=document.getElementById('client-main');
-    if(main&&!main.__dccExerciseAdviceObserver){
-      const observer=new MutationObserver(schedule);
-      observer.observe(main,{childList:true,subtree:true});
-      main.__dccExerciseAdviceObserver=observer;
-    }
+    cleanupLegacyAdvice();
   }
 
-  window.addEventListener('dcc:exercise-library-ready',()=>{enrichLibrary();schedule();});
+  window.addEventListener('dcc:exercise-library-ready',boot);
   document.addEventListener('DOMContentLoaded',boot);
   boot();
   setTimeout(boot,300);
-  setTimeout(boot,1200);
 })();
