@@ -1,0 +1,205 @@
+DCC RELEASE CANDIDATE STATIC AUDIT
+==================================
+JavaScript files: 72
+HTML files: 1
+
+[JS SYNTAX]
+OK   auth-premium-v1.js
+OK   checkin-coach-sync-v2.js
+OK   checkin-premium.js
+OK   client-admin-premium.js
+OK   client-checkin-final-v3.js
+OK   client-checkin-messages-premium-v1.js
+FAIL client-delete-atomic-v4.js
+OK   client-delete-persist-v1.js
+OK   client-home-premium-v4.js
+OK   client-home-task-seen-fix.js
+OK   client-metrics-sync-v10.js
+OK   client-nutrition-option-state-v3.js
+OK   client-nutrition-premium-v2.js
+OK   client-profile-editor-v1.js
+OK   client-profile-preferences-v1.js
+OK   client-progress-compact-v7.js
+OK   client-progress-final-v9.js
+OK   client-progress-premium-v6.js
+OK   client-progress-stable-v8.js
+FAIL client-server-source-v1.js
+OK   client-summary-cleanup-v1.js
+OK   clients-search-final-fix.js
+OK   coach-calendar-alignment-v13.js
+OK   coach-calendar-form-fix-v15.js
+OK   coach-calendar-sync-v14.js
+OK   coach-calendar-v12.js
+OK   coach-client-plan-status-v1-base.js
+OK   coach-client-plan-status-v1.js
+OK   coach-light-stable-v1.js
+OK   coach-panel-state-v10.js
+OK   coach-premium-core-v9.js
+OK   coach-premium-final-v2.js
+OK   coach-premium-v7.js
+OK   coach-premium-v8.js
+OK   coach-premium.js
+OK   coach-theme-premium-global.js
+OK   coach-ui-v11.js
+OK   dcc-light-fixes-v1.js
+OK   dcc-production-stability-v1.js
+OK   dcc-theme-premium-polish-v3.js
+OK   dcc-theme-system-v1.js
+OK   ejercicio-biblioteca.js
+OK   entrenamientos/runtime-compat.js
+OK   exercise-guidance-v1.js
+OK   exercise-premium-pectoral-v1.js
+OK   messages-chat-premium-v2.js
+OK   messages-position-stable-v4.js
+OK   messages-premium.js
+OK   messages-sync-fix.js
+OK   nav-premium-global.js
+OK   new-client-premium-v1.js
+OK   nutrition-plan-premium-v1.js
+OK   nutrition-plan-premium-v2.js
+OK   progress-metrics-unify.js
+OK   progress-premium-v2.js
+OK   progress-premium-v3.js
+OK   progress-premium-v4.js
+OK   progress-premium-v5.js
+OK   progress-premium.js
+OK   progress-style-fix.js
+OK   training-actions-hotfix-v1.js
+OK   training-actions-hotfix-v2.js
+OK   training-coach-fixes-v1.js
+OK   training-day-wizard-v1.js
+OK   training-days-compact-v3.js
+OK   training-defaults-v1.js
+OK   training-inline-fix.js
+OK   training-premium-v2.js
+OK   training-routine-plate-v1.js
+OK   workout-muscle-visual-fix-v1.js
+OK   workout-session-premium-v2.js
+OK   workout-session-premium-v3.js
+
+[INLINE SCRIPT SYNTAX]
+OK   index.html script#1
+OK   index.html script#2
+
+[RUNTIME HOTSPOTS BY FILE]
+auth-premium-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2, !important=4
+checkin-coach-sync-v2.js | setTimeout=5, addEventListener=1, Supabase queries=6, !important=4
+checkin-premium.js | setTimeout=3, addEventListener=1, !important=45
+client-admin-premium.js | setTimeout=3, addEventListener=2, Supabase queries=4, !important=15
+client-checkin-final-v3.js | setTimeout=4, addEventListener=1, Supabase queries=2, !important=5
+client-checkin-messages-premium-v1.js | setInterval=1, setTimeout=3, addEventListener=1, Supabase queries=6, !important=21
+client-delete-atomic-v4.js | addEventListener=2, Supabase queries=2
+client-delete-persist-v1.js | setTimeout=5, addEventListener=2, Supabase queries=1
+client-home-premium-v4.js | MutationObserver=1, addEventListener=1, !important=173
+client-home-task-seen-fix.js | addEventListener=1
+client-metrics-sync-v10.js | setTimeout=7, addEventListener=2, Supabase queries=5, !important=10
+client-nutrition-option-state-v3.js | addEventListener=1
+client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
+client-profile-editor-v1.js | MutationObserver=1, addEventListener=2, Supabase queries=3, !important=16
+client-profile-preferences-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2
+client-progress-final-v9.js | MutationObserver=1, setTimeout=4, addEventListener=2, Supabase queries=1, !important=82
+client-progress-premium-v6.js | setTimeout=1, addEventListener=4, Supabase queries=1, !important=17
+client-server-source-v1.js | addEventListener=3, Supabase queries=2
+client-summary-cleanup-v1.js | MutationObserver=1, addEventListener=2
+clients-search-final-fix.js | MutationObserver=2, setTimeout=2, addEventListener=2, !important=79
+coach-calendar-alignment-v13.js | !important=2
+coach-calendar-form-fix-v15.js | MutationObserver=1, setTimeout=5, addEventListener=7, Supabase queries=2, !important=53
+coach-calendar-sync-v14.js | setTimeout=6, addEventListener=1, Supabase queries=1
+coach-calendar-v12.js | setTimeout=2, addEventListener=1, Supabase queries=3, !important=56
+coach-client-plan-status-v1-base.js | MutationObserver=1, setTimeout=8, addEventListener=8, Supabase queries=11, !important=3
+coach-client-plan-status-v1.js | setTimeout=2, Supabase queries=1
+coach-light-stable-v1.js | MutationObserver=1, addEventListener=4, !important=118
+coach-panel-state-v10.js | MutationObserver=1, setTimeout=2, addEventListener=5, Supabase queries=3, !important=4
+coach-premium-core-v9.js | setTimeout=4, addEventListener=3, !important=22
+coach-premium-final-v2.js | addEventListener=4
+coach-premium-v7.js | setTimeout=3, addEventListener=2, !important=22
+coach-premium-v8.js | setTimeout=1, addEventListener=2, !important=4
+coach-premium.js | setTimeout=3, addEventListener=2, !important=22
+coach-theme-premium-global.js | MutationObserver=4, addEventListener=2, !important=191
+coach-ui-v11.js | setTimeout=4, addEventListener=3, !important=56
+dcc-light-fixes-v1.js | setTimeout=1, addEventListener=1, !important=171
+dcc-production-stability-v1.js | addEventListener=2, localStorage reads=1, localStorage writes=1, !important=3
+dcc-theme-premium-polish-v3.js | MutationObserver=1, setTimeout=1, addEventListener=3, !important=226
+dcc-theme-system-v1.js | MutationObserver=1, addEventListener=2, localStorage reads=2, localStorage writes=2, !important=116
+ejercicio-biblioteca.js | addEventListener=4, !important=45
+entrenamientos/runtime-compat.js | setTimeout=1, addEventListener=2, Supabase queries=8
+exercise-guidance-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2
+exercise-premium-pectoral-v1.js | setTimeout=2, addEventListener=2
+messages-chat-premium-v2.js | setInterval=1, setTimeout=3, addEventListener=1, Supabase queries=2, !important=43
+messages-position-stable-v4.js | setTimeout=3, !important=3
+messages-premium.js | setTimeout=3, !important=3
+messages-sync-fix.js | setTimeout=4, addEventListener=1, Supabase queries=1, !important=19
+nav-premium-global.js | !important=115
+new-client-premium-v1.js | setTimeout=1, Supabase queries=6, !important=32
+nutrition-plan-premium-v1.js | addEventListener=5, !important=14
+nutrition-plan-premium-v2.js | addEventListener=1, localStorage reads=1, localStorage writes=1, Supabase queries=1
+progress-metrics-unify.js | setTimeout=1, !important=3
+progress-premium-v2.js | MutationObserver=1, setInterval=1, setTimeout=1, addEventListener=1
+progress-premium-v3.js | MutationObserver=1, setTimeout=2, addEventListener=2
+progress-premium-v4.js | setTimeout=1, !important=44
+progress-premium-v5.js | setTimeout=2, addEventListener=1, !important=45
+progress-premium.js | setTimeout=4, addEventListener=1, !important=2
+progress-style-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=113
+training-actions-hotfix-v1.js | MutationObserver=1, addEventListener=3, !important=141
+training-actions-hotfix-v2.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=140
+training-coach-fixes-v1.js | MutationObserver=1, addEventListener=6, !important=19
+training-day-wizard-v1.js | MutationObserver=1, addEventListener=1, !important=75
+training-days-compact-v3.js | !important=30
+training-defaults-v1.js | setInterval=1, addEventListener=3
+training-inline-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=3
+training-premium-v2.js | addEventListener=3, !important=2
+training-routine-plate-v1.js | !important=67
+workout-muscle-visual-fix-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=118
+workout-session-premium-v2.js | setInterval=1, Supabase queries=1, !important=21
+workout-session-premium-v3.js | setInterval=1, Supabase queries=1, !important=20
+index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads=3, localStorage writes=5, Supabase queries=25, !important=641
+
+[TOTALS]
+MutationObserver: 27
+setInterval: 7
+setTimeout: 117
+addEventListener: 137
+localStorage reads: 7
+localStorage writes: 9
+Supabase queries: 103
+!important: 3543
+
+[INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
+01. https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
+02. ./ejercicio-biblioteca.js
+03. ./client-admin-premium.js?v=20260910-2405
+04. ./nutrition-plan-premium-v2.js?v=20260911-1
+05. ./nutrition-plan-premium-v1.js?v=20260911-1
+06. ./training-premium-v2.js?v=1
+07. ./training-actions-hotfix-v1.js?v=20260911-1
+08. ./training-actions-hotfix-v2.js?v=20260911-2
+09. ./workout-muscle-visual-fix-v1.js?v=20260911-2246
+10. ./client-checkin-messages-premium-v1.js?v=1
+11. ./messages-chat-premium-v2.js?v=1
+12. ./checkin-coach-sync-v2.js?v=20260910-2335
+13. ./client-checkin-final-v3.js?v=1
+14. ./coach-premium-v8.js?v=20260910-1654
+15. ./coach-client-plan-status-v1.js?v=20260911-0610
+16. ./dcc-theme-system-v1.js?v=20260912-0705
+17. ./coach-theme-premium-global.js?v=20260912-0705
+Duplicate exact script paths: none
+
+[FAILURES]
+JS syntax: client-delete-atomic-v4.js: /home/runner/work/Daniel-Campins-/Daniel-Campins-/client-delete-atomic-v4.js:107
+})();
+ ^
+
+SyntaxError: Unexpected token ')'
+    at wrapSafe (node:internal/modules/cjs/loader:1713:18)
+    at checkSyntax (node:internal/main/check_syntax:78:3)
+
+Node.js v22.23.2
+JS syntax: client-server-source-v1.js: /home/runner/work/Daniel-Campins-/Daniel-Campins-/client-server-source-v1.js:110
+})();
+ ^
+
+SyntaxError: Unexpected token ')'
+    at wrapSafe (node:internal/modules/cjs/loader:1713:18)
+    at checkSyntax (node:internal/main/check_syntax:78:3)
+
+Node.js v22.23.2
