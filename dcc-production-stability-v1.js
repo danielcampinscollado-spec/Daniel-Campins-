@@ -14,8 +14,8 @@
       if(!stored){
         localStorage.setItem(THEME_KEY,'light-premium');
         html.classList.add('dcc-theme-light-premium');
-      }else if(stored==='light-premium'){
-        html.classList.add('dcc-theme-light-premium');
+      }else{
+        html.classList.toggle('dcc-theme-light-premium',stored==='light-premium');
       }
     }catch(_){
       html.classList.add('dcc-theme-light-premium');
