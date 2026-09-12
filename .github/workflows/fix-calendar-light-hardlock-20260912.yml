@@ -1,0 +1,48 @@
+name: Fix calendar Light Premium hard lock
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-calendar-light-hardlock-20260912.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[calendar-light-hardlock]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch calendar source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('coach-calendar-v12.js')
+          s=p.read_text()
+
+          old="""      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}\n"""
+          add="""      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}\n      #coach-main.dcc-cal-v11 .dcc-cal-day.selected{background:linear-gradient(135deg,#f6d77e 0%,#e5b341 100%)!important;color:#17130a!important;border:1px solid #d9aa4a!important;box-shadow:0 6px 18px rgba(183,123,19,.16)!important}\n      #coach-main.dcc-cal-v11 .dcc-cal-day.selected:after{display:none!important}\n      #modal.dcc-cal-session-overlay{background:rgba(37,31,20,.26)!important}\n      #modal.dcc-cal-session-overlay .modal-box{background:linear-gradient(145deg,#fffefa 0%,#f8f1e5 100%)!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important;box-shadow:0 28px 80px rgba(72,52,19,.18)!important}\n      #modal.dcc-cal-session-overlay #dcc-cal-session-form h2,#modal.dcc-cal-session-overlay #dcc-cal-session-form label{color:#17191d!important}\n      #modal.dcc-cal-session-overlay #dcc-cal-session-form .sub{color:#7a8390!important}\n      #modal.dcc-cal-session-overlay #dcc-cal-session-form .close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}\n      #modal.dcc-cal-session-overlay #dcc-cal-session-form input,#modal.dcc-cal-session-overlay #dcc-cal-session-form select,#modal.dcc-cal-session-overlay #dcc-cal-session-form textarea{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.30)!important;box-shadow:none!important}\n"""
+          if old in s and '#coach-main.dcc-cal-v11 .dcc-cal-day.selected{' not in s:
+              s=s.replace(old,add,1)
+
+          s=s.replace("return `<div class=\"dcc-cal-empty\"><span class=\"dcc-cal-empty-icon\">⌛</span><span>Cargando agenda…</span></div>`;","return `<div class=\"dcc-cal-empty dcc-cal-loading\" aria-hidden=\"true\"></div>`;")
+
+          marker="""    document.getElementById('modal')?.classList.add('dcc-cal-session-overlay');\n"""
+          hard="""    document.getElementById('modal')?.classList.add('dcc-cal-session-overlay');\n    requestAnimationFrame(()=>{\n      const modal=document.getElementById('modal');\n      const box=modal?.querySelector('.modal-box');\n      if(modal){modal.style.setProperty('background','rgba(37,31,20,.26)','important')}\n      if(box){box.style.setProperty('background','linear-gradient(145deg,#fffefa 0%,#f8f1e5 100%)','important');box.style.setProperty('color','#17191d','important');box.style.setProperty('border-color','rgba(185,122,17,.42)','important')}\n      modal?.querySelectorAll('#dcc-cal-session-form h2,#dcc-cal-session-form label').forEach(el=>el.style.setProperty('color','#17191d','important'));\n      modal?.querySelectorAll('#dcc-cal-session-form input,#dcc-cal-session-form select,#dcc-cal-session-form textarea').forEach(el=>{el.style.setProperty('background','#fffefa','important');el.style.setProperty('color','#17191d','important');el.style.setProperty('-webkit-text-fill-color','#17191d','important');el.style.setProperty('border-color','rgba(185,122,17,.30)','important')});\n      const close=modal?.querySelector('#dcc-cal-session-form .close');if(close){close.style.setProperty('background','#fffaf1','important');close.style.setProperty('color','#98640b','important')}\n    });\n"""
+          if marker in s and 'requestAnimationFrame(()=>{' not in s[s.find(marker):s.find(marker)+1400]:
+              s=s.replace(marker,hard,1)
+
+          p.write_text(s)
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'dcc-stability-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add coach-calendar-v12.js
+          git diff --cached --quiet && exit 0
+          git commit -m '[calendar-light-hardlock] Lock selected day and session modal to Light Premium'
+          git push
