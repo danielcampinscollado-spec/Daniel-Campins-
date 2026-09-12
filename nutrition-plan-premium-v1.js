@@ -71,6 +71,7 @@
   }
 
   function loadPersistenceFixes(){
+    loadOnce('./local-cache-authority-v1.js?v=20260912-2358','dccLocalCacheAuthorityDirect');
     loadOnce('./data-authority-v1.js?v=20260912-2328','dccDataAuthorityDirect');
     loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
