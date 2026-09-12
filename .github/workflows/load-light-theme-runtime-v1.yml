@@ -1,0 +1,51 @@
+name: Install Light Premium runtime
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/load-light-theme-runtime-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Patch production entrypoint
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          prepaint='''<script id="dcc-theme-prepaint-v1">\n(function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();\n</script>\n<style id="dcc-nav-prepaint-v1">\nhtml.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}\n#client-nav,#coach-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}\n#client-nav button,#coach-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}\n#client-nav button svg,#coach-nav button svg{color:#e8b94f!important;stroke:currentColor!important}\n#client-nav button span,#coach-nav button span{color:#e5c778!important}\n#client-nav button.active,#coach-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}\n#client-nav button.active *,#coach-nav button.active *{color:#1d1608!important}\n</style>'''
+
+          if 'id="dcc-theme-prepaint-v1"' not in s:
+              marker='<title>Daniel Campins</title>'
+              if marker not in s:
+                  raise SystemExit('title marker not found')
+              s=s.replace(marker,marker+'\n'+prepaint,1)
+
+          runtime='''\n<script src="./dcc-theme-system-v1.js?v=20260912-0705"></script>\n<script src="./coach-theme-premium-global.js?v=20260912-0705"></script>'''
+          if 'coach-theme-premium-global.js?v=20260912-0705' not in s:
+              anchor='<script src="./coach-client-plan-status-v1.js?v=20260911-0610"></script>'
+              if anchor not in s:
+                  raise SystemExit('coach anchor not found')
+              s=s.replace(anchor,anchor+runtime,1)
+
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git commit -m "Load Light Premium theme runtime before coach paint"
+          git push origin main
