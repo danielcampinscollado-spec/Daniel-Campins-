@@ -1,0 +1,37 @@
+name: rc-browser-smoke
+
+on:
+  push:
+    branches:
+      - audit/release-candidate-2026-09-12
+    paths:
+      - .github/workflows/rc-browser-smoke.yml
+      - .github/scripts/rc_browser_smoke.mjs
+      - index.html
+      - '*.js'
+  workflow_dispatch:
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    env:
+      RC_URL: https://daniel-campins-git-a-4f6ace-danielcampinscollado-4962s-projects.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Wait for preview and run browser audit
+        shell: bash
+        run: |
+          for i in {1..24}; do
+            code=$(curl -L -s -o /dev/null -w '%{http_code}' "$RC_URL" || true)
+            if [ "$code" = "200" ]; then break; fi
+            sleep 5
+          done
+          node .github/scripts/rc_browser_smoke.mjs
