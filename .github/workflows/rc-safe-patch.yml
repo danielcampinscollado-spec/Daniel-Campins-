@@ -1,0 +1,35 @@
+name: rc-safe-patch
+
+on:
+  push:
+    branches:
+      - audit/release-candidate-2026-09-12
+    paths:
+      - .github/scripts/rc_safe_patch.py
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply reviewed runtime patches
+        run: python3 .github/scripts/rc_safe_patch.py
+      - name: Verify JavaScript syntax
+        shell: bash
+        run: |
+          set -e
+          for f in $(find . -type f -name '*.js' -not -path './.git/*'); do node --check "$f" >/dev/null; done
+      - name: Commit reviewed patches
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add training-actions-hotfix-v1.js messages-chat-premium-v2.js client-checkin-messages-premium-v1.js
+          git diff --cached --quiet && exit 0
+          git commit -m "Reduce active runtime polling and observer churn"
+          git push origin HEAD:audit/release-candidate-2026-09-12
