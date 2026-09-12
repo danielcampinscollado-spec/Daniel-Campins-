@@ -50,21 +50,21 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
-  function loadClientDeleteFix(){
-    if(window.__dccClientDeletePersistV3Loaded||document.querySelector('script[data-dcc-client-delete-fix]'))return;
+  function loadClientDeleteAtomic(){
+    if(window.__dccClientDeleteAtomicV5||document.querySelector('script[data-dcc-client-delete-atomic-v5]'))return;
     const s=document.createElement('script');
-    s.src='./client-delete-persist-v1.js?v=20260912-2132';
+    s.src='./client-delete-atomic-v4.js?v=20260912-2142';
     s.async=false;
-    s.dataset.dccClientDeleteFix='1';
+    s.dataset.dccClientDeleteAtomicV5='1';
     (document.head||document.documentElement).appendChild(s);
   }
 
-  function loadClientDeleteAtomic(){
-    if(window.__dccClientDeleteAtomicV4||document.querySelector('script[data-dcc-client-delete-atomic]'))return;
+  function loadClientProfileEditor(){
+    if(window.__dccClientProfileEditorV1||document.querySelector('script[data-dcc-client-profile-editor]'))return;
     const s=document.createElement('script');
-    s.src='./client-delete-atomic-v4.js?v=20260912-2135';
+    s.src='./client-profile-editor-v1.js?v=20260912-2142';
     s.async=false;
-    s.dataset.dccClientDeleteAtomic='1';
+    s.dataset.dccClientProfileEditor='1';
     (document.head||document.documentElement).appendChild(s);
   }
 
@@ -78,30 +78,28 @@
         if(seen.has(src))duplicates.push(src);
         else seen.add(src);
       });
-      if(duplicates.length){
-        console.warn('DCC stability: scripts duplicados exactos detectados',duplicates);
-      }
+      if(duplicates.length)console.warn('DCC stability: scripts duplicados exactos detectados',duplicates);
     }catch(_){ }
+  }
+
+  function loadRuntimeFixes(){
+    loadTrainingDayWizard();
+    loadClientDeleteAtomic();
+    loadClientProfileEditor();
   }
 
   ensureInitialTheme();
   installPrepaint();
-  loadTrainingDayWizard();
-  loadClientDeleteFix();
-  loadClientDeleteAtomic();
+  loadRuntimeFixes();
   document.addEventListener('DOMContentLoaded',()=>{
     ensureInitialTheme();
     installPrepaint();
-    loadTrainingDayWizard();
-    loadClientDeleteFix();
-    loadClientDeleteAtomic();
+    loadRuntimeFixes();
     reportDuplicateExactScripts();
   },{once:true});
   window.addEventListener('pageshow',()=>{
     ensureInitialTheme();
     installPrepaint();
-    loadTrainingDayWizard();
-    loadClientDeleteFix();
-    loadClientDeleteAtomic();
+    loadRuntimeFixes();
   });
 })();
