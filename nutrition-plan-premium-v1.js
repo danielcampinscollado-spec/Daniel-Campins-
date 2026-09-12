@@ -11,7 +11,7 @@
   const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
 
   function installCss(){
-    document.getElementById(STYLE_ID)?.remove();
+    if(document.getElementById(STYLE_ID))return;
     const style=document.createElement('style');
     style.id=STYLE_ID;
     style.textContent=`
@@ -88,18 +88,19 @@
     });
   }
 
-  function observe(){
+  function bindCoachRefresh(){
     const main=document.getElementById('coach-main');
-    if(!main||main.__dccClientVisualHotfixObserver)return;
-    main.__dccClientVisualHotfixObserver=true;
-    new MutationObserver(refresh).observe(main,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    if(!main||main.__dccClientVisualHotfixBound)return;
+    main.__dccClientVisualHotfixBound=true;
+    main.addEventListener('click',()=>requestAnimationFrame(refresh),{passive:true});
+    main.addEventListener('change',()=>requestAnimationFrame(refresh),{passive:true});
   }
 
   installCss();
   markRoutineHistory();
   loadPersistenceFixes();
-  observe();
-  document.addEventListener('DOMContentLoaded',()=>{refresh();observe()},{once:true});
-  window.addEventListener('load',()=>{refresh();observe()},{once:true});
-  window.addEventListener('pageshow',()=>{refresh();observe()});
+  bindCoachRefresh();
+  document.addEventListener('DOMContentLoaded',()=>{refresh();bindCoachRefresh()},{once:true});
+  window.addEventListener('load',()=>{refresh();bindCoachRefresh()},{once:true});
+  window.addEventListener('pageshow',refresh);
 })();
