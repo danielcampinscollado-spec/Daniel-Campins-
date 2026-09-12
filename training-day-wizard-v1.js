@@ -13,12 +13,23 @@
   function save(){try{window.saveData?.()}catch(e){console.error(e)}}
 
   function css(){if(document.getElementById('dcc-training-day-wizard-css'))return;const s=document.createElement('style');s.id='dcc-training-day-wizard-css';s.textContent=`
-    .dcc-tdw{margin:0 0 16px;padding:16px;border:1px solid rgba(183,123,19,.25);border-radius:20px;background:linear-gradient(160deg,#fffdf8,#f8f0e3);box-shadow:0 10px 28px rgba(78,58,28,.07)}
-    .dcc-tdw-step{display:flex;gap:11px;align-items:flex-start}.dcc-tdw-num{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#b57a12,#d5a238);color:#fff;font-weight:900}.dcc-tdw h3{margin:1px 0 3px;font-size:16px;color:#17191d}.dcc-tdw p{margin:0;color:#747b86;font-size:11px;line-height:1.35}
-    .dcc-tdw-count{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:13px}.dcc-tdw-count button,.dcc-tdw-tabs button{min-height:42px;border:1px solid rgba(183,123,19,.28);border-radius:13px;background:#fffdf8;color:#17191d;font-weight:800}.dcc-tdw-count button.on,.dcc-tdw-tabs button.on{border-color:#d7a63e;background:linear-gradient(135deg,#f6d46f,#eab63e);color:#17130a}
-    .dcc-tdw-config{display:flex;gap:10px;align-items:flex-start;margin-top:17px;padding-top:15px;border-top:1px solid rgba(183,123,19,.14)}.dcc-tdw-tabs{display:flex;gap:7px;overflow-x:auto;margin-top:12px;padding-bottom:2px}.dcc-tdw-tabs button{min-width:82px;padding:0 14px;flex:none}
-    .dcc-tdw-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 2px}.dcc-tdw-nav button{min-height:44px;border-radius:13px;font-weight:850}.dcc-tdw-prev{border:1px solid rgba(183,123,19,.22);background:#fffdf8;color:#656b75}.dcc-tdw-next{border:1px solid #d9aa4a;background:linear-gradient(135deg,#f5cf66,#e5ad36);color:#17130a}.dcc-tdw-nav button:disabled{opacity:.38}
-    @media(max-width:430px){.dcc-tdw{padding:14px}.dcc-tdw-count{gap:4px}.dcc-tdw-count button{min-height:38px;border-radius:11px;font-size:12px}.dcc-tdw-tabs button{min-width:74px}}
+    #coach-main .dcc-tdw{margin:0 0 16px!important;padding:16px!important;border:1px solid rgba(183,123,19,.25)!important;border-radius:20px!important;background:linear-gradient(160deg,#fffdf8,#f8f0e3)!important;color:#17191d!important;box-shadow:0 10px 28px rgba(78,58,28,.07)!important}
+    #coach-main .dcc-tdw-step{display:flex!important;gap:11px!important;align-items:flex-start!important}
+    #coach-main .dcc-tdw-num{width:32px!important;height:32px!important;min-width:32px!important;flex:none!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:linear-gradient(135deg,#b57a12,#d5a238)!important;color:#fff!important;font-weight:900!important}
+    #coach-main .dcc-tdw h3{margin:1px 0 3px!important;font-size:16px!important;color:#17191d!important}
+    #coach-main .dcc-tdw p{margin:0!important;color:#747b86!important;font-size:11px!important;line-height:1.35!important}
+    #coach-main .dcc-tdw-count{display:grid!important;grid-template-columns:repeat(7,1fr)!important;gap:6px!important;margin-top:13px!important}
+    #coach-main .dcc-tdw-count button,#coach-main .dcc-tdw-tabs button{min-height:42px!important;border:1px solid rgba(183,123,19,.28)!important;border-radius:13px!important;background:#fffdf8!important;color:#17191d!important;font-weight:800!important;box-shadow:none!important}
+    #coach-main .dcc-tdw-count button.on,#coach-main .dcc-tdw-tabs button.on{border-color:#d7a63e!important;background:linear-gradient(135deg,#f6d46f,#eab63e)!important;color:#17130a!important}
+    #coach-main .dcc-tdw-config{display:flex!important;gap:10px!important;align-items:flex-start!important;margin-top:17px!important;padding-top:15px!important;border-top:1px solid rgba(183,123,19,.14)!important}
+    #coach-main .dcc-tdw-tabs{display:flex!important;gap:7px!important;overflow-x:auto!important;margin-top:12px!important;padding-bottom:2px!important}
+    #coach-main .dcc-tdw-tabs button{min-width:82px!important;padding:0 14px!important;flex:none!important}
+    #coach-main .dcc-tdw-nav{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:12px 0 2px!important}
+    #coach-main .dcc-tdw-nav button{min-height:44px!important;border-radius:13px!important;font-weight:850!important}
+    #coach-main .dcc-tdw-prev{border:1px solid rgba(183,123,19,.22)!important;background:#fffdf8!important;color:#656b75!important}
+    #coach-main .dcc-tdw-next{border:1px solid #d9aa4a!important;background:linear-gradient(135deg,#f5cf66,#e5ad36)!important;color:#17130a!important}
+    #coach-main .dcc-tdw-nav button:disabled{opacity:.38!important}
+    @media(max-width:430px){#coach-main .dcc-tdw{padding:14px!important}#coach-main .dcc-tdw-count{gap:4px!important}#coach-main .dcc-tdw-count button{min-height:38px!important;border-radius:11px!important;font-size:12px!important}#coach-main .dcc-tdw-tabs button{min-width:74px!important}}
   `;(document.head||document.documentElement).appendChild(s)}
 
   function html(ds){const n=ds.length||1;state.active=Math.max(0,Math.min(state.active,n-1));return `<section class="dcc-tdw" data-dcc-tdw="1"><div class="dcc-tdw-step"><span class="dcc-tdw-num">1</span><div><h3>¿Cuántos días entrenará?</h3><p>Selecciona el número de días de entrenamiento por semana.</p></div></div><div class="dcc-tdw-count">${[1,2,3,4,5,6,7].map(x=>`<button class="${x===n?'on':''}" onclick="dccSetTrainingDayCount(${x})">${x}</button>`).join('')}</div><div class="dcc-tdw-config"><span class="dcc-tdw-num">2</span><div><h3>Configura cada día</h3><p>Añade los grupos musculares y ejercicios para cada día.</p></div></div><div class="dcc-tdw-tabs">${ds.map((_,i)=>`<button class="${i===state.active?'on':''}" onclick="dccTrainingWizardDay(${i})">Día ${i+1}</button>`).join('')}</div></section>`}
