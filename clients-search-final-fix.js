@@ -22,17 +22,18 @@
         overflow:hidden!important;
         border:1px solid rgba(240,201,107,.48)!important;
         border-radius:16px!important;
-        background:radial-gradient(circle at 88% 0,rgba(240,201,107,.075),transparent 36%),linear-gradient(145deg,#11171c,#080c0f)!important;
-        box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+        background:#fffefa!important;
+        box-shadow:0 7px 18px rgba(78,58,28,.045)!important;
       }
       html body #coach #coach-main.dcc-final-clients .dcc-fcl-search > svg{
         width:18px!important;
         height:18px!important;
         min-width:18px!important;
         flex:0 0 18px!important;
-        color:#c1c7ce!important;
+        color:#b77b13!important;
       }
-      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search > input#dccClientSearch{
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search > input#dccClientSearch,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search > input#dccClientSearch{
         all:unset!important;
         -webkit-appearance:none!important;
         appearance:none!important;
@@ -42,18 +43,43 @@
         min-width:0!important;
         height:100%!important;
         box-sizing:border-box!important;
-        color:#f4f1ed!important;
+        color:#17191d!important;
         font-family:inherit!important;
         font-size:14px!important;
         font-weight:650!important;
         line-height:52px!important;
-        caret-color:#f0c96b!important;
-        -webkit-text-fill-color:#f4f1ed!important;
+        caret-color:#b77b13!important;
+        -webkit-text-fill-color:#17191d!important;
+        background:transparent!important;
+        border:0!important;
+        border-left:0!important;
+        border-right:0!important;
+        border-top:0!important;
+        border-bottom:0!important;
+        outline:0!important;
+        box-shadow:none!important;
+        border-radius:0!important;
+        margin:0!important;
+        padding:0!important;
       }
-      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search > input#dccClientSearch::placeholder{
-        color:#77808a!important;
-        -webkit-text-fill-color:#77808a!important;
+      html body #coach #coach-main.dcc-final-clients .dcc-fcl-search > input#dccClientSearch::placeholder,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search > input#dccClientSearch::placeholder{
+        color:#858c96!important;
+        -webkit-text-fill-color:#858c96!important;
         opacity:1!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search{
+        background:#fffefa!important;
+        color:#17191d!important;
+        border:1px solid rgba(177,119,18,.25)!important;
+        box-shadow:0 7px 18px rgba(78,58,28,.045)!important;
+        overflow:hidden!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search > svg{
+        color:#b77b13!important;
+        border:0!important;
+        outline:0!important;
+        box-shadow:none!important;
       }
     `;
     document.head.appendChild(s);
@@ -104,14 +130,11 @@
   }
 
   function forceInput(){
-    const wrap=document.querySelector('#coach-main.dcc-final-clients .dcc-fcl-search');
+    const wrap=document.querySelector('#coach-main.dcc-final-clients .dcc-fcl-search, #coach-main.dcc-premium-clients .dcc-u-search');
     const input=document.getElementById('dccClientSearch');
     if(!wrap||!input)return;
 
     const set=(el,prop,val)=>el.style.setProperty(prop,val,'important');
-    set(wrap,'height','52px');
-    set(wrap,'min-height','52px');
-    set(wrap,'max-height','52px');
     set(wrap,'display','flex');
     set(wrap,'align-items','center');
     set(wrap,'overflow','hidden');
@@ -128,11 +151,14 @@
     set(input,'font-family','inherit');
     set(input,'font-size','14px');
     set(input,'font-weight','650');
-    set(input,'line-height','52px');
-    set(input,'color','#f4f1ed');
-    set(input,'-webkit-text-fill-color','#f4f1ed');
+    set(input,'color','#17191d');
+    set(input,'-webkit-text-fill-color','#17191d');
     set(input,'background','transparent');
     set(input,'border','0');
+    set(input,'border-left','0');
+    set(input,'border-right','0');
+    set(input,'border-top','0');
+    set(input,'border-bottom','0');
     set(input,'border-radius','0');
     set(input,'outline','0');
     set(input,'box-shadow','none');
@@ -151,17 +177,18 @@
   },{once:true});
 
   window.addEventListener('load',()=>setTimeout(()=>{
+    injectCss();
     injectNextWorkoutVisual();
     forceInput();
   },50));
 
   const main=document.getElementById('coach-main');
   if(main){
-    new MutationObserver(()=>forceInput()).observe(main,{childList:true,subtree:true});
+    new MutationObserver(()=>{injectCss();forceInput()}).observe(main,{childList:true,subtree:true});
   }else{
     setTimeout(()=>{
       const m=document.getElementById('coach-main');
-      if(m)new MutationObserver(()=>forceInput()).observe(m,{childList:true,subtree:true});
+      if(m)new MutationObserver(()=>{injectCss();forceInput()}).observe(m,{childList:true,subtree:true});
       forceInput();
     },300);
   }
