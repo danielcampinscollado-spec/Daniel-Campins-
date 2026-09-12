@@ -51,11 +51,11 @@
   }
 
   function loadClientDeleteAtomic(){
-    if(window.__dccClientDeleteAtomicV5||document.querySelector('script[data-dcc-client-delete-atomic-v5]'))return;
+    if(window.__dccClientDeleteAtomicV6||document.querySelector('script[data-dcc-client-delete-atomic-v6]'))return;
     const s=document.createElement('script');
-    s.src='./client-delete-atomic-v4.js?v=20260912-2142';
+    s.src='./client-delete-atomic-v4.js?v=20260912-2201';
     s.async=false;
-    s.dataset.dccClientDeleteAtomicV5='1';
+    s.dataset.dccClientDeleteAtomicV6='1';
     (document.head||document.documentElement).appendChild(s);
   }
 
