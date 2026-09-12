@@ -7,3 +7,110 @@
 .dcc-pd-section{margin-top:10px!important;padding:12px 14px!important}.dcc-pd-section-head{margin-bottom:4px!important}.dcc-pd-section-sub{margin-top:3px!important;font-size:10.5px!important}.dcc-pd-section.dcc-empty{padding:11px 14px!important}.dcc-pd-section.dcc-empty .dcc-pd-empty{padding:6px 0 0!important}.dcc-pd-empty{font-size:11px!important}
 .dcc-pd-banner{margin-top:10px!important;min-height:72px!important;padding:11px 15px!important;gap:13px!important}.dcc-pd-trophy{font-size:23px!important}.dcc-pd-banner small{font-size:7.5px!important;letter-spacing:2.4px!important}.dcc-pd-banner strong{font-size:16px!important;margin-top:4px!important}
 #coach .side{height:64px!important;left:14px!important;right:14px!important;bottom:10px!important;border-radius:21px!important}#coach-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}#coach-nav button{font-size:8px!important;padding:6px 2px!important}#coach-nav button svg{width:21px!important;height:21px!important}#coach-nav button span{font-size:7.5px!important;margin-top:2px!important}
+
+/* NAV CRÍTICO: mismo aspecto desde el primer paint para evitar el flash negro. */
+#client-nav,#coach-nav{
+  background:linear-gradient(145deg,#28251f 0%,#151513 58%,#222019 100%)!important;
+  border:1px solid rgba(231,181,73,.78)!important;
+  box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important;
+}
+#client-nav button,#coach-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important;transition:none!important}
+#client-nav button svg,#coach-nav button svg{color:#e8b94f!important;stroke:currentColor!important;filter:none!important}
+#client-nav button span,#coach-nav button span{color:#e5c778!important}
+#client-nav button.active,#coach-nav button.active{
+  color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;
+  border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important;
+}
+#client-nav button.active *,#coach-nav button.active *{color:#1d1608!important}
+
+/* ===== LIGHT PREMIUM · ACABADO FINAL ENTRENADOR ===== */
+html.dcc-theme-light-premium body #coach,
+html.dcc-theme-light-premium body #coach-main{
+  background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;
+  color:#17191d!important;
+}
+html.dcc-theme-light-premium body #coach-main{padding-top:max(24px,env(safe-area-inset-top))!important;padding-bottom:118px!important}
+html.dcc-theme-light-premium body #coach-main h1,
+html.dcc-theme-light-premium body #coach-main h2,
+html.dcc-theme-light-premium body #coach-main h3,
+html.dcc-theme-light-premium body #coach-main strong,
+html.dcc-theme-light-premium body #coach-main b{color:#17191d!important;text-shadow:none!important}
+html.dcc-theme-light-premium body #coach-main p,
+html.dcc-theme-light-premium body #coach-main .muted,
+html.dcc-theme-light-premium body #coach-main [class*="sub"],
+html.dcc-theme-light-premium body #coach-main [class*="meta"]{color:#657080!important}
+
+/* Conversación */
+html.dcc-theme-light-premium body #coach-main .dcc-chat-none,
+html.dcc-theme-light-premium body #coach-main .dcc-chat-empty,
+html.dcc-theme-light-premium body #coach-main .dcc-msg-empty{
+  background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#657080!important;
+  border:1px solid rgba(190,132,31,.28)!important;box-shadow:0 10px 26px rgba(83,63,31,.07)!important;
+}
+html.dcc-theme-light-premium body #coach-main .dcc-chat-composer{background:#fffefa!important;border-color:rgba(185,122,17,.30)!important}
+html.dcc-theme-light-premium body #coach-main .dcc-chat-composer input{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important}
+
+/* Modal de check-in: elimina texto lavado y superficies oscuras. */
+html.dcc-theme-light-premium body .dcc-ci-review{
+  background:linear-gradient(145deg,#fffefa 0%,#f8f0e2 100%)!important;color:#17191d!important;
+  border:1px solid rgba(190,132,31,.56)!important;box-shadow:0 28px 80px rgba(83,63,31,.20)!important;
+}
+html.dcc-theme-light-premium body .dcc-ci-review .dcc-ci-review-row,
+html.dcc-theme-light-premium body .dcc-ci-review [class*="metric"],
+html.dcc-theme-light-premium body .dcc-ci-review [class*="row"]{
+  background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important;opacity:1!important;
+}
+html.dcc-theme-light-premium body .dcc-ci-review strong,
+html.dcc-theme-light-premium body .dcc-ci-review b,
+html.dcc-theme-light-premium body .dcc-ci-review [class*="value"]{color:#17191d!important;opacity:1!important}
+html.dcc-theme-light-premium body .dcc-ci-review p,
+html.dcc-theme-light-premium body .dcc-ci-review [class*="label"],
+html.dcc-theme-light-premium body .dcc-ci-review [class*="meta"]{color:#657080!important;opacity:1!important}
+html.dcc-theme-light-premium body .dcc-ci-review [class*="reviewed"],
+html.dcc-theme-light-premium body .dcc-ci-review [class*="success"]{color:#188b5f!important;opacity:1!important}
+
+/* Nuevo cliente */
+html.dcc-theme-light-premium body #modal.dcc-new-client-overlay{background:rgba(45,38,27,.34)!important}
+html.dcc-theme-light-premium body #modal.dcc-new-client-overlay .modal-box{
+  background:linear-gradient(145deg,#fffefa 0%,#f8f0e2 100%)!important;color:#17191d!important;
+  border-color:rgba(190,132,31,.56)!important;box-shadow:0 28px 80px rgba(83,63,31,.22)!important;
+}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-title{background:none!important;-webkit-background-clip:initial!important;background-clip:initial!important;color:#17191d!important}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-sub{color:#9b6a13!important}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-label{color:#17191d!important}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-input,
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-select{
+  background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;
+  border-color:rgba(166,126,59,.34)!important;box-shadow:none!important;
+}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-input::placeholder{color:#89919b!important;-webkit-text-fill-color:#89919b!important}
+html.dcc-theme-light-premium body #dcc-new-client-premium .dcc-nc-close{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.38)!important}
+
+/* Ficha cliente: cualquier bloque de aviso/plan pendiente pasa a Light Premium. */
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="pending"],
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="plan-status"],
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="notice"],
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="alert"]{
+  background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#17191d!important;
+  border-color:rgba(190,132,31,.34)!important;box-shadow:0 10px 24px rgba(83,63,31,.06)!important;
+}
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="pending"] *,
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="plan-status"] *,
+html.dcc-theme-light-premium body #coach-main.dcc-ca [class*="notice"] *{color:inherit!important}
+
+/* Tarjetas del panel y lista de clientes: contraste coherente. */
+html.dcc-theme-light-premium body #coach-main .dcc-p9-accordion,
+html.dcc-theme-light-premium body #coach-main .dcc-p9-stat,
+html.dcc-theme-light-premium body #coach-main .dcc-fcl-card,
+html.dcc-theme-light-premium body #coach-main .dcc-cl-card,
+html.dcc-theme-light-premium body #coach-main .dcc-ci-card,
+html.dcc-theme-light-premium body #coach-main .dcc-msg-card,
+html.dcc-theme-light-premium body #coach-main .dcc-ca-card,
+html.dcc-theme-light-premium body #coach-main .dcc-ca-metric{
+  background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#17191d!important;
+  border-color:rgba(190,132,31,.34)!important;box-shadow:0 10px 26px rgba(83,63,31,.07)!important;
+}
+
+@media(max-width:520px){
+  html.dcc-theme-light-premium body #coach-main{padding-top:max(26px,env(safe-area-inset-top))!important}
+}
