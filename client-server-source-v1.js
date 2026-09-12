@@ -1,7 +1,7 @@
 /* DCC — Supabase como fuente de verdad para la lista de clientes */
 (function(){
   'use strict';
-  const BUILD='20260912-client-source-v3';
+  const BUILD='20260912-client-source-v4';
   if(window.__dccClientServerSource===BUILD)return;
   window.__dccClientServerSource=BUILD;
 
@@ -11,6 +11,41 @@
 
   function persist(){
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(error){console.warn('DCC client sync: no se pudo persistir cache local',error)}
+  }
+
+  function normalizeClient(row,previous={}){
+    return {
+      ...previous,
+      ...row,
+      id:row.id,
+      name:row.name||'',
+      goal:row.goal||'',
+      weight:Number(row.weight)||0,
+      initial:row.initial_weight!=null?Number(row.initial_weight):(Number(row.weight)||0),
+      bodyFatInitial:row.initial_body_fat!=null?Number(row.initial_body_fat):null,
+      age:row.age!=null?Number(row.age):null,
+      height:row.height_cm!=null?Number(row.height_cm):null,
+      heightCm:row.height_cm!=null?Number(row.height_cm):null,
+      height_cm:row.height_cm!=null?Number(row.height_cm):null,
+      foodsToAvoid:String(row.foods_to_avoid||''),
+      foods_to_avoid:String(row.foods_to_avoid||''),
+      plan:row.plan||'',
+      status:row.status||'Pendiente',
+      created_at:row.created_at||previous.created_at||null
+    };
+  }
+
+  function pruneDeletedClientDomains(validIds){
+    const d=appData();
+    [
+      'checkins','diets','routines','previousRoutines','routineUpdatedAt',
+      'weights','workoutHistory','bodyFatHistory','messages','notificationState',
+      'completedTrainingDays','dietHistory'
+    ].forEach(key=>{
+      const obj=d[key];
+      if(!obj||typeof obj!=='object'||Array.isArray(obj))return;
+      Object.keys(obj).forEach(id=>{if(!validIds.has(String(id)))delete obj[id]});
+    });
   }
 
   function clearStaleClients(){
@@ -60,7 +95,10 @@
       if(result.error)throw result.error;
       const rows=Array.isArray(result.data)?result.data:[];
       const d=appData();
-      d.clients=rows;
+      const previous=new Map((d.clients||[]).map(c=>[String(c.id),c]));
+      d.clients=rows.map(row=>normalizeClient(row,previous.get(String(row.id))||{}));
+      const validIds=new Set(d.clients.map(c=>String(c.id)));
+      pruneDeletedClientDomains(validIds);
       persist();
       document.getElementById('dcc-client-auth-required')?.remove();
 
@@ -79,20 +117,21 @@
 
   window.dccSyncClientsFromServer=syncClients;
 
-  async function syncWhenCoachVisible(){
-    if(window.currentApp==='coach'||document.getElementById('coach')?.style.display!=='none')await syncClients({render:true});
+  async function syncWhenClientListVisible(){
+    if(window.__dccSecureRole!=='coach')return;
+    if(window.currentScreen==='clients')await syncClients({render:true});
   }
 
   const installShowCoachWrapper=()=>{
     const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccClientServerSourceV3)return false;
+    if(typeof current!=='function'||current.__dccClientServerSourceV4)return false;
     const wrapped=function(screen){
       if(screen==='clients')clearStaleClients();
       const out=current.apply(this,arguments);
       if(screen==='clients')queueMicrotask(()=>syncClients({render:true}));
       return out;
     };
-    wrapped.__dccClientServerSourceV3=true;
+    wrapped.__dccClientServerSourceV4=true;
     wrapped.__base=current;
     window.showCoach=wrapped;
     return true;
@@ -100,11 +139,11 @@
 
   function bootstrap(){
     installShowCoachWrapper();
-    syncWhenCoachVisible();
+    syncWhenClientListVisible();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootstrap,{once:true});
   else queueMicrotask(bootstrap);
   window.addEventListener('load',installShowCoachWrapper,{once:true});
-  window.addEventListener('pageshow',syncWhenCoachVisible);
+  window.addEventListener('pageshow',syncWhenClientListVisible);
 })();
