@@ -1,0 +1,60 @@
+name: Patch calendar Light Premium source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-calendar-light-20260912.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[calendar-light-source]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch calendar source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('coach-calendar-v12.js')
+          s=p.read_text()
+
+          old_css="""      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}\n      @media(max-width:390px){#modal.dcc-cal-session-overlay{padding:10px!important}#modal.dcc-cal-session-overlay .modal-box{padding:17px!important;max-height:calc(100dvh - 95px)!important}#dcc-cal-session-form h2{font-size:24px}.dcc-cal-session{grid-template-columns:50px minmax(0,1fr) 32px;padding:11px}}"""
+          new_css="""      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}\n      html.dcc-theme-light-premium #coach-main.dcc-cal-v11 .dcc-cal-day.selected{background:linear-gradient(135deg,#f7da82 0%,#e7b640 100%)!important;color:#17130a!important;border-color:#d9aa4a!important;box-shadow:0 4px 12px rgba(183,123,19,.14)!important}\n      html.dcc-theme-light-premium #coach-main.dcc-cal-v11 .dcc-cal-day.selected:before{background:#9a650a!important;box-shadow:none!important}\n      @media(max-width:390px){#modal.dcc-cal-session-overlay{padding:10px!important}#modal.dcc-cal-session-overlay .modal-box{padding:17px!important;max-height:calc(100dvh - 95px)!important}#dcc-cal-session-form h2{font-size:24px}.dcc-cal-session{grid-template-columns:50px minmax(0,1fr) 32px;padding:11px}}"""
+          if old_css not in s:
+              raise SystemExit('calendar CSS anchor not found')
+          s=s.replace(old_css,new_css,1)
+
+          old_agenda="""    const key=dateKey(sel),mkey=key.slice(0,7);if(!cache[mkey])return `<div class=\"dcc-cal-empty\"><span class=\"dcc-cal-empty-icon\">⌛</span><span>Cargando agenda…</span></div>`;"""
+          new_agenda="""    const key=dateKey(sel),mkey=key.slice(0,7);if(!cache[mkey])return '';"""
+          if old_agenda not in s:
+              raise SystemExit('agenda loading anchor not found')
+          s=s.replace(old_agenda,new_agenda,1)
+
+          old_db="""    const database=db();if(!database)return [];"""
+          new_db="""    const database=db();if(!database){cache[key]=[];if(window.currentScreen==='calendar'&&monthKey(monthDate())===key)renderCalendar(false);return [];}"""
+          if old_db not in s:
+              raise SystemExit('calendar db anchor not found')
+          s=s.replace(old_db,new_db,1)
+
+          old_catch="""    }catch(e){console.error('DCC calendario cargando sesiones:',e);notify('No se pudo cargar la agenda');return []}finally{loading.delete(key)}"""
+          new_catch="""    }catch(e){console.error('DCC calendario cargando sesiones:',e);cache[key]=[];if(window.currentScreen==='calendar'&&monthKey(monthDate())===key)renderCalendar(false);notify('No se pudo cargar la agenda');return []}finally{loading.delete(key)}"""
+          if old_catch not in s:
+              raise SystemExit('calendar catch anchor not found')
+          s=s.replace(old_catch,new_catch,1)
+
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name 'dcc-stability-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add coach-calendar-v12.js
+          git diff --cached --quiet && exit 0
+          git commit -m '[calendar-light-source] Fix selected day and agenda empty state'
+          git push
