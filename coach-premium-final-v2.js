@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260910-1932-legacy-bridge';
+  const BUILD='20260912-0941-dashboard-fix';
   window.__dccLegacyCoachBridge=BUILD;
 
   function isCoachDashboardVisible(){
@@ -48,9 +48,21 @@
     (document.head||document.documentElement).appendChild(ui);
   }
 
+  function loadDashboardFix(){
+    const existing=[...document.scripts].find(s=>/coach-dashboard-light-fix\.js(?:\?|$)/.test(s.src||''));
+    if(existing) return;
+    const fix=document.createElement('script');
+    fix.src='./coach-dashboard-light-fix.js?v=20260912-0941';
+    fix.async=false;
+    fix.dataset.dccDashboardLightFix=BUILD;
+    fix.onerror=()=>console.error('DCC legacy bridge: no se pudo cargar coach-dashboard-light-fix.js');
+    (document.head||document.documentElement).appendChild(fix);
+  }
+
   function loadCurrentCoach(){
     document.getElementById('dcc-coach-final-v2-css')?.remove();
     loadPanelState();
+    loadDashboardFix();
 
     const current=[...document.scripts].find(s=>/coach-premium-v8\.js(?:\?|$)/.test(s.src||''));
     if(current){
@@ -67,6 +79,7 @@
     s.onload=()=>{
       loadPanelState();
       loadCoachUI();
+      loadDashboardFix();
       setTimeout(forceDashboard,20);
       setTimeout(forceDashboard,120);
       setTimeout(forceDashboard,400);
