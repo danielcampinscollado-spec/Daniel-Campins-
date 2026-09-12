@@ -1,8 +1,8 @@
 /* DCC — eliminación definitiva de clientes + acceso estable a gestionar cliente */
 (function(){
   'use strict';
-  if(window.__dccClientDeletePersistV2Loaded)return;
-  window.__dccClientDeletePersistV2Loaded=true;
+  if(window.__dccClientDeletePersistV3Loaded)return;
+  window.__dccClientDeletePersistV3Loaded=true;
 
   const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
@@ -21,10 +21,39 @@
     save();
   }
 
+  async function deleteClientRelations(database,id){
+    const tables=[
+      'client_weights',
+      'client_diets',
+      'client_routines',
+      'client_checkins',
+      'client_messages',
+      'workout_history',
+      'client_notification_state',
+      'coach_calendar_sessions',
+      'client_body_fat_history',
+      'app_user_roles'
+    ];
+
+    for(const table of tables){
+      const result=await database.from(table).delete().eq('client_id',id);
+      if(result.error){
+        throw new Error(`${table}: ${result.error.message||result.error}`);
+      }
+    }
+
+    try{
+      const legacy=await database.from('dietas').delete().eq('client_id',id);
+      if(legacy.error)console.warn('DCC delete legacy dietas:',legacy.error);
+    }catch(error){
+      console.warn('DCC delete legacy dietas:',error);
+    }
+  }
+
   function installDelete(){
     const current=window.dccLegacyDelete;
     if(typeof current!=='function')return false;
-    if(current.__dccDeletePersistV1||current.__dccDeletePersistV2)return true;
+    if(current.__dccDeletePersistV3)return true;
 
     const replacement=async function(id){
       const d=appData();
@@ -39,21 +68,27 @@
       }
 
       try{
+        await deleteClientRelations(database,id);
+
         const result=await database.from('clients').delete().eq('id',id).select('id');
         if(result.error)throw result.error;
         if(!Array.isArray(result.data)||result.data.length===0)throw new Error('El servidor no confirmó la eliminación');
 
         removeLocalClient(id);
-        notify('Cliente eliminado definitivamente');
+        window.selectedClient=null;
+        window.__dccTrainingEdit=false;
+        delete window.__dccTrainingBackup;
         if(typeof window.showCoach==='function')window.showCoach('clients');
+        notify('Cliente eliminado definitivamente');
       }catch(error){
         console.error('DCC eliminación de cliente:',error);
-        notify('No se pudo eliminar el cliente. No se ha borrado localmente.');
+        notify('No se pudo eliminar el cliente. Revisa la conexión e inténtalo de nuevo.');
       }
     };
 
     replacement.__dccDeletePersistV1=true;
     replacement.__dccDeletePersistV2=true;
+    replacement.__dccDeletePersistV3=true;
     replacement.__base=current;
     window.dccLegacyDelete=replacement;
     return true;
@@ -119,8 +154,6 @@
     return true;
   }
 
-  /* El listado premium se vuelve a dibujar dinámicamente. Capturamos el toque
-     directamente para que no dependa de wrappers antiguos de openClient. */
   document.addEventListener('click',event=>{
     const button=event.target.closest?.('.dcc-cl-manage');
     if(!button)return;
