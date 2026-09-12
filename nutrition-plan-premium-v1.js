@@ -71,6 +71,7 @@
   }
 
   function loadPersistenceFixes(){
+    loadOnce('./data-authority-v1.js?v=20260912-2328','dccDataAuthorityDirect');
     loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
     loadOnce('./client-server-source-v1.js?v=20260912-2255','dccClientServerSourceDirect');
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
