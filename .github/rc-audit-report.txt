@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 76
+JavaScript files: 77
 HTML files: 1
 
 [JS SYNTAX]
@@ -76,6 +76,7 @@ OK   training-days-compact-v3.js
 OK   training-defaults-v1.js
 OK   training-inline-fix.js
 OK   training-premium-v2.js
+OK   training-progress-authority-v1.js
 OK   training-routine-plate-v1.js
 OK   workout-muscle-visual-fix-v1.js
 OK   workout-session-premium-v2.js
@@ -156,6 +157,7 @@ training-days-compact-v3.js | !important=30
 training-defaults-v1.js | setInterval=1, addEventListener=3
 training-inline-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=3
 training-premium-v2.js | addEventListener=3, !important=2
+training-progress-authority-v1.js | addEventListener=2, Supabase queries=2
 training-routine-plate-v1.js | !important=67
 workout-muscle-visual-fix-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=118
 workout-session-premium-v2.js | setInterval=1, Supabase queries=1, !important=21
@@ -166,10 +168,10 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 27
 setInterval: 7
 setTimeout: 113
-addEventListener: 148
+addEventListener: 150
 localStorage reads: 7
 localStorage writes: 9
-Supabase queries: 108
+Supabase queries: 110
 !important: 3543
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
