@@ -41,6 +41,15 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
+  function loadTrainingDayWizard(){
+    if(window.__dccTrainingDayWizardV1||document.querySelector('script[data-dcc-training-day-wizard]'))return;
+    const s=document.createElement('script');
+    s.src='./training-day-wizard-v1.js?v=20260912-1703';
+    s.async=false;
+    s.dataset.dccTrainingDayWizard='1';
+    (document.head||document.documentElement).appendChild(s);
+  }
+
   function reportDuplicateExactScripts(){
     try{
       const seen=new Set();
@@ -59,13 +68,16 @@
 
   ensureInitialTheme();
   installPrepaint();
+  loadTrainingDayWizard();
   document.addEventListener('DOMContentLoaded',()=>{
     ensureInitialTheme();
     installPrepaint();
+    loadTrainingDayWizard();
     reportDuplicateExactScripts();
   },{once:true});
   window.addEventListener('pageshow',()=>{
     ensureInitialTheme();
     installPrepaint();
+    loadTrainingDayWizard();
   });
 })();
