@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-coach-stable-v1';
+  const BUILD='20260912-coach-stable-v2';
   if(window.__dccLegacyCoachBridge===BUILD)return;
   window.__dccLegacyCoachBridge=BUILD;
 
@@ -27,6 +27,10 @@
     return x;
   }
 
+  function loadStability(){
+    add('./coach-stability-foundation-v1.js?v=20260912-1','dccCoachStability');
+  }
+
   function loadTheme(){
     add('./coach-light-stable-v1.js?v=20260912-1','dccCoachStableTheme');
   }
@@ -40,12 +44,14 @@
   }
 
   function ensureCoach(){
+    loadStability();
     loadTheme();
     loadPanelState();
 
     const current=[...document.scripts].find(s=>/coach-premium-v8\.js(?:\?|$)/.test(s.src||''));
     if(current){
       loadCoachUI();
+      loadStability();
       return;
     }
 
@@ -53,6 +59,7 @@
       loadPanelState();
       loadCoachUI();
       loadTheme();
+      loadStability();
     });
   }
 
