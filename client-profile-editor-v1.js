@@ -36,13 +36,16 @@
     const s=document.createElement('style');
     s.id='dcc-client-profile-editor-css';
     s.textContent=`
-      .dcc-ca-edit-client{width:100%;margin-top:11px;padding:12px;border:1px solid #d7ae55;border-radius:16px;background:linear-gradient(135deg,#fffaf0,#f4e6bf);color:#7a5415;font-weight:850;box-shadow:0 8px 20px rgba(138,96,22,.08)}
+      .dcc-ca-profile-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:8px 2px 12px}
+      .dcc-ca-profile-actions .dcc-ca-edit-client,.dcc-ca-profile-actions .dcc-ca-delete{width:auto!important;margin:0!important;min-height:38px;padding:8px 13px!important;border-radius:999px!important;font-size:12px!important;font-weight:850!important;line-height:1!important;box-shadow:none!important}
+      .dcc-ca-profile-actions .dcc-ca-edit-client{border:1px solid #d7ae55!important;background:linear-gradient(135deg,#fffaf0,#f4e6bf)!important;color:#7a5415!important}
+      .dcc-ca-profile-actions .dcc-ca-delete{border:1px solid #e3b8ba!important;background:#fff5f5!important;color:#b0444a!important}
       .dcc-cpe-overlay{position:fixed;inset:0;z-index:100000;background:rgba(27,24,18,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:18px}
       .dcc-cpe-card{width:min(680px,100%);max-height:88vh;overflow:auto;background:#fffaf2;border:1px solid #e3c782;border-radius:28px;padding:22px;box-shadow:0 24px 70px rgba(64,46,16,.24)}
       .dcc-cpe-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.dcc-cpe-head h2{margin:0;color:#17191d;font-size:25px}.dcc-cpe-close{width:42px;height:42px;border-radius:50%;border:1px solid #ddbf74;background:#fffaf2;color:#8b641c;font-size:24px}
       .dcc-cpe-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dcc-cpe-field{display:grid;gap:7px}.dcc-cpe-field.full{grid-column:1/-1}.dcc-cpe-field label{font-size:12px;font-weight:800;color:#746b5d}.dcc-cpe-field input,.dcc-cpe-field textarea{width:100%;border:1px solid #dfca98;border-radius:14px;background:#fff;color:#17191d;padding:13px 14px;font-size:16px;outline:none}.dcc-cpe-field textarea{min-height:92px;resize:vertical}
       .dcc-cpe-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.dcc-cpe-cancel,.dcc-cpe-save{padding:13px;border-radius:14px;font-weight:900}.dcc-cpe-cancel{border:1px solid #d8c9aa;background:#fff;color:#312f2b}.dcc-cpe-save{border:1px solid #e3b74c;background:linear-gradient(135deg,#f9d76d,#e9b93e);color:#18140a}
-      @media(max-width:560px){.dcc-cpe-grid{grid-template-columns:1fr}.dcc-cpe-field.full{grid-column:auto}.dcc-cpe-card{padding:18px;border-radius:24px}.dcc-cpe-head h2{font-size:22px}}
+      @media(max-width:560px){.dcc-ca-profile-actions{justify-content:flex-start;margin-top:4px}.dcc-ca-profile-actions .dcc-ca-edit-client,.dcc-ca-profile-actions .dcc-ca-delete{font-size:11px!important;padding:8px 11px!important}.dcc-cpe-grid{grid-template-columns:1fr}.dcc-cpe-field.full{grid-column:auto}.dcc-cpe-card{padding:18px;border-radius:24px}.dcc-cpe-head h2{font-size:22px}}
     `;
     document.head.appendChild(s);
   }
@@ -143,14 +146,29 @@
 
   function inject(){
     ensureCss();
-    const deleteBtn=document.querySelector('#coach-main .dcc-ca-delete');
-    if(!deleteBtn||document.querySelector('#coach-main .dcc-ca-edit-client'))return;
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='dcc-ca-edit-client';
-    btn.textContent='Editar cliente';
-    btn.onclick=open;
-    deleteBtn.parentNode.insertBefore(btn,deleteBtn);
+    const main=document.querySelector('#coach-main.dcc-ca');
+    const deleteBtn=main?.querySelector('.dcc-ca-delete');
+    const head=main?.querySelector('.dcc-ca-head');
+    if(!main||!deleteBtn||!head)return;
+
+    let actions=main.querySelector('.dcc-ca-profile-actions');
+    if(!actions){
+      actions=document.createElement('div');
+      actions.className='dcc-ca-profile-actions';
+      head.insertAdjacentElement('afterend',actions);
+    }
+
+    let editBtn=main.querySelector('.dcc-ca-edit-client');
+    if(!editBtn){
+      editBtn=document.createElement('button');
+      editBtn.type='button';
+      editBtn.className='dcc-ca-edit-client';
+      editBtn.textContent='Editar cliente';
+      editBtn.onclick=open;
+    }
+
+    if(editBtn.parentNode!==actions)actions.appendChild(editBtn);
+    if(deleteBtn.parentNode!==actions)actions.appendChild(deleteBtn);
   }
 
   const observer=new MutationObserver(()=>requestAnimationFrame(inject));
