@@ -73,6 +73,7 @@
   function loadPersistenceFixes(){
     loadOnce('./data-authority-v1.js?v=20260912-2328','dccDataAuthorityDirect');
     loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
+    loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./client-server-source-v1.js?v=20260912-2255','dccClientServerSourceDirect');
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
