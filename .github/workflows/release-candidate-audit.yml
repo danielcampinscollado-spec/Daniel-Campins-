@@ -1,0 +1,122 @@
+name: release-candidate-audit
+
+on:
+  push:
+    branches:
+      - audit/release-candidate-2026-09-12
+    paths-ignore:
+      - .github/rc-audit-report.txt
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run full static audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile, json
+
+          root=Path('.')
+          js_files=sorted([p for p in root.rglob('*.js') if '.git' not in p.parts])
+          html_files=sorted([p for p in root.rglob('*.html') if '.git' not in p.parts])
+          report=[]
+          failures=[]
+
+          report.append('DCC RELEASE CANDIDATE STATIC AUDIT')
+          report.append('==================================')
+          report.append(f'JavaScript files: {len(js_files)}')
+          report.append(f'HTML files: {len(html_files)}')
+          report.append('')
+
+          report.append('[JS SYNTAX]')
+          for p in js_files:
+              r=subprocess.run(['node','--check',str(p)],capture_output=True,text=True)
+              if r.returncode:
+                  failures.append(f'JS syntax: {p}: {r.stderr.strip()}')
+                  report.append(f'FAIL {p}')
+              else:
+                  report.append(f'OK   {p}')
+
+          report.append('')
+          report.append('[INLINE SCRIPT SYNTAX]')
+          script_re=re.compile(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>',re.I|re.S)
+          for html in html_files:
+              text=html.read_text(encoding='utf-8',errors='replace')
+              for i,body in enumerate(script_re.findall(text),1):
+                  if not body.strip():
+                      continue
+                  tmp=Path(tempfile.gettempdir())/f'dcc-inline-{i}.js'
+                  tmp.write_text(body,encoding='utf-8')
+                  r=subprocess.run(['node','--check',str(tmp)],capture_output=True,text=True)
+                  if r.returncode:
+                      failures.append(f'Inline syntax: {html} script#{i}: {r.stderr.strip()}')
+                      report.append(f'FAIL {html} script#{i}')
+                  else:
+                      report.append(f'OK   {html} script#{i}')
+
+          metrics={
+              'MutationObserver': re.compile(r'\bMutationObserver\b'),
+              'setInterval': re.compile(r'\bsetInterval\s*\('),
+              'setTimeout': re.compile(r'\bsetTimeout\s*\('),
+              'addEventListener': re.compile(r'\baddEventListener\s*\('),
+              'localStorage reads': re.compile(r'localStorage\.getItem\s*\('),
+              'localStorage writes': re.compile(r'localStorage\.setItem\s*\('),
+              'Supabase queries': re.compile(r'\.(?:from|rpc)\s*\('),
+              '!important': re.compile(r'!important'),
+          }
+          report.append('')
+          report.append('[RUNTIME HOTSPOTS BY FILE]')
+          totals={k:0 for k in metrics}
+          for p in [*js_files,*html_files]:
+              text=p.read_text(encoding='utf-8',errors='replace')
+              counts={k:len(rx.findall(text)) for k,rx in metrics.items()}
+              if any(counts.values()):
+                  for k,v in counts.items(): totals[k]+=v
+                  report.append(str(p)+' | '+', '.join(f'{k}={v}' for k,v in counts.items() if v))
+
+          report.append('')
+          report.append('[TOTALS]')
+          for k,v in totals.items(): report.append(f'{k}: {v}')
+
+          index=Path('index.html')
+          if index.exists():
+              text=index.read_text(encoding='utf-8',errors='replace')
+              srcs=re.findall(r'<script[^>]+src=["\']([^"\']+)',text,re.I)
+              report.append('')
+              report.append('[INDEX EXTERNAL SCRIPTS IN LOAD ORDER]')
+              for i,s in enumerate(srcs,1): report.append(f'{i:02d}. {s}')
+              normalized=[s.split('?')[0] for s in srcs]
+              dup=sorted({s for s in normalized if normalized.count(s)>1})
+              report.append('Duplicate exact script paths: '+(', '.join(dup) if dup else 'none'))
+
+          report.append('')
+          report.append('[FAILURES]')
+          if failures:
+              report.extend(failures)
+          else:
+              report.append('none')
+
+          Path('.github/rc-audit-report.txt').write_text('\n'.join(report)+'\n',encoding='utf-8')
+          if failures:
+              raise SystemExit(1)
+          PY
+      - name: Commit audit report
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/rc-audit-report.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Record release candidate audit [skip ci]"
+          git push origin HEAD:audit/release-candidate-2026-09-12
