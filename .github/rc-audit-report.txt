@@ -23,7 +23,7 @@ OK   client-progress-compact-v7.js
 OK   client-progress-final-v9.js
 OK   client-progress-premium-v6.js
 OK   client-progress-stable-v8.js
-FAIL client-server-source-v1.js
+OK   client-server-source-v1.js
 OK   client-summary-cleanup-v1.js
 OK   clients-search-final-fix.js
 OK   coach-calendar-alignment-v13.js
@@ -186,15 +186,6 @@ Duplicate exact script paths: none
 
 [FAILURES]
 JS syntax: client-delete-atomic-v4.js: /home/runner/work/Daniel-Campins-/Daniel-Campins-/client-delete-atomic-v4.js:107
-})();
- ^
-
-SyntaxError: Unexpected token ')'
-    at wrapSafe (node:internal/modules/cjs/loader:1713:18)
-    at checkSyntax (node:internal/main/check_syntax:78:3)
-
-Node.js v22.23.2
-JS syntax: client-server-source-v1.js: /home/runner/work/Daniel-Campins-/Daniel-Campins-/client-server-source-v1.js:110
 })();
  ^
 
