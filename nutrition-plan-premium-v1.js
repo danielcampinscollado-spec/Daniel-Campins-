@@ -1,6 +1,6 @@
 /* DCC — hotfix visual seguro para gestión de cliente.
    Se carga después de nutrition-plan-premium-v2.js y client-admin-premium.js.
-   No modifica datos ni lógica: sólo corrige dos restos visuales del tema oscuro. */
+   No modifica datos ni lógica visual fuera de estos ajustes. */
 (function(){
   'use strict';
 
@@ -15,7 +15,6 @@
     const style=document.createElement('style');
     style.id=STYLE_ID;
     style.textContent=`
-      /* Alimentación: eliminar el pictograma cuadrado residual del plan vacío. */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan{
         grid-template-columns:minmax(0,1fr)!important;
         gap:0!important;
@@ -23,8 +22,6 @@
       html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan>.dcc-n2-ico{
         display:none!important;
       }
-
-      /* Entrenamiento: tarjeta de histórico/rutina anterior siempre Light Premium. */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix{
         background:linear-gradient(145deg,#fffefa 0%,#f8f0e3 100%)!important;
         color:#17191d!important;
@@ -52,7 +49,6 @@
   function markRoutineHistory(){
     const main=document.getElementById('coach-main');
     if(!main||!main.classList.contains('dcc-ca'))return;
-
     const nodes=[...main.querySelectorAll('button,section,article,div')];
     nodes.forEach(el=>{
       if(el.classList.contains('dcc-ca-wrap'))return;
@@ -65,6 +61,21 @@
     });
   }
 
+  function loadOnce(src,key){
+    if(document.querySelector(`script[data-${key}]`))return;
+    const s=document.createElement('script');
+    s.src=src;
+    s.async=false;
+    s.dataset[key]='1';
+    (document.head||document.documentElement).appendChild(s);
+  }
+
+  function loadPersistenceFixes(){
+    loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
+    loadOnce('./client-server-source-v1.js?v=20260912-2255','dccClientServerSourceDirect');
+    loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
+  }
+
   let queued=false;
   function refresh(){
     if(queued)return;
@@ -73,6 +84,7 @@
       queued=false;
       installCss();
       markRoutineHistory();
+      loadPersistenceFixes();
     });
   }
 
@@ -85,6 +97,7 @@
 
   installCss();
   markRoutineHistory();
+  loadPersistenceFixes();
   observe();
   document.addEventListener('DOMContentLoaded',()=>{refresh();observe()},{once:true});
   window.addEventListener('load',()=>{refresh();observe()},{once:true});
