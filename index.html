@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daniel Campins</title>
+<script id="dcc-theme-prepaint-v1">
+(function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
+</script>
+<style id="dcc-nav-prepaint-v1">
+html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
+#client-nav,#coach-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
+#client-nav button,#coach-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}
+#client-nav button svg,#coach-nav button svg{color:#e8b94f!important;stroke:currentColor!important}
+#client-nav button span,#coach-nav button span{color:#e5c778!important}
+#client-nav button.active,#coach-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}
+#client-nav button.active *,#coach-nav button.active *{color:#1d1608!important}
+</style>
 
 <style>
 *{
@@ -16782,5 +16794,7 @@ async function sendClientCheckin(){
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260910-1654"></script>
 <script src="./coach-client-plan-status-v1.js?v=20260911-0610"></script>
+<script src="./dcc-theme-system-v1.js?v=20260912-0705"></script>
+<script src="./coach-theme-premium-global.js?v=20260912-0705"></script>
 </body>
 </html>
