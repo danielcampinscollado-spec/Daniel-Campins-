@@ -1,9 +1,92 @@
-/* HOTFIX TEMPORAL
-   Desactiva el nuevo flujo de alimentación premium para restaurar inmediatamente
-   la gestión de clientes. La versión corregida se reactivará después de validar
-   que no interfiere con openClient/dccClientAdmin.
-*/
+/* DCC — hotfix visual seguro para gestión de cliente.
+   Se carga después de nutrition-plan-premium-v2.js y client-admin-premium.js.
+   No modifica datos ni lógica: sólo corrige dos restos visuales del tema oscuro. */
 (function(){
   'use strict';
-  window.__dccNutritionPlanPremiumV1Disabled = true;
+
+  window.__dccNutritionPlanPremiumV1Disabled=true;
+  if(window.__dccCoachClientVisualHotfixV1)return;
+  window.__dccCoachClientVisualHotfixV1=true;
+
+  const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
+
+  function installCss(){
+    document.getElementById(STYLE_ID)?.remove();
+    const style=document.createElement('style');
+    style.id=STYLE_ID;
+    style.textContent=`
+      /* Alimentación: eliminar el pictograma cuadrado residual del plan vacío. */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan{
+        grid-template-columns:minmax(0,1fr)!important;
+        gap:0!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan>.dcc-n2-ico{
+        display:none!important;
+      }
+
+      /* Entrenamiento: tarjeta de histórico/rutina anterior siempre Light Premium. */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix{
+        background:linear-gradient(145deg,#fffefa 0%,#f8f0e3 100%)!important;
+        color:#17191d!important;
+        border:1px solid rgba(183,123,19,.27)!important;
+        box-shadow:0 8px 20px rgba(78,58,28,.06),inset 0 1px 0 rgba(255,255,255,.96)!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix *{
+        color:#5f6874!important;
+        text-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix b,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix strong{
+        color:#17191d!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix button{
+        background:#fff1c8!important;
+        color:#99650b!important;
+        border:1px solid rgba(183,123,19,.26)!important;
+        box-shadow:none!important;
+      }
+    `;
+    (document.head||document.documentElement).appendChild(style);
+  }
+
+  function markRoutineHistory(){
+    const main=document.getElementById('coach-main');
+    if(!main||!main.classList.contains('dcc-ca'))return;
+
+    const nodes=[...main.querySelectorAll('button,section,article,div')];
+    nodes.forEach(el=>{
+      if(el.classList.contains('dcc-ca-wrap'))return;
+      const text=String(el.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+      if(!text.includes('rutina anterior'))return;
+      if(text.length>180)return;
+      const rect=el.getBoundingClientRect();
+      if(rect.width<180||rect.height<42)return;
+      el.classList.add('dcc-light-routine-history-fix');
+    });
+  }
+
+  let queued=false;
+  function refresh(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      installCss();
+      markRoutineHistory();
+    });
+  }
+
+  function observe(){
+    const main=document.getElementById('coach-main');
+    if(!main||main.__dccClientVisualHotfixObserver)return;
+    main.__dccClientVisualHotfixObserver=true;
+    new MutationObserver(refresh).observe(main,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  }
+
+  installCss();
+  markRoutineHistory();
+  observe();
+  document.addEventListener('DOMContentLoaded',()=>{refresh();observe()},{once:true});
+  window.addEventListener('load',()=>{refresh();observe()},{once:true});
+  window.addEventListener('pageshow',()=>{refresh();observe()});
 })();
