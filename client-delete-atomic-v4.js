@@ -4,7 +4,7 @@
   if(window.__dccClientDeleteAtomicV8)return;
   window.__dccClientDeleteAtomicV8=true;
 
-  const appData=()=>{try{return data||{}}catch(_){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   const notify=msg=>{try{if(typeof toast==='function')return toast(msg);if(typeof window.toast==='function')return window.toast(msg)}catch(_){}alert(msg)};
 
