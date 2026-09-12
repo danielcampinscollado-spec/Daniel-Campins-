@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 77
+JavaScript files: 78
 HTML files: 1
 
 [JS SYNTAX]
@@ -51,6 +51,7 @@ OK   ejercicio-biblioteca.js
 OK   entrenamientos/runtime-compat.js
 OK   exercise-guidance-v1.js
 OK   exercise-premium-pectoral-v1.js
+OK   local-cache-authority-v1.js
 OK   messages-chat-premium-v2.js
 OK   messages-position-stable-v4.js
 OK   messages-premium.js
@@ -132,6 +133,7 @@ ejercicio-biblioteca.js | addEventListener=4, !important=45
 entrenamientos/runtime-compat.js | setTimeout=1, addEventListener=2, Supabase queries=8
 exercise-guidance-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2
 exercise-premium-pectoral-v1.js | setTimeout=2, addEventListener=2
+local-cache-authority-v1.js | addEventListener=2, localStorage writes=1
 messages-chat-premium-v2.js | setInterval=1, setTimeout=3, addEventListener=2, Supabase queries=2, !important=43
 messages-position-stable-v4.js | setTimeout=3, !important=3
 messages-premium.js | setTimeout=3, !important=3
@@ -168,9 +170,9 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 27
 setInterval: 7
 setTimeout: 113
-addEventListener: 150
+addEventListener: 152
 localStorage reads: 7
-localStorage writes: 9
+localStorage writes: 10
 Supabase queries: 110
 !important: 3543
 
