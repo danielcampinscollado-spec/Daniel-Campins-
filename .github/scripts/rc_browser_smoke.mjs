@@ -28,12 +28,15 @@ for(const viewport of viewports){
     width:document.documentElement.scrollWidth,
     clientWidth:document.documentElement.clientWidth,
     visibleText:(document.body?.innerText||'').slice(0,500),
-    scriptCount:document.scripts.length
+    scriptCount:document.scripts.length,
+    buttonCount:document.querySelectorAll('button').length,
+    linkCount:document.querySelectorAll('a').length,
+    readyState:document.readyState
   }));
 
   const overflow=result.width>result.clientWidth+2;
   console.log(JSON.stringify({viewport:viewport.name,status,...result,overflow,errors,failedRequests},null,2));
-  if(status<200||status>=400||!result.hasLogin||!result.hasCoach||!result.hasClient||overflow||errors.length||failedRequests.length)failed=true;
+  if(status<200||status>=400||!result.hasLogin||!result.hasCoach||!result.hasClient||overflow||errors.length||failedRequests.length||result.readyState!=='complete')failed=true;
   await context.close();
 }
 
