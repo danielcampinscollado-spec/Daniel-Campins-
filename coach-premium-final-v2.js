@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-coach-stable-v2';
+  const BUILD='20260912-coach-stable-v3';
   if(window.__dccLegacyCoachBridge===BUILD)return;
   window.__dccLegacyCoachBridge=BUILD;
 
@@ -27,8 +27,8 @@
     return x;
   }
 
-  function loadStability(){
-    add('./dcc-production-stability-v1.js?v=20260912-1','dccProductionStability');
+  function loadStability(done){
+    add('./dcc-production-stability-v1.js?v=20260912-1','dccProductionStability',done);
   }
 
   function loadTheme(){
@@ -43,8 +43,7 @@
     add('./coach-ui-v11.js?v=20260910-1932','dccCoachUi');
   }
 
-  function ensureCoach(){
-    loadStability();
+  function loadCoachLayers(){
     loadTheme();
     loadPanelState();
 
@@ -55,11 +54,14 @@
     }
 
     add('./coach-premium-v8.js?v=20260910-1817','dccCoachLoader',()=>{
-      loadStability();
       loadPanelState();
       loadCoachUI();
       loadTheme();
     });
+  }
+
+  function ensureCoach(){
+    loadStability(loadCoachLayers);
   }
 
   ensureCoach();
