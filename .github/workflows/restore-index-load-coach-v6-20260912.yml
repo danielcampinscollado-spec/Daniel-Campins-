@@ -1,0 +1,29 @@
+name: Restore index and load coach v6
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-index-load-coach-v6-20260912.yml'
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore index and bump coach theme cache key
+        run: |
+          git checkout deb097f277aef807363ffad490a17b2fc7ba863e -- index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace('coach-theme-premium-global.js?v=20260912-0705','coach-theme-premium-global.js?v=20260912-0816')
+          p.write_text(s)
+          PY
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add index.html
+          git commit -m "Restore stable index and load coach Light Premium v6"
+          git push
