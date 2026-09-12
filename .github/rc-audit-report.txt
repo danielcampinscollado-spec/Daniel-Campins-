@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 72
+JavaScript files: 73
 HTML files: 1
 
 [JS SYNTAX]
@@ -41,6 +41,7 @@ OK   coach-premium-v8.js
 OK   coach-premium.js
 OK   coach-theme-premium-global.js
 OK   coach-ui-v11.js
+OK   data-authority-v1.js
 OK   dcc-light-fixes-v1.js
 OK   dcc-production-stability-v1.js
 OK   dcc-theme-premium-polish-v3.js
@@ -117,6 +118,7 @@ coach-premium-v8.js | setTimeout=1, addEventListener=2, !important=4
 coach-premium.js | setTimeout=3, addEventListener=2, !important=22
 coach-theme-premium-global.js | MutationObserver=4, addEventListener=2, !important=191
 coach-ui-v11.js | setTimeout=4, addEventListener=3, !important=56
+data-authority-v1.js | addEventListener=3
 dcc-light-fixes-v1.js | setTimeout=1, addEventListener=1, !important=171
 dcc-production-stability-v1.js | addEventListener=2, localStorage reads=1, localStorage writes=1, !important=3
 dcc-theme-premium-polish-v3.js | MutationObserver=1, setTimeout=1, addEventListener=3, !important=226
@@ -158,7 +160,7 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 27
 setInterval: 7
 setTimeout: 117
-addEventListener: 137
+addEventListener: 140
 localStorage reads: 7
 localStorage writes: 9
 Supabase queries: 103
