@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-coach-stable-v5';
+  const BUILD='20260912-coach-stable-v6';
   if(window.__dccLegacyCoachBridge===BUILD)return;
   window.__dccLegacyCoachBridge=BUILD;
 
@@ -42,7 +42,7 @@
   }
 
   function loadClientPersistence(){
-    add('./client-server-source-v1.js?v=20260912-2245','dccClientServerSource');
+    add('./client-server-source-v1.js?v=20260912-2315','dccClientServerSource');
     add('./client-delete-atomic-v4.js?v=20260912-2245','dccClientDeleteVerified');
   }
 
