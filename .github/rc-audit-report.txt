@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 74
+JavaScript files: 75
 HTML files: 1
 
 [JS SYNTAX]
@@ -65,6 +65,7 @@ OK   progress-premium-v4.js
 OK   progress-premium-v5.js
 OK   progress-premium.js
 OK   progress-style-fix.js
+OK   routine-authority-v1.js
 OK   server-actions-v1.js
 OK   training-actions-hotfix-v1.js
 OK   training-actions-hotfix-v2.js
@@ -143,6 +144,7 @@ progress-premium-v4.js | setTimeout=1, !important=44
 progress-premium-v5.js | setTimeout=2, addEventListener=1, !important=45
 progress-premium.js | setTimeout=4, addEventListener=1, !important=2
 progress-style-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=113
+routine-authority-v1.js | Supabase queries=3
 server-actions-v1.js | Supabase queries=3
 training-actions-hotfix-v1.js | MutationObserver=1, addEventListener=5, !important=141
 training-actions-hotfix-v2.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=140
@@ -165,7 +167,7 @@ setTimeout: 117
 addEventListener: 144
 localStorage reads: 7
 localStorage writes: 9
-Supabase queries: 108
+Supabase queries: 111
 !important: 3543
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
