@@ -11,12 +11,17 @@
   function cleanupLocal(id){
     const d=appData();
     d.clients=(d.clients||[]).filter(c=>String(c.id)!==String(id));
-    ['checkins','diets','routines','weights','workoutHistory','bodyFatHistory','messages','notificationState'].forEach(k=>{
+    [
+      'checkins','diets','routines','previousRoutines','routineUpdatedAt',
+      'weights','workoutHistory','bodyFatHistory','messages','notificationState',
+      'completedTrainingDays','dietHistory'
+    ].forEach(k=>{
       if(d[k]&&typeof d[k]==='object')delete d[k][id];
     });
     ['calendarSessions','sessions','coachCalendarSessions'].forEach(k=>{
       if(Array.isArray(d[k]))d[k]=d[k].filter(row=>String(row?.client_id??row?.clientId??row?.client)!==String(id));
     });
+    try{localStorage.removeItem('dcc:diet-history:v2:'+String(id))}catch(_){}
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){console.error(e)}
   }
 
