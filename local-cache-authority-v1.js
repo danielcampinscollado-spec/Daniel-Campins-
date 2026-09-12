@@ -6,6 +6,7 @@
   window.__dccLocalCacheAuthority=BUILD;
 
   const STORAGE_KEY='danielCampinsApp';
+  const SERVER_CACHE_PREFIXES=['dcc:diet-history:v2:'];
 
   function neutralSnapshot(){
     return {
@@ -21,6 +22,19 @@
       notificationState:{},
       completedTrainingDays:{}
     };
+  }
+
+  function purgeServerCaches(){
+    try{
+      const keys=[];
+      for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);
+        if(key&&SERVER_CACHE_PREFIXES.some(prefix=>key.startsWith(prefix)))keys.push(key);
+      }
+      keys.forEach(key=>localStorage.removeItem(key));
+    }catch(error){
+      console.warn('DCC server cache purge:',error);
+    }
   }
 
   function writeNeutralSnapshot(){
@@ -51,15 +65,18 @@
   }
 
   /* Elimina inmediatamente cualquier snapshot antiguo de entidades de servidor. */
+  purgeServerCaches();
   writeNeutralSnapshot();
   install();
 
   document.addEventListener('DOMContentLoaded',()=>{
+    purgeServerCaches();
     writeNeutralSnapshot();
     install();
   },{once:true});
 
   window.addEventListener('pageshow',()=>{
+    purgeServerCaches();
     writeNeutralSnapshot();
     install();
   });
