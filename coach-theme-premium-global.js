@@ -64,6 +64,73 @@
       }
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-search{overflow:hidden!important}
 
+      /* Gestión de cliente: resumen completamente Light Premium */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-card,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-activity-item{
+        background:linear-gradient(145deg,#fffefa 0%,#f8f1e5 100%)!important;
+        color:#17191d!important;
+        border:1px solid rgba(177,119,18,.26)!important;
+        box-shadow:0 8px 22px rgba(78,58,28,.06),inset 0 1px 0 rgba(255,255,255,.96)!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan-title{
+        color:#a86f0f!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan-item{
+        background:#fffdf8!important;
+        color:#17191d!important;
+        border:1px solid rgba(177,119,18,.20)!important;
+        box-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan-item b,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-card h2,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-activity-item b{
+        color:#17191d!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan-item small,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-activity-item small{
+        color:#7d858f!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan-go{
+        color:#b77b13!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-tabs{
+        background:#fffdf8!important;
+        border:1px solid rgba(177,119,18,.24)!important;
+        box-shadow:0 7px 18px rgba(78,58,28,.05)!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-tab{
+        background:transparent!important;
+        color:#6f7782!important;
+        border-color:transparent!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-tab.active{
+        background:linear-gradient(135deg,#f6d77e 0%,#e5b341 100%)!important;
+        color:#17130a!important;
+        border-color:#e5b64d!important;
+        box-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-detail{
+        background:linear-gradient(145deg,#fffdf8,#f5ead7)!important;
+        color:#9a6408!important;
+        border:1px solid rgba(177,119,18,.34)!important;
+        box-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-info{
+        border-bottom:1px solid rgba(177,119,18,.10)!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-info span{
+        color:#858c96!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-info b{
+        color:#17191d!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-delete{
+        background:#fff4f3!important;
+        color:#b23a43!important;
+        border:1px solid rgba(178,58,67,.28)!important;
+      }
+
       /* Nuevo cliente: reglas exactas del componente real */
       html.dcc-theme-light-premium body #modal.dcc-new-client-overlay{
         background:rgba(55,45,30,.20)!important;
