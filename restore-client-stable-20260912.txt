@@ -1,0 +1,1 @@
+Restore production to the stable client state before the runtime cleanup. This file only triggers a fresh Vercel deployment from the restored branch state.
