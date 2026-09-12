@@ -47,7 +47,30 @@
     add('./coach-ui-v11.js?v=20260910-1932','dccCoachUi');
   }
 
+  function installAddExerciseCancelGuard(){
+    const original=window.addExercise;
+    if(typeof original!=='function'||original.__dccCancelGuard)return;
+
+    async function guardedAddExercise(){
+      const nativePrompt=window.prompt;
+      window.prompt=function(message,defaultValue){
+        const value=nativePrompt.call(window,message,defaultValue);
+        if(value===null&&/enlace al v[ií]deo/i.test(String(message||'')))return '';
+        return value;
+      };
+      try{
+        return await original.apply(this,arguments);
+      }finally{
+        window.prompt=nativePrompt;
+      }
+    }
+    guardedAddExercise.__dccCancelGuard=true;
+    guardedAddExercise.__dccOriginal=original;
+    window.addExercise=guardedAddExercise;
+  }
+
   function loadCoachLayers(){
+    installAddExerciseCancelGuard();
     loadTheme();
     loadPanelState();
 
@@ -61,15 +84,17 @@
       loadPanelState();
       loadCoachUI();
       loadTheme();
+      installAddExerciseCancelGuard();
     });
   }
 
   function ensureCoach(){
+    installAddExerciseCancelGuard();
     loadStability(loadCoachLayers);
   }
 
   ensureCoach();
   document.addEventListener('DOMContentLoaded',ensureCoach,{once:true});
-  window.addEventListener('load',ensureCoach,{once:true});
-  window.addEventListener('pageshow',ensureCoach);
+  window.addEventListener('load',()=>{installAddExerciseCancelGuard();ensureCoach()},{once:true});
+  window.addEventListener('pageshow',()=>{installAddExerciseCancelGuard();ensureCoach()});
 })();
