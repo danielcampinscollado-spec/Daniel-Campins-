@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-0946-clients-fix';
+  const BUILD='20260912-0950-clients-refine';
   window.__dccLegacyCoachBridge=BUILD;
 
   function isCoachDashboardVisible(){
@@ -63,7 +63,7 @@
     const existing=[...document.scripts].find(s=>/coach-clients-light-fix-v1\.js(?:\?|$)/.test(s.src||''));
     if(existing) return;
     const fix=document.createElement('script');
-    fix.src='./coach-clients-light-fix-v1.js?v=20260912-0946';
+    fix.src='./coach-clients-light-fix-v1.js?v=20260912-0950';
     fix.async=false;
     fix.dataset.dccClientsLightFix=BUILD;
     fix.onerror=()=>console.error('DCC legacy bridge: no se pudo cargar coach-clients-light-fix-v1.js');
