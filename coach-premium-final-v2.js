@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-coach-stable-v3';
+  const BUILD='20260912-coach-stable-v4';
   if(window.__dccLegacyCoachBridge===BUILD)return;
   window.__dccLegacyCoachBridge=BUILD;
 
@@ -28,11 +28,11 @@
   }
 
   function loadStability(done){
-    if(window.__dccProductionStabilityV1){
+    if(window.__dccProductionStabilityV2){
       done&&done();
       return;
     }
-    add('./dcc-production-stability-v1.js?v=20260912-1','dccProductionStability',done);
+    add('./dcc-production-stability-v1.js?v=20260912-2235','dccProductionStability',done);
   }
 
   function loadTheme(){
