@@ -1,7 +1,7 @@
 /* DCC — Supabase como fuente de verdad para la lista de clientes */
 (function(){
   'use strict';
-  const BUILD='20260912-client-source-v2';
+  const BUILD='20260912-client-source-v3';
   if(window.__dccClientServerSource===BUILD)return;
   window.__dccClientServerSource=BUILD;
 
@@ -51,8 +51,8 @@
       const session=await getCoachSession();
       if(!session){
         clearStaleClients();
-        if(options.render!==false&&typeof window.showCoach==='function')setTimeout(()=>window.showCoach('clients'),0);
-        setTimeout(showAuthRequired,0);
+        if(options.render!==false&&typeof window.showCoach==='function')queueMicrotask(()=>window.showCoach('clients'));
+        queueMicrotask(showAuthRequired);
         return false;
       }
 
@@ -65,13 +65,13 @@
       document.getElementById('dcc-client-auth-required')?.remove();
 
       if(options.render!==false&&window.currentApp==='coach'&&window.currentScreen==='clients'&&typeof window.showCoach==='function'){
-        setTimeout(()=>window.showCoach('clients'),0);
+        queueMicrotask(()=>window.showCoach('clients'));
       }
       return true;
     })().catch(error=>{
       console.error('DCC client sync:',error);
       clearStaleClients();
-      setTimeout(showAuthRequired,0);
+      queueMicrotask(showAuthRequired);
       return false;
     }).finally(()=>{syncing=null});
     return syncing;
@@ -83,26 +83,28 @@
     if(window.currentApp==='coach'||document.getElementById('coach')?.style.display!=='none')await syncClients({render:true});
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(syncWhenCoachVisible,160),{once:true});
-  else setTimeout(syncWhenCoachVisible,160);
-  window.addEventListener('pageshow',()=>setTimeout(syncWhenCoachVisible,80));
-
   const installShowCoachWrapper=()=>{
     const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccClientServerSourceV2)return false;
+    if(typeof current!=='function'||current.__dccClientServerSourceV3)return false;
     const wrapped=function(screen){
       if(screen==='clients')clearStaleClients();
       const out=current.apply(this,arguments);
-      if(screen==='clients')setTimeout(()=>syncClients({render:true}),0);
+      if(screen==='clients')queueMicrotask(()=>syncClients({render:true}));
       return out;
     };
-    wrapped.__dccClientServerSourceV2=true;
+    wrapped.__dccClientServerSourceV3=true;
     wrapped.__base=current;
     window.showCoach=wrapped;
     return true;
   };
 
-  installShowCoachWrapper();
-  let tries=0;
-  const timer=setInterval(()=>{tries++;if(installShowCoachWrapper()||tries>40)clearInterval(timer)},250);
+  function bootstrap(){
+    installShowCoachWrapper();
+    syncWhenCoachVisible();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootstrap,{once:true});
+  else queueMicrotask(bootstrap);
+  window.addEventListener('load',installShowCoachWrapper,{once:true});
+  window.addEventListener('pageshow',syncWhenCoachVisible);
 })();
