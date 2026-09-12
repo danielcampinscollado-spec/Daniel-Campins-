@@ -1,7 +1,7 @@
 /* DCC — Check-ins premium compactos + revisión coherente */
 (function(){
   const GOLD='#d9aa4a', GOLD2='#f0c96b';
-  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const getData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
 
