@@ -50,6 +50,15 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
+  function loadClientDeleteFix(){
+    if(window.__dccClientDeletePersistV3Loaded||document.querySelector('script[data-dcc-client-delete-fix]'))return;
+    const s=document.createElement('script');
+    s.src='./client-delete-persist-v1.js?v=20260912-2132';
+    s.async=false;
+    s.dataset.dccClientDeleteFix='1';
+    (document.head||document.documentElement).appendChild(s);
+  }
+
   function reportDuplicateExactScripts(){
     try{
       const seen=new Set();
@@ -69,15 +78,18 @@
   ensureInitialTheme();
   installPrepaint();
   loadTrainingDayWizard();
+  loadClientDeleteFix();
   document.addEventListener('DOMContentLoaded',()=>{
     ensureInitialTheme();
     installPrepaint();
     loadTrainingDayWizard();
+    loadClientDeleteFix();
     reportDuplicateExactScripts();
   },{once:true});
   window.addEventListener('pageshow',()=>{
     ensureInitialTheme();
     installPrepaint();
     loadTrainingDayWizard();
+    loadClientDeleteFix();
   });
 })();
