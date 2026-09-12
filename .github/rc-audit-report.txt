@@ -1,10 +1,11 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 75
+JavaScript files: 76
 HTML files: 1
 
 [JS SYNTAX]
 OK   auth-premium-v1.js
+OK   auth-session-guard-v2.js
 OK   checkin-coach-sync-v2.js
 OK   checkin-premium.js
 OK   client-admin-premium.js
@@ -86,6 +87,7 @@ OK   index.html script#2
 
 [RUNTIME HOTSPOTS BY FILE]
 auth-premium-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2, !important=4
+auth-session-guard-v2.js | addEventListener=2
 checkin-coach-sync-v2.js | setTimeout=5, addEventListener=1, Supabase queries=6, !important=4
 checkin-premium.js | setTimeout=3, addEventListener=1, !important=45
 client-admin-premium.js | setTimeout=3, addEventListener=2, Supabase queries=4, !important=15
@@ -95,7 +97,7 @@ client-delete-atomic-v4.js | addEventListener=2, Supabase queries=2
 client-delete-persist-v1.js | setTimeout=5, addEventListener=2, Supabase queries=1
 client-home-premium-v4.js | MutationObserver=1, addEventListener=1, !important=173
 client-home-task-seen-fix.js | addEventListener=1
-client-metrics-sync-v10.js | setTimeout=7, addEventListener=2, Supabase queries=5, !important=10
+client-metrics-sync-v10.js | setTimeout=3, addEventListener=4, Supabase queries=3, !important=10
 client-nutrition-option-state-v3.js | addEventListener=1
 client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
 client-profile-editor-v1.js | MutationObserver=1, addEventListener=2, Supabase queries=3, !important=16
@@ -163,11 +165,11 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 [TOTALS]
 MutationObserver: 27
 setInterval: 7
-setTimeout: 117
-addEventListener: 144
+setTimeout: 113
+addEventListener: 148
 localStorage reads: 7
 localStorage writes: 9
-Supabase queries: 110
+Supabase queries: 108
 !important: 3543
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
