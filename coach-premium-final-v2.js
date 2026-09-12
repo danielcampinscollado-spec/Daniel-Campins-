@@ -49,6 +49,7 @@
 
   function loadTrainingCoachFixes(){
     add('./training-coach-fixes-v1.js?v=20260912-1','dccTrainingCoachFixes');
+    add('./training-defaults-v1.js?v=20260912-1','dccTrainingDefaults');
   }
 
   function installAddExerciseCancelGuard(){
