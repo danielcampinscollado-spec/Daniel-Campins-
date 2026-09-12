@@ -59,6 +59,15 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
+  function loadClientDeleteAtomic(){
+    if(window.__dccClientDeleteAtomicV4||document.querySelector('script[data-dcc-client-delete-atomic]'))return;
+    const s=document.createElement('script');
+    s.src='./client-delete-atomic-v4.js?v=20260912-2135';
+    s.async=false;
+    s.dataset.dccClientDeleteAtomic='1';
+    (document.head||document.documentElement).appendChild(s);
+  }
+
   function reportDuplicateExactScripts(){
     try{
       const seen=new Set();
@@ -79,11 +88,13 @@
   installPrepaint();
   loadTrainingDayWizard();
   loadClientDeleteFix();
+  loadClientDeleteAtomic();
   document.addEventListener('DOMContentLoaded',()=>{
     ensureInitialTheme();
     installPrepaint();
     loadTrainingDayWizard();
     loadClientDeleteFix();
+    loadClientDeleteAtomic();
     reportDuplicateExactScripts();
   },{once:true});
   window.addEventListener('pageshow',()=>{
@@ -91,5 +102,6 @@
     installPrepaint();
     loadTrainingDayWizard();
     loadClientDeleteFix();
+    loadClientDeleteAtomic();
   });
 })();
