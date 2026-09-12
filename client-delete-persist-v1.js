@@ -1,8 +1,8 @@
 /* DCC — eliminación definitiva de clientes + acceso estable a gestionar cliente */
 (function(){
   'use strict';
-  if(window.__dccClientDeletePersistV3Loaded)return;
-  window.__dccClientDeletePersistV3Loaded=true;
+  if(window.__dccClientDeletePersistV4Loaded)return;
+  window.__dccClientDeletePersistV4Loaded=true;
 
   const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
@@ -21,39 +21,10 @@
     save();
   }
 
-  async function deleteClientRelations(database,id){
-    const tables=[
-      'client_weights',
-      'client_diets',
-      'client_routines',
-      'client_checkins',
-      'client_messages',
-      'workout_history',
-      'client_notification_state',
-      'coach_calendar_sessions',
-      'client_body_fat_history',
-      'app_user_roles'
-    ];
-
-    for(const table of tables){
-      const result=await database.from(table).delete().eq('client_id',id);
-      if(result.error){
-        throw new Error(`${table}: ${result.error.message||result.error}`);
-      }
-    }
-
-    try{
-      const legacy=await database.from('dietas').delete().eq('client_id',id);
-      if(legacy.error)console.warn('DCC delete legacy dietas:',legacy.error);
-    }catch(error){
-      console.warn('DCC delete legacy dietas:',error);
-    }
-  }
-
   function installDelete(){
     const current=window.dccLegacyDelete;
     if(typeof current!=='function')return false;
-    if(current.__dccDeletePersistV3)return true;
+    if(current.__dccDeletePersistV4)return true;
 
     const replacement=async function(id){
       const d=appData();
@@ -68,11 +39,9 @@
       }
 
       try{
-        await deleteClientRelations(database,id);
-
-        const result=await database.from('clients').delete().eq('id',id).select('id');
+        const result=await database.rpc('dcc_delete_client',{p_client_id:String(id)});
         if(result.error)throw result.error;
-        if(!Array.isArray(result.data)||result.data.length===0)throw new Error('El servidor no confirmó la eliminación');
+        if(result.data!==true)throw new Error('El servidor no confirmó la eliminación');
 
         removeLocalClient(id);
         window.selectedClient=null;
@@ -82,13 +51,11 @@
         notify('Cliente eliminado definitivamente');
       }catch(error){
         console.error('DCC eliminación de cliente:',error);
-        notify('No se pudo eliminar el cliente. Revisa la conexión e inténtalo de nuevo.');
+        notify('No se pudo eliminar el cliente. Inténtalo de nuevo.');
       }
     };
 
-    replacement.__dccDeletePersistV1=true;
-    replacement.__dccDeletePersistV2=true;
-    replacement.__dccDeletePersistV3=true;
+    replacement.__dccDeletePersistV4=true;
     replacement.__base=current;
     window.dccLegacyDelete=replacement;
     return true;
@@ -105,27 +72,14 @@
 
   function openManagedClient(id){
     if(id==null||id==='')return false;
-
     const currentAdmin=window.dccClientAdmin;
     if(typeof currentAdmin==='function'){
-      try{
-        currentAdmin(String(id),'summary');
-        return true;
-      }catch(error){
-        console.error('DCC gestionar cliente — wrapper:',error);
-      }
+      try{currentAdmin(String(id),'summary');return true}catch(error){console.error('DCC gestionar cliente — wrapper:',error)}
     }
-
     const directAdmin=unwrapAdmin(currentAdmin)||unwrapAdmin(window.openClient);
     if(typeof directAdmin==='function'){
-      try{
-        directAdmin(String(id),'summary');
-        return true;
-      }catch(error){
-        console.error('DCC gestionar cliente — directo:',error);
-      }
+      try{directAdmin(String(id),'summary');return true}catch(error){console.error('DCC gestionar cliente — directo:',error)}
     }
-
     return false;
   }
 
@@ -140,12 +94,8 @@
   function installManageBridge(){
     if(typeof window.dccClientAdmin!=='function')return false;
     if(window.openClient?.__dccManageBridgeV2)return true;
-
     const previous=window.openClient;
-    const bridge=function(id){
-      if(openManagedClient(id))return;
-      if(typeof previous==='function')return previous.apply(this,arguments);
-    };
+    const bridge=function(id){if(openManagedClient(id))return;if(typeof previous==='function')return previous.apply(this,arguments)};
     bridge.__dccManageBridgeV2=true;
     bridge.__dccAdmin=true;
     bridge.__base=previous;
@@ -159,7 +109,6 @@
     if(!button)return;
     const id=extractClientId(button);
     if(!id)return;
-
     if(openManagedClient(id)){
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -168,11 +117,7 @@
 
   window.dccOpenManagedClient=openManagedClient;
 
-  function installAll(){
-    installDelete();
-    installManageBridge();
-  }
-
+  function installAll(){installDelete();installManageBridge()}
   installAll();
   setTimeout(installAll,120);
   setTimeout(installAll,500);
