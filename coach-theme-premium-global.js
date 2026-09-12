@@ -44,6 +44,39 @@
         box-shadow:inset 0 1px 0 rgba(255,226,151,.08)!important;
         overflow:hidden!important;
       }
+
+      /* Clientes: sin bloque de entrenamiento y sin rectángulos negros */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{
+        grid-template-columns:minmax(0,1fr) 132px!important;
+        gap:16px!important;
+        min-height:96px!important;
+        padding:16px 18px!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-training{
+        display:none!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{
+        min-height:50px!important;
+        padding:9px 14px!important;
+        border:1px solid rgba(183,123,19,.40)!important;
+        border-radius:15px!important;
+        background:linear-gradient(145deg,#fffdf8 0%,#f8efdf 100%)!important;
+        color:#8d5b08!important;
+        box-shadow:0 5px 14px rgba(78,58,28,.06)!important;
+        font-weight:800!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-search input{
+        border:0!important;
+        outline:0!important;
+        background:transparent!important;
+        box-shadow:none!important;
+        border-radius:0!important;
+        padding:0!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-search{
+        overflow:hidden!important;
+      }
+
       @media(max-width:700px){
         html.dcc-theme-light-premium body #coach .side{
           padding:4px!important;
@@ -51,6 +84,19 @@
         }
         html.dcc-theme-light-premium body #coach #coach-nav{
           border-radius:18px!important;
+        }
+      }
+      @media(max-width:600px){
+        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{
+          grid-template-columns:minmax(0,1fr) 118px!important;
+          gap:12px!important;
+          min-height:90px!important;
+          padding:14px!important;
+        }
+        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{
+          min-height:48px!important;
+          font-size:10px!important;
+          padding:7px 10px!important;
         }
       }
     `;
