@@ -1,8 +1,8 @@
 /* DCC — borrado fiable de clientes */
 (function(){
   'use strict';
-  if(window.__dccClientDeleteAtomicV6)return;
-  window.__dccClientDeleteAtomicV6=true;
+  if(window.__dccClientDeleteAtomicV7)return;
+  window.__dccClientDeleteAtomicV7=true;
 
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
@@ -24,30 +24,25 @@
     window.selectedClient=null;
     window.__dccTrainingEdit=false;
     delete window.__dccTrainingBackup;
-    if(typeof window.showCoach==='function'){
-      window.showCoach('clients');
-      return;
-    }
-    const clientsBtn=document.querySelector('#coach-nav [data-screen="clients"],#coach-nav button:nth-child(2)');
-    clientsBtn?.click?.();
+    if(typeof window.showCoach==='function')window.showCoach('clients');
+    else document.querySelector('#coach-nav [data-screen="clients"],#coach-nav button:nth-child(2)')?.click?.();
+  }
+
+  async function verifyGone(db,id){
+    const check=await db.from('clients').select('id').eq('id',String(id)).maybeSingle();
+    if(check.error)throw check.error;
+    if(check.data)throw new Error('El cliente sigue existiendo en Supabase después del borrado');
+    return true;
   }
 
   async function deleteFromServer(db,id){
-    // La tabla clients ya tiene ON DELETE CASCADE para todos los datos relacionados.
-    // Usamos primero el DELETE normal protegido por RLS de entrenador; es la ruta más directa.
     const direct=await db.from('clients').delete().eq('id',String(id)).select('id');
-    if(!direct.error&&Array.isArray(direct.data)&&direct.data.some(row=>String(row.id)===String(id))){
-      try{await db.from('dietas').delete().eq('client_id',String(id))}catch(_){ }
-      return true;
+    if(direct.error){
+      const rpc=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
+      if(rpc.error)throw new Error(`${direct.error.message||direct.error}. ${rpc.error.message||rpc.error}`);
+      if(rpc.data!==true)throw new Error('El servidor no confirmó la eliminación del cliente');
     }
-
-    // Fallback a la función atómica del servidor por compatibilidad.
-    const rpc=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
-    if(rpc.error){
-      const first=direct.error?.message||'El servidor no confirmó el borrado directo';
-      throw new Error(`${first}. ${rpc.error.message||rpc.error}`);
-    }
-    if(rpc.data!==true)throw new Error('El servidor no confirmó la eliminación del cliente');
+    await verifyGone(db,id);
     return true;
   }
 
@@ -67,6 +62,7 @@
     try{
       await deleteFromServer(db,id);
       cleanupLocal(id);
+      if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});
       goClients();
       notify('Cliente eliminado definitivamente');
     }catch(error){
@@ -79,9 +75,9 @@
   function install(){
     const current=window.dccLegacyDelete;
     if(typeof current!=='function')return false;
-    if(current.__dccDeleteAtomicV6)return true;
+    if(current.__dccDeleteAtomicV7)return true;
     const fn=function(id){return deleteClient(id,document.querySelector('#coach-main .dcc-ca-delete'))};
-    fn.__dccDeleteAtomicV6=true;
+    fn.__dccDeleteAtomicV7=true;
     fn.__base=current;
     window.dccLegacyDelete=fn;
     return true;
@@ -99,9 +95,6 @@
 
   install();
   let tries=0;
-  const timer=setInterval(()=>{
-    tries++;
-    if(install()||tries>40)clearInterval(timer);
-  },250);
+  const timer=setInterval(()=>{tries++;if(install()||tries>40)clearInterval(timer)},250);
   window.addEventListener('pageshow',install);
 })();
