@@ -3,7 +3,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260912-coach-stable-v1';
+  const BUILD='20260912-coach-stable-v2';
   if(window.__dccLegacyCoachBridge===BUILD)return;
   window.__dccLegacyCoachBridge=BUILD;
 
@@ -27,6 +27,10 @@
     return x;
   }
 
+  function loadStability(){
+    add('./dcc-production-stability-v1.js?v=20260912-1','dccProductionStability');
+  }
+
   function loadTheme(){
     add('./coach-light-stable-v1.js?v=20260912-1','dccCoachStableTheme');
   }
@@ -40,6 +44,7 @@
   }
 
   function ensureCoach(){
+    loadStability();
     loadTheme();
     loadPanelState();
 
@@ -50,6 +55,7 @@
     }
 
     add('./coach-premium-v8.js?v=20260910-1817','dccCoachLoader',()=>{
+      loadStability();
       loadPanelState();
       loadCoachUI();
       loadTheme();
