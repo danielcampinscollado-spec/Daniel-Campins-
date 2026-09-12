@@ -5,7 +5,7 @@
   if(window.__dccClientServerSource===BUILD)return;
   window.__dccClientServerSource=BUILD;
 
-  const appData=()=>{try{return data||{}}catch(_){return window.data||{}};
+  const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   let syncing=null;
 
