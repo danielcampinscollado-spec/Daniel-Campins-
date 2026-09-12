@@ -29,7 +29,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add nutrition-plan-premium-v2.js
+          git add client-checkin-final-v3.js
           git diff --cached --quiet && exit 0
-          git commit -m "Make premium diet lifecycle server-authoritative"
+          git commit -m "Make check-in submission atomic"
           git push origin HEAD:audit/release-candidate-2026-09-12
