@@ -1,8 +1,8 @@
-/* DCC — borrado fiable de clientes */
+/* DCC — borrado definitivo verificado de clientes */
 (function(){
   'use strict';
-  if(window.__dccClientDeleteAtomicV7)return;
-  window.__dccClientDeleteAtomicV7=true;
+  if(window.__dccClientDeleteAtomicV8)return;
+  window.__dccClientDeleteAtomicV8=true;
 
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
@@ -28,21 +28,27 @@
     else document.querySelector('#coach-nav [data-screen="clients"],#coach-nav button:nth-child(2)')?.click?.();
   }
 
-  async function verifyGone(db,id){
-    const check=await db.from('clients').select('id').eq('id',String(id)).maybeSingle();
-    if(check.error)throw check.error;
-    if(check.data)throw new Error('El cliente sigue existiendo en Supabase después del borrado');
-    return true;
+  async function requireCoachSession(db){
+    if(!db?.auth)throw new Error('Supabase Auth no está disponible');
+    const sessionResult=await db.auth.getSession();
+    if(sessionResult.error)throw sessionResult.error;
+    if(!sessionResult.data?.session)throw new Error('Necesitas iniciar la sesión segura de entrenador antes de eliminar clientes');
+    if(window.__dccSecureRole&&window.__dccSecureRole!=='coach')throw new Error('La sesión activa no corresponde al entrenador');
   }
 
   async function deleteFromServer(db,id){
-    const direct=await db.from('clients').delete().eq('id',String(id)).select('id');
-    if(direct.error){
-      const rpc=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
-      if(rpc.error)throw new Error(`${direct.error.message||direct.error}. ${rpc.error.message||rpc.error}`);
-      if(rpc.data!==true)throw new Error('El servidor no confirmó la eliminación del cliente');
-    }
-    await verifyGone(db,id);
+    await requireCoachSession(db);
+
+    // ÚNICA ruta de borrado: función protegida del servidor.
+    // No usamos DELETE directo porque RLS puede devolver 200 sin borrar ninguna fila.
+    const rpc=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
+    if(rpc.error)throw new Error(rpc.error.message||String(rpc.error));
+    if(rpc.data!==true)throw new Error('El servidor no confirmó la eliminación del cliente');
+
+    // Verificación posterior con la misma sesión de entrenador.
+    const check=await db.from('clients').select('id').eq('id',String(id)).maybeSingle();
+    if(check.error)throw check.error;
+    if(check.data)throw new Error('El cliente sigue existiendo en Supabase después del borrado');
     return true;
   }
 
@@ -62,11 +68,14 @@
     try{
       await deleteFromServer(db,id);
       cleanupLocal(id);
-      if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});
+      if(typeof window.dccSyncClientsFromServer==='function'){
+        const ok=await window.dccSyncClientsFromServer({render:false});
+        if(ok===false)throw new Error('El cliente se eliminó, pero no se pudo refrescar la lista desde Supabase');
+      }
       goClients();
       notify('Cliente eliminado definitivamente');
     }catch(error){
-      console.error('DCC borrado de cliente:',error);
+      console.error('DCC borrado definitivo de cliente:',error);
       alert(`No se pudo eliminar el cliente.\n\n${error?.message||'Error desconocido del servidor'}`);
       if(button){button.disabled=false;button.textContent=oldText||'Eliminar cliente'}
     }
@@ -74,11 +83,11 @@
 
   function install(){
     const current=window.dccLegacyDelete;
-    if(typeof current!=='function')return false;
-    if(current.__dccDeleteAtomicV7)return true;
+    if(typeof current==='function'&&current.__dccDeleteAtomicV8)return true;
+    const previous=typeof current==='function'?current:null;
     const fn=function(id){return deleteClient(id,document.querySelector('#coach-main .dcc-ca-delete'))};
-    fn.__dccDeleteAtomicV7=true;
-    fn.__base=current;
+    fn.__dccDeleteAtomicV8=true;
+    fn.__base=previous;
     window.dccLegacyDelete=fn;
     return true;
   }
@@ -94,7 +103,5 @@
   },true);
 
   install();
-  let tries=0;
-  const timer=setInterval(()=>{tries++;if(install()||tries>40)clearInterval(timer)},250);
   window.addEventListener('pageshow',install);
 })();
