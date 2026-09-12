@@ -1,8 +1,9 @@
-/* DCC — Production Stability V1
+/* DCC — Production Stability V2
    Capa de arranque segura. No toca datos ni lógica de negocio. */
 (function(){
   'use strict';
-  if(window.__dccProductionStabilityV1)return;
+  if(window.__dccProductionStabilityV2)return;
+  window.__dccProductionStabilityV2=true;
   window.__dccProductionStabilityV1=true;
 
   const THEME_KEY='dcc:theme:v1';
@@ -38,6 +39,15 @@
         background-color:#f5efe4!important;
       }
     `;
+    (document.head||document.documentElement).appendChild(s);
+  }
+
+  function loadSecureAuth(){
+    if(window.__dccSecureAuthV1||document.querySelector('script[data-dcc-secure-auth]'))return;
+    const s=document.createElement('script');
+    s.src='./auth-premium-v1.js?v=20260912-2235';
+    s.async=false;
+    s.dataset.dccSecureAuth='1';
     (document.head||document.documentElement).appendChild(s);
   }
 
@@ -92,6 +102,7 @@
   }
 
   function loadRuntimeFixes(){
+    loadSecureAuth();
     loadTrainingDayWizard();
     loadClientDeleteAtomic();
     loadClientProfileEditor();
