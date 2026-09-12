@@ -78,6 +78,7 @@
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
     loadOnce('./routine-authority-v1.js?v=20260912-2355','dccRoutineAuthorityDirect');
+    loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
   }
 
   let queued=false;
