@@ -68,6 +68,15 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
+  function loadClientSummaryCleanup(){
+    if(window.__dccClientSummaryCleanupV1||document.querySelector('script[data-dcc-client-summary-cleanup]'))return;
+    const s=document.createElement('script');
+    s.src='./client-summary-cleanup-v1.js?v=20260912-2144';
+    s.async=false;
+    s.dataset.dccClientSummaryCleanup='1';
+    (document.head||document.documentElement).appendChild(s);
+  }
+
   function reportDuplicateExactScripts(){
     try{
       const seen=new Set();
@@ -86,6 +95,7 @@
     loadTrainingDayWizard();
     loadClientDeleteAtomic();
     loadClientProfileEditor();
+    loadClientSummaryCleanup();
   }
 
   ensureInitialTheme();
