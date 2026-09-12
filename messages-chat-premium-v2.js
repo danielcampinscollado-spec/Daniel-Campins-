@@ -205,7 +205,9 @@
   function stopPolling(){if(timer){clearInterval(timer);timer=null}}
   function startPolling(){
     stopPolling();
+    if(document.hidden)return;
     timer=setInterval(async()=>{
+      if(document.hidden){stopPolling();return}
       const id=window.__dccCoachChatV2;if(!id){stopPolling();return}
       const before=JSON.stringify(appData().messages?.[id]||[]);
       const ok=await syncMessages();
@@ -213,6 +215,10 @@
       if(ok&&before!==after)refreshCoachChat(id);
     },4500);
   }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)stopPolling();
+    else if(window.__dccCoachChatV2)startPolling();
+  });
 
   function install(){
     injectCss();

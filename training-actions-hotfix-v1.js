@@ -205,6 +205,19 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
   window.addEventListener('dcc:themechange',schedule);
   window.addEventListener('hashchange',schedule);
-  const observer=new MutationObserver(schedule);
-  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','open']});
+
+  let observedMain=null;
+  let observer=null;
+  function bindObserver(){
+    const main=document.getElementById('client-main');
+    if(main===observedMain)return;
+    observer?.disconnect();
+    observedMain=main||null;
+    if(!main)return;
+    observer=new MutationObserver(schedule);
+    observer.observe(main,{subtree:true,childList:true,attributes:true,attributeFilter:['open']});
+  }
+  bindObserver();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindObserver,{once:true});
+  window.addEventListener('pageshow',()=>{bindObserver();schedule()});
 })();

@@ -276,12 +276,18 @@
   function stopMessagePolling(){if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
   function startMessagePolling(){
     stopMessagePolling();
+    if(document.hidden)return;
     pollTimer=setInterval(async()=>{
+      if(document.hidden){stopMessagePolling();return}
       if(window.__dccClientPremiumScreen!=='messages'){stopMessagePolling();return}
       const id=activeClientId();if(!id)return;
       const before=JSON.stringify(appData().messages?.[id]||[]);const ok=await syncMessages();const after=JSON.stringify(appData().messages?.[id]||[]);if(ok&&before!==after)refreshClientThread(id);
     },4500);
   }
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden)stopMessagePolling();
+    else if(window.__dccClientPremiumScreen==='messages')startMessagePolling();
+  });
 
   function installShowClient(){
     const base=window.showClient;if(typeof base!=='function'||base.__dccClientCheckinMessagesV1)return;
