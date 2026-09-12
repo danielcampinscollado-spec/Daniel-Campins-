@@ -47,6 +47,10 @@
     add('./coach-ui-v11.js?v=20260910-1932','dccCoachUi');
   }
 
+  function loadTrainingCoachFixes(){
+    add('./training-coach-fixes-v1.js?v=20260912-1','dccTrainingCoachFixes');
+  }
+
   function installAddExerciseCancelGuard(){
     const original=window.addExercise;
     if(typeof original!=='function'||original.__dccCancelGuard)return;
@@ -73,6 +77,7 @@
     installAddExerciseCancelGuard();
     loadTheme();
     loadPanelState();
+    loadTrainingCoachFixes();
 
     const current=[...document.scripts].find(s=>/coach-premium-v8\.js(?:\?|$)/.test(s.src||''));
     if(current){
@@ -84,6 +89,7 @@
       loadPanelState();
       loadCoachUI();
       loadTheme();
+      loadTrainingCoachFixes();
       installAddExerciseCancelGuard();
     });
   }
