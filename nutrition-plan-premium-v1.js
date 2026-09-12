@@ -75,7 +75,8 @@
     loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
     loadOnce('./client-server-source-v1.js?v=20260912-2255','dccClientServerSourceDirect');
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
-    loadOnce('./server-actions-v1.js?v=20260912-2340','dccServerActionsDirect');
+    loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
+    loadOnce('./routine-authority-v1.js?v=20260912-2355','dccRoutineAuthorityDirect');
   }
 
   let queued=false;
