@@ -28,6 +28,10 @@
   }
 
   function loadStability(done){
+    if(window.__dccProductionStabilityV1){
+      done&&done();
+      return;
+    }
     add('./dcc-production-stability-v1.js?v=20260912-1','dccProductionStability',done);
   }
 
