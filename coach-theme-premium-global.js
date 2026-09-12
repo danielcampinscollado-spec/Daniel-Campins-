@@ -77,6 +77,66 @@
         overflow:hidden!important;
       }
 
+      /* Nuevo cliente: Light Premium */
+      html.dcc-theme-light-premium body .dcc-new-client-overlay{
+        background:rgba(55,45,30,.18)!important;
+        backdrop-filter:blur(10px)!important;
+        -webkit-backdrop-filter:blur(10px)!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-box{
+        background:linear-gradient(145deg,#fffdf8 0%,#f8f0e2 100%)!important;
+        color:#17191d!important;
+        border:1px solid rgba(183,123,19,.34)!important;
+        box-shadow:0 24px 70px rgba(78,58,28,.18)!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-title,
+      html.dcc-theme-light-premium body .dcc-new-client-label,
+      html.dcc-theme-light-premium body .dcc-new-client-box h1,
+      html.dcc-theme-light-premium body .dcc-new-client-box h2,
+      html.dcc-theme-light-premium body .dcc-new-client-box h3,
+      html.dcc-theme-light-premium body .dcc-new-client-box strong{
+        color:#17191d!important;
+        text-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-sub{
+        color:#7a8390!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-icon{
+        color:#b77b13!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-input,
+      html.dcc-theme-light-premium body .dcc-new-client-select,
+      html.dcc-theme-light-premium body .dcc-new-client-textarea,
+      html.dcc-theme-light-premium body .dcc-new-client-box input,
+      html.dcc-theme-light-premium body .dcc-new-client-box select,
+      html.dcc-theme-light-premium body .dcc-new-client-box textarea{
+        background:#fffefa!important;
+        color:#17191d!important;
+        -webkit-text-fill-color:#17191d!important;
+        border:1px solid rgba(183,123,19,.30)!important;
+        box-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-input::placeholder,
+      html.dcc-theme-light-premium body .dcc-new-client-textarea::placeholder,
+      html.dcc-theme-light-premium body .dcc-new-client-box input::placeholder,
+      html.dcc-theme-light-premium body .dcc-new-client-box textarea::placeholder{
+        color:#858c96!important;
+        -webkit-text-fill-color:#858c96!important;
+        opacity:1!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-close{
+        background:#fffaf1!important;
+        color:#8d5b08!important;
+        border:1px solid rgba(183,123,19,.36)!important;
+        box-shadow:none!important;
+      }
+      html.dcc-theme-light-premium body .dcc-new-client-submit{
+        background:linear-gradient(135deg,#f5d581 0%,#dca83e 100%)!important;
+        color:#18140c!important;
+        border:1px solid #e5b64d!important;
+        box-shadow:0 8px 20px rgba(185,125,20,.14)!important;
+      }
+
       @media(max-width:700px){
         html.dcc-theme-light-premium body #coach .side{
           padding:4px!important;
@@ -84,6 +144,9 @@
         }
         html.dcc-theme-light-premium body #coach #coach-nav{
           border-radius:18px!important;
+        }
+        html.dcc-theme-light-premium body .dcc-new-client-box{
+          border-radius:24px!important;
         }
       }
       @media(max-width:600px){
