@@ -48,6 +48,21 @@
       html.dcc-theme-light-premium .dcc-ci-close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
       html.dcc-theme-light-premium .dcc-ci-review-row{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important}
       html.dcc-theme-light-premium .dcc-ci-rico{background:#fff7e4!important;color:#b77b13!important;border-color:rgba(185,122,17,.24)!important}
+
+      html.dcc-theme-light-premium #coach-main.dcc-premium-checkins{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-ci-head h1,html.dcc-theme-light-premium .dcc-ci-name{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-ci-head p{color:#657080!important}
+      html.dcc-theme-light-premium .dcc-ci-tabs,html.dcc-theme-light-premium .dcc-ci-card,html.dcc-theme-light-premium .dcc-ci-empty{background:#fffefa!important;color:#17191d!important;border-color:rgba(185,122,17,.30)!important}
+      html.dcc-theme-light-premium .dcc-ci-tab{color:#68717e!important}
+      html.dcc-theme-light-premium .dcc-ci-tab.active{background:linear-gradient(145deg,#fff2c5,#edc45d)!important;color:#1d1608!important;border-color:#d6a53d!important}
+      html.dcc-theme-light-premium .dcc-ci-avatar{background:#fff7e4!important;color:#a46b0b!important;border-color:rgba(185,122,17,.38)!important}
+      html.dcc-theme-light-premium .dcc-ci-open{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
+      html.dcc-theme-light-premium .dcc-ci-review{background:linear-gradient(145deg,#fffefa,#f8f1e5)!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important;box-shadow:0 28px 80px rgba(72,52,19,.20)!important}
+      html.dcc-theme-light-premium .dcc-ci-review-head h2,html.dcc-theme-light-premium .dcc-ci-rvalue{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-ci-review-sub,html.dcc-theme-light-premium .dcc-ci-rlabel,html.dcc-theme-light-premium .dcc-ci-rside{color:#68717e!important}
+      html.dcc-theme-light-premium .dcc-ci-close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
+      html.dcc-theme-light-premium .dcc-ci-review-row{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important}
+      html.dcc-theme-light-premium .dcc-ci-rico{background:#fff7e4!important;color:#b77b13!important;border-color:rgba(185,122,17,.24)!important}
       @media(max-width:600px){#coach-main.dcc-premium-checkins{padding:14px 12px 92px!important}.dcc-ci-kicker{font-size:9px;letter-spacing:2.7px}.dcc-ci-head{margin-bottom:15px}.dcc-ci-head h1{font-size:28px}.dcc-ci-head p{font-size:11.5px}.dcc-ci-tabs{margin-bottom:13px}.dcc-ci-tab{min-height:42px;font-size:10.5px}.dcc-ci-count{min-width:27px;height:27px;font-size:10px}.dcc-ci-card{grid-template-columns:46px minmax(0,1fr) auto;gap:9px;min-height:78px;padding:10px 11px;border-radius:16px}.dcc-ci-avatar{width:46px;height:46px;font-size:15px}.dcc-ci-name{font-size:14px}.dcc-ci-status{margin-top:5px;padding:4px 7px;font-size:8px}.dcc-ci-open{min-height:38px;padding:0 10px;font-size:9px;border-radius:12px}.dcc-ci-open span{margin-left:5px;font-size:13px}.dcc-ci-modal{padding:14px 12px 92px}.dcc-ci-review{padding:14px;border-radius:20px;max-height:78vh}.dcc-ci-review-head h2{font-size:20px}.dcc-ci-review-row{grid-template-columns:37px minmax(0,1fr) auto;min-height:66px;padding:9px 10px;gap:9px}.dcc-ci-rico{width:37px;height:37px}.dcc-ci-rico svg{width:19px;height:19px}.dcc-ci-rvalue{font-size:12px}.dcc-ci-rside{max-width:108px;font-size:8px}}
       @media(max-width:385px){.dcc-ci-card{grid-template-columns:43px minmax(0,1fr) auto}.dcc-ci-avatar{width:43px;height:43px}.dcc-ci-open{padding:0 8px}.dcc-ci-open span{display:none}.dcc-ci-review-row{grid-template-columns:35px minmax(0,1fr)}.dcc-ci-rside{grid-column:2;text-align:left;max-width:none}.dcc-ci-review-row.comment{grid-template-columns:35px minmax(0,1fr)}}
     `;

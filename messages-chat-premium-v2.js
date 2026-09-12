@@ -104,6 +104,20 @@
       html.dcc-theme-light-premium .dcc-mcv2-composer{background:rgba(255,250,241,.98)!important;border-color:rgba(185,122,17,.38)!important;box-shadow:0 -10px 30px rgba(83,63,31,.12)!important}
       html.dcc-theme-light-premium .dcc-mcv2-input{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.28)!important}
       html.dcc-theme-light-premium .dcc-mcv2-input::placeholder{color:#7a8390!important}
+
+      html.dcc-theme-light-premium #coach-main.dcc-message-chat-v2{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-mcv2-back{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-person{border-color:rgba(185,122,17,.22)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-person h1{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-mcv2-status{color:#68717e!important}
+      html.dcc-theme-light-premium .dcc-mcv2-avatar,html.dcc-theme-light-premium .dcc-mcv2-mini{background:#fff7e4!important;color:#a46b0b!important;border-color:rgba(185,122,17,.38)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-empty{background:#fffefa!important;color:#68717e!important;border-color:rgba(185,122,17,.28)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-bubble{background:#fffefa!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-row.mine .dcc-mcv2-bubble{background:#fff1c9!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-time{color:#7a8390!important}
+      html.dcc-theme-light-premium .dcc-mcv2-composer{background:rgba(255,250,241,.98)!important;border-color:rgba(185,122,17,.38)!important;box-shadow:0 -10px 30px rgba(83,63,31,.12)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-input{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.28)!important}
+      html.dcc-theme-light-premium .dcc-mcv2-input::placeholder{color:#7a8390!important}
       /* Cliente: barra siempre abajo + 16px para impedir el zoom automático de iOS. */
       html body #client-main.dcc-client-messages-v1{padding-bottom:180px!important}
       html body .dcc-cm-composer{position:fixed!important;bottom:calc(80px + env(safe-area-inset-bottom))!important;z-index:100!important}

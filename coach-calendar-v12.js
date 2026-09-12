@@ -54,6 +54,17 @@
       html.dcc-theme-light-premium .dcc-cal-session-copy strong{color:#17191d!important}
       html.dcc-theme-light-premium .dcc-cal-session-notes{color:#68717e!important}
       html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}
+
+      html.dcc-theme-light-premium #modal.dcc-cal-session-overlay{background:rgba(37,31,20,.28)!important}
+      html.dcc-theme-light-premium #modal.dcc-cal-session-overlay .modal-box{background:linear-gradient(145deg,#fffefa,#f8f1e5)!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important;box-shadow:0 28px 80px rgba(72,52,19,.20)!important}
+      html.dcc-theme-light-premium #dcc-cal-session-form h2,html.dcc-theme-light-premium #dcc-cal-session-form label{color:#17191d!important}
+      html.dcc-theme-light-premium #dcc-cal-session-form .sub{color:#7a8390!important}
+      html.dcc-theme-light-premium #dcc-cal-session-form .close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
+      html.dcc-theme-light-premium #dcc-cal-session-form input,html.dcc-theme-light-premium #dcc-cal-session-form select,html.dcc-theme-light-premium #dcc-cal-session-form textarea{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.30)!important}
+      html.dcc-theme-light-premium .dcc-cal-session{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.28)!important}
+      html.dcc-theme-light-premium .dcc-cal-session-copy strong{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-cal-session-notes{color:#68717e!important}
+      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}
       @media(max-width:390px){#modal.dcc-cal-session-overlay{padding:10px!important}#modal.dcc-cal-session-overlay .modal-box{padding:17px!important;max-height:calc(100dvh - 95px)!important}#dcc-cal-session-form h2{font-size:24px}.dcc-cal-session{grid-template-columns:50px minmax(0,1fr) 32px;padding:11px}}
     `;document.head.appendChild(s);
   }

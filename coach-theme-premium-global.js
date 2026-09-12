@@ -2,6 +2,7 @@
 (function(){
   'use strict';
   try{document.documentElement.classList.add('dcc-theme-light-premium');localStorage.setItem('dcc:theme:v1','light-premium')}catch(e){}
+  try{document.documentElement.classList.add('dcc-theme-light-premium');localStorage.setItem('dcc:theme:v1','light-premium')}catch(e){}
   if(window.__dccCoachThemePremiumGlobalV2)return;
   window.__dccCoachThemePremiumGlobalV2=true;
   const ID='dcc-coach-theme-premium-global-v2';
