@@ -20,16 +20,21 @@ html[data-dcc-theme="dark"] #client-main .dct3-routine h3{max-width:54%!importan
 html[data-dcc-theme="dark"] #client-main .dct3-routine .dct3-meta{max-width:54%!important;color:#959eaa!important}
 html[data-dcc-theme="dark"] #client-main .dct3-start{background:linear-gradient(135deg,#f4cf70,#dca63a)!important;color:#15110a!important;border-color:#f1c967!important}
 html[data-dcc-theme="dark"] #client-main .dct3-view{background:rgba(13,17,22,.92)!important;color:#e7bd5b!important;border-color:rgba(217,170,74,.42)!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 112px!important;gap:8px 10px!important;padding:11px 12px!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 112px!important;gap:8px 10px!important;padding:11px 12px!important;background:linear-gradient(145deg,#fffdf8,#f7efe2)!important;border:1px solid rgba(181,126,29,.35)!important;border-radius:22px!important;box-shadow:0 12px 28px rgba(93,67,24,.08)!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media{width:108px!important;height:100px!important;align-self:center!important;justify-self:center!important;border:0!important;border-radius:15px!important;overflow:hidden!important;padding:0!important;background:transparent!important;box-shadow:none!important;display:grid!important;place-items:center!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center 22%!important;border:1px solid rgba(181,126,29,.24)!important;border-radius:15px!important;background:#0d1115!important;padding:0!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-title{color:#faf9f5!important;text-shadow:0 1px 2px rgba(0,0,0,.35)!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker span{color:#e5b34b!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker small{color:#aeb6c0!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-back{color:#e7bd5b!important;border-color:rgba(224,173,76,.34)!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-tech{color:#f4f3ef!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed{color:#e7bd5b!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed strong{color:#f6f4ef!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-title{color:#17191d!important;text-shadow:none!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker span{color:#a56f12!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker small{color:#6f6a60!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-back{background:#fffaf0!important;color:#b77912!important;border-color:rgba(181,126,29,.36)!important;box-shadow:0 4px 12px rgba(93,67,24,.06)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-badge{background:#fffaf0!important;color:#55514a!important;border-color:rgba(181,126,29,.20)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-badge.gold{background:#f8edcf!important;color:#9c6710!important;border-color:rgba(181,126,29,.48)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-tech,html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed{background:#fffaf0!important;border-color:rgba(181,126,29,.42)!important;box-shadow:0 4px 12px rgba(93,67,24,.05)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-tech{color:#26231f!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-tech svg{color:#b77912!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed{color:#b77912!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed-icon{background:#f5e8c9!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed strong{color:#17191d!important}
 body.dcc-workout-mode #client-main .dwa3-history.first{min-height:60px!important;padding:8px 12px!important;grid-template-columns:32px minmax(0,1fr)!important;gap:9px!important}
 @media(max-width:390px){html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"],html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 128px!important}html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals{width:128px!important;gap:3px!important}html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle{width:40px!important;max-width:40px!important;height:54px!important;flex-basis:40px!important}}
 `;document.head.appendChild(style);
