@@ -1,10 +1,10 @@
-/* DCC calendar form fix v20.1 — modal estable + preservación de controles reales */
+/* DCC calendar form fix v20.2 — modal estable Light Premium + preservación de controles reales */
 (function(){
   'use strict';
-  if(window.__dccCalendarFormFixV201)return;
-  window.__dccCalendarFormFixV201=true;
+  if(window.__dccCalendarFormFixV202)return;
+  window.__dccCalendarFormFixV202=true;
 
-  const STYLE_ID='dcc-calendar-form-fix-v20-css';
+  const STYLE_ID='dcc-calendar-form-fix-v202-css';
   const OVERLAY_ID='dcc-session-standalone-overlay';
   const baseCalendarClose=typeof window.dccCalendarCloseModal==='function'?window.dccCalendarCloseModal:null;
   const baseCalendarMove=typeof window.dccCalendarMove==='function'?window.dccCalendarMove:null;
@@ -17,16 +17,73 @@
   function notify(t){try{if(typeof toast==='function')return toast(t)}catch(e){};try{window.toast?.(t)}catch(e){}}
 
   function injectCss(){
-    if(document.getElementById(STYLE_ID))return;
+    document.getElementById('dcc-calendar-form-fix-v20-css')?.remove();
     document.getElementById('dcc-calendar-form-fix-v19-css')?.remove();
+    if(document.getElementById(STYLE_ID))return;
     const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
       .dcc-cal-new{position:relative!important;z-index:50!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}
-      #${OVERLAY_ID}{position:fixed;inset:0;z-index:50000;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));background:rgba(0,0,0,.82);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
-      #${OVERLAY_ID} .dcc-session-card{width:min(100%,560px);max-height:calc(100dvh - 44px);overflow:auto;box-sizing:border-box;padding:22px;border:1px solid rgba(240,201,107,.78);border-radius:26px;background:radial-gradient(circle at 95% 0,rgba(240,201,107,.10),transparent 28%),linear-gradient(145deg,#11171d,#080b0f);color:#f5f3ef;box-shadow:0 28px 80px rgba(0,0,0,.58),0 0 30px rgba(217,170,74,.08)}
-      #${OVERLAY_ID} *{box-sizing:border-box}#${OVERLAY_ID} .head{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:12px;align-items:start;margin-bottom:20px}#${OVERLAY_ID} h2{margin:0;font-size:27px;line-height:1.05;letter-spacing:-.6px;color:#f7f4ee}#${OVERLAY_ID} .sub{margin:8px 0 0;color:#8d96a1;font-size:9px;letter-spacing:1.8px;text-transform:uppercase}#${OVERLAY_ID} .close{width:46px;height:46px;border:1px solid rgba(217,170,74,.48);border-radius:14px;background:#0b0f13;color:#f4f2ee;font-size:24px}
-      #${OVERLAY_ID} label{display:block;margin:0 0 14px;color:#f0efec;font-size:13px;font-weight:750}#${OVERLAY_ID} input,#${OVERLAY_ID} select,#${OVERLAY_ID} textarea{display:block;width:100%;min-width:0;max-width:100%;margin-top:8px;padding:0 14px;border:1px solid rgba(159,170,182,.40);border-radius:15px;background:#0c1116;color:#f6f3ed;-webkit-text-fill-color:#f6f3ed;outline:0;font:600 14px/1.2 inherit}#${OVERLAY_ID} input,#${OVERLAY_ID} select{height:51px}#${OVERLAY_ID} textarea{min-height:92px;padding-top:13px;resize:vertical}#${OVERLAY_ID} input:focus,#${OVERLAY_ID} select:focus,#${OVERLAY_ID} textarea:focus{border-color:#f0c96b;box-shadow:0 0 0 3px rgba(217,170,74,.09)}
-      #${OVERLAY_ID} .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px;width:100%;min-width:0;align-items:start}#${OVERLAY_ID} .row>label{min-width:0;overflow:hidden}#${OVERLAY_ID} input[type="date"],#${OVERLAY_ID} input[type="time"]{-webkit-appearance:none;appearance:none;overflow:hidden}#${OVERLAY_ID} input[type="date"]::-webkit-date-and-time-value,#${OVERLAY_ID} input[type="time"]::-webkit-date-and-time-value{text-align:center;min-width:0}
-      #${OVERLAY_ID} .save{width:100%;height:56px;margin-top:3px;border:1px solid #f3ce6a;border-radius:17px;background:linear-gradient(135deg,#d9a83d,#f4d679 52%,#dfad42);color:#15110a;font-size:16px;font-weight:900;box-shadow:0 10px 28px rgba(217,170,74,.16)}#${OVERLAY_ID} .save:disabled{opacity:.6}#${OVERLAY_ID} button:focus-visible,#${OVERLAY_ID} input:focus-visible,#${OVERLAY_ID} select:focus-visible,#${OVERLAY_ID} textarea:focus-visible{outline:2px solid #f0c96b;outline-offset:2px}body.dcc-session-open{overflow:hidden}
+
+      /* Día seleccionado / hoy: nunca negro en Light Premium */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-cal-v11 .dcc-cal-day.today,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-cal-v11 .dcc-cal-day.selected,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-cal-v11 .dcc-cal-day.today.selected{
+        background:linear-gradient(135deg,#f7da82 0%,#e7b640 100%)!important;
+        color:#17130a!important;
+        border:1px solid #d9aa4a!important;
+        box-shadow:0 5px 14px rgba(183,123,19,.15)!important;
+      }
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-cal-v11 .dcc-cal-day.today:after,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-cal-v11 .dcc-cal-day.selected:after{
+        background:#8d5b08!important;
+      }
+
+      /* Nueva sesión — Light Premium */
+      #${OVERLAY_ID}{
+        position:fixed;inset:0;z-index:50000;display:flex;align-items:center;justify-content:center;
+        padding:max(18px,env(safe-area-inset-top)) 18px calc(22px + env(safe-area-inset-bottom));
+        background:rgba(43,36,25,.28)!important;
+        backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+      }
+      #${OVERLAY_ID} .dcc-session-card{
+        width:min(100%,560px);max-height:calc(100dvh - 44px);overflow:auto;box-sizing:border-box;padding:22px;
+        border:1px solid rgba(183,123,19,.34)!important;border-radius:26px;
+        background:radial-gradient(circle at 95% 0,rgba(217,170,74,.08),transparent 28%),linear-gradient(145deg,#fffefa 0%,#f8f1e5 100%)!important;
+        color:#17191d!important;
+        box-shadow:0 28px 80px rgba(72,52,19,.20),inset 0 1px 0 rgba(255,255,255,.96)!important
+      }
+      #${OVERLAY_ID} *{box-sizing:border-box}
+      #${OVERLAY_ID} .head{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:12px;align-items:start;margin-bottom:20px}
+      #${OVERLAY_ID} h2{margin:0;font-size:27px;line-height:1.05;letter-spacing:-.6px;color:#17191d!important}
+      #${OVERLAY_ID} .sub{margin:8px 0 0;color:#747d88!important;font-size:9px;letter-spacing:1.8px;text-transform:uppercase}
+      #${OVERLAY_ID} .close{
+        width:46px;height:46px;border:1px solid rgba(183,123,19,.36)!important;border-radius:14px;
+        background:#fffaf1!important;color:#98640b!important;font-size:24px;box-shadow:none!important
+      }
+      #${OVERLAY_ID} label{display:block;margin:0 0 14px;color:#25282d!important;font-size:13px;font-weight:750}
+      #${OVERLAY_ID} input,#${OVERLAY_ID} select,#${OVERLAY_ID} textarea{
+        display:block;width:100%;min-width:0;max-width:100%;margin-top:8px;padding:0 14px;
+        border:1px solid rgba(183,123,19,.28)!important;border-radius:15px;
+        background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;
+        outline:0;font:600 14px/1.2 inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important
+      }
+      #${OVERLAY_ID} input,#${OVERLAY_ID} select{height:51px}
+      #${OVERLAY_ID} textarea{min-height:92px;padding-top:13px;resize:vertical}
+      #${OVERLAY_ID} textarea::placeholder,#${OVERLAY_ID} input::placeholder{color:#737c88!important;-webkit-text-fill-color:#737c88!important;opacity:1!important}
+      #${OVERLAY_ID} input:focus,#${OVERLAY_ID} select:focus,#${OVERLAY_ID} textarea:focus{
+        border-color:#d9aa4a!important;box-shadow:0 0 0 3px rgba(217,170,74,.11)!important
+      }
+      #${OVERLAY_ID} .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px;width:100%;min-width:0;align-items:start}
+      #${OVERLAY_ID} .row>label{min-width:0;overflow:hidden}
+      #${OVERLAY_ID} input[type="date"],#${OVERLAY_ID} input[type="time"]{-webkit-appearance:none;appearance:none;overflow:hidden;color-scheme:light!important}
+      #${OVERLAY_ID} input[type="date"]::-webkit-date-and-time-value,#${OVERLAY_ID} input[type="time"]::-webkit-date-and-time-value{text-align:center;min-width:0;color:#17191d!important}
+      #${OVERLAY_ID} .save{
+        width:100%;height:56px;margin-top:3px;border:1px solid #e5b64d!important;border-radius:17px;
+        background:linear-gradient(135deg,#f5d581 0%,#e1ad3f 100%)!important;color:#18140c!important;
+        font-size:16px;font-weight:900;box-shadow:0 10px 24px rgba(185,125,20,.14)!important
+      }
+      #${OVERLAY_ID} .save:disabled{opacity:.6}
+      #${OVERLAY_ID} button:focus-visible,#${OVERLAY_ID} input:focus-visible,#${OVERLAY_ID} select:focus-visible,#${OVERLAY_ID} textarea:focus-visible{outline:2px solid #d9aa4a;outline-offset:2px}
+      body.dcc-session-open{overflow:hidden}
       @media(max-width:390px){#${OVERLAY_ID}{padding:10px}#${OVERLAY_ID} .dcc-session-card{padding:18px;max-height:calc(100dvh - 20px)}#${OVERLAY_ID} h2{font-size:24px}#${OVERLAY_ID} .row{gap:8px}#${OVERLAY_ID} input[type="date"],#${OVERLAY_ID} input[type="time"]{padding-left:10px;padding-right:10px;font-size:13px}}
     `;document.head.appendChild(s);
   }
@@ -65,7 +122,7 @@
   }
 
   function directHandler(e){e.preventDefault();e.stopPropagation();openStandalone()}
-  function wireButton(){injectCss();const btn=document.querySelector('.dcc-cal-new');if(!btn||btn.__dccV201Bound)return;btn.__dccV201Bound=true;btn.removeAttribute('onclick');btn.onclick=null;btn.addEventListener('click',directHandler,false);btn.setAttribute('aria-label','Nueva sesión')}
+  function wireButton(){injectCss();const btn=document.querySelector('.dcc-cal-new');if(!btn||btn.__dccV202Bound)return;btn.__dccV202Bound=true;btn.removeAttribute('onclick');btn.onclick=null;btn.addEventListener('click',directHandler,false);btn.setAttribute('aria-label','Nueva sesión')}
   function captureHandler(e){const target=e.target?.closest?.('.dcc-cal-new');if(!target)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation?.();openStandalone()}
   function keyHandler(e){if(e.key==='Escape'&&document.getElementById(OVERLAY_ID))closeStandalone()}
   function restoreRealCalendarControls(){
