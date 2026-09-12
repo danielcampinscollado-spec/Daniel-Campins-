@@ -1,50 +1,13 @@
 name: Fix coach Light Premium final
+
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
+
 jobs:
-  patch:
-    if: ${{ !contains(github.event.head_commit.message, '[coach-light-final]') }}
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Patch coach visual modules only
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          changed=[]
-
-          def patch(path, old, new):
-              p=Path(path)
-              s=p.read_text()
-              if old not in s:
-                  raise SystemExit(f'Pattern not found in {path}: {old[:80]}')
-              s=s.replace(old,new,1)
-              p.write_text(s)
-              changed.append(path)
-
-          # Ensure the canonical Light Premium mode is really active.
-          patch('coach-theme-premium-global.js', "  'use strict';\n", "  'use strict';\n  try{document.documentElement.classList.add('dcc-theme-light-premium');localStorage.setItem('dcc:theme:v1','light-premium')}catch(e){}\n")
-
-          cal='''\n      html.dcc-theme-light-premium #modal.dcc-cal-session-overlay{background:rgba(37,31,20,.28)!important}\n      html.dcc-theme-light-premium #modal.dcc-cal-session-overlay .modal-box{background:linear-gradient(145deg,#fffefa,#f8f1e5)!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important;box-shadow:0 28px 80px rgba(72,52,19,.20)!important}\n      html.dcc-theme-light-premium #dcc-cal-session-form h2,html.dcc-theme-light-premium #dcc-cal-session-form label{color:#17191d!important}\n      html.dcc-theme-light-premium #dcc-cal-session-form .sub{color:#7a8390!important}\n      html.dcc-theme-light-premium #dcc-cal-session-form .close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}\n      html.dcc-theme-light-premium #dcc-cal-session-form input,html.dcc-theme-light-premium #dcc-cal-session-form select,html.dcc-theme-light-premium #dcc-cal-session-form textarea{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.30)!important}\n      html.dcc-theme-light-premium .dcc-cal-session{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.28)!important}\n      html.dcc-theme-light-premium .dcc-cal-session-copy strong{color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-cal-session-notes{color:#68717e!important}\n      html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}\n'''
-          patch('coach-calendar-v12.js', '      @media(max-width:390px){', cal+'      @media(max-width:390px){')
-
-          ci='''\n      html.dcc-theme-light-premium #coach-main.dcc-premium-checkins{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-ci-head h1,html.dcc-theme-light-premium .dcc-ci-name{color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-ci-head p{color:#657080!important}\n      html.dcc-theme-light-premium .dcc-ci-tabs,html.dcc-theme-light-premium .dcc-ci-card,html.dcc-theme-light-premium .dcc-ci-empty{background:#fffefa!important;color:#17191d!important;border-color:rgba(185,122,17,.30)!important}\n      html.dcc-theme-light-premium .dcc-ci-tab{color:#68717e!important}\n      html.dcc-theme-light-premium .dcc-ci-tab.active{background:linear-gradient(145deg,#fff2c5,#edc45d)!important;color:#1d1608!important;border-color:#d6a53d!important}\n      html.dcc-theme-light-premium .dcc-ci-avatar{background:#fff7e4!important;color:#a46b0b!important;border-color:rgba(185,122,17,.38)!important}\n      html.dcc-theme-light-premium .dcc-ci-open{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}\n      html.dcc-theme-light-premium .dcc-ci-review{background:linear-gradient(145deg,#fffefa,#f8f1e5)!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important;box-shadow:0 28px 80px rgba(72,52,19,.20)!important}\n      html.dcc-theme-light-premium .dcc-ci-review-head h2,html.dcc-theme-light-premium .dcc-ci-rvalue{color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-ci-review-sub,html.dcc-theme-light-premium .dcc-ci-rlabel,html.dcc-theme-light-premium .dcc-ci-rside{color:#68717e!important}\n      html.dcc-theme-light-premium .dcc-ci-close{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}\n      html.dcc-theme-light-premium .dcc-ci-review-row{background:#fffaf1!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important}\n      html.dcc-theme-light-premium .dcc-ci-rico{background:#fff7e4!important;color:#b77b13!important;border-color:rgba(185,122,17,.24)!important}\n'''
-          patch('checkin-premium.js', '      @media(max-width:600px){', ci+'      @media(max-width:600px){')
-
-          msg='''\n      html.dcc-theme-light-premium #coach-main.dcc-message-chat-v2{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-mcv2-back{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-person{border-color:rgba(185,122,17,.22)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-person h1{color:#17191d!important}\n      html.dcc-theme-light-premium .dcc-mcv2-status{color:#68717e!important}\n      html.dcc-theme-light-premium .dcc-mcv2-avatar,html.dcc-theme-light-premium .dcc-mcv2-mini{background:#fff7e4!important;color:#a46b0b!important;border-color:rgba(185,122,17,.38)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-empty{background:#fffefa!important;color:#68717e!important;border-color:rgba(185,122,17,.28)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-bubble{background:#fffefa!important;color:#17191d!important;border-color:rgba(185,122,17,.24)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-row.mine .dcc-mcv2-bubble{background:#fff1c9!important;color:#17191d!important;border-color:rgba(185,122,17,.42)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-time{color:#7a8390!important}\n      html.dcc-theme-light-premium .dcc-mcv2-composer{background:rgba(255,250,241,.98)!important;border-color:rgba(185,122,17,.38)!important;box-shadow:0 -10px 30px rgba(83,63,31,.12)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-input{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.28)!important}\n      html.dcc-theme-light-premium .dcc-mcv2-input::placeholder{color:#7a8390!important}\n'''
-          patch('messages-chat-premium-v2.js', '      /* Cliente: barra siempre abajo + 16px para impedir el zoom automático de iOS. */', msg+'      /* Cliente: barra siempre abajo + 16px para impedir el zoom automático de iOS. */')
-
-          print('Patched:', ', '.join(changed))
-          PY
-      - name: Commit fixes
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add coach-theme-premium-global.js coach-calendar-v12.js checkin-premium.js messages-chat-premium-v2.js
-          git diff --cached --quiet && exit 0
-          git commit -m "[coach-light-final] Fix coach Light Premium at source"
-          git push
+      - run: echo "Automatic coach patch disabled during stability recovery"
