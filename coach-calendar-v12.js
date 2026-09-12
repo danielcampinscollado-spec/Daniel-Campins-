@@ -54,6 +54,8 @@
       html.dcc-theme-light-premium .dcc-cal-session-copy strong{color:#17191d!important}
       html.dcc-theme-light-premium .dcc-cal-session-notes{color:#68717e!important}
       html.dcc-theme-light-premium .dcc-cal-session-delete{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.28)!important}
+      html.dcc-theme-light-premium #coach-main.dcc-cal-v11 .dcc-cal-day.selected{background:linear-gradient(135deg,#f7da82 0%,#e7b640 100%)!important;color:#17130a!important;border-color:#d9aa4a!important;box-shadow:0 4px 12px rgba(183,123,19,.14)!important}
+      html.dcc-theme-light-premium #coach-main.dcc-cal-v11 .dcc-cal-day.selected:before{background:#9a650a!important;box-shadow:none!important}
       @media(max-width:390px){#modal.dcc-cal-session-overlay{padding:10px!important}#modal.dcc-cal-session-overlay .modal-box{padding:17px!important;max-height:calc(100dvh - 95px)!important}#dcc-cal-session-form h2{font-size:24px}.dcc-cal-session{grid-template-columns:50px minmax(0,1fr) 32px;padding:11px}}
     `;document.head.appendChild(s);
   }
@@ -65,7 +67,7 @@
 
   async function loadMonth(month,force){
     const key=monthKey(month);if(!force&&cache[key])return cache[key];if(loading.has(key))return cache[key]||[];
-    const database=db();if(!database)return [];
+    const database=db();if(!database){cache[key]=[];if(window.currentScreen==='calendar'&&monthKey(monthDate())===key)renderCalendar(false);return [];}
     loading.add(key);
     const first=`${key}-01`;const next=new Date(month.getFullYear(),month.getMonth()+1,1,12);const nextKey=`${next.getFullYear()}-${String(next.getMonth()+1).padStart(2,'0')}-01`;
     try{
@@ -73,7 +75,7 @@
       if(error)throw error;cache[key]=rows||[];
       if(window.currentScreen==='calendar'&&monthKey(monthDate())===key)renderCalendar(false);
       return cache[key];
-    }catch(e){console.error('DCC calendario cargando sesiones:',e);notify('No se pudo cargar la agenda');return []}finally{loading.delete(key)}
+    }catch(e){console.error('DCC calendario cargando sesiones:',e);cache[key]=[];if(window.currentScreen==='calendar'&&monthKey(monthDate())===key)renderCalendar(false);notify('No se pudo cargar la agenda');return []}finally{loading.delete(key)}
   }
 
   function calendarCells(month){
@@ -86,7 +88,7 @@
   }
 
   function agendaHtml(sel){
-    const key=dateKey(sel),mkey=key.slice(0,7);if(!cache[mkey])return `<div class="dcc-cal-empty"><span class="dcc-cal-empty-icon">⌛</span><span>Cargando agenda…</span></div>`;
+    const key=dateKey(sel),mkey=key.slice(0,7);if(!cache[mkey])return '';
     const rows=sessionsForDate(key);if(!rows.length)return `<div class="dcc-cal-empty"><span class="dcc-cal-empty-icon">▣</span><span>No hay sesiones programadas para este día todavía.</span></div>`;
     return `<div class="dcc-cal-session-list">${rows.map(r=>`<article class="dcc-cal-session"><div class="dcc-cal-session-time">${esc(timeLabel(r.session_time))}</div><div class="dcc-cal-session-copy"><strong>${esc(clientName(r.client_id))}</strong><span class="dcc-cal-session-type">${esc(r.session_type||'Entrenamiento')}</span>${r.notes?`<p class="dcc-cal-session-notes">${esc(r.notes)}</p>`:''}</div><button type="button" class="dcc-cal-session-delete" onclick="dccCalendarDeleteSession('${esc(r.id)}')" aria-label="Eliminar sesión">×</button></article>`).join('')}</div>`;
   }
