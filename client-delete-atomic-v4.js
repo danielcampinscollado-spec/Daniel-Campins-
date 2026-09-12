@@ -1,8 +1,8 @@
-/* DCC — borrado atómico y fiable de clientes */
+/* DCC — borrado fiable de clientes */
 (function(){
   'use strict';
-  if(window.__dccClientDeleteAtomicV5)return;
-  window.__dccClientDeleteAtomicV5=true;
+  if(window.__dccClientDeleteAtomicV6)return;
+  window.__dccClientDeleteAtomicV6=true;
 
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
@@ -20,7 +20,38 @@
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(e){console.error(e)}
   }
 
-  async function deleteClient(id){
+  function goClients(){
+    window.selectedClient=null;
+    window.__dccTrainingEdit=false;
+    delete window.__dccTrainingBackup;
+    if(typeof window.showCoach==='function'){
+      window.showCoach('clients');
+      return;
+    }
+    const clientsBtn=document.querySelector('#coach-nav [data-screen="clients"],#coach-nav button:nth-child(2)');
+    clientsBtn?.click?.();
+  }
+
+  async function deleteFromServer(db,id){
+    // La tabla clients ya tiene ON DELETE CASCADE para todos los datos relacionados.
+    // Usamos primero el DELETE normal protegido por RLS de entrenador; es la ruta más directa.
+    const direct=await db.from('clients').delete().eq('id',String(id)).select('id');
+    if(!direct.error&&Array.isArray(direct.data)&&direct.data.some(row=>String(row.id)===String(id))){
+      try{await db.from('dietas').delete().eq('client_id',String(id))}catch(_){ }
+      return true;
+    }
+
+    // Fallback a la función atómica del servidor por compatibilidad.
+    const rpc=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
+    if(rpc.error){
+      const first=direct.error?.message||'El servidor no confirmó el borrado directo';
+      throw new Error(`${first}. ${rpc.error.message||rpc.error}`);
+    }
+    if(rpc.data!==true)throw new Error('El servidor no confirmó la eliminación del cliente');
+    return true;
+  }
+
+  async function deleteClient(id,button){
     if(id==null||id==='')return;
     const d=appData();
     const client=(d.clients||[]).find(c=>String(c.id)===String(id));
@@ -28,31 +59,29 @@
     if(!window.confirm(`¿Eliminar definitivamente a ${name}? Esta acción borrará también sus datos asociados.`))return;
 
     const db=database();
-    if(!db){notify('No hay conexión con el servidor. El cliente no se ha eliminado.');return}
+    if(!db){alert('No hay conexión con el servidor. El cliente no se ha eliminado.');return}
+
+    const oldText=button?.textContent;
+    if(button){button.disabled=true;button.textContent='Eliminando…'}
 
     try{
-      const {data:deleted,error}=await db.rpc('dcc_delete_client',{p_client_id:String(id)});
-      if(error)throw error;
-      if(deleted!==true)throw new Error('El servidor no confirmó la eliminación');
-
+      await deleteFromServer(db,id);
       cleanupLocal(id);
-      window.selectedClient=null;
-      window.__dccTrainingEdit=false;
-      delete window.__dccTrainingBackup;
-      if(typeof window.showCoach==='function')window.showCoach('clients');
+      goClients();
       notify('Cliente eliminado definitivamente');
     }catch(error){
-      console.error('DCC borrado atómico de cliente:',error);
-      notify('No se pudo eliminar el cliente.');
+      console.error('DCC borrado de cliente:',error);
+      alert(`No se pudo eliminar el cliente.\n\n${error?.message||'Error desconocido del servidor'}`);
+      if(button){button.disabled=false;button.textContent=oldText||'Eliminar cliente'}
     }
   }
 
   function install(){
     const current=window.dccLegacyDelete;
     if(typeof current!=='function')return false;
-    if(current.__dccDeleteAtomicV5)return true;
-    const fn=function(id){return deleteClient(id)};
-    fn.__dccDeleteAtomicV5=true;
+    if(current.__dccDeleteAtomicV6)return true;
+    const fn=function(id){return deleteClient(id,document.querySelector('#coach-main .dcc-ca-delete'))};
+    fn.__dccDeleteAtomicV6=true;
     fn.__base=current;
     window.dccLegacyDelete=fn;
     return true;
@@ -65,7 +94,7 @@
     if(id==null||id==='')return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    deleteClient(String(id));
+    deleteClient(String(id),button);
   },true);
 
   install();
