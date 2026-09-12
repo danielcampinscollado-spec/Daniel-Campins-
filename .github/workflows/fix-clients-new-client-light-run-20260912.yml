@@ -1,0 +1,81 @@
+name: Run Clients and New Client Light fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-clients-new-client-light-run-20260912.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Patch two coach screens only
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          p=Path('new-client-premium-v1.js')
+          s=p.read_text(encoding='utf-8')
+          reps=[
+          ("#modal.dcc-new-client-overlay{background:rgba(0,0,0,.76)!important;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);padding:18px!important}","#modal.dcc-new-client-overlay{background:rgba(39,31,19,.24)!important;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);padding:18px!important}"),
+          ("background:radial-gradient(circle at 92% 1%,rgba(240,201,107,.10),transparent 27%),linear-gradient(145deg,#11171d 0%,#090d11 62%,#080a0d 100%)!important;","background:radial-gradient(circle at 92% 1%,rgba(214,163,61,.12),transparent 28%),linear-gradient(145deg,#fffefa 0%,#fbf6ec 100%)!important;"),
+          ("color:#f7f4ee!important;box-shadow:0 28px 80px rgba(0,0,0,.52),0 0 34px rgba(217,170,74,.09),inset 0 1px 0 rgba(255,255,255,.035)!important;","color:#17191d!important;box-shadow:0 28px 80px rgba(64,48,25,.20),0 0 34px rgba(185,125,20,.08),inset 0 1px 0 rgba(255,255,255,.95)!important;"),
+          ("#dcc-new-client-premium .dcc-nc-title{margin:0;background:linear-gradient(92deg,#fff7dc 0%,#f0c96b 58%,#d9aa4a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:30px;line-height:1.02;font-weight:850;letter-spacing:-.7px}","#dcc-new-client-premium .dcc-nc-title{margin:0;background:none!important;-webkit-background-clip:border-box;background-clip:border-box;color:#17191d!important;-webkit-text-fill-color:#17191d!important;font-size:30px;line-height:1.02;font-weight:850;letter-spacing:-.7px}"),
+          ("#dcc-new-client-premium .dcc-nc-sub{margin:9px 0 0;color:#858e99;font-size:8.5px;font-weight:750;letter-spacing:2.7px;text-transform:uppercase}","#dcc-new-client-premium .dcc-nc-sub{margin:9px 0 0;color:#8a8176;font-size:8.5px;font-weight:750;letter-spacing:2.7px;text-transform:uppercase}"),
+          ("#dcc-new-client-premium .dcc-nc-close{width:46px;height:46px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.58);border-radius:14px;background:#0b0f13;color:#f6f4ef;font-size:24px;line-height:1}","#dcc-new-client-premium .dcc-nc-close{width:46px;height:46px;display:grid;place-items:center;border:1px solid rgba(185,122,17,.45);border-radius:14px;background:#fffaf1;color:#98640b;font-size:24px;line-height:1;box-shadow:0 6px 16px rgba(83,63,31,.06)}"),
+          ("#dcc-new-client-premium .dcc-nc-label{display:flex;align-items:center;gap:9px;margin:0 0 8px;color:#f1f0ed;font-size:13px;font-weight:760}","#dcc-new-client-premium .dcc-nc-label{display:flex;align-items:center;gap:9px;margin:0 0 8px;color:#25282d;font-size:13px;font-weight:760}"),
+          ("#dcc-new-client-premium .dcc-nc-label svg{width:20px;height:20px;flex:0 0 20px;color:${GOLD2}}","#dcc-new-client-premium .dcc-nc-label svg{width:20px;height:20px;flex:0 0 20px;color:#b77b13}"),
+          ("outline:0!important;background:linear-gradient(145deg,#11171d,#0b1015)!important;color:#f5f2ec!important;-webkit-text-fill-color:#f5f2ec!important;","outline:0!important;background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;"),
+          ("font:600 14px/1.2 inherit!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important","font:600 14px/1.2 inherit!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 5px 14px rgba(83,63,31,.04)!important"),
+          ("#dcc-new-client-premium .dcc-nc-input::placeholder{color:#6f7782!important;-webkit-text-fill-color:#6f7782!important;opacity:1}","#dcc-new-client-premium .dcc-nc-input::placeholder{color:#8a919b!important;-webkit-text-fill-color:#8a919b!important;opacity:1}"),
+          ("#dcc-new-client-premium .dcc-nc-select-wrap:after{content:'⌄';position:absolute;right:15px;top:50%;transform:translateY(-57%);pointer-events:none;color:#9ca5af;font-size:21px}","#dcc-new-client-premium .dcc-nc-select-wrap:after{content:'⌄';position:absolute;right:15px;top:50%;transform:translateY(-57%);pointer-events:none;color:#98640b;font-size:21px}")]
+          for a,b in reps:
+              if a not in s: raise SystemExit('missing fragment: '+a[:60])
+              s=s.replace(a,b,1)
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('clients-search-final-fix.js')
+          s=p.read_text(encoding='utf-8')
+          marker="    s.textContent=`\n"
+          if marker not in s: raise SystemExit('clients marker missing')
+          light='''      /* LIGHT PREMIUM FINAL — SOLO CLIENTES */
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients,
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;background-color:#f5efe4!important;color:#17191d!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients h1,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients h1{color:#17191d!important;text-shadow:none!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-head p,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-head p{color:#69717d!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-search,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-search{background:#fffefa!important;border:1px solid rgba(185,122,17,.28)!important;box-shadow:0 8px 22px rgba(83,63,31,.06)!important;color:#17191d!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-search svg,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-u-search svg{color:#98640b!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients #dccClientSearch,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients #dccClientSearch{color:#17191d!important;-webkit-text-fill-color:#17191d!important;caret-color:#b77b13!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients #dccClientSearch::placeholder,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients #dccClientSearch::placeholder{color:#818895!important;-webkit-text-fill-color:#818895!important;opacity:1!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-tabs,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-tabs{background:#fffefa!important;border:1px solid rgba(185,122,17,.26)!important;box-shadow:none!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-tab,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-tab{color:#69717d!important;background:transparent!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-tab.active,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-tab.active{background:linear-gradient(145deg,#fff0b7,#edc45d)!important;color:#1d1608!important;border-color:#d6a53d!important;box-shadow:0 5px 14px rgba(185,125,20,.14)!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-sort,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-sort{background:#fffefa!important;color:#25282d!important;border-color:rgba(185,122,17,.28)!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-card,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{background:linear-gradient(145deg,#fffefa 0%,#fbf6ec 100%)!important;background-color:#fffaf1!important;border:1px solid rgba(198,139,32,.34)!important;color:#17191d!important;box-shadow:0 10px 24px rgba(83,63,31,.06),inset 0 1px 0 rgba(255,255,255,.95)!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-name,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-name{color:#17191d!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-goal,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-goal{color:#9a6710!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-weight,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-weight{color:#747c87!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-final-clients .dcc-fcl-card button,html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card button{background:#fffaf1!important;color:#8d5a08!important;border-color:rgba(185,122,17,.40)!important;box-shadow:none!important}
+'''
+          s=s.replace(marker,marker+light,1)
+          s=s.replace("set(input,'color','#f4f1ed');","set(input,'color',document.documentElement.classList.contains('dcc-theme-light-premium')?'#17191d':'#f4f1ed');")
+          s=s.replace("set(input,'-webkit-text-fill-color','#f4f1ed');","set(input,'-webkit-text-fill-color',document.documentElement.classList.contains('dcc-theme-light-premium')?'#17191d':'#f4f1ed');")
+          p.write_text(s,encoding='utf-8')
+          PY
+          node --check new-client-premium-v1.js
+          node --check clients-search-final-fix.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add new-client-premium-v1.js clients-search-final-fix.js
+          git diff --cached --quiet && exit 0
+          git commit -m "[coach-clients-light] Fix Clients and New Client screens only"
+          git push origin main
