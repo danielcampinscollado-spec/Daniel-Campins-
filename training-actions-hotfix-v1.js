@@ -1,288 +1,210 @@
-/* DCC — Light Premium final polish: visual only. */
+/* DCC — capa final de estabilidad visual. Actúa sobre el DOM REAL de producción. */
 (function(){
   'use strict';
-  if(window.__dccLightPremiumFinalPolishV2)return;
-  window.__dccLightPremiumFinalPolishV2=true;
+  if(window.__dccRuntimeVisualStabilityV3)return;
+  window.__dccRuntimeVisualStabilityV3=true;
 
-  const STYLE_ID='dcc-light-premium-final-polish-v2-css';
+  const STYLE_ID='dcc-runtime-visual-stability-v3-css';
+  const LABELS={home:'BIENVENIDO',food:'ALIMENTACIÓN',training:'ENTRENAMIENTO',progress:'PROGRESO',checkin:'CHECK-IN SEMANAL',messages:'MENSAJES'};
+  let frame=0;
+  let renderingTraining=false;
 
-  const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-  const muscleAsset=name=>{
-    const n=norm(name);
-    if(n.includes('pectoral')||n.includes('pecho'))return './assets/muscles/pecho.png';
-    if(n.includes('hombro')||n.includes('deltoide'))return './assets/muscles/hombros.png';
-    if(n.includes('triceps'))return './assets/muscles/triceps.png';
-    if(n.includes('biceps'))return './assets/muscles/biceps.png';
-    if(n.includes('espalda')||n.includes('dorsal'))return './assets/muscles/espalda.png';
-    if(n.includes('cuadriceps'))return './assets/muscles/cuadriceps.png';
-    if(n.includes('femoral')||n.includes('isquio'))return './assets/muscles/isquios.png';
-    if(n.includes('glute'))return './assets/muscles/gluteos.png';
-    if(n.includes('gemelo')||n.includes('pantorrilla'))return './assets/muscles/gemelos.png';
-    if(n.includes('core')||n.includes('abdomen'))return './assets/muscles/core.png';
+  function norm(v){return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim()}
+
+  function detectScreen(main){
+    if(!main)return '';
+    if(window.activeWorkout)return 'workout';
+    if(main.querySelector('.dch-wrap'))return 'home';
+    if(main.querySelector('.dcc-training-stable-v3'))return 'training';
+    if(main.classList.contains('dcc-nutrition-premium'))return 'food';
+    const t=norm(main.textContent).slice(0,1800);
+    if(t.includes('habla con daniel')||t.includes('mensajes'))return 'messages';
+    if(t.includes('check-in semanal')||t.includes('checkin semanal'))return 'checkin';
+    if(t.includes('progreso')&&(/peso|grasa|fuerza/.test(t)))return 'progress';
+    if(t.includes('plan de alimentacion')||t.includes('dia de entrenamiento')&&t.includes('dia de descanso'))return 'food';
+    if(t.includes('entrenamiento')&&(t.includes('musculos')||t.includes('ejercicios')))return 'training';
+    if(t.includes('bienvenido'))return 'home';
     return '';
-  };
+  }
 
-  function install(){
+  function findExact(main,text){
+    const wanted=norm(text);
+    const nodes=main.querySelectorAll('div,p,span,small,strong');
+    for(const el of nodes){
+      if(el.children.length===0&&norm(el.textContent)===wanted)return el;
+    }
+    return null;
+  }
+
+  function ensureKicker(main,screen){
+    const label=LABELS[screen];
+    if(!label)return;
+    let node=findExact(main,label);
+    if(!node){
+      const h1=main.querySelector('h1');
+      if(!h1)return;
+      node=document.createElement('div');
+      node.textContent=label;
+      h1.parentNode?.insertBefore(node,h1);
+    }
+    node.classList.add('dcc-unified-kicker');
+  }
+
+  function ensurePremiumTraining(main,screen){
+    if(screen!=='training'||window.activeWorkout||main.querySelector('.dcc-training-stable-v3')||renderingTraining)return;
+    if(typeof window.dccRenderTrainingOverview!=='function')return;
+    renderingTraining=true;
+    try{window.dccRenderTrainingOverview();}catch(e){console.warn('DCC training recovery',e)}
+    requestAnimationFrame(()=>{renderingTraining=false;schedule()});
+  }
+
+  function installStyles(){
     document.getElementById('dcc-light-premium-final-polish-v1-css')?.remove();
+    document.getElementById('dcc-light-premium-final-polish-v2-css')?.remove();
     if(document.getElementById(STYLE_ID))return;
     const s=document.createElement('style');
     s.id=STYLE_ID;
     s.textContent=`
-      /* ENCABEZADOS PRINCIPALES — misma tipografía, tamaño y color */
+      /* Jerarquía común de encabezados cliente */
+      html.dcc-theme-light-premium #client-main .dcc-unified-kicker,
       html.dcc-theme-light-premium #client-main .dch-eyebrow,
       html.dcc-theme-light-premium #client-main .client-header .section-eyebrow,
       html.dcc-theme-light-premium #client-main .dct3-eyebrow,
       html.dcc-theme-light-premium #client-main .dcpr6-kicker,
       html.dcc-theme-light-premium #client-main .dcc-cc-kicker,
       html.dcc-theme-light-premium #client-main .dcc-cm-kicker{
-        color:#b77b13!important;
+        display:block!important;margin:0 0 9px!important;padding:0!important;
+        color:#b77b13!important;background:transparent!important;border:0!important;
         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-        font-size:11px!important;
-        font-weight:800!important;
-        line-height:1.15!important;
-        letter-spacing:3.15px!important;
-        text-transform:uppercase!important;
-        text-shadow:none!important;
+        font-size:11px!important;font-weight:800!important;line-height:1.15!important;
+        letter-spacing:3.15px!important;text-transform:uppercase!important;text-shadow:none!important;
       }
+      html.dcc-theme-light-premium #client-main h1,
+      html.dcc-theme-light-premium #client-main h2,
+      html.dcc-theme-light-premium #client-main h3{color:#17191d!important;text-shadow:none!important}
 
-      /* INICIO — próximo entrenamiento: texto siempre legible y separado del disco */
+      /* Inicio: tarjeta próximo entrenamiento */
       html.dcc-theme-light-premium #client-main .dch-next{
-        background-image:
-          linear-gradient(90deg,#fffdf8 0%,#f9f0df 34%,rgba(249,240,223,.98) 46%,rgba(249,240,223,.92) 55%,rgba(249,240,223,.58) 63%,rgba(249,240,223,.10) 76%,rgba(0,0,0,0) 84%),
-          url('./assets/next-workout-plate.jpg')!important;
-        background-size:100% 100%,auto 138%!important;
-        background-position:center,right center!important;
+        background-image:linear-gradient(90deg,#fffdf8 0%,#f9f0df 34%,rgba(249,240,223,.98) 46%,rgba(249,240,223,.90) 55%,rgba(249,240,223,.52) 65%,rgba(249,240,223,.08) 78%,rgba(0,0,0,0) 86%),url('./assets/next-workout-plate.jpg')!important;
+        background-size:100% 100%,auto 138%!important;background-position:center,right center!important;background-repeat:no-repeat!important;
       }
-      html.dcc-theme-light-premium #client-main .dch-next .dch-next-name,
-      html.dcc-theme-light-premium #client-main .dch-next h1,
-      html.dcc-theme-light-premium #client-main .dch-next h2,
-      html.dcc-theme-light-premium #client-main .dch-next h3,
-      html.dcc-theme-light-premium #client-main .dch-next [class*="title"]{
-        position:relative!important;
-        z-index:4!important;
-        max-width:58%!important;
-        color:#17191d!important;
-        white-space:normal!important;
-        overflow:visible!important;
-        text-overflow:clip!important;
-      }
-      html.dcc-theme-light-premium #client-main .dch-next .dch-next-label,
-      html.dcc-theme-light-premium #client-main .dch-next .dch-next-day{position:relative!important;z-index:4!important;max-width:58%!important}
+      html.dcc-theme-light-premium #client-main .dch-next-name,
+      html.dcc-theme-light-premium #client-main .dch-next-day,
+      html.dcc-theme-light-premium #client-main .dch-next-label{position:relative!important;z-index:3!important;max-width:58%!important}
 
-      /* ALIMENTACIÓN — misma tipografía y medida que “Plan de alimentación” */
+      /* Alimentación real: tipografía normal, sin Georgia ni artificios */
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="food"] .meal-card summary,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="food"] .meal-card summary *,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="food"] .food-row,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="food"] .food-row *,
       html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary *,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .food-row,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .food-row b{
-        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;
-        letter-spacing:0!important;
+      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary *{
+        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif!important;letter-spacing:0!important;
       }
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary b{
-        font-size:13px!important;
-        font-weight:650!important;
-        line-height:1.15!important;
-      }
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary{
-        -webkit-tap-highlight-color:transparent!important;
-        -webkit-touch-callout:none!important;
-        appearance:none!important;
-        -webkit-appearance:none!important;
-        outline:none!important;
-        animation:none!important;
-        transition:none!important;
-        transform:none!important;
-        background:transparent!important;
-      }
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary:active,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary:focus,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary:focus-visible{
-        outline:none!important;
-        background:transparent!important;
-        box-shadow:none!important;
-        transform:none!important;
-      }
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary::-webkit-details-marker{display:none!important}
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary::marker{display:none!important;content:''!important}
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-arrow,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-arrow:active,
-      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-arrow:focus{
-        animation:none!important;
-        transition:none!important;
-        transform:none!important;
-        outline:none!important;
-        -webkit-tap-highlight-color:transparent!important;
-      }
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="food"] .meal-card summary b,
+      html.dcc-theme-light-premium #client-main.dcc-nutrition-premium .meal-card summary b{font-size:14px!important;font-weight:650!important;line-height:1.2!important}
 
-      /* PORTADA ENTRENAMIENTO — más compacta y con ilustraciones siempre visibles */
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-muscles{
-        min-height:104px!important;
-        padding:11px 14px!important;
-        grid-template-columns:minmax(0,1fr) minmax(124px,.72fr)!important;
-        gap:10px!important;
+      /* Portada premium de entrenamiento: siempre sobre la versión legacy */
+      html.dcc-theme-light-premium #client-main .dcc-training-stable-v3{color:#17191d!important}
+      html.dcc-theme-light-premium #client-main .dct3-day{background:linear-gradient(145deg,#fffefa,#f6eddf)!important;color:#69727e!important;border-color:rgba(166,126,59,.23)!important;box-shadow:none!important}
+      html.dcc-theme-light-premium #client-main .dct3-day.active{background:linear-gradient(145deg,#ffe7a0,#e2aa37)!important;color:#1c160b!important;border-color:#d5a13b!important;box-shadow:0 6px 16px rgba(186,127,21,.18)!important}
+      html.dcc-theme-light-premium #client-main .dct3-card{background:linear-gradient(145deg,#fffefa,#f8f1e5)!important;color:#17191d!important;border-color:rgba(190,132,31,.32)!important;box-shadow:0 9px 25px rgba(83,63,31,.08)!important}
+      html.dcc-theme-light-premium #client-main .dct3-tip p{color:#59636f!important}
+      html.dcc-theme-light-premium #client-main .dct3-muscles{min-height:104px!important;padding:11px 14px!important;grid-template-columns:minmax(0,1fr) minmax(124px,.72fr)!important;gap:10px!important}
+      html.dcc-theme-light-premium #client-main .dct3-muscle{width:58px!important;max-width:58px!important;height:72px!important;flex:0 0 58px!important;background:#f8efe1!important;border-color:rgba(187,126,20,.28)!important}
+      html.dcc-theme-light-premium #client-main .dct3-muscle img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:1!important;visibility:visible!important;filter:none!important}
+      html.dcc-theme-light-premium #client-main .dct3-routine{
+        position:relative!important;overflow:hidden!important;min-height:146px!important;padding:15px!important;border:1px solid rgba(193,132,28,.62)!important;border-radius:22px!important;
+        background-image:linear-gradient(90deg,#fffdf8 0%,#f9f0df 31%,rgba(249,240,223,.96) 44%,rgba(249,240,223,.69) 55%,rgba(249,240,223,.20) 67%,rgba(0,0,0,0) 77%),url('./assets/next-workout-plate.jpg')!important;
+        background-size:100% 100%,auto 150%!important;background-position:center,right center!important;background-repeat:no-repeat!important;box-shadow:0 16px 36px rgba(73,52,20,.14)!important;
       }
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-visuals{gap:6px!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-muscle{
-        width:58px!important;
-        max-width:58px!important;
-        height:72px!important;
-        flex:0 0 58px!important;
-        background:#f8efe1!important;
-        border-color:rgba(187,126,20,.28)!important;
-      }
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-muscle img{
-        display:block!important;
-        width:100%!important;
-        height:100%!important;
-        object-fit:contain!important;
-        opacity:1!important;
-        visibility:visible!important;
-        position:relative!important;
-        z-index:2!important;
-        filter:none!important;
-        mix-blend-mode:normal!important;
-      }
+      html.dcc-theme-light-premium #client-main .dct3-routine>*{position:relative!important;z-index:2!important}
+      html.dcc-theme-light-premium #client-main .dct3-routine h3,
+      html.dcc-theme-light-premium #client-main .dct3-routine .dct3-meta{max-width:58%!important}
+      html.dcc-theme-light-premium #client-main .dct3-routine h3{font-size:20px!important;font-weight:650!important;color:#17191d!important}
+      html.dcc-theme-light-premium #client-main .dct3-meta{color:#66707c!important}
+      html.dcc-theme-light-premium #client-main .dct3-start{background:linear-gradient(135deg,#f8d97f,#e3ac39 64%,#f2c75e)!important;color:#171109!important;border-color:#e2ad3e!important;box-shadow:0 9px 22px rgba(186,127,21,.20)!important}
+      html.dcc-theme-light-premium #client-main .dct3-view{background:rgba(255,251,242,.97)!important;color:#6e4910!important;border-color:rgba(173,117,19,.35)!important}
+      html.dcc-theme-light-premium #client-main .dct3-exercise{background:rgba(255,253,248,.94)!important;color:#17191d!important;border-color:rgba(166,126,59,.18)!important}
 
-      /* PORTADA ENTRENAMIENTO — bloque de ejercicios protagonista con discos, pero más compacto */
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine{
-        position:relative!important;
-        overflow:hidden!important;
-        isolation:isolate!important;
-        min-height:146px!important;
-        padding:15px!important;
-        border:1px solid rgba(193,132,28,.62)!important;
-        border-radius:22px!important;
-        background-image:
-          linear-gradient(90deg,#fffdf8 0%,#f9f0df 31%,rgba(249,240,223,.96) 44%,rgba(249,240,223,.70) 55%,rgba(249,240,223,.24) 66%,rgba(0,0,0,0) 76%),
-          url('./assets/next-workout-plate.jpg')!important;
-        background-size:100% 100%,auto 150%!important;
-        background-position:center,right center!important;
-        background-repeat:no-repeat,no-repeat!important;
-        box-shadow:0 16px 36px rgba(73,52,20,.14),inset 0 1px 0 rgba(255,255,255,.88)!important;
+      /* Sesión activa LEGACY: la interfaz real que todavía genera index.html */
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"]{color:#17191d!important;background:#f5efe4!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"]>.top{
+        padding:15px!important;margin-bottom:12px!important;border:1px solid rgba(193,132,28,.52)!important;border-radius:22px!important;
+        background:radial-gradient(circle at 92% 0,rgba(221,168,59,.10),transparent 34%),linear-gradient(145deg,#fffefa,#fbf5e9)!important;
+        box-shadow:0 14px 34px rgba(73,52,20,.10)!important;
       }
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine::after{
-        content:''!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
-        background:linear-gradient(90deg,transparent 0%,transparent 60%,rgba(0,0,0,.05) 100%)!important;
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"]>.top *,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .card h1,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .card h2,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .card h3,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .card b{color:#17191d!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .muted{color:#66707c!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] .card,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] details.card{
+        background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#17191d!important;border-color:rgba(198,139,32,.34)!important;box-shadow:0 10px 28px rgba(83,63,31,.08)!important;
       }
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine>*{position:relative!important;z-index:2!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine .dct3-label{color:#aa7010!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine h3{color:#17191d!important;font-size:20px!important;font-weight:650!important;max-width:58%!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine .dct3-meta{color:#66707c!important;max-width:58%!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-actions{margin-top:14px!important;gap:9px!important}
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-start{
-        background:linear-gradient(135deg,#f8d97f,#e3ac39 64%,#f2c75e)!important;color:#171109!important;border-color:#e2ad3e!important;
-        box-shadow:0 9px 22px rgba(186,127,21,.20),inset 0 1px 0 rgba(255,255,255,.52)!important
-      }
-      html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-view{
-        background:rgba(255,251,242,.96)!important;color:#6e4910!important;border-color:rgba(173,117,19,.35)!important;box-shadow:0 5px 14px rgba(83,63,31,.07)!important
-      }
-      html.dcc-theme-light-premium body:has(#client-main .dcc-training-stable-v3) .dcc-theme-trigger{display:none!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] [style*="background:linear-gradient(145deg,#11151c"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] [style*="background:#101"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] [style*="background: #101"]{background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#17191d!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="workout"] input{background:#fffefa!important;color:#17191d!important;border-color:rgba(166,126,59,.28)!important}
 
-      /* ENTRENAMIENTO ACTIVO — cabecera Light Premium limpia y legible */
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{
-        position:relative!important;
-        padding:15px!important;
-        border:1px solid rgba(193,132,28,.54)!important;
-        border-radius:22px!important;
-        background:radial-gradient(circle at 92% 0,rgba(221,168,59,.10),transparent 34%),linear-gradient(145deg,#fffefa 0%,#fbf5e9 100%)!important;
-        box-shadow:0 15px 34px rgba(73,52,20,.12),inset 0 1px 0 #fff!important;
-      }
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-title{color:#17191d!important;text-shadow:none!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-kicker span{color:#a86f0d!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-kicker small{color:#68717d!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-back{background:#fffaf0!important;color:#24211c!important;border-color:rgba(166,126,59,.28)!important;box-shadow:0 5px 14px rgba(83,63,31,.06)!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media{background:linear-gradient(145deg,#f8efe0,#eee3d3)!important;border-color:rgba(187,126,20,.42)!important;box-shadow:0 6px 16px rgba(83,63,31,.08)!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-badge{background:#fffaf0!important;color:#5f6875!important;border-color:rgba(166,126,59,.24)!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-badge.gold{background:#fff0c6!important;color:#8e5d0a!important;border-color:rgba(187,126,20,.46)!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-tech,
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-elapsed{background:#fff9ed!important;border-color:rgba(187,126,20,.40)!important;box-shadow:none!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-tech{color:#17191d!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-tech svg,
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-elapsed{color:#a66d0b!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-elapsed-icon{background:#fbf0da!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-elapsed strong{color:#17191d!important}
-      html.dcc-theme-light-premium body.dcc-workout-mode .dcc-theme-trigger{display:none!important}
+      /* Mensajes legacy: corrige colores inline oscuros que ganaban al tema */
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="color:#f5f5f2"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="color: #f5f5f2"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="color:#fff"]{color:#17191d!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="color:#858"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="color: #858"]{color:#657080!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="background:#101"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="background: #101"],
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="messages"] [style*="background:#111"]{background:#fffefa!important;color:#17191d!important}
+
+      /* Check-in y progreso legacy */
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="checkin"] .card,
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="progress"] .card{background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;color:#17191d!important;border-color:rgba(198,139,32,.34)!important}
+      html.dcc-theme-light-premium #client-main[data-dcc-screen="checkin"] .checkin-option{border-color:rgba(166,126,59,.22)!important}
+
+      /* Menú inferior: gana a las múltiples reglas legacy con !important */
+      html.dcc-theme-light-premium body #client-nav,
+      html.dcc-theme-light-premium body #coach-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10)!important}
+      html.dcc-theme-light-premium body #client-nav button,
+      html.dcc-theme-light-premium body #coach-nav button{color:#e8b94f!important;background:transparent!important;border:1px solid transparent!important;box-shadow:none!important;filter:none!important}
+      html.dcc-theme-light-premium body #client-nav button.active,
+      html.dcc-theme-light-premium body #coach-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4,#e6af3d 72%,#c88920)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important;transform:translateY(-1px)!important}
+      html.dcc-theme-light-premium body #client-nav button.active *,
+      html.dcc-theme-light-premium body #coach-nav button.active *{color:#1d1608!important;stroke:currentColor!important;filter:none!important}
 
       @media(max-width:430px){
-        html.dcc-theme-light-premium #client-main .dch-next .dch-next-name,
-        html.dcc-theme-light-premium #client-main .dch-next h1,
-        html.dcc-theme-light-premium #client-main .dch-next h2,
-        html.dcc-theme-light-premium #client-main .dch-next h3,
-        html.dcc-theme-light-premium #client-main .dch-next [class*="title"]{max-width:55%!important;font-size:15px!important;line-height:1.16!important}
-        html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-muscles{min-height:98px!important;padding:10px 12px!important;grid-template-columns:minmax(0,1fr) 122px!important}
-        html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-muscle{width:55px!important;max-width:55px!important;height:68px!important;flex-basis:55px!important}
-        html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine{min-height:138px!important;padding:14px!important;background-size:100% 100%,auto 145%!important}
-        html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine h3,
-        html.dcc-theme-light-premium body #client-main .dcc-training-stable-v3 .dct3-routine .dct3-meta{max-width:54%!important}
-        html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{padding:12px!important;border-radius:19px!important}
+        html.dcc-theme-light-premium #client-main .dct3-muscles{min-height:98px!important;padding:10px 12px!important;grid-template-columns:minmax(0,1fr) 122px!important}
+        html.dcc-theme-light-premium #client-main .dct3-muscle{width:55px!important;max-width:55px!important;height:68px!important;flex-basis:55px!important}
+        html.dcc-theme-light-premium #client-main .dct3-routine{min-height:138px!important;padding:14px!important;background-size:100% 100%,auto 145%!important}
+        html.dcc-theme-light-premium #client-main .dct3-routine h3,
+        html.dcc-theme-light-premium #client-main .dct3-routine .dct3-meta{max-width:54%!important}
       }
     `;
     document.head.appendChild(s);
   }
 
-  function getAppData(){try{return data||{}}catch(_){return window.data||{}}}
-  function getClientId(){try{return currentClientId||null}catch(_){return window.currentClientId||null}}
-
-  function fixHomeNextWorkout(){
-    const card=document.querySelector('#client-main .dch-next');
-    if(!card)return;
-    const dayText=card.querySelector('.dch-next-day')?.textContent||'';
-    const match=dayText.match(/(\d+)/);
-    const dayIndex=Math.max(0,(match?Number(match[1]):1)-1);
-    const id=getClientId();
-    const routineRaw=getAppData()?.routines?.[id];
-    const routine=Array.isArray(routineRaw)?routineRaw:Array.isArray(routineRaw?.routine)?routineRaw.routine:[];
-    const day=routine[dayIndex];
-    if(!day)return;
-    const groups=Array.isArray(day.muscleGroups)&&day.muscleGroups.length
-      ? day.muscleGroups.map(x=>String(x||'').trim()).filter(Boolean)
-      : String(day.muscle||'').split(/[·+,&/]/).map(x=>x.trim()).filter(Boolean);
-    if(!groups.length)return;
-    const label=groups.slice(0,3).map(x=>/^pecho$/i.test(x)?'Pectoral':x).join(' · ');
-    const target=card.querySelector('.dch-next-name')||Array.from(card.querySelectorAll('h1,h2,h3,[class*="title"]')).find(el=>/Pectoral|Pecho|Hombro|Espalda|Pierna|Glúteo|Bíceps|Tríceps/i.test(el.textContent||''));
-    if(target&&target.textContent!==label)target.textContent=label;
-  }
-
-  function restoreTrainingImages(){
-    const section=document.querySelector('#client-main .dcc-training-stable-v3 .dct3-muscles');
-    if(!section)return;
-    const names=(section.querySelector('.dct3-title')?.textContent||'').split('·').map(x=>x.trim()).filter(Boolean).slice(0,2);
-    const visuals=section.querySelector('.dct3-visuals');
-    if(!visuals)return;
-    names.forEach((name,index)=>{
-      let box=visuals.children[index];
-      if(!box){box=document.createElement('div');box.className='dct3-muscle';visuals.appendChild(box);}
-      let img=box.querySelector('img');
-      if(!img){img=document.createElement('img');img.alt=name;box.appendChild(img);}
-      const src=muscleAsset(name);
-      if(src&&img.getAttribute('src')!==src)img.setAttribute('src',src);
-      img.style.display='block';img.style.opacity='1';img.style.visibility='visible';
-      img.onerror=()=>{if(img.dataset.retry!=='1'){img.dataset.retry='1';img.src=src+'?v=2';}};
-    });
-  }
-
-  function removeMealTapArtifacts(){
-    document.querySelectorAll('#client-main.dcc-nutrition-premium .meal-card summary').forEach(summary=>{
-      summary.style.webkitTapHighlightColor='transparent';
-      summary.style.outline='none';
-      summary.style.transform='none';
-      summary.style.animation='none';
-    });
-  }
-
   function refine(){
-    install();
-    fixHomeNextWorkout();
-    restoreTrainingImages();
-    removeMealTapArtifacts();
-    const s=document.getElementById(STYLE_ID);
-    if(s&&s.parentNode&&s!==document.head.lastElementChild)document.head.appendChild(s);
+    installStyles();
+    const main=document.getElementById('client-main');
+    if(main){
+      const screen=detectScreen(main);
+      if(screen){
+        main.dataset.dccScreen=screen;
+        document.body.classList.toggle('dcc-workout-mode',screen==='workout');
+        ensureKicker(main,screen);
+        ensurePremiumTraining(main,screen);
+      }
+    }
+    const style=document.getElementById(STYLE_ID);
+    if(style&&style!==document.head.lastElementChild)document.head.appendChild(style);
   }
 
-  let frame=0;
   function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(refine)}
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
   window.addEventListener('dcc:themechange',schedule);
+  window.addEventListener('hashchange',schedule);
   const observer=new MutationObserver(schedule);
-  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','open','src']});
+  observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','open']});
 })();
