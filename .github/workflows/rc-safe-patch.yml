@@ -29,7 +29,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add client-checkin-final-v3.js
+          git add client-metrics-sync-v10.js
           git diff --cached --quiet && exit 0
-          git commit -m "Make check-in submission atomic"
+          git commit -m "Make body-fat writes atomic and reduce reinstall timers"
           git push origin HEAD:audit/release-candidate-2026-09-12
