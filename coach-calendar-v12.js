@@ -109,6 +109,15 @@
     const sel=selectedDate(),date=dateKey(sel);const show=typeof openModal==='function'?openModal:window.openModal;if(typeof show!=='function')return;
     show(`<div id="dcc-cal-session-form"><div class="head"><div><h2>Nueva sesión</h2><p class="sub">Programa una sesión para un cliente</p></div><button type="button" class="close" onclick="dccCalendarCloseModal()">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="" disabled selected>Selecciona un cliente</option>${clients.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select></label><div class="row"><label>Fecha<input id="dcc-cal-date" type="date" value="${date}"></label><label>Hora<input id="dcc-cal-time" type="time" value="09:00"></label></div><label>Tipo de sesión<select id="dcc-cal-type"><option>Entrenamiento</option><option>Check-in</option><option>Revisión</option><option>Consulta</option></select></label><label>Notas<textarea id="dcc-cal-notes" placeholder="Ej. Pierna · revisar técnica de sentadilla"></textarea></label><button id="dcc-cal-save" type="button" class="save" onclick="dccCalendarSaveSession()">Guardar sesión →</button></div>`);
     document.getElementById('modal')?.classList.add('dcc-cal-session-overlay');
+    requestAnimationFrame(()=>{
+      const modal=document.getElementById('modal');
+      const box=modal?.querySelector('.modal-box');
+      if(modal){modal.style.setProperty('background','rgba(37,31,20,.26)','important')}
+      if(box){box.style.setProperty('background','linear-gradient(145deg,#fffefa 0%,#f8f1e5 100%)','important');box.style.setProperty('color','#17191d','important');box.style.setProperty('border-color','rgba(185,122,17,.42)','important')}
+      modal?.querySelectorAll('#dcc-cal-session-form h2,#dcc-cal-session-form label').forEach(el=>el.style.setProperty('color','#17191d','important'));
+      modal?.querySelectorAll('#dcc-cal-session-form input,#dcc-cal-session-form select,#dcc-cal-session-form textarea').forEach(el=>{el.style.setProperty('background','#fffefa','important');el.style.setProperty('color','#17191d','important');el.style.setProperty('-webkit-text-fill-color','#17191d','important');el.style.setProperty('border-color','rgba(185,122,17,.30)','important')});
+      const close=modal?.querySelector('#dcc-cal-session-form .close');if(close){close.style.setProperty('background','#fffaf1','important');close.style.setProperty('color','#98640b','important')}
+    });
   };
   window.dccCalendarCloseModal=closeSessionModal;
 
