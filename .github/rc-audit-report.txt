@@ -135,7 +135,7 @@ messages-sync-fix.js | setTimeout=4, addEventListener=1, Supabase queries=1, !im
 nav-premium-global.js | !important=115
 new-client-premium-v1.js | setTimeout=1, Supabase queries=6, !important=32
 nutrition-plan-premium-v1.js | addEventListener=5, !important=14
-nutrition-plan-premium-v2.js | addEventListener=1, localStorage reads=1, localStorage writes=1, Supabase queries=1
+nutrition-plan-premium-v2.js | addEventListener=1, localStorage reads=1, localStorage writes=1, Supabase queries=3
 progress-metrics-unify.js | setTimeout=1, !important=3
 progress-premium-v2.js | MutationObserver=1, setInterval=1, setTimeout=1, addEventListener=1
 progress-premium-v3.js | MutationObserver=1, setTimeout=2, addEventListener=2
@@ -143,7 +143,7 @@ progress-premium-v4.js | setTimeout=1, !important=44
 progress-premium-v5.js | setTimeout=2, addEventListener=1, !important=45
 progress-premium.js | setTimeout=4, addEventListener=1, !important=2
 progress-style-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=113
-server-actions-v1.js | Supabase queries=1
+server-actions-v1.js | Supabase queries=3
 training-actions-hotfix-v1.js | MutationObserver=1, addEventListener=5, !important=141
 training-actions-hotfix-v2.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=140
 training-coach-fixes-v1.js | MutationObserver=1, addEventListener=6, !important=19
@@ -165,7 +165,7 @@ setTimeout: 117
 addEventListener: 144
 localStorage reads: 7
 localStorage writes: 9
-Supabase queries: 104
+Supabase queries: 108
 !important: 3543
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
