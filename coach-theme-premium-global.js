@@ -7,10 +7,9 @@
   window.__dccCoachThemeBootstrapStableV1=true;
 
   const POLISH_ID='dcc-coach-light-polish-v1';
-  let polishQueued=false;
 
   function installPolish(){
-    document.getElementById(POLISH_ID)?.remove();
+    if(document.getElementById(POLISH_ID))return;
     const style=document.createElement('style');
     style.id=POLISH_ID;
     style.textContent=`
@@ -261,57 +260,19 @@
     (document.head||document.documentElement).appendChild(style);
   }
 
-  function schedulePolish(){
-    if(polishQueued)return;
-    polishQueued=true;
-    requestAnimationFrame(()=>{polishQueued=false;installPolish()});
-  }
-
   function loadStableTheme(){
     const name='coach-light-stable-v1.js';
     const existing=[...document.scripts].find(s=>(s.src||'').includes(name));
     if(existing){installPolish();return}
     const script=document.createElement('script');
-    script.src='./coach-light-stable-v1.js?v=20260912-2';
+    script.src='./coach-light-stable-v1.js?v=20260913-2250';
     script.async=false;script.dataset.dccCoachStable='1';
     script.onload=installPolish;
     script.onerror=()=>console.error('DCC: no se pudo cargar el tema estable del entrenador');
     (document.head||document.documentElement).appendChild(script);
   }
 
-  function watchNewClientModal(){
-    const bind=()=>{
-      const modal=document.getElementById('modal');
-      if(!modal||modal.__dccLightModalWatch)return;
-      modal.__dccLightModalWatch=true;
-      const observer=new MutationObserver(()=>{if(modal.classList.contains('dcc-new-client-overlay'))schedulePolish()});
-      observer.observe(modal,{attributes:true,attributeFilter:['class'],childList:true,subtree:false});
-    };
-    bind();
-    if(!document.getElementById('modal')){
-      const rootObserver=new MutationObserver(()=>{if(document.getElementById('modal')){bind();rootObserver.disconnect()}});
-      rootObserver.observe(document.documentElement,{childList:true,subtree:true});
-    }
-  }
-
-  function watchCoachMain(){
-    const bind=()=>{
-      const main=document.getElementById('coach-main');
-      if(!main||main.__dccLightStableWatch)return;
-      main.__dccLightStableWatch=true;
-      const observer=new MutationObserver(schedulePolish);
-      observer.observe(main,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
-    };
-    bind();
-    if(!document.getElementById('coach-main')){
-      const rootObserver=new MutationObserver(()=>{if(document.getElementById('coach-main')){bind();rootObserver.disconnect()}});
-      rootObserver.observe(document.documentElement,{childList:true,subtree:true});
-    }
-  }
-
   loadStableTheme();
-  watchNewClientModal();
-  watchCoachMain();
-  document.addEventListener('DOMContentLoaded',()=>{loadStableTheme();installPolish();watchNewClientModal();watchCoachMain()},{once:true});
-  window.addEventListener('pageshow',()=>{loadStableTheme();installPolish();watchNewClientModal();watchCoachMain()});
+  document.addEventListener('DOMContentLoaded',()=>{loadStableTheme();installPolish()},{once:true});
+  window.addEventListener('pageshow',()=>{loadStableTheme();installPolish()});
 })();
