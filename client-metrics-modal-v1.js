@@ -1,14 +1,19 @@
-/* DCC — Métricas cliente v2: peso y grasa server-first atómicos */
+/* DCC — Métricas cliente v3: peso y grasa server-first atómicos */
 (function(){
   'use strict';
-  const BUILD='20260913-client-metrics-v2';
+  const BUILD='20260913-client-metrics-v3';
   if(window.__dccClientMetricsModalV1===BUILD)return;
   window.__dccClientMetricsModalV1=BUILD;
 
   const OVERLAY_ID='dcc-client-metric-overlay-v1';
   const STYLE_ID='dcc-client-metric-overlay-v1-css';
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
-  const activeId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
+  const activeId=()=>{
+    let app='';
+    try{app=typeof currentApp==='string'?currentApp:(window.currentApp||'')}catch(_){app=window.currentApp||''}
+    if(app==='coach')return window.selectedClient??window.__dccClientAdminId??null;
+    try{return currentClientId??window.currentClientId??window.selectedClient??null}catch(_){return window.currentClientId??window.selectedClient??null}
+  };
   const getClient=id=>(appData().clients||[]).find(c=>String(c.id)===String(id))||null;
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   const toastSafe=text=>{try{if(typeof toast==='function')return toast(text);if(typeof window.toast==='function')return window.toast(text)}catch(_){}console.log(text)};
@@ -51,14 +56,17 @@
     document.body.classList.remove('dcc-client-metric-open');
   }
 
-  function refreshCheckinPreservingScroll(y){
-    if(typeof window.showClient==='function')window.showClient('checkin');
+  function refreshAfterSave(id,y){
+    let app='';
+    try{app=typeof currentApp==='string'?currentApp:(window.currentApp||'')}catch(_){app=window.currentApp||''}
+    if(app==='coach'&&typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');
+    else if(typeof window.showClient==='function')window.showClient('checkin');
     requestAnimationFrame(()=>window.scrollTo(0,y));
   }
 
   async function saveWeight(value,y){
     const id=activeId(),c=getClient(id),db=database();
-    if(!id||!c||!db)throw new Error('No hay conexión con el servidor');
+    if(!id||!c||!db)throw new Error('No hay cliente activo o conexión con el servidor');
     const {data:ok,error}=await db.rpc('dcc_add_weight',{p_client_id:String(id),p_weight:value});
     if(error)throw error;
     if(ok!==true)throw new Error('El servidor no confirmó el peso');
@@ -68,12 +76,12 @@
     d.weights=d.weights||{};d.weights[id]=Array.isArray(d.weights[id])?d.weights[id]:[];d.weights[id].push(value);
     d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};
     d.checkins[id].weight=money1(value)+' kg';d.checkins[id].reviewed=false;
-    saveLocal();closeMetricModal();toastSafe('Peso actualizado correctamente');refreshCheckinPreservingScroll(y);
+    saveLocal();closeMetricModal();toastSafe('Peso actualizado correctamente');refreshAfterSave(id,y);
   }
 
   async function saveBodyFat(value,y){
     const id=activeId(),c=getClient(id),db=database();
-    if(!id||!c||!db)throw new Error('No hay conexión con el servidor');
+    if(!id||!c||!db)throw new Error('No hay cliente activo o conexión con el servidor');
     const {data:ok,error}=await db.rpc('dcc_record_body_fat',{p_client_id:String(id),p_body_fat:value});
     if(error)throw error;
     if(ok!==true)throw new Error('El servidor no confirmó el porcentaje de grasa');
@@ -86,11 +94,13 @@
     d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};
     d.checkins[id].bodyFat=value;d.checkins[id].body_fat=value;d.checkins[id].reviewed=false;
     c.bodyFat=value;c.body_fat=value;c.status='Pendiente';
-    saveLocal();closeMetricModal();toastSafe('% de grasa actualizado correctamente');refreshCheckinPreservingScroll(y);
+    saveLocal();closeMetricModal();toastSafe('% de grasa actualizado correctamente');refreshAfterSave(id,y);
   }
 
   function openMetricModal(type){
     ensureCss();closeMetricModal();
+    const id=activeId();
+    if(!id||!getClient(id)){toastSafe('No se encontró el cliente activo');return}
     const y=window.scrollY,isWeight=type==='weight';
     const overlay=document.createElement('div');overlay.id=OVERLAY_ID;
     overlay.innerHTML=`<div class="dcc-metric-card" role="dialog" aria-modal="true" aria-labelledby="dcc-metric-title"><div class="dcc-metric-head"><div><div class="dcc-metric-kicker">ACTUALIZAR DATO</div><h2 id="dcc-metric-title">${isWeight?'Peso actual':'% de grasa actual'}</h2></div><button type="button" class="dcc-metric-close" aria-label="Cerrar">×</button></div><label>${isWeight?'Introduce tu peso en kg':'Introduce tu porcentaje de grasa'}<input id="dccMetricInputV1" type="text" inputmode="decimal" autocomplete="off" placeholder="${isWeight?'Ej. 78,4':'Ej. 14,5'}" value=""></label><div class="dcc-metric-hint">El campo se abre vacío para evitar reutilizar por error la medición anterior.</div><button type="button" class="dcc-metric-save" id="dccMetricSaveV1">Guardar</button></div>`;
