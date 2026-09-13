@@ -1,9 +1,12 @@
-/* DCC — cierre explícito del editor de alimentación */
+/* DCC — cierre explícito y persistente del editor de alimentación */
 (function(){
   'use strict';
-  const BUILD='20260913-diet-editor-save-exit-v1';
+  const BUILD='20260913-diet-editor-save-exit-v2';
   if(window.__dccDietEditorSaveExit===BUILD)return;
   window.__dccDietEditorSaveExit=BUILD;
+
+  let editingClientId=null;
+  let installTimer=null;
 
   function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null}
   function clone(v){return JSON.parse(JSON.stringify(v??null))}
@@ -25,10 +28,11 @@
   }
 
   function addSaveButton(id){
+    if(!id||String(editingClientId)!==String(id))return false;
     const wrap=document.querySelector('#coach-main .dcc-ca-wrap');
     const pane=wrap?.lastElementChild;
-    if(!pane)return;
-    if(pane.querySelector('.dcc-n2-save-plan-final'))return;
+    if(!pane)return false;
+    if(pane.querySelector('.dcc-n2-save-plan-final'))return true;
 
     const button=document.createElement('button');
     button.type='button';
@@ -42,8 +46,10 @@
       button.innerHTML='<span class="i">…</span><span>Guardando plan<small>Confirmando cambios en el servidor</small></span><span class="dcc-n2-arrow">›</span>';
       try{
         await persistPlan(id);
+        editingClientId=null;
         notify('Plan guardado correctamente');
         if(typeof window.dccNutritionV2Home==='function')window.dccNutritionV2Home(id);
+        else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
       }catch(error){
         console.error('DCC guardar plan final:',error);
         alert('No se pudo confirmar el plan. Permaneces en edición para no perder ningún cambio.\n\n'+(error?.message||'Error del servidor'));
@@ -52,27 +58,66 @@
       }
     });
     pane.appendChild(button);
-  }
-
-  function install(attempt=0){
-    const base=window.dccNutritionV2Edit;
-    if(typeof base!=='function'){
-      if(attempt<30)setTimeout(()=>install(attempt+1),100);
-      return false;
-    }
-    if(base.__dccSaveExitV1)return true;
-    const wrapped=function(id){
-      const result=base.apply(this,arguments);
-      requestAnimationFrame(()=>addSaveButton(String(id)));
-      return result;
-    };
-    wrapped.__dccSaveExitV1=true;
-    wrapped.__base=base;
-    window.dccNutritionV2Edit=wrapped;
     return true;
   }
 
+  function scheduleButton(id){
+    requestAnimationFrame(()=>{
+      addSaveButton(id);
+      setTimeout(()=>addSaveButton(id),60);
+    });
+  }
+
+  function install(){
+    const edit=window.dccNutritionV2Edit;
+    if(typeof edit==='function'&&!edit.__dccSaveExitV2){
+      const wrappedEdit=function(id){
+        editingClientId=String(id);
+        const result=edit.apply(this,arguments);
+        scheduleButton(String(id));
+        return result;
+      };
+      wrappedEdit.__dccSaveExitV2=true;
+      wrappedEdit.__base=edit;
+      window.dccNutritionV2Edit=wrappedEdit;
+    }
+
+    const home=window.dccNutritionV2Home;
+    if(typeof home==='function'&&!home.__dccSaveExitV2){
+      const wrappedHome=function(id){
+        editingClientId=null;
+        return home.apply(this,arguments);
+      };
+      wrappedHome.__dccSaveExitV2=true;
+      wrappedHome.__base=home;
+      window.dccNutritionV2Home=wrappedHome;
+    }
+
+    const admin=window.dccClientAdmin;
+    if(typeof admin==='function'&&!admin.__dccSaveExitV2){
+      const wrappedAdmin=function(id,tab){
+        const result=admin.apply(this,arguments);
+        if(editingClientId!==null&&String(id)===String(editingClientId)&&String(tab||'')==='food')scheduleButton(String(id));
+        return result;
+      };
+      wrappedAdmin.__dccSaveExitV2=true;
+      wrappedAdmin.__base=admin;
+      window.dccClientAdmin=wrappedAdmin;
+    }
+
+    return typeof window.dccNutritionV2Edit==='function'&&typeof window.dccClientAdmin==='function';
+  }
+
+  function keepInstalled(){
+    install();
+    if(editingClientId!==null)addSaveButton(String(editingClientId));
+  }
+
   install();
-  document.addEventListener('DOMContentLoaded',()=>install(),{once:true});
-  window.addEventListener('pageshow',()=>install());
+  if(!installTimer)installTimer=setInterval(()=>{
+    keepInstalled();
+    if(window.dccNutritionV2Edit?.__dccSaveExitV2&&window.dccClientAdmin?.__dccSaveExitV2){clearInterval(installTimer);installTimer=null}
+  },120);
+  document.addEventListener('DOMContentLoaded',keepInstalled,{once:true});
+  window.addEventListener('pageshow',keepInstalled);
 })();
