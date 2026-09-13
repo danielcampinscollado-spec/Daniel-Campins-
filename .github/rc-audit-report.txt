@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 94
+JavaScript files: 95
 HTML files: 1
 
 [JS SYNTAX]
@@ -82,6 +82,7 @@ OK   progress-premium-v4.js
 OK   progress-premium-v5.js
 OK   progress-premium.js
 OK   progress-style-fix.js
+OK   rc-coach-stability-v1.js
 OK   routine-authority-v1.js
 OK   server-actions-v1.js
 OK   training-actions-hotfix-v1.js
@@ -180,6 +181,7 @@ progress-premium-v4.js | setTimeout=1, !important=44
 progress-premium-v5.js | setTimeout=2, addEventListener=1, !important=45
 progress-premium.js | setTimeout=4, addEventListener=1, !important=2
 progress-style-fix.js | MutationObserver=1, setTimeout=1, addEventListener=2, !important=113
+rc-coach-stability-v1.js | MutationObserver=1, setInterval=1, addEventListener=3
 routine-authority-v1.js | Supabase queries=3
 server-actions-v1.js | Supabase queries=3
 training-actions-hotfix-v1.js | MutationObserver=1, addEventListener=5, !important=141
@@ -199,10 +201,10 @@ workout-session-premium-v3.js | setInterval=1, Supabase queries=1, !important=20
 index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads=3, localStorage writes=5, Supabase queries=25, !important=641
 
 [TOTALS]
-MutationObserver: 26
-setInterval: 11
+MutationObserver: 27
+setInterval: 12
 setTimeout: 114
-addEventListener: 185
+addEventListener: 188
 localStorage reads: 7
 localStorage writes: 10
 Supabase queries: 126
