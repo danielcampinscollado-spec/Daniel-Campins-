@@ -1,7 +1,7 @@
 /* DCC — rutinas persistentes y rollback seguro */
 (function(){
   'use strict';
-  const BUILD='20260913-routine-authority-v4';
+  const BUILD='20260913-routine-authority-v5';
   if(window.__dccRoutineAuthority===BUILD)return;
   window.__dccRoutineAuthority=BUILD;
 
@@ -53,7 +53,7 @@
     }
   };
 
-  window.addExercise=async function(id,dayIndex){
+  const addExerciseServerFirst=async function(id,dayIndex){
     const currentRoutine=clone(appData().routines?.[id])||[];
     const day=currentRoutine?.[dayIndex];
     if(!day){notify('No se encontró el día');return}
@@ -92,6 +92,9 @@
       alert('No se pudo añadir el ejercicio. No se ha aplicado ningún cambio local.\n\n'+(error?.message||'Error del servidor'));
     }
   };
+  addExerciseServerFirst.__dccAuditSafeVideoV2=true;
+  addExerciseServerFirst.__dccRoutineAuthorityV5=true;
+  window.addExercise=addExerciseServerFirst;
 
   window.removeExercise=async function(id,dayIndex,exerciseIndex){
     const next=clone(appData().routines?.[id])||[];
