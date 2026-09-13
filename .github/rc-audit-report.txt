@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 78
+JavaScript files: 79
 HTML files: 1
 
 [JS SYNTAX]
@@ -15,6 +15,7 @@ OK   client-delete-atomic-v4.js
 OK   client-delete-persist-v1.js
 OK   client-home-premium-v4.js
 OK   client-home-task-seen-fix.js
+OK   client-metrics-modal-v1.js
 OK   client-metrics-sync-v10.js
 OK   client-nutrition-option-state-v3.js
 OK   client-nutrition-premium-v2.js
@@ -99,6 +100,7 @@ client-delete-atomic-v4.js | addEventListener=2, Supabase queries=2
 client-delete-persist-v1.js | setTimeout=5, addEventListener=2, Supabase queries=1
 client-home-premium-v4.js | MutationObserver=1, addEventListener=1, !important=173
 client-home-task-seen-fix.js | addEventListener=1
+client-metrics-modal-v1.js | addEventListener=4, Supabase queries=3, !important=5
 client-metrics-sync-v10.js | setTimeout=3, addEventListener=4, Supabase queries=3, !important=10
 client-nutrition-option-state-v3.js | addEventListener=1
 client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
@@ -170,11 +172,11 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 26
 setInterval: 7
 setTimeout: 103
-addEventListener: 154
+addEventListener: 158
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 110
-!important: 3543
+Supabase queries: 113
+!important: 3548
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
 01. https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
