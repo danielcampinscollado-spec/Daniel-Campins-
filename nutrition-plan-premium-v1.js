@@ -86,6 +86,7 @@
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
     loadOnce('./client-metrics-modal-v1.js?v=20260913-0755','dccClientMetricsModalV1');
     loadOnce('./diet-editor-state-fix-v1.js?v=20260913-0800','dccDietEditorStateFixV1');
+    loadOnce('./diet-legacy-compat-v1.js?v=20260913-0815','dccDietLegacyCompatV1');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
   }
 
