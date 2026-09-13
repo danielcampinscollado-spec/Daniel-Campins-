@@ -93,7 +93,7 @@
     loadOnce('./checkin-review-authority-v1.js?v=20260913-0840','dccCheckinReviewAuthorityV1');
     loadOnce('./diet-editor-state-fix-v1.js?v=20260913-0800','dccDietEditorStateFixV1');
     loadOnce('./diet-legacy-compat-v1.js?v=20260913-0815','dccDietLegacyCompatV1');
-    loadOnce('./diet-editor-save-exit-v1.js?v=20260913-0910','dccDietEditorSaveExitV2');
+    loadOnce('./diet-editor-save-exit-v1.js?v=20260913-0925','dccDietEditorSaveExitV3');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
   }
 
