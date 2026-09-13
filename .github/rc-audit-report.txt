@@ -1,11 +1,12 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 90
+JavaScript files: 91
 HTML files: 1
 
 [JS SYNTAX]
 OK   auth-client-claim-v1.js
 OK   auth-premium-v1.js
+OK   auth-preview-redirect-guard-v1.js
 OK   auth-session-guard-v2.js
 OK   body-fat-authority-v1.js
 OK   checkin-coach-sync-v2.js
@@ -102,6 +103,7 @@ OK   index.html script#2
 [RUNTIME HOTSPOTS BY FILE]
 auth-client-claim-v1.js | setTimeout=2, addEventListener=1, Supabase queries=2
 auth-premium-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2, !important=4
+auth-preview-redirect-guard-v1.js | setInterval=1
 auth-session-guard-v2.js | addEventListener=2
 body-fat-authority-v1.js | addEventListener=2, Supabase queries=1
 checkin-coach-sync-v2.js | setTimeout=5, addEventListener=1, Supabase queries=6, !important=4
@@ -192,7 +194,7 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 
 [TOTALS]
 MutationObserver: 26
-setInterval: 8
+setInterval: 9
 setTimeout: 114
 addEventListener: 179
 localStorage reads: 7
