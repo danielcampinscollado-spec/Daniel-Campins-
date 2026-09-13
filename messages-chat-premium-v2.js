@@ -65,9 +65,8 @@
   }
 
   function injectCss(){
-    let s=document.getElementById('dcc-messages-chat-premium-v2-css');
-    if(s)s.remove();
-    s=document.createElement('style');
+    if(document.getElementById('dcc-messages-chat-premium-v2-css'))return;
+    const s=document.createElement('style');
     s.id='dcc-messages-chat-premium-v2-css';
     s.textContent=`
       #coach-main.dcc-message-chat-v2{
@@ -90,7 +89,6 @@
       .dcc-mcv2-input{width:100%;min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-mcv2-input::placeholder{color:#6f7984}.dcc-mcv2-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none!important}
       .dcc-mcv2-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905;font-size:19px}.dcc-mcv2-send:disabled{opacity:.45}
 
-
       html.dcc-theme-light-premium #coach-main.dcc-message-chat-v2{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}
       html.dcc-theme-light-premium .dcc-mcv2-back{background:#fffaf1!important;color:#98640b!important;border-color:rgba(185,122,17,.42)!important}
       html.dcc-theme-light-premium .dcc-mcv2-person{border-color:rgba(185,122,17,.22)!important}
@@ -104,7 +102,6 @@
       html.dcc-theme-light-premium .dcc-mcv2-composer{background:rgba(255,250,241,.98)!important;border-color:rgba(185,122,17,.38)!important;box-shadow:0 -10px 30px rgba(83,63,31,.12)!important}
       html.dcc-theme-light-premium .dcc-mcv2-input{background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;border-color:rgba(185,122,17,.28)!important}
       html.dcc-theme-light-premium .dcc-mcv2-input::placeholder{color:#7a8390!important}
-      /* Cliente: barra siempre abajo + 16px para impedir el zoom automático de iOS. */
       html body #client-main.dcc-client-messages-v1{padding-bottom:180px!important}
       html body .dcc-cm-composer{position:fixed!important;bottom:calc(80px + env(safe-area-inset-bottom))!important;z-index:100!important}
       html body .dcc-cm-input{font-size:16px!important;-webkit-text-size-adjust:100%!important}
@@ -136,18 +133,27 @@
     }).join('');
   }
 
-  async function syncMessages(){
+  async function syncMessages(id=null){
     const client=db();if(!client)return false;
     try{
-      const {data:rows,error}=await client.from('client_messages').select('client_id,sender,message,created_at').order('created_at',{ascending:true});
+      let query=client.from('client_messages').select('client_id,sender,message,created_at');
+      if(id)query=query.eq('client_id',id);
+      const {data:rows,error}=await query.order('created_at',{ascending:true});
       if(error)throw error;
-      const d=appData(),next={};
-      (d.clients||[]).forEach(c=>next[c.id]=[]);
-      (rows||[]).forEach(r=>{
-        if(!next[r.client_id])next[r.client_id]=[];
-        next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null]);
-      });
-      d.messages=next;saveLocal();return true;
+      const d=appData();
+      d.messages=d.messages||{};
+      if(id){
+        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null]);
+      }else{
+        const next={};
+        (d.clients||[]).forEach(c=>next[c.id]=[]);
+        (rows||[]).forEach(r=>{
+          if(!next[r.client_id])next[r.client_id]=[];
+          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null]);
+        });
+        d.messages=next;
+      }
+      saveLocal();return true;
     }catch(e){
       console.error('DCC sync mensajes v2:',e);return false;
     }
@@ -174,7 +180,7 @@
   }
 
   window.dccOpenCoachChatV2=async function(id){
-    await syncMessages();
+    await syncMessages(id);
     renderCoachChat(id);
   };
   window.dccCloseCoachChatV2=function(){
@@ -190,7 +196,7 @@
       const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
       if(error)throw error;
       if(input)input.value='';
-      await syncMessages();
+      await syncMessages(id);
       toastSafe('Mensaje enviado');
       if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id);
       else if(typeof window.dccOpenChat==='function'&&String(window.__dccOpenChat??'')===String(id))window.dccOpenChat(id);
@@ -210,7 +216,7 @@
       if(document.hidden){stopPolling();return}
       const id=window.__dccCoachChatV2;if(!id){stopPolling();return}
       const before=JSON.stringify(appData().messages?.[id]||[]);
-      const ok=await syncMessages();
+      const ok=await syncMessages(id);
       const after=JSON.stringify(appData().messages?.[id]||[]);
       if(ok&&before!==after)refreshCoachChat(id);
     },4500);
