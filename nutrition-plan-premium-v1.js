@@ -78,6 +78,7 @@
     loadOnce('./coach-client-critical-authority-v1.js?v=20260913-2150','dccCoachClientCriticalAuthorityV1');
     loadOnce('./coach-dashboard-bootstrap-v1.js?v=20260913-2205','dccCoachDashboardBootstrapV1');
     loadOnce('./client-current-fat-dedupe-v1.js?v=20260913-2210','dccCurrentFatEditDedupeV1');
+    loadOnce('./coach-client-final-consistency-v1.js?v=20260913-2215','dccCoachClientFinalConsistencyV1');
   }
 
   let queued=false;
