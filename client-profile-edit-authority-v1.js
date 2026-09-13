@@ -1,12 +1,12 @@
 /* DCC — autoridad server-first para editar clientes */
 (function(){
   'use strict';
-  const BUILD='20260913-client-profile-edit-authority-v2';
+  const BUILD='20260913-client-profile-edit-authority-v3';
   if(window.__dccClientProfileEditAuthority===BUILD)return;
   window.__dccClientProfileEditAuthority=BUILD;
 
   const STYLE_ID='dcc-client-profile-edit-authority-css';
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
 
   function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null}
