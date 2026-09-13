@@ -1,7 +1,7 @@
 /* DCC — cierre explícito y persistente del editor de alimentación */
 (function(){
   'use strict';
-  const BUILD='20260913-diet-editor-save-exit-v2';
+  const BUILD='20260913-diet-editor-save-exit-v3';
   if(window.__dccDietEditorSaveExit===BUILD)return;
   window.__dccDietEditorSaveExit=BUILD;
 
@@ -27,12 +27,33 @@
     return true;
   }
 
+  function pane(){
+    const wrap=document.querySelector('#coach-main .dcc-ca-wrap');
+    return wrap?.lastElementChild||null;
+  }
+
+  function addEditorHeader(id){
+    if(!id||String(editingClientId)!==String(id))return false;
+    const p=pane();
+    if(!p)return false;
+    if(p.querySelector('.dcc-n2-editorbar'))return true;
+    const top=document.createElement('div');
+    top.className='dcc-n2-editorbar';
+    top.innerHTML='<div class="dcc-n2-backrow" style="margin:0"><button type="button" class="dcc-n2-back dcc-diet-cancel-edit">←</button><div><h2>Editar plan alimenticio</h2><p>Continúa editando y pulsa Guardar plan cuando termines.</p></div></div>';
+    top.querySelector('.dcc-diet-cancel-edit')?.addEventListener('click',()=>{
+      editingClientId=null;
+      if(typeof window.dccNutritionV2Home==='function')window.dccNutritionV2Home(id);
+      else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+    });
+    p.prepend(top);
+    return true;
+  }
+
   function addSaveButton(id){
     if(!id||String(editingClientId)!==String(id))return false;
-    const wrap=document.querySelector('#coach-main .dcc-ca-wrap');
-    const pane=wrap?.lastElementChild;
-    if(!pane)return false;
-    if(pane.querySelector('.dcc-n2-save-plan-final'))return true;
+    const p=pane();
+    if(!p)return false;
+    if(p.querySelector('.dcc-n2-save-plan-final'))return true;
 
     const button=document.createElement('button');
     button.type='button';
@@ -57,50 +78,52 @@
         button.innerHTML=old;
       }
     });
-    pane.appendChild(button);
+    p.appendChild(button);
     return true;
   }
 
-  function scheduleButton(id){
+  function restoreEditorChrome(id){
+    if(!id||String(editingClientId)!==String(id))return;
     requestAnimationFrame(()=>{
+      addEditorHeader(id);
       addSaveButton(id);
-      setTimeout(()=>addSaveButton(id),60);
+      setTimeout(()=>{addEditorHeader(id);addSaveButton(id)},60);
     });
   }
 
   function install(){
     const edit=window.dccNutritionV2Edit;
-    if(typeof edit==='function'&&!edit.__dccSaveExitV2){
+    if(typeof edit==='function'&&!edit.__dccSaveExitV3){
       const wrappedEdit=function(id){
         editingClientId=String(id);
         const result=edit.apply(this,arguments);
-        scheduleButton(String(id));
+        restoreEditorChrome(String(id));
         return result;
       };
-      wrappedEdit.__dccSaveExitV2=true;
+      wrappedEdit.__dccSaveExitV3=true;
       wrappedEdit.__base=edit;
       window.dccNutritionV2Edit=wrappedEdit;
     }
 
     const home=window.dccNutritionV2Home;
-    if(typeof home==='function'&&!home.__dccSaveExitV2){
+    if(typeof home==='function'&&!home.__dccSaveExitV3){
       const wrappedHome=function(id){
         editingClientId=null;
         return home.apply(this,arguments);
       };
-      wrappedHome.__dccSaveExitV2=true;
+      wrappedHome.__dccSaveExitV3=true;
       wrappedHome.__base=home;
       window.dccNutritionV2Home=wrappedHome;
     }
 
     const admin=window.dccClientAdmin;
-    if(typeof admin==='function'&&!admin.__dccSaveExitV2){
+    if(typeof admin==='function'&&!admin.__dccSaveExitV3){
       const wrappedAdmin=function(id,tab){
         const result=admin.apply(this,arguments);
-        if(editingClientId!==null&&String(id)===String(editingClientId)&&String(tab||'')==='food')scheduleButton(String(id));
+        if(editingClientId!==null&&String(id)===String(editingClientId)&&String(tab||'')==='food')restoreEditorChrome(String(id));
         return result;
       };
-      wrappedAdmin.__dccSaveExitV2=true;
+      wrappedAdmin.__dccSaveExitV3=true;
       wrappedAdmin.__base=admin;
       window.dccClientAdmin=wrappedAdmin;
     }
@@ -110,13 +133,13 @@
 
   function keepInstalled(){
     install();
-    if(editingClientId!==null)addSaveButton(String(editingClientId));
+    if(editingClientId!==null){addEditorHeader(String(editingClientId));addSaveButton(String(editingClientId))}
   }
 
   install();
   if(!installTimer)installTimer=setInterval(()=>{
     keepInstalled();
-    if(window.dccNutritionV2Edit?.__dccSaveExitV2&&window.dccClientAdmin?.__dccSaveExitV2){clearInterval(installTimer);installTimer=null}
+    if(window.dccNutritionV2Edit?.__dccSaveExitV3&&window.dccClientAdmin?.__dccSaveExitV3){clearInterval(installTimer);installTimer=null}
   },120);
   document.addEventListener('DOMContentLoaded',keepInstalled,{once:true});
   window.addEventListener('pageshow',keepInstalled);
