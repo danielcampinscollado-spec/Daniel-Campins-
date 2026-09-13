@@ -55,12 +55,12 @@
     loadOnce('./auth-premium-v1.js?v=20260913-1245','dccSecureAuthDirectV3');
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./auth-client-claim-v1.js?v=20260913-0845','dccAuthClientClaimV1');
-    loadOnce('./client-server-source-v1.js?v=20260913-2015','dccClientServerSourceDirect');
+    loadOnce('./client-server-source-v1.js?v=20260913-2050','dccClientServerSourceDirect');
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
     loadOnce('./client-create-authority-v1.js?v=20260913-0845','dccClientCreateAuthorityV1');
     loadOnce('./client-access-coach-v1.js?v=20260913-0850','dccClientAccessCoachV1');
-    loadOnce('./client-profile-edit-authority-v1.js?v=20260913-2015','dccClientProfileEditAuthorityV1');
+    loadOnce('./client-profile-edit-authority-v1.js?v=20260913-2050','dccClientProfileEditAuthorityV1');
     loadOnce('./routine-authority-v1.js?v=20260913-0855','dccRoutineAuthorityDirect');
     loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
