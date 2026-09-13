@@ -61,9 +61,8 @@
     loadOnce('./routine-authority-v1.js?v=20260913-0855','dccRoutineAuthorityDirect');
     loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
-    loadOnce('./client-metrics-modal-v1.js?v=20260913-2125','dccClientMetricsModalV1');
-    loadOnce('./body-fat-authority-v1.js?v=20260913-0820','dccBodyFatAuthorityV1');
-    loadOnce('./coach-weight-authority-v1.js?v=20260913-0825','dccCoachWeightAuthorityV1');
+    loadOnce('./client-metrics-modal-v1.js?v=20260913-2245','dccClientMetricsModalV1');
+    loadOnce('./body-fat-authority-v1.js?v=20260913-2245','dccBodyFatAuthorityV2');
     loadOnce('./checkin-review-authority-v1.js?v=20260913-0840','dccCheckinReviewAuthorityV1');
     loadOnce('./diet-editor-state-fix-v1.js?v=20260913-0800','dccDietEditorStateFixV1');
     loadOnce('./diet-legacy-compat-v1.js?v=20260913-0815','dccDietLegacyCompatV1');
