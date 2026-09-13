@@ -1,7 +1,7 @@
 /* DCC — rutinas persistentes y rollback seguro */
 (function(){
   'use strict';
-  const BUILD='20260913-routine-authority-v3';
+  const BUILD='20260913-routine-authority-v4';
   if(window.__dccRoutineAuthority===BUILD)return;
   window.__dccRoutineAuthority=BUILD;
 
@@ -33,6 +33,11 @@
     d.routines=d.routines||{};
     d.routines[id]=clone(routine)||[];
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+  }
+
+  function renderClientRoutine(id){
+    if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'training');
+    else if(typeof window.showCoach==='function')window.showCoach('routines');
   }
 
   window.saveRoutineToSupabase=async function(id){
@@ -123,6 +128,31 @@
       console.error('DCC eliminar día server-first:',error);
       await reloadRoutines();
       alert('No se pudo eliminar el día. La rutina se mantiene sin cambios.');
+    }
+  };
+
+  window.dccSaveRoutine=async function(id){
+    const draft=clone(appData().routines?.[id])||[];
+    let backup=null;
+    try{
+      if(window.__dccTrainingBackup!==undefined)backup=JSON.parse(window.__dccTrainingBackup);
+    }catch(_){backup=null}
+
+    try{
+      await writeRoutine(id,draft);
+      applyRoutine(id,draft);
+      window.__dccTrainingEdit=false;
+      delete window.__dccTrainingBackup;
+      renderClientRoutine(id);
+      notify('Rutina guardada');
+    }catch(error){
+      console.error('DCC guardar rutina premium:',error);
+      if(backup!==null)applyRoutine(id,backup);
+      else await reloadRoutines();
+      window.__dccTrainingEdit=false;
+      delete window.__dccTrainingBackup;
+      renderClientRoutine(id);
+      alert('No se pudo guardar la rutina. Se ha restaurado la versión anterior.');
     }
   };
 
