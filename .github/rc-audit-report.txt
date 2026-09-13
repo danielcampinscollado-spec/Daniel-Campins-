@@ -126,7 +126,7 @@ client-metrics-modal-v1.js | addEventListener=4, Supabase queries=2, !important=
 client-metrics-sync-v10.js | setTimeout=3, addEventListener=4, Supabase queries=3, !important=10
 client-nutrition-option-state-v3.js | addEventListener=1
 client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
-client-profile-edit-authority-v1.js | setInterval=1, addEventListener=3, Supabase queries=3, !important=17
+client-profile-edit-authority-v1.js | MutationObserver=1, setInterval=1, addEventListener=3, Supabase queries=3, !important=17
 client-profile-editor-v1.js | MutationObserver=1, addEventListener=2, Supabase queries=3, !important=16
 client-profile-preferences-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2
 client-progress-final-v9.js | MutationObserver=1, setTimeout=4, addEventListener=2, Supabase queries=1, !important=82
@@ -201,7 +201,7 @@ workout-session-premium-v3.js | setInterval=1, Supabase queries=1, !important=20
 index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads=3, localStorage writes=5, Supabase queries=25, !important=641
 
 [TOTALS]
-MutationObserver: 27
+MutationObserver: 28
 setInterval: 12
 setTimeout: 114
 addEventListener: 188
