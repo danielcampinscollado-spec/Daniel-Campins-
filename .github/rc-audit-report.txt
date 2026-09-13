@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 91
+JavaScript files: 92
 HTML files: 1
 
 [JS SYNTAX]
@@ -25,6 +25,7 @@ OK   client-metrics-modal-v1.js
 OK   client-metrics-sync-v10.js
 OK   client-nutrition-option-state-v3.js
 OK   client-nutrition-premium-v2.js
+OK   client-profile-edit-authority-v1.js
 OK   client-profile-editor-v1.js
 OK   client-profile-preferences-v1.js
 OK   client-progress-compact-v7.js
@@ -122,6 +123,7 @@ client-metrics-modal-v1.js | addEventListener=4, Supabase queries=3, !important=
 client-metrics-sync-v10.js | setTimeout=3, addEventListener=4, Supabase queries=3, !important=10
 client-nutrition-option-state-v3.js | addEventListener=1
 client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
+client-profile-edit-authority-v1.js | setInterval=1, addEventListener=3, Supabase queries=3, !important=17
 client-profile-editor-v1.js | MutationObserver=1, addEventListener=2, Supabase queries=3, !important=16
 client-profile-preferences-v1.js | setTimeout=1, addEventListener=3, Supabase queries=2
 client-progress-final-v9.js | MutationObserver=1, setTimeout=4, addEventListener=2, Supabase queries=1, !important=82
@@ -194,13 +196,13 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 
 [TOTALS]
 MutationObserver: 26
-setInterval: 9
+setInterval: 10
 setTimeout: 114
-addEventListener: 179
+addEventListener: 182
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 123
-!important: 3557
+Supabase queries: 126
+!important: 3574
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
 01. https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
