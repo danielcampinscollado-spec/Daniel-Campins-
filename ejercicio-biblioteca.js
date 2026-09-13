@@ -60,13 +60,11 @@
   inlineEditor.async=true;
   document.head.appendChild(inlineEditor);
 
-  /* Selector superior preparado para mostrar hasta 7 días sin perder aire. */
   const trainingDaysCompact=document.createElement('script');
   trainingDaysCompact.async=false;
   trainingDaysCompact.src='./training-days-compact-v3.js?v=20260910-1';
   document.head.appendChild(trainingDaysCompact);
 
-  /* Misma imagen de discos de Inicio dentro de la tarjeta Ejercicios. */
   const trainingRoutinePlate=document.createElement('script');
   trainingRoutinePlate.async=false;
   trainingRoutinePlate.src='./training-routine-plate-v1.js?v=20260910-1';
@@ -77,25 +75,21 @@
   progress.async=true;
   document.head.appendChild(progress);
 
-  /* Progreso cliente: un único renderer. No cargar capas v7/v8/v9 encima. */
   const clientProgress=document.createElement('script');
   clientProgress.async=false;
   clientProgress.src='./client-progress-premium-v6.js?v=20260910-5';
   document.head.appendChild(clientProgress);
 
-  /* Inicio cliente: encabezado, tareas y efectos premium dorados. */
   const clientHomePremium=document.createElement('script');
   clientHomePremium.async=false;
   clientHomePremium.src='./client-home-premium-v4.js?v=20260910-2';
   document.head.appendChild(clientHomePremium);
 
-  /* Sincronización de métricas entre Inicio, Check-in y Progreso. */
   const clientMetricsSync=document.createElement('script');
   clientMetricsSync.async=false;
   clientMetricsSync.src='./client-metrics-sync-v10.js?v=20260910-fatpct-v2';
   document.head.appendChild(clientMetricsSync);
 
-  /* Alimentación cliente: acabado premium compacto y coherente con Inicio/Progreso/Check-in. */
   const clientNutrition=document.createElement('script');
   clientNutrition.async=false;
   clientNutrition.src='./client-nutrition-premium-v2.js?v=20260910-1';
@@ -121,34 +115,21 @@
   messageSync.async=true;
   document.head.appendChild(messageSync);
 
-  /* Entrada estable en Mensajes: no saltar automáticamente al final. */
   const messagePositionFix=document.createElement('script');
   messagePositionFix.src='./messages-position-stable-v4.js?v=20260910-1';
   messagePositionFix.async=true;
   document.head.appendChild(messagePositionFix);
-
-  const finalShell=document.createElement('script');
-  finalShell.src='./coach-premium-final-v2.js?v=20260908-1';
-  finalShell.async=true;
-  document.head.appendChild(finalShell);
 
   const premiumNav=document.createElement('script');
   premiumNav.src='./nav-premium-global.js?v=20260908-1';
   premiumNav.async=true;
   document.head.appendChild(premiumNav);
 
-  const premiumCoachTheme=document.createElement('script');
-  premiumCoachTheme.src='./coach-theme-premium-global.js?v=20260908-3';
-  premiumCoachTheme.async=true;
-  document.head.appendChild(premiumCoachTheme);
-
   const clientsSearchFix=document.createElement('script');
   clientsSearchFix.src='./clients-search-final-fix.js?v=20260908-1';
   clientsSearchFix.async=true;
   document.head.appendChild(clientsSearchFix);
 
-  /* La pantalla premium del entrenamiento activo se carga al final,
-     después de que el resto de renderizadores hayan terminado. */
   window.addEventListener('load',()=>{
     try{if(typeof data!=='undefined')window.data=data;}catch(_){ }
     if(document.querySelector('script[data-dcc-workout-premium]'))return;
@@ -158,29 +139,17 @@
     document.body.appendChild(workoutPremium);
   },{once:true});
 
-  /* Evitar perder un entrenamiento por tocar otra pestaña sin querer. */
   if(!window.__dccWorkoutNavGuardInstalled){
     window.__dccWorkoutNavGuardInstalled=true;
-
     document.addEventListener('click',event=>{
       const button=event.target.closest('#client-nav button');
       if(!button || !window.activeWorkout)return;
-
       const action=button.getAttribute('onclick') || '';
       const label=(button.textContent || '').trim();
       const staysInTraining=/showClient\s*\(\s*["']training["']\s*\)/i.test(action) || /entrenamiento/i.test(label);
       if(staysInTraining)return;
-
-      const leave=window.confirm(
-        'Tienes un entrenamiento en curso. Si sales ahora se perderá el entrenamiento y las series registradas. ¿Quieres salir?'
-      );
-
-      if(!leave){
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return;
-      }
-
+      const leave=window.confirm('Tienes un entrenamiento en curso. Si sales ahora se perderá el entrenamiento y las series registradas. ¿Quieres salir?');
+      if(!leave){event.preventDefault();event.stopImmediatePropagation();return;}
       clearInterval(window.restTimerInterval);
       clearInterval(window.dccWorkoutElapsedInterval);
       window.restTimerInterval=null;
@@ -188,7 +157,6 @@
       window.activeWorkout=null;
       document.body.classList.remove('dcc-workout-mode');
     },true);
-
     window.addEventListener('beforeunload',event=>{
       if(!window.activeWorkout)return;
       event.preventDefault();
@@ -196,8 +164,6 @@
     });
   }
 
-  /* Al cambiar de pestaña principal, empezar siempre en el encabezado.
-     No afecta a botones internos de rutina/selección de ejercicios. */
   if(!window.__dccTopOnMainTabInstalled){
     window.__dccTopOnMainTabInstalled=true;
     document.addEventListener('click',event=>{
