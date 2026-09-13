@@ -1,0 +1,1 @@
+RC messages checkpoint after scoping coach chat polling to the active client and making chat CSS installation idempotent.
