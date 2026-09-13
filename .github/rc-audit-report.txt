@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 81
+JavaScript files: 82
 HTML files: 1
 
 [JS SYNTAX]
@@ -57,6 +57,7 @@ OK   local-cache-authority-v1.js
 OK   messages-chat-premium-v2.js
 OK   messages-position-stable-v4.js
 OK   messages-premium.js
+OK   messages-realtime-chat-guard-v1.js
 OK   messages-sync-fix.js
 OK   nav-premium-global.js
 OK   new-client-premium-v1.js
@@ -142,6 +143,7 @@ local-cache-authority-v1.js | addEventListener=2, localStorage writes=1
 messages-chat-premium-v2.js | setInterval=1, setTimeout=3, addEventListener=2, Supabase queries=2, !important=43
 messages-position-stable-v4.js | setTimeout=3, !important=3
 messages-premium.js | setTimeout=3, !important=3
+messages-realtime-chat-guard-v1.js | addEventListener=2
 messages-sync-fix.js | setTimeout=4, addEventListener=1, Supabase queries=1, !important=19
 nav-premium-global.js | !important=115
 new-client-premium-v1.js | setTimeout=1, Supabase queries=6, !important=32
@@ -176,7 +178,7 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 26
 setInterval: 7
 setTimeout: 103
-addEventListener: 160
+addEventListener: 162
 localStorage reads: 7
 localStorage writes: 10
 Supabase queries: 115
