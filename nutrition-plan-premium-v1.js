@@ -75,6 +75,7 @@
     loadOnce('./diet-editor-save-visibility-v1.js?v=20260913-1030','dccDietEditorSaveVisibilityV1');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
     loadOnce('./rc-coach-stability-v1.js?v=20260913-2015','dccRcCoachStabilityV1');
+    loadOnce('./coach-client-critical-authority-v1.js?v=20260913-2150','dccCoachClientCriticalAuthorityV1');
   }
 
   let queued=false;
