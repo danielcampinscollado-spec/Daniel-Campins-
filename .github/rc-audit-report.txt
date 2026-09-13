@@ -110,7 +110,7 @@ client-server-source-v1.js | addEventListener=3, Supabase queries=2
 client-summary-cleanup-v1.js | MutationObserver=1, addEventListener=2
 clients-search-final-fix.js | MutationObserver=2, setTimeout=2, addEventListener=2, !important=79
 coach-calendar-alignment-v13.js | !important=2
-coach-calendar-form-fix-v15.js | MutationObserver=1, setTimeout=5, addEventListener=7, Supabase queries=2, !important=53
+coach-calendar-form-fix-v15.js | addEventListener=7, Supabase queries=2, !important=53
 coach-calendar-sync-v14.js | setTimeout=1, addEventListener=3, Supabase queries=1
 coach-calendar-v12.js | setTimeout=2, addEventListener=1, Supabase queries=3, !important=56
 coach-client-plan-status-v1-base.js | MutationObserver=1, setTimeout=8, addEventListener=8, Supabase queries=11, !important=3
@@ -167,9 +167,9 @@ workout-session-premium-v3.js | setInterval=1, Supabase queries=1, !important=20
 index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads=3, localStorage writes=5, Supabase queries=25, !important=641
 
 [TOTALS]
-MutationObserver: 27
+MutationObserver: 26
 setInterval: 7
-setTimeout: 108
+setTimeout: 103
 addEventListener: 154
 localStorage reads: 7
 localStorage writes: 10
