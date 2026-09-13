@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 88
+JavaScript files: 89
 HTML files: 1
 
 [JS SYNTAX]
@@ -11,6 +11,7 @@ OK   body-fat-authority-v1.js
 OK   checkin-coach-sync-v2.js
 OK   checkin-premium.js
 OK   checkin-review-authority-v1.js
+OK   client-access-coach-v1.js
 OK   client-admin-premium.js
 OK   client-checkin-final-v3.js
 OK   client-checkin-messages-premium-v1.js
@@ -105,6 +106,7 @@ body-fat-authority-v1.js | addEventListener=2, Supabase queries=1
 checkin-coach-sync-v2.js | setTimeout=5, addEventListener=1, Supabase queries=6, !important=4
 checkin-premium.js | setTimeout=3, addEventListener=1, !important=45
 checkin-review-authority-v1.js | setTimeout=2, addEventListener=2, Supabase queries=1
+client-access-coach-v1.js | setTimeout=3, addEventListener=3, Supabase queries=1, !important=9
 client-admin-premium.js | setTimeout=3, addEventListener=2, Supabase queries=4, !important=15
 client-checkin-final-v3.js | setTimeout=4, addEventListener=1, Supabase queries=1, !important=5
 client-checkin-messages-premium-v1.js | setInterval=1, setTimeout=3, addEventListener=2, Supabase queries=6, !important=21
@@ -189,12 +191,12 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 [TOTALS]
 MutationObserver: 26
 setInterval: 7
-setTimeout: 110
-addEventListener: 172
+setTimeout: 113
+addEventListener: 175
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 121
-!important: 3548
+Supabase queries: 122
+!important: 3557
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
 01. https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
