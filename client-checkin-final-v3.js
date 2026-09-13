@@ -1,6 +1,10 @@
-/* DCC — Check-in cliente final v3: envío fiable, borrador limpio y consistencia visual */
+/* DCC — Check-in cliente final v4: métricas actuales + envío atómico */
 (function(){
   'use strict';
+
+  const BUILD='20260913-client-checkin-final-v4';
+  if(window.__dccClientCheckinFinal===BUILD)return;
+  window.__dccClientCheckinFinal=BUILD;
 
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
@@ -12,8 +16,8 @@
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
   const money1=v=>{const n=Number(v);return Number.isFinite(n)?n.toFixed(1).replace('.',','):'—'};
 
-  const drafts=window.__dccCheckinDraftsV3=window.__dccCheckinDraftsV3||{};
-  const success=window.__dccCheckinSuccessV3=window.__dccCheckinSuccessV3||{};
+  const drafts=window.__dccCheckinDraftsV4=window.__dccCheckinDraftsV4||{};
+  const success=window.__dccCheckinSuccessV4=window.__dccCheckinSuccessV4||{};
 
   function latest(id){
     const d=appData();d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};return d.checkins[id];
@@ -29,17 +33,13 @@
     return `<button type="button" class="dcc-cc-option ${active?'active':''}" onclick="dccCheckinPickV3('${type}','${esc(value)}')">${esc(label)}</button>`;
   }
   function sentLabel(value){
-    if(!value)return'';
-    const d=new Date(value);if(!Number.isFinite(d.getTime()))return'';
-    const now=new Date();
-    const same=d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()&&d.getDate()===now.getDate();
-    const date=d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    return same?`hoy · ${date}`:date;
+    if(!value)return'';const d=new Date(value);if(!Number.isFinite(d.getTime()))return'';
+    const now=new Date(),same=d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth()&&d.getDate()===now.getDate();
+    const date=d.toLocaleDateString('es-ES',{day:'numeric',month:'short'});return same?`hoy · ${date}`:date;
   }
 
   function ensureCss(){
-    let s=document.getElementById('dcc-client-checkin-final-v3-css');
-    if(s)s.remove();
+    let s=document.getElementById('dcc-client-checkin-final-v3-css');if(s)s.remove();
     s=document.createElement('style');s.id='dcc-client-checkin-final-v3-css';s.textContent=`
       #client-main .dcc-cc-data-icon svg{width:20px;height:20px;display:block}
       #client-main .dcc-cc-data-top{align-items:center}
@@ -53,9 +53,8 @@
   }
 
   function render(preserve=false){
-    ensureCss();
-    const main=document.getElementById('client-main'),id=activeId(),c=client(id);if(!main||!id||!c)return;
-    const y=window.scrollY,x=latest(id),d=draft(id),weight=num(c.weight),fat=num(x.bodyFat??x.body_fat??c.bodyFat??c.body_fat),sent=x.sentAt??x.sent_at??null;
+    ensureCss();const main=document.getElementById('client-main'),id=activeId(),c=client(id);if(!main||!id||!c)return;
+    const y=window.scrollY,x=latest(id),d=draft(id),weight=num(c.weight),fat=num(c.bodyFat??c.body_fat??c.currentBodyFat??c.latestBodyFat??x.bodyFat??x.body_fat),sent=x.sentAt??x.sent_at??null;
     main.className='dcc-client-checkin-v1';
     main.innerHTML=`<div class="dcc-cc">
       <header class="dcc-cc-head"><div class="dcc-cc-kicker">CHECK-IN SEMANAL</div><p class="dcc-cc-sub">Cuéntale a tu entrenador cómo ha ido tu semana.</p></header>
@@ -83,38 +82,32 @@
   }
 
   window.dccCheckinDraftV3=function(value){const id=activeId();if(id)setDraft(id,{comment:String(value||'')})};
-  window.dccCheckinPickV3=function(type,value){
-    if(!['diet','training','energy'].includes(type))return;const id=activeId();if(!id)return;const box=document.getElementById('dccCheckinComment');setDraft(id,{[type]:value,comment:box?box.value:draft(id).comment});render(true);
-  };
+  window.dccCheckinPickV3=function(type,value){if(!['diet','training','energy'].includes(type))return;const id=activeId();if(!id)return;const box=document.getElementById('dccCheckinComment');setDraft(id,{[type]:value,comment:box?box.value:draft(id).comment});render(true)};
 
   window.dccSendCheckinPremiumV3=async function(){
     const id=activeId(),c=client(id);if(!id||!c)return;
     const x=latest(id),d=draft(id),box=document.getElementById('dccCheckinComment');if(box)d.comment=box.value.trim();
-    const missing=[];if(!d.diet)missing.push('alimentación');if(!d.training)missing.push('entrenamiento');if(!d.energy)missing.push('energía');
-    if(missing.length){toastSafe('Completa '+missing.join(', '));return}
+    const missing=[];if(!d.diet)missing.push('alimentación');if(!d.training)missing.push('entrenamiento');if(!d.energy)missing.push('energía');if(missing.length){toastSafe('Completa '+missing.join(', '));return}
     const database=db();if(!database){toastSafe('No hay conexión con el servidor');return}
     const btn=document.getElementById('dccSendCheckinButton');if(btn)btn.disabled=true;
-    const now=new Date().toISOString(),weight=num(c.weight),weightText=(weight!=null?money1(weight):String(c.weight||''))+' kg',bodyFat=x.bodyFat??x.body_fat??c.bodyFat??c.body_fat??null;
+    const now=new Date().toISOString(),weight=num(c.weight),weightText=(weight!=null?money1(weight):String(c.weight||''))+' kg',bodyFat=c.bodyFat??c.body_fat??c.currentBodyFat??c.latestBodyFat??x.bodyFat??x.body_fat??null;
     try{
       const payload={client_id:id,weight:weightText,diet:d.diet,training:d.training,energy:d.energy,comment:d.comment||'',body_fat:bodyFat!==''&&bodyFat!==null&&bodyFat!==undefined?Number(bodyFat):null,sent_at:now,reviewed:false,updated_at:now};
       const {data:ok,error}=await database.rpc('dcc_submit_checkin',{p_client_id:String(id),p_weight:payload.weight,p_diet:payload.diet,p_training:payload.training,p_energy:payload.energy,p_comment:payload.comment,p_body_fat:payload.body_fat,p_sent_at:payload.sent_at});if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó el check-in');
-      x.weight=weightText;x.diet=d.diet;x.training=d.training;x.energy=d.energy;x.comment=d.comment||'';x.bodyFat=payload.body_fat;x.sentAt=now;x.updatedAt=now;x.reviewed=false;x.status='Nuevo check-in';c.status='Pendiente';save();
-      drafts[id]={diet:'',training:'',energy:'',comment:''};
-      success[id]=true;
-      toastSafe('Check-in enviado correctamente');render(false);
+      x.weight=weightText;x.diet=d.diet;x.training=d.training;x.energy=d.energy;x.comment=d.comment||'';x.bodyFat=payload.body_fat;x.body_fat=payload.body_fat;x.sentAt=now;x.sent_at=now;x.updatedAt=now;x.reviewed=false;x.status='Nuevo check-in';c.status='Pendiente';save();
+      drafts[id]={diet:'',training:'',energy:'',comment:''};success[id]=true;toastSafe('Check-in enviado correctamente');render(false);
       setTimeout(()=>{if(success[id]){delete success[id];if(document.querySelector('#client-main .dcc-cc'))render(true)}},4500);
-    }catch(e){console.error('DCC check-in v3:',e);toastSafe('No se pudo enviar el check-in');if(btn)btn.disabled=false}
+    }catch(e){console.error('DCC check-in v4:',e);toastSafe(e.message||'No se pudo enviar el check-in');if(btn)btn.disabled=false}
   };
 
   function install(){
-    const base=window.showClient;if(typeof base!=='function'||base.__dccCheckinFinalV3)return false;
+    const base=window.showClient;if(typeof base!=='function'||base.__dccClientCheckinFinal===BUILD)return false;
     const wrapped=function(screen){const r=base.apply(this,arguments);if(screen==='checkin')requestAnimationFrame(()=>render(false));return r};
-    wrapped.__dccCheckinFinalV3=true;
-    wrapped.__dccClientCheckinMessagesV1=true;
-    wrapped.__base=base;
-    window.showClient=wrapped;
-    return true;
+    wrapped.__dccClientCheckinFinal=BUILD;wrapped.__dccClientCheckinMessagesV1=true;wrapped.__base=base;window.showClient=wrapped;return true;
   }
 
-  ensureCss();install();setTimeout(install,350);setTimeout(install,1100);window.addEventListener('load',()=>setTimeout(install,150));
+  ensureCss();install();
+  document.addEventListener('DOMContentLoaded',install,{once:true});
+  window.addEventListener('load',install,{once:true});
+  window.addEventListener('pageshow',install);
 })();
