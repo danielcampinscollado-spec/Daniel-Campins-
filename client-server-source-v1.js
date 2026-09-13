@@ -1,13 +1,14 @@
 /* DCC — Supabase como fuente de verdad para la lista de clientes */
 (function(){
   'use strict';
-  const BUILD='20260912-client-source-v4';
+  const BUILD='20260913-client-source-v5';
   if(window.__dccClientServerSource===BUILD)return;
   window.__dccClientServerSource=BUILD;
 
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   let syncing=null;
+  let lastRenderedSignature='';
 
   function persist(){
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(error){console.warn('DCC client sync: no se pudo persistir cache local',error)}
@@ -78,6 +79,20 @@
     return session;
   }
 
+  function rerenderCoachScreen(rows,options){
+    if(options.render===false||window.currentApp!=='coach'||typeof window.showCoach!=='function')return;
+    const screen=window.currentScreen;
+    if(screen!=='dashboard'&&screen!=='clients')return;
+    const signature=screen+':'+rows.map(row=>String(row.id)).join('|');
+    if(signature===lastRenderedSignature)return;
+    lastRenderedSignature=signature;
+    queueMicrotask(()=>{
+      if(window.currentApp==='coach'&&window.currentScreen===screen&&typeof window.showCoach==='function'){
+        window.showCoach(screen);
+      }
+    });
+  }
+
   async function syncClients(options={}){
     if(syncing)return syncing;
     syncing=(async()=>{
@@ -86,7 +101,6 @@
       const session=await getCoachSession();
       if(!session){
         clearStaleClients();
-        if(options.render!==false&&typeof window.showCoach==='function')queueMicrotask(()=>window.showCoach('clients'));
         queueMicrotask(showAuthRequired);
         return false;
       }
@@ -101,10 +115,7 @@
       pruneDeletedClientDomains(validIds);
       persist();
       document.getElementById('dcc-client-auth-required')?.remove();
-
-      if(options.render!==false&&window.currentApp==='coach'&&window.currentScreen==='clients'&&typeof window.showCoach==='function'){
-        queueMicrotask(()=>window.showCoach('clients'));
-      }
+      rerenderCoachScreen(rows,options);
       return true;
     })().catch(error=>{
       console.error('DCC client sync:',error);
@@ -117,21 +128,24 @@
 
   window.dccSyncClientsFromServer=syncClients;
 
-  async function syncWhenClientListVisible(){
+  async function syncCoachVisible(){
     if(window.__dccSecureRole!=='coach')return;
-    if(window.currentScreen==='clients')await syncClients({render:true});
+    if(window.currentApp!=='coach')return;
+    if(window.currentScreen==='dashboard'||window.currentScreen==='clients'){
+      await syncClients({render:true});
+    }
   }
 
   const installShowCoachWrapper=()=>{
     const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccClientServerSourceV4)return false;
+    if(typeof current!=='function'||current.__dccClientServerSourceV5)return false;
     const wrapped=function(screen){
       if(screen==='clients')clearStaleClients();
       const out=current.apply(this,arguments);
-      if(screen==='clients')queueMicrotask(()=>syncClients({render:true}));
+      if(screen==='dashboard'||screen==='clients')queueMicrotask(()=>syncClients({render:true}));
       return out;
     };
-    wrapped.__dccClientServerSourceV4=true;
+    wrapped.__dccClientServerSourceV5=true;
     wrapped.__base=current;
     window.showCoach=wrapped;
     return true;
@@ -139,11 +153,11 @@
 
   function bootstrap(){
     installShowCoachWrapper();
-    syncWhenClientListVisible();
+    syncCoachVisible();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootstrap,{once:true});
   else queueMicrotask(bootstrap);
-  window.addEventListener('load',installShowCoachWrapper,{once:true});
-  window.addEventListener('pageshow',syncWhenClientListVisible);
+  window.addEventListener('load',()=>{installShowCoachWrapper();syncCoachVisible()},{once:true});
+  window.addEventListener('pageshow',syncCoachVisible);
 })();
