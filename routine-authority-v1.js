@@ -1,7 +1,7 @@
 /* DCC — rutinas persistentes y rollback seguro */
 (function(){
   'use strict';
-  const BUILD='20260912-routine-authority-v1';
+  const BUILD='20260913-routine-authority-v2';
   if(window.__dccRoutineAuthority===BUILD)return;
   window.__dccRoutineAuthority=BUILD;
 
@@ -16,13 +16,22 @@
     }
   }
 
-  window.saveRoutineToSupabase=async function(id){
+  async function writeRoutine(id,routine){
     const database=db();
-    if(!database){await reloadRoutines();return false}
+    if(!database)throw new Error('No hay conexión con el servidor');
+    const result=await database.from('client_routines').upsert({
+      client_id:String(id),
+      routine:clone(routine)||[],
+      updated_at:new Date().toISOString()
+    },{onConflict:'client_id'});
+    if(result.error)throw result.error;
+    return true;
+  }
+
+  window.saveRoutineToSupabase=async function(id){
     const routine=clone(appData().routines?.[id])||[];
     try{
-      const result=await database.from('client_routines').upsert({client_id:String(id),routine,updated_at:new Date().toISOString()},{onConflict:'client_id'});
-      if(result.error)throw result.error;
+      await writeRoutine(id,routine);
       try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
       return true;
     }catch(error){
@@ -32,13 +41,56 @@
     }
   };
 
+  /* El flujo legacy addExercise mutaba memoria antes de confirmar Supabase.
+     Esta versión construye una copia, persiste primero y solo entonces actualiza UI/memoria. */
+  window.addExercise=async function(id,dayIndex){
+    const currentRoutine=clone(appData().routines?.[id])||[];
+    const day=currentRoutine?.[dayIndex];
+    if(!day){notify('No se encontró el día');return}
+
+    const name=prompt('Nombre del ejercicio:');
+    if(!name?.trim())return;
+    const sets=prompt('Series:');
+    if(!sets?.trim())return;
+    const reps=prompt('Repeticiones:');
+    if(!reps?.trim())return;
+    const restBetweenSets=prompt('Descanso entre series (segundos):','0');
+    if(restBetweenSets===null)return;
+    const restBetweenExercises=prompt('Descanso después del ejercicio (segundos):','0');
+    if(restBetweenExercises===null)return;
+    const video=prompt('Enlace al vídeo del ejercicio (opcional):');
+    if(video===null)return;
+
+    day.exercises=Array.isArray(day.exercises)?day.exercises:[];
+    day.exercises.push({
+      name:name.trim(),
+      sets:sets.trim(),
+      reps:reps.trim(),
+      restBetweenSets:Math.max(0,parseInt(restBetweenSets,10)||0),
+      restBetweenExercises:Math.max(0,parseInt(restBetweenExercises,10)||0),
+      videoUrl:video.trim()
+    });
+
+    try{
+      await writeRoutine(id,currentRoutine);
+      const d=appData();
+      d.routines=d.routines||{};
+      d.routines[id]=currentRoutine;
+      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+      if(typeof window.showCoach==='function')window.showCoach('routines');
+      notify('Ejercicio guardado');
+    }catch(error){
+      console.error('DCC añadir ejercicio server-first:',error);
+      await reloadRoutines();
+      alert('No se pudo añadir el ejercicio. No se ha aplicado ningún cambio local.\n\n'+(error?.message||'Error del servidor'));
+    }
+  };
+
   async function loadPrevious(id){
-    const database=db();
-    if(!database)return null;
+    const database=db();if(!database)return null;
     const result=await database.from('client_routine_history').select('routine,archived_at').eq('client_id',String(id)).order('archived_at',{ascending:false}).limit(1).maybeSingle();
     if(result.error)throw result.error;
-    const row=result.data;
-    if(!row)return null;
+    const row=result.data;if(!row)return null;
     const d=appData();
     d.previousRoutines=d.previousRoutines||{};
     d.previousRoutines[id]={routine:clone(row.routine)||[],savedAt:row.archived_at};
