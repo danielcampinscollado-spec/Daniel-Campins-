@@ -1,17 +1,17 @@
-/* DCC — Métricas cliente v1: edición estable de peso y % de grasa sin prompt nativo */
+/* DCC — Métricas cliente v2: peso y grasa server-first atómicos */
 (function(){
   'use strict';
-  if(window.__dccClientMetricsModalV1)return;
-  window.__dccClientMetricsModalV1=true;
+  const BUILD='20260913-client-metrics-v2';
+  if(window.__dccClientMetricsModalV1===BUILD)return;
+  window.__dccClientMetricsModalV1=BUILD;
 
   const OVERLAY_ID='dcc-client-metric-overlay-v1';
   const STYLE_ID='dcc-client-metric-overlay-v1-css';
-
-  const appData=()=>{try{return data||{}}catch(e){return window.data||{}}};
-  const activeId=()=>{try{return currentClientId||null}catch(e){return window.currentClientId||null}};
+  const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
+  const activeId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
   const getClient=id=>(appData().clients||[]).find(c=>String(c.id)===String(id))||null;
-  const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
-  const toastSafe=text=>{try{if(typeof toast==='function')return toast(text);if(typeof window.toast==='function')return window.toast(text)}catch(e){}console.log(text)};
+  const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
+  const toastSafe=text=>{try{if(typeof toast==='function')return toast(text);if(typeof window.toast==='function')return window.toast(text)}catch(_){}console.log(text)};
   const saveLocal=()=>{try{if(typeof saveData==='function')return saveData();if(typeof window.saveData==='function')return window.saveData()}catch(e){console.error('DCC metrics save:',e)}};
   const parseNumber=v=>{const n=parseFloat(String(v??'').trim().replace(',','.'));return Number.isFinite(n)?n:null};
   const money1=v=>Number(v).toFixed(1).replace('.',',');
@@ -56,64 +56,57 @@
     requestAnimationFrame(()=>window.scrollTo(0,y));
   }
 
-  async function saveWeight(value,y,button){
+  async function saveWeight(value,y){
     const id=activeId(),c=getClient(id),db=database();
     if(!id||!c||!db)throw new Error('No hay conexión con el servidor');
+    const {data:ok,error}=await db.rpc('dcc_add_weight',{p_client_id:String(id),p_weight:value});
+    if(error)throw error;
+    if(ok!==true)throw new Error('El servidor no confirmó el peso');
 
-    const {error:clientError}=await db.from('clients').update({weight:value}).eq('id',id);
-    if(clientError)throw clientError;
-
-    const {error:historyError}=await db.from('client_weights').insert({client_id:id,weight:value});
-    if(historyError)throw historyError;
-
-    c.weight=value;
-    const d=appData();d.weights=d.weights||{};d.weights[id]=Array.isArray(d.weights[id])?d.weights[id]:[];d.weights[id].push(value);
-    d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};d.checkins[id].weight=money1(value)+' kg';d.checkins[id].reviewed=false;c.status='Pendiente';
-    saveLocal();
-    closeMetricModal();
-    toastSafe('Peso actualizado correctamente');
-    refreshCheckinPreservingScroll(y);
+    c.weight=value;c.status='Pendiente';
+    const d=appData();
+    d.weights=d.weights||{};d.weights[id]=Array.isArray(d.weights[id])?d.weights[id]:[];d.weights[id].push(value);
+    d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};
+    d.checkins[id].weight=money1(value)+' kg';d.checkins[id].reviewed=false;
+    saveLocal();closeMetricModal();toastSafe('Peso actualizado correctamente');refreshCheckinPreservingScroll(y);
   }
 
-  async function saveBodyFat(value,y,button){
+  async function saveBodyFat(value,y){
     const id=activeId(),c=getClient(id),db=database();
     if(!id||!c||!db)throw new Error('No hay conexión con el servidor');
+    const {data:ok,error}=await db.rpc('dcc_record_body_fat',{p_client_id:String(id),p_body_fat:value});
+    if(error)throw error;
+    if(ok!==true)throw new Error('El servidor no confirmó el porcentaje de grasa');
 
-    const {error:historyError}=await db.from('client_body_fat_history').insert({client_id:id,body_fat:value});
-    if(historyError)throw historyError;
-
-    const d=appData();d.bodyFatHistory=d.bodyFatHistory||{};d.bodyFatHistory[id]=Array.isArray(d.bodyFatHistory[id])?d.bodyFatHistory[id]:[];d.bodyFatHistory[id].push(value);
-    d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};d.checkins[id].bodyFat=value;d.checkins[id].body_fat=value;d.checkins[id].reviewed=false;c.bodyFat=value;c.body_fat=value;c.status='Pendiente';
-    saveLocal();
-    closeMetricModal();
-    toastSafe('% de grasa actualizado correctamente');
-    refreshCheckinPreservingScroll(y);
+    const d=appData();
+    d.bodyFatHistory=d.bodyFatHistory||{};d.bodyFatHistory[id]=Array.isArray(d.bodyFatHistory[id])?d.bodyFatHistory[id]:[];
+    const last=d.bodyFatHistory[id][d.bodyFatHistory[id].length-1];
+    const lastValue=parseNumber(typeof last==='object'?(last.body_fat??last.value):last);
+    if(lastValue===null||Math.abs(lastValue-value)>=0.001)d.bodyFatHistory[id].push(value);
+    d.checkins=d.checkins||{};d.checkins[id]=d.checkins[id]||{};
+    d.checkins[id].bodyFat=value;d.checkins[id].body_fat=value;d.checkins[id].reviewed=false;
+    c.bodyFat=value;c.body_fat=value;c.status='Pendiente';
+    saveLocal();closeMetricModal();toastSafe('% de grasa actualizado correctamente');refreshCheckinPreservingScroll(y);
   }
 
   function openMetricModal(type){
-    ensureCss();
-    closeMetricModal();
-    const y=window.scrollY;
-    const isWeight=type==='weight';
-    const overlay=document.createElement('div');
-    overlay.id=OVERLAY_ID;
+    ensureCss();closeMetricModal();
+    const y=window.scrollY,isWeight=type==='weight';
+    const overlay=document.createElement('div');overlay.id=OVERLAY_ID;
     overlay.innerHTML=`<div class="dcc-metric-card" role="dialog" aria-modal="true" aria-labelledby="dcc-metric-title"><div class="dcc-metric-head"><div><div class="dcc-metric-kicker">ACTUALIZAR DATO</div><h2 id="dcc-metric-title">${isWeight?'Peso actual':'% de grasa actual'}</h2></div><button type="button" class="dcc-metric-close" aria-label="Cerrar">×</button></div><label>${isWeight?'Introduce tu peso en kg':'Introduce tu porcentaje de grasa'}<input id="dccMetricInputV1" type="text" inputmode="decimal" autocomplete="off" placeholder="${isWeight?'Ej. 78,4':'Ej. 14,5'}" value=""></label><div class="dcc-metric-hint">El campo se abre vacío para evitar reutilizar por error la medición anterior.</div><button type="button" class="dcc-metric-save" id="dccMetricSaveV1">Guardar</button></div>`;
-    document.body.appendChild(overlay);
-    document.body.classList.add('dcc-client-metric-open');
-    const input=overlay.querySelector('#dccMetricInputV1');
-    const save=overlay.querySelector('#dccMetricSaveV1');
+    document.body.appendChild(overlay);document.body.classList.add('dcc-client-metric-open');
+    const input=overlay.querySelector('#dccMetricInputV1'),save=overlay.querySelector('#dccMetricSaveV1');
     const close=()=>{closeMetricModal();requestAnimationFrame(()=>window.scrollTo(0,y))};
     overlay.querySelector('.dcc-metric-close')?.addEventListener('click',close);
     overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
     input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();save?.click()}else if(e.key==='Escape')close()});
     save?.addEventListener('click',async()=>{
       const value=parseNumber(input?.value);
-      const valid=isWeight ? (value!==null&&value>0&&value<=500) : (value!==null&&value>0&&value<70);
+      const valid=isWeight?(value!==null&&value>0&&value<=500):(value!==null&&value>0&&value<70);
       if(!valid){toastSafe(isWeight?'Introduce un peso válido':'Introduce un % de grasa válido');input?.focus({preventScroll:true});return}
       save.disabled=true;save.textContent='Guardando…';
-      try{
-        if(isWeight)await saveWeight(value,y,save);else await saveBodyFat(value,y,save);
-      }catch(e){console.error('DCC guardando métrica:',e);toastSafe('No se pudo guardar el dato');save.disabled=false;save.textContent='Guardar'}
+      try{if(isWeight)await saveWeight(value,y);else await saveBodyFat(value,y)}
+      catch(e){console.error('DCC guardando métrica:',e);toastSafe('No se pudo guardar el dato');save.disabled=false;save.textContent='Guardar'}
     });
     requestAnimationFrame(()=>input?.focus({preventScroll:true}));
   }
