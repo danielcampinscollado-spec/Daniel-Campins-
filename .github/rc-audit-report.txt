@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 79
+JavaScript files: 80
 HTML files: 1
 
 [JS SYNTAX]
@@ -48,6 +48,7 @@ OK   dcc-light-fixes-v1.js
 OK   dcc-production-stability-v1.js
 OK   dcc-theme-premium-polish-v3.js
 OK   dcc-theme-system-v1.js
+OK   diet-editor-state-fix-v1.js
 OK   ejercicio-biblioteca.js
 OK   entrenamientos/runtime-compat.js
 OK   exercise-guidance-v1.js
@@ -131,6 +132,7 @@ dcc-light-fixes-v1.js | setTimeout=1, addEventListener=1, !important=171
 dcc-production-stability-v1.js | addEventListener=2, localStorage reads=1, localStorage writes=1, !important=3
 dcc-theme-premium-polish-v3.js | MutationObserver=1, setTimeout=1, addEventListener=3, !important=226
 dcc-theme-system-v1.js | MutationObserver=1, addEventListener=2, localStorage reads=2, localStorage writes=2, !important=116
+diet-editor-state-fix-v1.js | addEventListener=1, Supabase queries=1
 ejercicio-biblioteca.js | addEventListener=4, !important=45
 entrenamientos/runtime-compat.js | setTimeout=1, addEventListener=2, Supabase queries=8
 exercise-guidance-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2
@@ -172,10 +174,10 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 26
 setInterval: 7
 setTimeout: 103
-addEventListener: 158
+addEventListener: 159
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 113
+Supabase queries: 114
 !important: 3548
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
