@@ -120,7 +120,7 @@ client-delete-atomic-v4.js | addEventListener=2, Supabase queries=2
 client-delete-persist-v1.js | setTimeout=5, addEventListener=2, Supabase queries=1
 client-home-premium-v4.js | MutationObserver=1, addEventListener=1, !important=173
 client-home-task-seen-fix.js | addEventListener=1
-client-metrics-modal-v1.js | addEventListener=4, Supabase queries=3, !important=5
+client-metrics-modal-v1.js | addEventListener=4, Supabase queries=2, !important=5
 client-metrics-sync-v10.js | setTimeout=3, addEventListener=4, Supabase queries=3, !important=10
 client-nutrition-option-state-v3.js | addEventListener=1
 client-nutrition-premium-v2.js | MutationObserver=1, setTimeout=1, addEventListener=1, !important=245
@@ -203,7 +203,7 @@ setTimeout: 114
 addEventListener: 182
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 126
+Supabase queries: 125
 !important: 3583
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
