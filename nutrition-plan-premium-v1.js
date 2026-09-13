@@ -80,6 +80,7 @@
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./client-server-source-v1.js?v=20260912-2255','dccClientServerSourceDirect');
     loadOnce('./client-delete-atomic-v4.js?v=20260912-2255','dccClientDeleteAtomicDirect');
+    loadOnce('./client-create-authority-v1.js?v=20260913-0835','dccClientCreateAuthorityV1');
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
     loadOnce('./routine-authority-v1.js?v=20260912-2355','dccRoutineAuthorityDirect');
     loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
