@@ -1,13 +1,12 @@
 /* DCC — autoridad server-first para editar clientes */
 (function(){
   'use strict';
-  const BUILD='20260913-client-profile-edit-authority-v1';
+  const BUILD='20260913-client-profile-edit-authority-v2';
   if(window.__dccClientProfileEditAuthority===BUILD)return;
   window.__dccClientProfileEditAuthority=BUILD;
 
   const STYLE_ID='dcc-client-profile-edit-authority-css';
-  const clone=v=>JSON.parse(JSON.stringify(v??null));
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
 
   function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null}
@@ -104,11 +103,23 @@
       });
       if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó la actualización');
 
+      const d=appData();
       const local=localClient(id);
       if(local){
         local.name=name;local.goal=goal;local.age=age==null?null:Math.round(age);local.height_cm=height;local.height=height;local.foods_to_avoid=foods;local.foodsToAvoid=foods;
         if(weight!=null)local.weight=weight;
         if(fat!=null)local.bodyFat=fat;
+      }
+      const now=new Date().toISOString();
+      if(weight!=null&&Number(weight)!==Number(original.weight)){
+        d.weights=d.weights||{};
+        d.weights[id]=Array.isArray(d.weights[id])?d.weights[id]:[];
+        d.weights[id].push({weight,recorded_at:now});
+      }
+      if(fat!=null&&Number(fat)!==Number(original.body_fat)){
+        d.bodyFatHistory=d.bodyFatHistory||{};
+        d.bodyFatHistory[id]=Array.isArray(d.bodyFatHistory[id])?d.bodyFatHistory[id]:[];
+        d.bodyFatHistory[id].push({body_fat:fat,recorded_at:now});
       }
       try{if(typeof window.saveData==='function')window.saveData();else if(typeof saveData==='function')saveData()}catch(_){}
       close();
@@ -132,7 +143,6 @@
     let button=actions.querySelector('.dcc-client-edit-authority-btn');
     if(!button){button=document.createElement('button');button.type='button';button.className='dcc-client-edit-authority-btn';button.textContent='Editar cliente';actions.prepend(button)}
     button.onclick=()=>open(id);
-    /* Si una capa antigua dejó otro botón de edición, lo ocultamos para tener una sola autoridad. */
     actions.querySelectorAll('.dcc-ca-edit-client').forEach(old=>{if(old!==button)old.style.display='none'});
   }
 
