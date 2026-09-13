@@ -1,7 +1,7 @@
 /* DCC — biblioteca local de ejercicios + complementos visuales cliente */
 (function(){
   'use strict';
-  const BUILD='20260913-exercise-library-v2';
+  const BUILD='20260913-exercise-library-v3';
   if(window.__dccExerciseLibrary===BUILD)return;
   window.__dccExerciseLibrary=BUILD;
 
@@ -34,11 +34,7 @@
       window.dispatchEvent(new CustomEvent('dcc:exercise-library-ready',{detail:{count:target.length}}));
       return target;
     })
-    .catch(error=>{
-      console.error('DCC — error cargando biblioteca propia:',error);
-      window.exerciseLibraryFull=[];
-      return [];
-    });
+    .catch(error=>{console.error('DCC — error cargando biblioteca propia:',error);window.exerciseLibraryFull=[];return[]});
 
   function loadOnce(src,key){
     const base=src.split('?')[0].replace('./','');
@@ -60,15 +56,10 @@
   loadOnce('./client-nutrition-premium-v2.js?v=20260910-1','dccClientNutritionPremium');
   loadOnce('./progress-metrics-unify.js?v=20260908-2','dccProgressMetricsUnify');
   loadOnce('./checkin-premium.js?v=20260908-2','dccCoachCheckinPremium');
-  loadOnce('./messages-premium.js?v=20260908-2','dccMessagesLegacyVisual');
-  loadOnce('./messages-sync-fix.js?v=20260908-1','dccMessagesLegacySync');
-  loadOnce('./messages-position-stable-v4.js?v=20260910-1','dccMessagesPosition');
   loadOnce('./nav-premium-global.js?v=20260908-1','dccPremiumNav');
   loadOnce('./clients-search-final-fix.js?v=20260908-1','dccClientsSearch');
 
-  window.addEventListener('load',()=>{
-    loadOnce('./workout-session-premium-v3.js?v=20260910-1','dccWorkoutPremium');
-  },{once:true});
+  window.addEventListener('load',()=>{loadOnce('./workout-session-premium-v3.js?v=20260910-1','dccWorkoutPremium')},{once:true});
 
   if(!window.__dccWorkoutNavGuardInstalled){
     window.__dccWorkoutNavGuardInstalled=true;
@@ -86,7 +77,7 @@
       window.restTimerInterval=null;window.dccWorkoutElapsedInterval=null;window.activeWorkout=null;
       document.body.classList.remove('dcc-workout-mode');
     },true);
-    window.addEventListener('beforeunload',event=>{if(window.activeWorkout){event.preventDefault();event.returnValue=''} });
+    window.addEventListener('beforeunload',event=>{if(window.activeWorkout){event.preventDefault();event.returnValue=''}});
   }
 
   if(!window.__dccTopOnMainTabInstalled){
