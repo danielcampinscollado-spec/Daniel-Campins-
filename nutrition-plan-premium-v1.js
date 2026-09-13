@@ -55,11 +55,11 @@
     loadOnce('./auth-premium-v1.js?v=20260913-1245','dccSecureAuthDirectV3');
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./auth-client-claim-v1.js?v=20260913-0845','dccAuthClientClaimV1');
-    loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
-    loadOnce('./client-create-authority-v1.js?v=20260913-0845','dccClientCreateAuthorityV1');
+    loadOnce('./server-actions-v1.js?v=20260913-2245','dccServerActionsV3');
+    loadOnce('./client-create-authority-v1.js?v=20260913-2245','dccClientCreateAuthorityV3');
     loadOnce('./client-access-coach-v1.js?v=20260913-0850','dccClientAccessCoachV1');
     loadOnce('./routine-authority-v1.js?v=20260913-0855','dccRoutineAuthorityDirect');
-    loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
+    loadOnce('./training-progress-authority-v1.js?v=20260913-2245','dccTrainingProgressAuthorityV2');
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
     loadOnce('./client-metrics-modal-v1.js?v=20260913-2245','dccClientMetricsModalV1');
     loadOnce('./body-fat-authority-v1.js?v=20260913-2245','dccBodyFatAuthorityV2');
@@ -67,9 +67,11 @@
     loadOnce('./diet-editor-state-fix-v1.js?v=20260913-0800','dccDietEditorStateFixV1');
     loadOnce('./diet-legacy-compat-v1.js?v=20260913-0815','dccDietLegacyCompatV1');
     loadOnce('./diet-editor-save-exit-v1.js?v=20260913-2145','dccDietEditorSaveExitV6');
-    loadOnce('./diet-server-source-v1.js?v=20260913-1445','dccDietServerSourceV1');
+    loadOnce('./diet-server-source-v1.js?v=20260913-2245','dccDietServerSourceV2');
     loadOnce('./diet-editor-save-visibility-v1.js?v=20260913-1030','dccDietEditorSaveVisibilityV1');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
+    loadOnce('./coach-calendar-v12.js?v=20260913-2255','dccCoachCalendarV12');
+    loadOnce('./coach-calendar-alignment-v13.js?v=20260913-2255','dccCoachCalendarAlignmentV13');
   }
 
   function loadFinalCoachClientAuthority(){
