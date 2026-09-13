@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para editar clientes */
 (function(){
   'use strict';
-  const BUILD='20260913-client-profile-edit-authority-v4';
+  const BUILD='20260913-client-profile-edit-authority-v5';
   if(window.__dccClientProfileEditAuthority===BUILD)return;
   window.__dccClientProfileEditAuthority=BUILD;
 
@@ -14,6 +14,7 @@
   function notify(msg){try{if(typeof toast==='function')return toast(msg);if(typeof window.toast==='function')return window.toast(msg)}catch(_){}alert(msg)}
   function currentId(){return window.__dccClientAdminId??window.selectedClient??null}
   function localClient(id){return (appData().clients||[]).find(c=>String(c.id)===String(id))||null}
+  function isEditButton(node){return node?.tagName==='BUTTON'&&String(node.textContent||'').replace(/\s+/g,' ').trim().toLowerCase()==='editar cliente'}
 
   function css(){
     if(document.getElementById(STYLE_ID))return;
@@ -132,10 +133,9 @@
     }
   }
 
-  function hideLegacyEditButtons(main,keep){
+  function removeLegacyEditButtons(main,keep){
     main.querySelectorAll('button').forEach(old=>{
-      if(old===keep)return;
-      if(String(old.textContent||'').replace(/\s+/g,' ').trim().toLowerCase()==='editar cliente')old.style.display='none';
+      if(old!==keep&&isEditButton(old))old.remove();
     });
   }
 
@@ -147,11 +147,35 @@
     const id=String(idArg??currentId()??'');if(!id)return;
     let actions=main.querySelector('.dcc-ca-profile-actions');
     if(!actions){actions=document.createElement('div');actions.className='dcc-ca-profile-actions';actions.style.cssText='display:flex;gap:8px;align-items:center;margin:8px 2px 12px;flex-wrap:wrap';head.insertAdjacentElement('afterend',actions)}
-    let button=actions.querySelector('.dcc-client-edit-authority-btn');
+    const authorityButtons=[...main.querySelectorAll('.dcc-client-edit-authority-btn')];
+    let button=authorityButtons.shift()||null;
+    authorityButtons.forEach(extra=>extra.remove());
     if(!button){button=document.createElement('button');button.type='button';button.className='dcc-client-edit-authority-btn';button.textContent='Editar cliente';actions.prepend(button)}
+    if(button.parentElement!==actions)actions.prepend(button);
     button.style.display='';
     button.onclick=()=>open(id);
-    hideLegacyEditButtons(main,button);
+    removeLegacyEditButtons(main,button);
+  }
+
+  let reconcileQueued=false;
+  function reconcile(){
+    if(reconcileQueued)return;
+    reconcileQueued=true;
+    requestAnimationFrame(()=>{
+      reconcileQueued=false;
+      const main=document.querySelector('#coach-main.dcc-ca');
+      if(!main)return;
+      const edits=[...main.querySelectorAll('button')].filter(isEditButton);
+      const authority=edits.find(btn=>btn.classList.contains('dcc-client-edit-authority-btn'));
+      if(!authority||edits.length!==1)inject();
+    });
+  }
+
+  function installObserver(){
+    const main=document.getElementById('coach-main');
+    if(!main||main.__dccClientEditDedupeObserver)return;
+    main.__dccClientEditDedupeObserver=new MutationObserver(reconcile);
+    main.__dccClientEditDedupeObserver.observe(main,{childList:true,subtree:true});
   }
 
   function install(){
@@ -160,12 +184,13 @@
       const wrapped=function(id,tab){const result=base.apply(this,arguments);requestAnimationFrame(()=>inject(id));return result};
       wrapped.__dccClientProfileEditAuthority=true;wrapped.__base=base;window.dccClientAdmin=wrapped;
     }
+    installObserver();
     if(document.querySelector('#coach-main.dcc-ca'))inject();
   }
 
   window.dccOpenClientProfileEditor=open;
   install();
-  let tries=0;const timer=setInterval(()=>{tries++;install();if(window.dccClientAdmin?.__dccClientProfileEditAuthority||tries>80)clearInterval(timer)},100);
+  let tries=0;const timer=setInterval(()=>{tries++;install();if(window.dccClientAdmin?.__dccClientProfileEditAuthority&&document.getElementById('coach-main')?.__dccClientEditDedupeObserver||tries>80)clearInterval(timer)},100);
   document.addEventListener('DOMContentLoaded',install,{once:true});
   window.addEventListener('pageshow',install);
 })();
