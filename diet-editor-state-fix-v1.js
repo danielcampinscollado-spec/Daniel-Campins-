@@ -129,6 +129,31 @@
     catch(e){console.error('DCC dieta — eliminar opción:',e);restore(id,type,backup);remember(mi,Math.min(oi,options.length-1));render(id);toastSafe('No se pudo eliminar la opción')}
   };
 
+  window.dccDietAddMeal=async function(id,type){
+    const diet=getDiet(id,type);
+    if(!diet){toastSafe('No se encontró la dieta seleccionada');return}
+    const name=prompt('Nombre de la comida','');
+    if(name===null||!name.trim())return;
+    const backup=clone(diet);
+    diet.meals=Array.isArray(diet.meals)?diet.meals:[];
+    const mi=diet.meals.length;
+    diet.meals.push({name:name.trim(),options:[{name:'Opción 1',foods:[]}]});
+    remember(mi,0);
+    try{
+      await persistType(id,type);
+      remember(mi,0);
+      render(id);
+      toastSafe('Comida añadida');
+    }catch(e){
+      console.error('DCC dieta — añadir comida:',e);
+      restore(id,type,backup);
+      window.__dccDietOpenMeal=null;
+      window.__dccDietOptionMap={};
+      render(id);
+      toastSafe('No se pudo guardar la comida');
+    }
+  };
+
   document.addEventListener('click',e=>{
     const button=e.target.closest?.('.dcc-diet-switch button');
     if(!button)return;
