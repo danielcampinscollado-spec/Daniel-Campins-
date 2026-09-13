@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 93
+JavaScript files: 94
 HTML files: 1
 
 [JS SYNTAX]
@@ -60,6 +60,7 @@ OK   diet-editor-save-exit-v1.js
 OK   diet-editor-save-visibility-v1.js
 OK   diet-editor-state-fix-v1.js
 OK   diet-legacy-compat-v1.js
+OK   diet-server-source-v1.js
 OK   ejercicio-biblioteca.js
 OK   entrenamientos/runtime-compat.js
 OK   exercise-guidance-v1.js
@@ -157,6 +158,7 @@ diet-editor-save-exit-v1.js | setInterval=1, setTimeout=1, addEventListener=4, S
 diet-editor-save-visibility-v1.js | !important=9
 diet-editor-state-fix-v1.js | addEventListener=1, Supabase queries=1
 diet-legacy-compat-v1.js | addEventListener=2
+diet-server-source-v1.js | setInterval=1, addEventListener=3, Supabase queries=1
 ejercicio-biblioteca.js | addEventListener=4, !important=45
 entrenamientos/runtime-compat.js | setTimeout=1, addEventListener=2, Supabase queries=8
 exercise-guidance-v1.js | MutationObserver=1, setTimeout=1, addEventListener=2
@@ -198,12 +200,12 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 
 [TOTALS]
 MutationObserver: 26
-setInterval: 10
+setInterval: 11
 setTimeout: 114
-addEventListener: 182
+addEventListener: 185
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 125
+Supabase queries: 126
 !important: 3583
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
