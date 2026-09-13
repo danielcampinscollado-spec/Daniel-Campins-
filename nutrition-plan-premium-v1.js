@@ -55,12 +55,9 @@
     loadOnce('./auth-premium-v1.js?v=20260913-1245','dccSecureAuthDirectV3');
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./auth-client-claim-v1.js?v=20260913-0845','dccAuthClientClaimV1');
-    loadOnce('./client-server-source-v1.js?v=20260913-2050','dccClientServerSourceDirect');
-    loadOnce('./client-delete-atomic-v4.js?v=20260913-2145','dccClientDeleteAtomicDirect');
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
     loadOnce('./client-create-authority-v1.js?v=20260913-0845','dccClientCreateAuthorityV1');
     loadOnce('./client-access-coach-v1.js?v=20260913-0850','dccClientAccessCoachV1');
-    loadOnce('./client-profile-edit-authority-v2.js?v=20260913-2145','dccClientProfileEditAuthorityV2');
     loadOnce('./routine-authority-v1.js?v=20260913-0855','dccRoutineAuthorityDirect');
     loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
@@ -74,11 +71,10 @@
     loadOnce('./diet-server-source-v1.js?v=20260913-1445','dccDietServerSourceV1');
     loadOnce('./diet-editor-save-visibility-v1.js?v=20260913-1030','dccDietEditorSaveVisibilityV1');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
-    loadOnce('./rc-coach-stability-v1.js?v=20260913-2015','dccRcCoachStabilityV1');
-    loadOnce('./coach-client-critical-authority-v1.js?v=20260913-2150','dccCoachClientCriticalAuthorityV1');
-    loadOnce('./coach-dashboard-bootstrap-v1.js?v=20260913-2205','dccCoachDashboardBootstrapV1');
-    loadOnce('./client-current-fat-dedupe-v1.js?v=20260913-2210','dccCurrentFatEditDedupeV1');
-    loadOnce('./coach-client-final-consistency-v1.js?v=20260913-2215','dccCoachClientFinalConsistencyV1');
+  }
+
+  function loadFinalCoachClientAuthority(){
+    loadOnce('./coach-client-authority-v2.js?v=20260913-2235','dccCoachClientAuthorityV2');
   }
 
   let queued=false;
@@ -97,7 +93,7 @@
   }
 
   installCss();markRoutineHistory();loadPersistenceFixes();bindCoachRefresh();
-  document.addEventListener('DOMContentLoaded',()=>{refresh();bindCoachRefresh()},{once:true});
-  window.addEventListener('load',()=>{refresh();bindCoachRefresh()},{once:true});
-  window.addEventListener('pageshow',refresh);
+  document.addEventListener('DOMContentLoaded',()=>{refresh();bindCoachRefresh();loadFinalCoachClientAuthority()},{once:true});
+  window.addEventListener('load',()=>{refresh();bindCoachRefresh();loadFinalCoachClientAuthority()},{once:true});
+  window.addEventListener('pageshow',()=>{refresh();loadFinalCoachClientAuthority()});
 })();
