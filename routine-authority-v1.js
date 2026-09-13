@@ -1,7 +1,7 @@
 /* DCC — rutinas persistentes y rollback seguro */
 (function(){
   'use strict';
-  const BUILD='20260913-routine-authority-v2';
+  const BUILD='20260913-routine-authority-v3';
   if(window.__dccRoutineAuthority===BUILD)return;
   window.__dccRoutineAuthority=BUILD;
 
@@ -28,11 +28,18 @@
     return true;
   }
 
+  function applyRoutine(id,routine){
+    const d=appData();
+    d.routines=d.routines||{};
+    d.routines[id]=clone(routine)||[];
+    try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+  }
+
   window.saveRoutineToSupabase=async function(id){
     const routine=clone(appData().routines?.[id])||[];
     try{
       await writeRoutine(id,routine);
-      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+      applyRoutine(id,routine);
       return true;
     }catch(error){
       console.error('DCC routine server-first:',error);
@@ -41,8 +48,6 @@
     }
   };
 
-  /* El flujo legacy addExercise mutaba memoria antes de confirmar Supabase.
-     Esta versión construye una copia, persiste primero y solo entonces actualiza UI/memoria. */
   window.addExercise=async function(id,dayIndex){
     const currentRoutine=clone(appData().routines?.[id])||[];
     const day=currentRoutine?.[dayIndex];
@@ -73,16 +78,51 @@
 
     try{
       await writeRoutine(id,currentRoutine);
-      const d=appData();
-      d.routines=d.routines||{};
-      d.routines[id]=currentRoutine;
-      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+      applyRoutine(id,currentRoutine);
       if(typeof window.showCoach==='function')window.showCoach('routines');
       notify('Ejercicio guardado');
     }catch(error){
       console.error('DCC añadir ejercicio server-first:',error);
       await reloadRoutines();
       alert('No se pudo añadir el ejercicio. No se ha aplicado ningún cambio local.\n\n'+(error?.message||'Error del servidor'));
+    }
+  };
+
+  window.removeExercise=async function(id,dayIndex,exerciseIndex){
+    const next=clone(appData().routines?.[id])||[];
+    const day=next?.[dayIndex];
+    if(!day||!Array.isArray(day.exercises)||!day.exercises[exerciseIndex])return;
+    const exercise=day.exercises[exerciseIndex];
+    if(!confirm(`¿Eliminar "${exercise.name||'este ejercicio'}" de esta rutina?`))return;
+    day.exercises.splice(exerciseIndex,1);
+    try{
+      await writeRoutine(id,next);
+      applyRoutine(id,next);
+      if(typeof window.showCoach==='function')window.showCoach('routines');
+      notify('Ejercicio eliminado');
+    }catch(error){
+      console.error('DCC eliminar ejercicio server-first:',error);
+      await reloadRoutines();
+      alert('No se pudo eliminar el ejercicio. La rutina se mantiene sin cambios.');
+    }
+  };
+
+  window.removeTrainingDay=async function(id,dayIndex){
+    const next=clone(appData().routines?.[id])||[];
+    if(!next[dayIndex])return;
+    const label=next[dayIndex]?.muscle||`Día ${dayIndex+1}`;
+    if(!confirm(`¿Eliminar ${label}?`))return;
+    next.splice(dayIndex,1);
+    next.forEach((day,index)=>{day.day=index+1});
+    try{
+      await writeRoutine(id,next);
+      applyRoutine(id,next);
+      if(typeof window.showCoach==='function')window.showCoach('routines');
+      notify('Día de entrenamiento eliminado');
+    }catch(error){
+      console.error('DCC eliminar día server-first:',error);
+      await reloadRoutines();
+      alert('No se pudo eliminar el día. La rutina se mantiene sin cambios.');
     }
   };
 
