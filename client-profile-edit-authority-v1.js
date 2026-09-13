@@ -1,12 +1,12 @@
 /* DCC — autoridad server-first para editar clientes */
 (function(){
   'use strict';
-  const BUILD='20260913-client-profile-edit-authority-v3';
+  const BUILD='20260913-client-profile-edit-authority-v4';
   if(window.__dccClientProfileEditAuthority===BUILD)return;
   window.__dccClientProfileEditAuthority=BUILD;
 
   const STYLE_ID='dcc-client-profile-edit-authority-css';
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
 
   function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null}
@@ -132,6 +132,13 @@
     }
   }
 
+  function hideLegacyEditButtons(main,keep){
+    main.querySelectorAll('button').forEach(old=>{
+      if(old===keep)return;
+      if(String(old.textContent||'').replace(/\s+/g,' ').trim().toLowerCase()==='editar cliente')old.style.display='none';
+    });
+  }
+
   function inject(idArg){
     css();
     const main=document.querySelector('#coach-main.dcc-ca');
@@ -142,8 +149,9 @@
     if(!actions){actions=document.createElement('div');actions.className='dcc-ca-profile-actions';actions.style.cssText='display:flex;gap:8px;align-items:center;margin:8px 2px 12px;flex-wrap:wrap';head.insertAdjacentElement('afterend',actions)}
     let button=actions.querySelector('.dcc-client-edit-authority-btn');
     if(!button){button=document.createElement('button');button.type='button';button.className='dcc-client-edit-authority-btn';button.textContent='Editar cliente';actions.prepend(button)}
+    button.style.display='';
     button.onclick=()=>open(id);
-    actions.querySelectorAll('.dcc-ca-edit-client').forEach(old=>{if(old!==button)old.style.display='none'});
+    hideLegacyEditButtons(main,button);
   }
 
   function install(){
