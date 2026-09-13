@@ -148,7 +148,7 @@ dcc-light-fixes-v1.js | setTimeout=1, addEventListener=1, !important=171
 dcc-production-stability-v1.js | addEventListener=2, localStorage reads=1, localStorage writes=1, !important=3
 dcc-theme-premium-polish-v3.js | MutationObserver=1, setTimeout=1, addEventListener=3, !important=226
 dcc-theme-system-v1.js | MutationObserver=1, addEventListener=2, localStorage reads=2, localStorage writes=2, !important=116
-diet-editor-save-exit-v1.js | setInterval=1, setTimeout=1, addEventListener=3, Supabase queries=1
+diet-editor-save-exit-v1.js | setInterval=1, setTimeout=1, addEventListener=4, Supabase queries=1
 diet-editor-state-fix-v1.js | addEventListener=1, Supabase queries=1
 diet-legacy-compat-v1.js | addEventListener=2
 ejercicio-biblioteca.js | addEventListener=4, !important=45
@@ -194,7 +194,7 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 MutationObserver: 26
 setInterval: 8
 setTimeout: 114
-addEventListener: 178
+addEventListener: 179
 localStorage reads: 7
 localStorage writes: 10
 Supabase queries: 123
