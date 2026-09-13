@@ -7,6 +7,8 @@
   const clone=v=>JSON.parse(JSON.stringify(v));
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null};
   const toastSafe=t=>{try{if(typeof toast==='function')return toast(t);if(typeof window.toast==='function')return window.toast(t)}catch(e){}console.log(t)};
+  const getClient=id=>(window.data?.clients||[]).find(c=>String(c.id)===String(id))||null;
+  const avoidText=id=>{const c=getClient(id);return String(c?.foods_to_avoid??c?.foodsToAvoid??'').trim()};
   const getDiet=(id,type)=>window.data?.diets?.[id]?.[type]||null;
   const getMeal=(id,type,mi)=>getDiet(id,type)?.meals?.[mi]||null;
   const normalizeOptions=meal=>{
@@ -62,6 +64,9 @@
     const options=normalizeOptions(meal);
     if(!options[oi])oi=0;
     remember(mi,oi);
+
+    const avoid=avoidText(id);
+    if(avoid)alert('Aviso del cliente\nNo incluir: '+avoid+'.');
 
     const name=prompt('Nombre del alimento','');
     if(name===null||!name.trim())return;
