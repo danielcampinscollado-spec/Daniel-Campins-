@@ -83,6 +83,7 @@
     loadOnce('./server-actions-v1.js?v=20260912-2355','dccServerActionsDirect');
     loadOnce('./routine-authority-v1.js?v=20260912-2355','dccRoutineAuthorityDirect');
     loadOnce('./training-progress-authority-v1.js?v=20260912-2350','dccTrainingProgressAuthorityDirect');
+    loadOnce('./client-metrics-modal-v1.js?v=20260913-0755','dccClientMetricsModalV1');
   }
 
   let queued=false;
