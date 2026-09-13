@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 86
+JavaScript files: 87
 HTML files: 1
 
 [JS SYNTAX]
@@ -9,6 +9,7 @@ OK   auth-session-guard-v2.js
 OK   body-fat-authority-v1.js
 OK   checkin-coach-sync-v2.js
 OK   checkin-premium.js
+OK   checkin-review-authority-v1.js
 OK   client-admin-premium.js
 OK   client-checkin-final-v3.js
 OK   client-checkin-messages-premium-v1.js
@@ -101,6 +102,7 @@ auth-session-guard-v2.js | addEventListener=2
 body-fat-authority-v1.js | addEventListener=2, Supabase queries=1
 checkin-coach-sync-v2.js | setTimeout=5, addEventListener=1, Supabase queries=6, !important=4
 checkin-premium.js | setTimeout=3, addEventListener=1, !important=45
+checkin-review-authority-v1.js | setTimeout=2, addEventListener=2, Supabase queries=1
 client-admin-premium.js | setTimeout=3, addEventListener=2, Supabase queries=4, !important=15
 client-checkin-final-v3.js | setTimeout=4, addEventListener=1, Supabase queries=1, !important=5
 client-checkin-messages-premium-v1.js | setInterval=1, setTimeout=3, addEventListener=2, Supabase queries=6, !important=21
@@ -185,11 +187,11 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 [TOTALS]
 MutationObserver: 26
 setInterval: 7
-setTimeout: 105
-addEventListener: 168
+setTimeout: 107
+addEventListener: 170
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 118
+Supabase queries: 119
 !important: 3548
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
