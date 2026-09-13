@@ -1,0 +1,1 @@
+Backup note for the messages optimization phase. The immediately preceding code change scopes coach chat polling to the active client only.
