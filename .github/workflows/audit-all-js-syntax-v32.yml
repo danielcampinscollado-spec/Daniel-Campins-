@@ -111,6 +111,9 @@ jobs:
 
           print(f'Active JS files: {len(active)}')
           print('ACTIVE_RUNTIME_FILES='+' '.join(active))
+          print('Active runtime parent edges:')
+          for file in active:
+              print(f'  {file} <- '+', '.join(sorted(parents[file])))
           print(f'Active MutationObserver references: {observers}')
           print(f'Active setInterval calls: {intervals}')
           print(f'Active setTimeout calls: {timeouts}')
