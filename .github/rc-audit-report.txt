@@ -1,6 +1,6 @@
 DCC RELEASE CANDIDATE STATIC AUDIT
 ==================================
-JavaScript files: 89
+JavaScript files: 90
 HTML files: 1
 
 [JS SYNTAX]
@@ -54,6 +54,7 @@ OK   dcc-light-fixes-v1.js
 OK   dcc-production-stability-v1.js
 OK   dcc-theme-premium-polish-v3.js
 OK   dcc-theme-system-v1.js
+OK   diet-editor-save-exit-v1.js
 OK   diet-editor-state-fix-v1.js
 OK   diet-legacy-compat-v1.js
 OK   ejercicio-biblioteca.js
@@ -147,6 +148,7 @@ dcc-light-fixes-v1.js | setTimeout=1, addEventListener=1, !important=171
 dcc-production-stability-v1.js | addEventListener=2, localStorage reads=1, localStorage writes=1, !important=3
 dcc-theme-premium-polish-v3.js | MutationObserver=1, setTimeout=1, addEventListener=3, !important=226
 dcc-theme-system-v1.js | MutationObserver=1, addEventListener=2, localStorage reads=2, localStorage writes=2, !important=116
+diet-editor-save-exit-v1.js | setTimeout=1, addEventListener=3, Supabase queries=1
 diet-editor-state-fix-v1.js | addEventListener=1, Supabase queries=1
 diet-legacy-compat-v1.js | addEventListener=2
 ejercicio-biblioteca.js | addEventListener=4, !important=45
@@ -191,11 +193,11 @@ index.html | setInterval=1, setTimeout=2, addEventListener=1, localStorage reads
 [TOTALS]
 MutationObserver: 26
 setInterval: 7
-setTimeout: 113
-addEventListener: 175
+setTimeout: 114
+addEventListener: 178
 localStorage reads: 7
 localStorage writes: 10
-Supabase queries: 122
+Supabase queries: 123
 !important: 3557
 
 [INDEX EXTERNAL SCRIPTS IN LOAD ORDER]
