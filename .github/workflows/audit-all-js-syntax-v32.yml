@@ -1,19 +1,63 @@
-name: Full JavaScript syntax audit v32
+name: Release read-only integrity audit
 on:
   push:
+    branches:
+      - main
+      - 'audit/**'
     paths:
+      - '*.js'
+      - 'index.html'
       - '.github/workflows/audit-all-js-syntax-v32.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
 jobs:
-  syntax:
+  integrity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Check every root JavaScript file
         shell: bash
         run: |
-          failed=0
+          set -euo pipefail
           while IFS= read -r file; do
             echo "Checking $file"
-            if ! node --check "$file"; then failed=1; fi
+            node --check "$file"
           done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
-          exit "$failed"
+      - name: Check inline JavaScript in index
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, subprocess, tempfile
+          html=Path('index.html').read_text(encoding='utf-8')
+          blocks=re.findall(r'<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>',html,re.S|re.I)
+          for i,block in enumerate(blocks,1):
+              p=Path(tempfile.gettempdir())/f'dcc-inline-{i}.js'
+              p.write_text(block,encoding='utf-8')
+              subprocess.run(['node','--check',str(p)],check=True)
+          print(f'Inline scripts checked: {len(blocks)}')
+          PY
+      - name: Guard consolidated coach client architecture
+        shell: bash
+        run: |
+          set -euo pipefail
+          loader='nutrition-plan-premium-v1.js'
+          forbidden=(
+            'client-server-source-v1.js'
+            'client-delete-atomic-v4.js'
+            'client-profile-edit-authority-v2.js'
+            'rc-coach-stability-v1.js'
+            'coach-client-critical-authority-v1.js'
+            'coach-dashboard-bootstrap-v1.js'
+            'client-current-fat-dedupe-v1.js'
+            'coach-client-final-consistency-v1.js'
+          )
+          for item in "${forbidden[@]}"; do
+            if grep -Fq "$item" "$loader"; then
+              echo "Forbidden overlapping client authority still loaded: $item" >&2
+              exit 1
+            fi
+          done
+          grep -Fq 'coach-client-authority-v2.js' "$loader"
+          echo 'Coach client authority is consolidated.'
