@@ -1,8 +1,9 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  if(window.__dccAuthPreviewRedirectGuardV1)return;
-  window.__dccAuthPreviewRedirectGuardV1=true;
+  const BUILD='20260913-auth-preview-redirect-v2';
+  if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
+  window.__dccAuthPreviewRedirectGuard=BUILD;
 
   function database(){
     try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}
@@ -15,25 +16,28 @@
   }
 
   function currentRedirect(){
-    return window.location.origin+window.location.pathname;
+    const url=new URL(window.location.href);
+    /* Conservamos _vercel_share para que el callback siga teniendo acceso al Preview protegido. */
+    const share=url.searchParams.get('_vercel_share');
+    url.search='';
+    if(share)url.searchParams.set('_vercel_share',share);
+    url.hash='';
+    return url.toString();
   }
 
   function install(){
     const auth=database()?.auth;
     if(!auth||typeof auth.signInWithOtp!=='function')return false;
-    if(auth.signInWithOtp.__dccPreviewRedirectGuardV1)return true;
+    if(auth.signInWithOtp.__dccPreviewRedirectGuard===BUILD)return true;
 
     const base=auth.signInWithOtp.bind(auth);
     const wrapped=async function(args){
       const next={...(args||{})};
       next.options={...((args&&args.options)||{})};
-      if(isPreview()){
-        /* En una RC siempre forzamos el retorno a la misma RC. */
-        next.options.emailRedirectTo=currentRedirect();
-      }
+      if(isPreview())next.options.emailRedirectTo=currentRedirect();
       return base(next);
     };
-    wrapped.__dccPreviewRedirectGuardV1=true;
+    wrapped.__dccPreviewRedirectGuard=BUILD;
     wrapped.__base=base;
     auth.signInWithOtp=wrapped;
     return true;
