@@ -61,3 +61,73 @@ jobs:
           done
           grep -Fq 'coach-client-authority-v2.js' "$loader"
           echo 'Coach client authority is consolidated.'
+      - name: Audit active runtime graph
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from collections import defaultdict, deque
+          import re, sys
+
+          root=Path('.')
+          html=(root/'index.html').read_text(encoding='utf-8')
+          direct=re.findall(r'<script[^>]+src=["\'](?:\./)?([^"\'?]+\.js)(?:\?[^"\']*)?["\']',html,re.I)
+          queue=deque(direct)
+          active=[]
+          seen=set()
+          parents=defaultdict(set)
+          for f in direct: parents[f].add('index.html')
+          ref_re=re.compile(r'["\']\./([^"\'?]+\.js)(?:\?[^"\']*)?["\']')
+
+          missing=[]
+          while queue:
+              file=queue.popleft()
+              if file in seen: continue
+              seen.add(file); active.append(file)
+              p=root/file
+              if not p.is_file():
+                  missing.append(file); continue
+              text=p.read_text(encoding='utf-8')
+              for child in ref_re.findall(text):
+                  parents[child].add(file)
+                  if child not in seen: queue.append(child)
+
+          if missing:
+              print('Missing active JavaScript:',', '.join(sorted(missing)),file=sys.stderr)
+              sys.exit(1)
+
+          observers=intervals=timeouts=0
+          global_defs=defaultdict(set)
+          per_file=[]
+          for file in active:
+              text=(root/file).read_text(encoding='utf-8')
+              mo=text.count('MutationObserver')
+              si=len(re.findall(r'\bsetInterval\s*\(',text))
+              st=len(re.findall(r'\bsetTimeout\s*\(',text))
+              observers+=mo; intervals+=si; timeouts+=st
+              for name in re.findall(r'window\.([A-Za-z_$][\w$]*)\s*=',text):
+                  global_defs[name].add(file)
+              per_file.append((file,mo,si,st))
+
+          print(f'Active JS files: {len(active)}')
+          print('ACTIVE_RUNTIME_FILES='+' '.join(active))
+          print(f'Active MutationObserver references: {observers}')
+          print(f'Active setInterval calls: {intervals}')
+          print(f'Active setTimeout calls: {timeouts}')
+          print('Per-file async/runtime counts:')
+          for file,mo,si,st in per_file:
+              if mo or si or st:
+                  print(f'  {file}: MutationObserver={mo} setInterval={si} setTimeout={st}')
+          collisions={k:sorted(v) for k,v in global_defs.items() if len(v)>1}
+          print(f'Global window assignment names defined by >1 active file: {len(collisions)}')
+          for name,files in sorted(collisions.items()):
+              print(f'  window.{name}: '+', '.join(files))
+          PY
+      - name: Ensure only read-only release workflow remains active
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=$(find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) | wc -l)
+          test "$count" -eq 1
+          test -f .github/workflows/audit-all-js-syntax-v32.yml
+          echo 'Only the read-only release integrity workflow remains active.'
