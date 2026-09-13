@@ -59,7 +59,7 @@
     loadOnce('./client-create-authority-v1.js?v=20260913-2245','dccClientCreateAuthorityV3');
     loadOnce('./client-access-coach-v1.js?v=20260913-2300','dccClientAccessCoachV2');
     loadOnce('./routine-authority-v1.js?v=20260913-0855','dccRoutineAuthorityDirect');
-    loadOnce('./training-progress-authority-v1.js?v=20260913-2245','dccTrainingProgressAuthorityV2');
+    loadOnce('./training-progress-authority-v1.js?v=20260913-2315','dccTrainingProgressAuthorityV3');
     loadOnce('./training-finish-route-fix-v1.js?v=20260913-0805','dccTrainingFinishRouteFixV1');
     loadOnce('./client-metrics-modal-v1.js?v=20260913-2245','dccClientMetricsModalV1');
     loadOnce('./body-fat-authority-v1.js?v=20260913-2245','dccBodyFatAuthorityV2');
