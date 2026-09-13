@@ -20,6 +20,7 @@
       #coach-main .dcc-access-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
       #coach-main .dcc-access-row input{min-width:0;height:44px;padding:0 12px;border:1px solid #35404a;border-radius:13px;background:#090d11;color:#fff;-webkit-text-fill-color:#fff;outline:0;font-size:13px}
       #coach-main .dcc-access-row button{height:44px;padding:0 14px;border:1px solid #efcc72;border-radius:13px;background:linear-gradient(135deg,#f1ce70,#d9a63d);color:#151109;font-size:10px;font-weight:900}
+      #coach-main .dcc-access-row button:disabled{opacity:.55}
       #coach-main .dcc-access-state{display:inline-flex;margin-top:10px;padding:6px 9px;border:1px solid rgba(224,173,76,.28);border-radius:999px;color:#d9aa4a;font-size:8px;font-weight:800;letter-spacing:.5px}
       #coach-main .dcc-access-state.ok{border-color:rgba(72,201,142,.34);color:#65d9a0}
       html.dcc-theme-light-premium body #coach-main .dcc-access-card{background:linear-gradient(145deg,#fffefa,#f8f0e3)!important;color:#17191d!important;border-color:rgba(183,123,19,.27)!important}
@@ -37,27 +38,37 @@
     root.querySelector('.dcc-access-card')?.remove();
     const card=document.createElement('section');card.className='dcc-access-card';
     const linked=!!c.auth_user_id;
-    card.innerHTML=`<h2>Acceso del cliente</h2><p>Asigna el email que este cliente utilizará para entrar con su enlace seguro. Si cambias el email de una cuenta ya vinculada, la vinculación anterior se revocará.</p><div class="dcc-access-row"><input id="dccClientAccessEmailV1" type="email" inputmode="email" autocomplete="email" value="${esc(c.access_email||'')}" placeholder="cliente@email.com"><button type="button" onclick="dccSaveClientAccessEmailV1('${esc(id)}')">Guardar acceso</button></div><span class="dcc-access-state ${linked?'ok':''}">${linked?'CUENTA VINCULADA':'PENDIENTE DE VINCULACIÓN'}</span>`;
+    card.innerHTML=`<h2>Acceso del cliente</h2><p>Asigna el email que este cliente utilizará para entrar con su enlace seguro. Si cambias el email de una cuenta ya vinculada, la vinculación anterior se revocará.</p><div class="dcc-access-row"><input id="dccClientAccessEmailV1" type="email" inputmode="email" autocomplete="email" value="${esc(c.access_email||'')}" placeholder="cliente@email.com"><button id="dccClientAccessSaveV1" type="button" onclick="dccSaveClientAccessEmailV1('${esc(id)}')">Guardar acceso</button></div><span class="dcc-access-state ${linked?'ok':''}">${linked?'CUENTA VINCULADA':'PENDIENTE DE VINCULACIÓN'}</span>`;
     const firstCard=root.querySelector('.dcc-ca-card');
     if(firstCard)firstCard.insertAdjacentElement('afterend',card);else root.appendChild(card);
   }
 
+  async function readCanonicalClient(id){
+    const database=db();if(!database)return null;
+    const {data:row,error}=await database.from('clients').select('id,access_email,auth_user_id').eq('id',id).maybeSingle();
+    if(error)throw error;
+    return row||null;
+  }
+
   window.dccSaveClientAccessEmailV1=async function(id){
-    const c=client(id),input=document.getElementById('dccClientAccessEmailV1'),email=String(input?.value||'').trim().toLowerCase(),database=db();
+    const c=client(id),input=document.getElementById('dccClientAccessEmailV1'),button=document.getElementById('dccClientAccessSaveV1'),email=String(input?.value||'').trim().toLowerCase(),database=db();
     if(!c||!database){notify('No se pudo preparar el acceso');return}
     if(!validEmail(email)){notify('Introduce un email válido');input?.focus();return}
+    if(button){button.disabled=true;button.textContent='Guardando…'}
     try{
       const {data:ok,error}=await database.rpc('dcc_set_client_access_email',{p_client_id:id,p_access_email:email});
       if(error||ok!==true)throw error||new Error('Cambio no confirmado');
-      const changed=String(c.access_email||'').trim().toLowerCase()!==email;
-      c.access_email=email;
-      if(changed)c.auth_user_id=null;
+      const row=await readCanonicalClient(id);
+      if(!row||String(row.access_email||'').trim().toLowerCase()!==email)throw new Error('El servidor no confirmó el email de acceso');
+      c.access_email=row.access_email||'';
+      c.auth_user_id=row.auth_user_id||null;
       notify('Email de acceso guardado');
       patch(id);
     }catch(error){
       console.error('DCC guardando email de acceso:',error);
       const duplicate=String(error?.message||'').toLowerCase().includes('duplicate')||String(error?.code||'')==='23505';
       notify(duplicate?'Ese email ya está asignado a otro cliente':'No se pudo guardar el email de acceso');
+      if(button){button.disabled=false;button.textContent='Guardar acceso'}
     }
   };
 
@@ -79,5 +90,4 @@
   document.addEventListener('DOMContentLoaded',install,{once:true});
   window.addEventListener('load',install,{once:true});
   window.addEventListener('pageshow',install);
-  setTimeout(install,300);setTimeout(install,1200);setTimeout(install,2400);
 })();
