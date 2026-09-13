@@ -9,6 +9,7 @@
   window.__dccCoachClientVisualHotfixV1=true;
 
   const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
+  let persistenceFixesLoaded=false;
 
   function installCss(){
     if(document.getElementById(STYLE_ID))return;
@@ -71,6 +72,8 @@
   }
 
   function loadPersistenceFixes(){
+    if(persistenceFixesLoaded)return;
+    persistenceFixesLoaded=true;
     loadOnce('./local-cache-authority-v1.js?v=20260912-2358','dccLocalCacheAuthorityDirect');
     loadOnce('./data-authority-v1.js?v=20260912-2328','dccDataAuthorityDirect');
     loadOnce('./auth-premium-v1.js?v=20260912-2255','dccSecureAuthDirect');
@@ -98,8 +101,11 @@
     const main=document.getElementById('coach-main');
     if(!main||main.__dccClientVisualHotfixBound)return;
     main.__dccClientVisualHotfixBound=true;
-    main.addEventListener('click',()=>requestAnimationFrame(refresh),{passive:true});
-    main.addEventListener('change',()=>requestAnimationFrame(refresh),{passive:true});
+    const refreshClientAdmin=()=>{
+      if(main.classList.contains('dcc-ca'))requestAnimationFrame(refresh);
+    };
+    main.addEventListener('click',refreshClientAdmin,{passive:true});
+    main.addEventListener('change',refreshClientAdmin,{passive:true});
   }
 
   installCss();
