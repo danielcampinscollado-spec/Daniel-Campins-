@@ -70,7 +70,7 @@
     loadOnce('./checkin-review-authority-v1.js?v=20260913-0840','dccCheckinReviewAuthorityV1');
     loadOnce('./diet-editor-state-fix-v1.js?v=20260913-0800','dccDietEditorStateFixV1');
     loadOnce('./diet-legacy-compat-v1.js?v=20260913-0815','dccDietLegacyCompatV1');
-    loadOnce('./diet-editor-save-exit-v1.js?v=20260913-0955','dccDietEditorSaveExitV5');
+    loadOnce('./diet-editor-save-exit-v1.js?v=20260913-2145','dccDietEditorSaveExitV6');
     loadOnce('./diet-server-source-v1.js?v=20260913-1445','dccDietServerSourceV1');
     loadOnce('./diet-editor-save-visibility-v1.js?v=20260913-1030','dccDietEditorSaveVisibilityV1');
     loadOnce('./messages-realtime-chat-guard-v1.js?v=20260913-0810','dccMessagesRealtimeChatGuardV1');
