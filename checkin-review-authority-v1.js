@@ -1,8 +1,9 @@
 /* DCC — autoridad atómica para revisión de check-ins */
 (function(){
   'use strict';
-  if(window.__dccCheckinReviewAuthorityV1)return;
-  window.__dccCheckinReviewAuthorityV1=true;
+  const BUILD='20260914-checkin-review-v2';
+  if(window.__dccCheckinReviewAuthority===BUILD)return;
+  window.__dccCheckinReviewAuthority=BUILD;
 
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){ }return window.supabaseClient||null};
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
@@ -38,15 +39,6 @@
     }
   }
 
-  function install(){
-    if(window.markReviewed===markReviewedAtomic)return;
-    window.markReviewed=markReviewedAtomic;
-    window.markReviewed.__dccAtomicReviewV1=true;
-  }
-
-  install();
-  document.addEventListener('DOMContentLoaded',install,{once:true});
-  window.addEventListener('load',install,{once:true});
-  setTimeout(install,250);
-  setTimeout(install,1000);
+  markReviewedAtomic.__dccAtomicReviewV2=true;
+  window.markReviewed=markReviewedAtomic;
 })();
