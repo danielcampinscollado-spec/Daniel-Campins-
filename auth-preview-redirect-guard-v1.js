@@ -64,5 +64,6 @@
   loadAuthority('./coach-client-authority-v1.js?v=20260914-2','client');
   loadAuthority('./coach-live-consistency-v2.js?v=20260914-5','live-consistency');
   loadAuthority('./dcc-dynamic-greeting-v1.js?v=20260914-2','dynamic-greeting');
-  loadAuthority('./coach-edit-safety-v1.js?v=20260914-1','edit-safety');
+  loadAuthority('./coach-navigation-safety-v1.js?v=20260914-1','navigation-safety');
+  loadAuthority('./nutrition-flow-authority-v1.js?v=20260914-1','nutrition-flow');
 })();
