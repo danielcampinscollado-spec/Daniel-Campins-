@@ -1,58 +1,64 @@
-/* DCC — navegación estable hacia Calendario del entrenador */
+/* DCC — navegación estable hacia Calendario y Mensajes del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-calendar-nav-guard-v4';
-  if(window.__dccCoachCalendarNavGuard===BUILD)return;
-  window.__dccCoachCalendarNavGuard=BUILD;
+  const BUILD='20260914-coach-primary-nav-guard-v5';
+  if(window.__dccCoachPrimaryNavGuard===BUILD)return;
+  window.__dccCoachPrimaryNavGuard=BUILD;
 
   let navToken=0;
   function coachVisible(){
     const coach=document.getElementById('coach');if(!coach)return false;
     try{return getComputedStyle(coach).display!=='none'&&getComputedStyle(coach).visibility!=='hidden'}catch(_){return true}
   }
-  function calendarButton(){const nav=document.getElementById('coach-nav');return nav?[...nav.querySelectorAll('button')][2]||null:null}
-  function markCalendarActive(){
-    const nav=document.getElementById('coach-nav');if(!nav)return;
-    [...nav.querySelectorAll('button')].forEach((b,i)=>{
-      const active=i===2;
+  function navButtons(){const nav=document.getElementById('coach-nav');return nav?[...nav.querySelectorAll('button')]:[]}
+  function markActive(index){
+    navButtons().forEach((b,i)=>{
+      const active=i===index;
       if(b.classList.contains('active')!==active)b.classList.toggle('active',active);
       if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
     });
   }
-  function renderCalendar(){
+  function render(screen,index){
     if(!coachVisible())return false;
-    window.currentScreen='calendar';
+    window.currentScreen=screen;
     let ok=false;
     if(typeof window.showCoach==='function'){
-      try{window.showCoach('calendar');ok=true}catch(e){console.error('DCC calendar render:',e)}
+      try{window.showCoach(screen);ok=true}catch(e){console.error('DCC '+screen+' render:',e)}
     }
-    window.currentScreen='calendar';markCalendarActive();
+    window.currentScreen=screen;markActive(index);
     return ok;
   }
-
-  window.dccOpenCoachCalendar=function(){
+  function openStable(screen,index){
     if(!coachVisible())return;
     const mine=++navToken;
-    renderCalendar();
-    [80,180,360,700,1200].forEach(delay=>setTimeout(()=>{
+    render(screen,index);
+    [60,140,280,520,900,1400].forEach(delay=>setTimeout(()=>{
       if(mine!==navToken||window.currentApp!=='coach')return;
-      if(window.currentScreen!=='calendar')renderCalendar();else markCalendarActive();
+      if(window.currentScreen!==screen)render(screen,index);else markActive(index);
     },delay));
-  };
+  }
 
-  function patch(){const b=calendarButton();if(!b)return false;b.setAttribute('onclick','dccOpenCoachCalendar()');return true}
+  window.dccOpenCoachCalendar=()=>openStable('calendar',2);
+  window.dccOpenCoachMessages=()=>openStable('messages',4);
+
+  function patch(){
+    const buttons=navButtons();if(buttons.length<5)return false;
+    buttons[2].setAttribute('onclick','dccOpenCoachCalendar()');
+    buttons[4].setAttribute('onclick','dccOpenCoachMessages()');
+    return true;
+  }
 
   document.addEventListener('click',e=>{
-    const target=calendarButton(),b=e.target?.closest?.('#coach-nav button');
-    if(!b)return;
-    if(!target||b!==target){navToken++;return}
+    const b=e.target?.closest?.('#coach-nav button');if(!b)return;
+    const buttons=navButtons(),index=buttons.indexOf(b);
+    if(index!==2&&index!==4){navToken++;return}
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-    window.dccOpenCoachCalendar();
+    if(index===2)window.dccOpenCoachCalendar();else window.dccOpenCoachMessages();
   },true);
 
   function boot(){
     if(patch())return;
-    let tries=0;const timer=setInterval(()=>{tries++;if(patch()||tries>40)clearInterval(timer)},100);
+    let tries=0;const timer=setInterval(()=>{tries++;if(patch()||tries>50)clearInterval(timer)},100);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('pageshow',()=>setTimeout(boot,60));
