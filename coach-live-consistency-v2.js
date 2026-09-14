@@ -1,7 +1,8 @@
-/* DCC live coach consistency v4 — final authority for coach client count and single edit action */
+/* DCC live coach consistency v5 — instant cached client count + single edit action */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-live-consistency-v4';
+  const BUILD='20260914-coach-live-consistency-v5';
+  const COUNT_CACHE='dcc_coach_client_count_v1';
   if(window.__dccCoachLiveConsistency===BUILD)return;
   window.__dccCoachLiveConsistency=BUILD;
 
@@ -22,6 +23,17 @@
 
   function norm(v){
     return String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
+  }
+
+  function readCachedCount(){
+    try{
+      const n=Number(localStorage.getItem(COUNT_CACHE));
+      return Number.isFinite(n)&&n>=0?n:null;
+    }catch(_){return null}
+  }
+
+  function saveCachedCount(count){
+    try{localStorage.setItem(COUNT_CACHE,String(count))}catch(_){}
   }
 
   function patchClientCount(count){
@@ -45,6 +57,11 @@
     });
   }
 
+  function patchCachedCount(){
+    const cached=readCachedCount();
+    if(cached!==null)patchClientCount(cached);
+  }
+
   async function syncServerCount(force){
     if(countRunning||!coachVisible())return;
     const now=Date.now();
@@ -60,6 +77,7 @@
       const count=Number(result?.count);
       if(Number.isFinite(count)){
         lastCountAt=Date.now();
+        saveCachedCount(count);
         patchClientCount(count);
       }
     }catch(error){
@@ -117,12 +135,16 @@
     requestAnimationFrame(()=>{
       queued=false;
       dedupeEditClient();
-      if(window.currentScreen==='dashboard')syncServerCount(false);
+      if(window.currentScreen==='dashboard'){
+        patchCachedCount();
+        syncServerCount(false);
+      }
     });
   }
 
   function bootstrap(){
     dedupeEditClient();
+    patchCachedCount();
     syncServerCount(true);
   }
 
@@ -138,5 +160,5 @@
   },true);
   window.addEventListener('pageshow',bootstrap);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)bootstrap()});
-  [0,100,250,500,900,1500,2500,4000].forEach(ms=>setTimeout(bootstrap,ms));
+  [0,50,120,250,500,900,1500,2500].forEach(ms=>setTimeout(bootstrap,ms));
 })();
