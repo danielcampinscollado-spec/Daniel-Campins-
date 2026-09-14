@@ -52,7 +52,7 @@
     loadOnce('./local-cache-authority-v1.js?v=20260912-2358','dccLocalCacheAuthorityDirect');
     loadOnce('./data-authority-v1.js?v=20260912-2328','dccDataAuthorityDirect');
     loadOnce('./auth-preview-redirect-guard-v1.js?v=20260913-1245','dccAuthPreviewRedirectGuardV2');
-    loadOnce('./auth-premium-v1.js?v=20260914-0720','dccSecureAuthDirectV4');
+    loadOnce('./auth-premium-v1.js?v=20260914-0735','dccSecureAuthDirectV5');
     loadOnce('./auth-session-guard-v2.js?v=20260912-2342','dccAuthSessionGuardDirect');
     loadOnce('./auth-client-claim-v1.js?v=20260913-0845','dccAuthClientClaimV1');
     loadOnce('./server-actions-v1.js?v=20260913-2245','dccServerActionsV3');
