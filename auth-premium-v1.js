@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (fase de activación) */
 (function(){
   'use strict';
-  const BUILD='20260913-auth-premium-v3';
+  const BUILD='20260914-auth-premium-v4';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -45,16 +45,17 @@
       #${ROOT_ID} .dcc-auth-kicker{color:#f0c96b;font-size:9px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
       #${ROOT_ID} h3{margin:7px 0 5px;color:#f5f3ef;font-size:17px;letter-spacing:-.3px}
       #${ROOT_ID} p{margin:0 0 12px;color:#99a2ad;font-size:10px;line-height:1.5}
-      #${ROOT_ID} .dcc-auth-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+      #${ROOT_ID} .dcc-auth-stack{display:grid;gap:8px}
       #${ROOT_ID} input{height:46px;margin:0;padding:0 12px;border:1px solid #35404a;border-radius:13px;background:#090d11;color:#fff;-webkit-text-fill-color:#fff;font-size:13px;box-shadow:none}
       #${ROOT_ID} input:focus{border-color:#e0b654;box-shadow:0 0 0 3px rgba(217,170,74,.09)}
       #${ROOT_ID} button{height:46px;padding:0 15px;border:1px solid #efcc72;border-radius:13px;background:linear-gradient(135deg,#f1ce70,#d9a63d);color:#151109;font-weight:900;font-size:11px;white-space:nowrap}
+      #${ROOT_ID} button.dcc-auth-secondary{height:40px;border-color:#37414b;background:#0b0f13;color:#b8c0c9;font-weight:800}
       #${ROOT_ID} button:disabled{opacity:.55;cursor:default}
       #${STATUS_ID}{min-height:16px;margin-top:9px!important;color:#9aa3ad!important}
       #${STATUS_ID}[data-type="ok"]{color:#78d7aa!important}#${STATUS_ID}[data-type="error"]{color:#ff8b8b!important}
       #${ROOT_ID} .dcc-auth-pending{margin-top:10px;padding:10px;border:1px solid rgba(240,201,107,.25);border-radius:12px;background:rgba(0,0,0,.2);color:#d7d9dd;font-size:10px;line-height:1.45}
       .dcc-secure-session-badge{position:fixed;right:14px;top:14px;z-index:65000;padding:7px 10px;border:1px solid rgba(240,201,107,.4);border-radius:999px;background:rgba(8,11,14,.88);color:#f0c96b;font-size:9px;font-weight:850;letter-spacing:.7px;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);pointer-events:none}
-      @media(max-width:620px){#${ROOT_ID} .dcc-auth-row{grid-template-columns:1fr}#${ROOT_ID} button{width:100%}}
+      @media(max-width:620px){#${ROOT_ID} button{width:100%}}
     `;document.head.appendChild(style);
   }
 
@@ -64,10 +65,34 @@
     const box=login.querySelector('.login-box')||login.firstElementChild||login;
     const choices=box.querySelector('.choices');
     const section=document.createElement('section');section.id=ROOT_ID;
-    section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro · fase de activación</div><h3>Entrar con Supabase Auth</h3><p>Introduce tu email y recibirás un enlace de acceso de un solo uso.</p><div class="dcc-auth-row"><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" aria-label="Email de acceso seguro"><button id="dcc-secure-auth-send" type="button">Enviar enlace</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
+    section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro</div><h3>Entrar</h3><p>Usa tu email y contraseña. No se enviará ningún correo.</p><div class="dcc-auth-stack"><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="username" placeholder="Email" aria-label="Email de acceso seguro"><input id="dcc-secure-auth-password" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña"><button id="dcc-secure-auth-login" type="button">Entrar</button><button id="dcc-secure-auth-send" class="dcc-auth-secondary" type="button">Enviar enlace por correo</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
     if(choices)box.insertBefore(section,choices);else box.appendChild(section);
+    section.querySelector('#dcc-secure-auth-login')?.addEventListener('click',signInPassword);
     section.querySelector('#dcc-secure-auth-send')?.addEventListener('click',requestMagicLink);
-    section.querySelector('#dcc-secure-auth-email')?.addEventListener('keydown',e=>{if(e.key==='Enter')requestMagicLink()});
+    section.querySelector('#dcc-secure-auth-email')?.addEventListener('keydown',e=>{if(e.key==='Enter')section.querySelector('#dcc-secure-auth-password')?.focus()});
+    section.querySelector('#dcc-secure-auth-password')?.addEventListener('keydown',e=>{if(e.key==='Enter')signInPassword()});
+  }
+
+  async function signInPassword(){
+    const db=database();const emailInput=document.getElementById('dcc-secure-auth-email');const passwordInput=document.getElementById('dcc-secure-auth-password');const button=document.getElementById('dcc-secure-auth-login');
+    const email=String(emailInput?.value||'').trim().toLowerCase(),password=String(passwordInput?.value||'');
+    if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}
+    if(!email||!/^\S+@\S+\.\S+$/.test(email)){status('Introduce un email válido.','error');emailInput?.focus();return}
+    if(!password){status('Introduce tu contraseña.','error');passwordInput?.focus();return}
+    button.disabled=true;status('Comprobando acceso…','info');
+    try{
+      const result=await db.auth.signInWithPassword({email,password});
+      if(result.error)throw result.error;
+      if(!result.data?.session)throw new Error('No se creó una sesión válida');
+      await routeSession(result.data.session);
+      status('Sesión iniciada correctamente.','ok');
+    }catch(error){
+      console.error('DCC Auth — contraseña:',error);
+      const raw=String(error?.message||'No se pudo iniciar sesión.');
+      const msg=/invalid login credentials/i.test(raw)?'Email o contraseña incorrectos.':raw;
+      status(msg,'error');
+      button.disabled=false;
+    }
   }
 
   async function requestMagicLink(){
@@ -77,9 +102,9 @@
     button.disabled=true;status('Enviando enlace seguro…','info');
     try{
       const redirectTo=authRedirectUrl();
-      const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:redirectTo}});
+      const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:redirectTo}});
       if(result.error)throw result.error;
-      status(isPreview()?'Enlace enviado para esta RC. El enlace debe volver a este mismo Preview.':'Enlace enviado. Abre el correo y pulsa el enlace para iniciar sesión.','ok');
+      status(isPreview()?'Enlace enviado. Debe volver a este mismo Preview.':'Enlace enviado. Abre el correo y pulsa el enlace.','ok');
     }catch(error){
       console.error('DCC Auth:',error);
       const msg=String(error?.message||'No se pudo enviar el enlace de acceso.');
