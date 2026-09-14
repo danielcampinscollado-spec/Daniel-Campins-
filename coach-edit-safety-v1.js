@@ -1,7 +1,7 @@
 /* DCC — navegación activa + protección de cambios sin guardar del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-edit-safety-v1';
+  const BUILD='20260914-coach-edit-safety-v2';
   if(window.__dccCoachEditSafety===BUILD)return;
   window.__dccCoachEditSafety=BUILD;
 
@@ -27,6 +27,7 @@
     if(s==='messages')return 4;
     if(document.querySelector('#coach-main.dcc-ca'))return 1;
     if(document.querySelector('#coach-main.dcc-p9-dashboard'))return 0;
+    if(document.querySelector('#coach-main.dcc-cal-v11,#coach-main .dcc-cal'))return 2;
     return -1;
   }
 
@@ -39,9 +40,10 @@
     const idx=screenIndex();
     if(idx<0)return;
     buttons.forEach((b,i)=>{
-      b.classList.toggle('active',i===idx);
-      if(i===idx)b.setAttribute('aria-current','page');
-      else b.removeAttribute('aria-current');
+      const should=i===idx;
+      if(b.classList.contains('active')!==should)b.classList.toggle('active',should);
+      if(should){if(b.getAttribute('aria-current')!=='page')b.setAttribute('aria-current','page')}
+      else if(b.hasAttribute('aria-current'))b.removeAttribute('aria-current');
     });
   }
 
@@ -59,29 +61,18 @@
   }
 
   function markDirty(kind){
-    const k=kind||editKind();
-    if(!k)return;
-    dirty=true;dirtyKind=k;
-    document.documentElement.dataset.dccUnsavedCoachEdit=k;
+    const k=kind||editKind();if(!k)return;
+    dirty=true;dirtyKind=k;document.documentElement.dataset.dccUnsavedCoachEdit=k;
   }
-
-  function clearDirty(){
-    dirty=false;dirtyKind='';
-    delete document.documentElement.dataset.dccUnsavedCoachEdit;
-  }
-
-  function warningText(){
-    return `Tienes cambios sin guardar en la ${dirtyKind||'edición'}. Si sales ahora, perderás esos cambios. ¿Salir sin guardar?`;
-  }
+  function clearDirty(){dirty=false;dirtyKind='';delete document.documentElement.dataset.dccUnsavedCoachEdit}
+  function warningText(){return `Tienes cambios sin guardar en la ${dirtyKind||'edición'}. Si sales ahora, perderás esos cambios. ¿Salir sin guardar?`}
 
   function leavingEditArea(target){
     if(!dirty)return false;
-    const nav=target?.closest?.('#coach-nav button');
-    if(nav)return true;
+    if(target?.closest?.('#coach-nav button'))return true;
     const text=norm(target?.closest?.('button,a')?.textContent||target?.textContent);
     if(['clientes','panel','calendario','check-in','checkin','mensajes','resumen','alimentación','entrenamiento','progreso'].includes(text))return true;
-    if(target?.closest?.('.dcc-ca-back'))return true;
-    return false;
+    return !!target?.closest?.('.dcc-ca-back');
   }
 
   function isSaveOrCancel(target){
@@ -89,44 +80,22 @@
     return text.includes('guardar cambios')||text==='guardar'||text.includes('guardar dieta')||text.includes('guardar rutina')||text==='cancelar';
   }
 
-  document.addEventListener('input',e=>{if(editKind())markDirty(editKind())},true);
-  document.addEventListener('change',e=>{if(editKind())markDirty(editKind())},true);
-
+  document.addEventListener('input',()=>{if(editKind())markDirty(editKind())},true);
+  document.addEventListener('change',()=>{if(editKind())markDirty(editKind())},true);
   document.addEventListener('click',e=>{
-    syncNav();
     const kind=editKind();
-
     if(dirty&&leavingEditArea(e.target)){
-      if(!window.confirm(warningText())){
-        e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
-        return;
-      }
+      if(!window.confirm(warningText())){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();syncNav();return}
       clearDirty();
-      return;
-    }
-
-    if(kind&&isSaveOrCancel(e.target)){
-      setTimeout(()=>{
-        const stillEditing=!!editKind();
-        if(!stillEditing||norm(e.target?.textContent).includes('cancelar'))clearDirty();
-      },500);
-      return;
-    }
-
-    if(kind&&mutationControl(e.target))markDirty(kind);
-    setTimeout(syncNav,0);
-    setTimeout(syncNav,80);
+    }else if(kind&&isSaveOrCancel(e.target)){
+      setTimeout(()=>{if(!editKind()||norm(e.target?.textContent).includes('cancelar'))clearDirty()},500);
+    }else if(kind&&mutationControl(e.target))markDirty(kind);
+    requestAnimationFrame(syncNav);
+    setTimeout(syncNav,100);
   },true);
 
-  window.addEventListener('beforeunload',e=>{
-    if(!dirty)return;
-    e.preventDefault();
-    e.returnValue='';
-  });
-
-  document.addEventListener('visibilitychange',()=>{
-    if(!document.hidden){syncNav()}
-  });
+  window.addEventListener('beforeunload',e=>{if(!dirty)return;e.preventDefault();e.returnValue=''});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncNav()});
 
   function observe(){
     if(navObserver||!document.body)return;
@@ -136,10 +105,11 @@
       else if(document.getElementById('coach-nav')&&!document.querySelector('#coach-nav button.active'))syncNav();
       if(dirty&&!editKind()&&coachVisible())clearDirty();
     });
-    navObserver.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style']});
+    /* Solo cambios estructurales. Observar class/style aquí provocaba un bucle visual al sincronizar .active. */
+    navObserver.observe(document.body,{childList:true,subtree:true});
   }
 
-  function boot(){observe();syncNav();setTimeout(syncNav,50);setTimeout(syncNav,250);setTimeout(syncNav,900)}
+  function boot(){observe();syncNav();setTimeout(syncNav,80);setTimeout(syncNav,400)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('load',boot,{once:true});
   window.addEventListener('pageshow',boot);
