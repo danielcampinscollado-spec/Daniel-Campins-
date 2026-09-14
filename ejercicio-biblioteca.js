@@ -1,7 +1,7 @@
 /* DCC — biblioteca local de ejercicios + complementos visuales cliente */
 (function(){
   'use strict';
-  const BUILD='20260913-exercise-library-v3';
+  const BUILD='20260914-exercise-library-v4';
   if(window.__dccExerciseLibrary===BUILD)return;
   window.__dccExerciseLibrary=BUILD;
 
@@ -46,48 +46,17 @@
   }
 
   /* Complementos visuales aún vigentes. La lógica de negocio vive en sus autoridades específicas. */
-  loadOnce('./training-inline-fix.js?v=20260908-3','dccTrainingInline');
+  loadOnce('./training-inline-fix.js?v=20260914-ui-v3','dccTrainingInline');
   loadOnce('./training-days-compact-v3.js?v=20260910-1','dccTrainingDaysCompact');
   loadOnce('./training-routine-plate-v1.js?v=20260910-1','dccTrainingRoutinePlate');
   loadOnce('./progress-premium-v5.js?v=20260908-9','dccCoachProgressPremium');
   loadOnce('./client-progress-premium-v6.js?v=20260910-5','dccClientProgressPremium');
   loadOnce('./client-home-premium-v4.js?v=20260910-2','dccClientHomePremium');
-  loadOnce('./client-metrics-sync-v10.js?v=20260910-fatpct-v2','dccClientMetricsSync');
+  loadOnce('./client-metrics-sync-v10.js?v=20260914-history-v1','dccClientMetricsSync');
   loadOnce('./client-nutrition-premium-v2.js?v=20260910-1','dccClientNutritionPremium');
   loadOnce('./progress-metrics-unify.js?v=20260908-2','dccProgressMetricsUnify');
   loadOnce('./checkin-premium.js?v=20260908-2','dccCoachCheckinPremium');
   loadOnce('./nav-premium-global.js?v=20260908-1','dccPremiumNav');
-  loadOnce('./clients-search-final-fix.js?v=20260908-1','dccClientsSearch');
-
-  window.addEventListener('load',()=>{loadOnce('./workout-session-premium-v3.js?v=20260910-1','dccWorkoutPremium')},{once:true});
-
-  if(!window.__dccWorkoutNavGuardInstalled){
-    window.__dccWorkoutNavGuardInstalled=true;
-    document.addEventListener('click',event=>{
-      const button=event.target.closest('#client-nav button');
-      if(!button||!window.activeWorkout)return;
-      const action=button.getAttribute('onclick')||'';
-      const label=(button.textContent||'').trim();
-      const stays=/showClient\s*\(\s*["']training["']\s*\)/i.test(action)||/entrenamiento/i.test(label);
-      if(stays)return;
-      if(!window.confirm('Tienes un entrenamiento en curso. Si sales ahora se perderá el entrenamiento y las series registradas. ¿Quieres salir?')){
-        event.preventDefault();event.stopImmediatePropagation();return;
-      }
-      clearInterval(window.restTimerInterval);clearInterval(window.dccWorkoutElapsedInterval);
-      window.restTimerInterval=null;window.dccWorkoutElapsedInterval=null;window.activeWorkout=null;
-      document.body.classList.remove('dcc-workout-mode');
-    },true);
-    window.addEventListener('beforeunload',event=>{if(window.activeWorkout){event.preventDefault();event.returnValue=''}});
-  }
-
-  if(!window.__dccTopOnMainTabInstalled){
-    window.__dccTopOnMainTabInstalled=true;
-    document.addEventListener('click',event=>{
-      if(!event.target.closest('#coach-nav button,#client-nav button'))return;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        window.scrollTo({top:0,left:0,behavior:'auto'});
-        document.documentElement.scrollTop=0;document.body.scrollTop=0;
-      }));
-    },true);
-  }
+  loadOnce('./clients-search-final-fix.js?v=20260914-static-v1','dccClientsSearch');
+  loadOnce('./workout-session-premium-v3.js?v=20260910-3','dccWorkoutSessionPremium');
 })();
