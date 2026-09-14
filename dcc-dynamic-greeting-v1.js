@@ -1,11 +1,11 @@
-/* DCC dynamic greeting v1 — local-time greeting for coach/client home screens */
+/* DCC dynamic greeting v2 — compact local-time greeting for coach/client home screens */
 (function(){
   'use strict';
-  const BUILD='20260914-dcc-dynamic-greeting-v1';
+  const BUILD='20260914-dcc-dynamic-greeting-v2';
   if(window.__dccDynamicGreeting===BUILD)return;
   window.__dccDynamicGreeting=BUILD;
 
-  const STYLE_ID='dcc-dynamic-greeting-v1-css';
+  const STYLE_ID='dcc-dynamic-greeting-v2-css';
   let queued=false;
   let cachedName='';
   let nameRequested=false;
@@ -36,15 +36,38 @@
     try{return getComputedStyle(el).display!=='none'}catch(_){return true}
   }
   function css(){
+    document.getElementById('dcc-dynamic-greeting-v1-css')?.remove();
     if(document.getElementById(STYLE_ID))return;
     const s=document.createElement('style');
     s.id=STYLE_ID;
     s.textContent=`
-      .dcc-time-greeting{margin:0 0 14px;padding:0 2px;color:inherit;line-height:1.05}
-      .dcc-time-greeting .dcc-time-greeting-kicker{display:block;margin-bottom:5px;color:#a98a45;font-size:10px;font-weight:850;letter-spacing:1.7px;text-transform:uppercase}
-      .dcc-time-greeting .dcc-time-greeting-text{display:block;font-size:clamp(25px,4.8vw,34px);font-weight:820;letter-spacing:-1.2px}
+      .dcc-time-greeting{margin:0 2px 12px;padding:7px 3px 5px;color:inherit;line-height:1.05}
+      .dcc-time-greeting .dcc-time-greeting-kicker{display:block;margin-bottom:5px;color:#a77719;font-size:9px;font-weight:900;letter-spacing:2.7px;text-transform:uppercase}
+      .dcc-time-greeting .dcc-time-greeting-text{display:block;font-size:clamp(25px,4.5vw,32px);font-weight:850;letter-spacing:-1.25px}
+      .dcc-time-greeting .dcc-time-greeting-name{color:#b87b09}
+      .dcc-time-greeting .dcc-time-greeting-sub{display:block;margin-top:7px;color:#777d86;font-size:11px;line-height:1.3;letter-spacing:.05px}
+
+      /* En el panel de entrenador el saludo compacto sustituye al hero grande duplicado. */
+      #coach-main.dcc-p9-dashboard .dcc-p9-hero{display:none!important}
+      #coach-main.dcc-p9-dashboard .dcc-p9{padding-top:0!important}
+      #coach-main.dcc-p9-dashboard .dcc-p9-stats{margin-top:7px!important}
+
+      /* Tema oscuro */
       html:not(.dcc-theme-light-premium) .dcc-time-greeting .dcc-time-greeting-kicker{color:#e7bb55}
-      @media(max-width:560px){.dcc-time-greeting{margin-bottom:12px}.dcc-time-greeting .dcc-time-greeting-text{font-size:29px}}
+      html:not(.dcc-theme-light-premium) .dcc-time-greeting .dcc-time-greeting-name{color:#f0c96b}
+      html:not(.dcc-theme-light-premium) .dcc-time-greeting .dcc-time-greeting-sub{color:#9ca4ae}
+
+      /* Tema claro */
+      html.dcc-theme-light-premium .dcc-time-greeting{color:#17191d}
+      html.dcc-theme-light-premium .dcc-time-greeting .dcc-time-greeting-kicker{color:#a77719}
+      html.dcc-theme-light-premium .dcc-time-greeting .dcc-time-greeting-name{color:#b87908}
+      html.dcc-theme-light-premium .dcc-time-greeting .dcc-time-greeting-sub{color:#777d86}
+
+      @media(max-width:560px){
+        .dcc-time-greeting{margin:0 2px 10px;padding-top:4px}
+        .dcc-time-greeting .dcc-time-greeting-text{font-size:28px;line-height:1.02}
+        .dcc-time-greeting .dcc-time-greeting-sub{margin-top:6px;font-size:10px}
+      }
     `;
     (document.head||document.documentElement).appendChild(s);
   }
@@ -112,9 +135,12 @@
       if(anchor)root.insertBefore(box,anchor);else root.appendChild(box);
     }
     const name=cachedName||sessionNameFallback();
-    const text=name?`${greeting()}, ${name}`:greeting();
-    box.innerHTML=`<span class="dcc-time-greeting-kicker">DCC FITNESS</span><span class="dcc-time-greeting-text"></span>`;
-    box.querySelector('.dcc-time-greeting-text').textContent=text;
+    const hello=greeting();
+    const isCoach=root.id==='coach-main';
+    box.innerHTML=`<span class="dcc-time-greeting-kicker">DCC FITNESS</span><span class="dcc-time-greeting-text"><span class="dcc-time-greeting-hello"></span>${name?'<span class="dcc-time-greeting-name"></span>':''}</span><span class="dcc-time-greeting-sub"></span>`;
+    box.querySelector('.dcc-time-greeting-hello').textContent=name?`${hello}, `:hello;
+    if(name)box.querySelector('.dcc-time-greeting-name').textContent=name;
+    box.querySelector('.dcc-time-greeting-sub').textContent=isCoach?'Aquí tienes un resumen de tu actividad.':'Aquí tienes tu resumen de hoy.';
   }
   function schedule(){
     if(queued)return;
