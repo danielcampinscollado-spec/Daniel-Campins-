@@ -1,7 +1,7 @@
 /* DCC — navegación estable hacia Calendario del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-calendar-nav-guard-v2';
+  const BUILD='20260914-coach-calendar-nav-guard-v3';
   if(window.__dccCoachCalendarNavGuard===BUILD)return;
   window.__dccCoachCalendarNavGuard=BUILD;
 
@@ -18,17 +18,28 @@
       if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
     });
   }
+  function renderCalendar(){
+    if(!coachVisible())return false;
+    window.currentScreen='calendar';
+    let ok=false;
+    if(typeof window.showCoach==='function'){
+      try{window.showCoach('calendar');ok=true}catch(e){console.error('DCC calendar render:',e)}
+    }
+    window.currentScreen='calendar';markCalendarActive();
+    return ok;
+  }
 
   window.dccOpenCoachCalendar=function(){
     if(!coachVisible())return;
-    window.currentScreen='calendar';
-    /* La API del propio calendario llama a su render privado y evita atravesar routers antiguos. */
-    if(typeof window.dccCalendarSetView==='function'){
-      try{window.dccCalendarSetView(window.__dccCalendarView==='agenda'?'agenda':'month');markCalendarActive();return}catch(e){console.error('DCC calendar direct:',e)}
-    }
-    if(typeof window.showCoach==='function'){
-      try{window.showCoach('calendar');window.currentScreen='calendar';markCalendarActive()}catch(e){console.error('DCC calendar fallback:',e)}
-    }
+    renderCalendar();
+    /* Si termina de cargar una capa antigua justo después del toque, reafirma Calendario sin necesitar un segundo toque. */
+    requestAnimationFrame(()=>{
+      window.currentScreen='calendar';markCalendarActive();
+      setTimeout(()=>{
+        if(window.currentApp==='coach'&&window.currentScreen!=='calendar')renderCalendar();
+        else markCalendarActive();
+      },90);
+    });
   };
 
   function patch(){const b=calendarButton();if(!b)return false;b.setAttribute('onclick','dccOpenCoachCalendar()');return true}
