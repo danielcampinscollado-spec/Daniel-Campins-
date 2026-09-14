@@ -1,7 +1,7 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  const BUILD='20260914-auth-preview-redirect-v17';
+  const BUILD='20260914-auth-preview-redirect-v18';
   if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
   window.__dccAuthPreviewRedirectGuard=BUILD;
 
@@ -69,6 +69,5 @@
   loadAuthority('./nutrition-meal-setup-v1.js?v=20260914-3','nutrition-meal-setup');
   loadAuthority('./client-summary-actions-guard-v1.js?v=20260914-1','client-summary-actions');
   loadAuthority('./coach-edit-scroll-lock-v1.js?v=20260914-3','edit-scroll-lock');
-  loadAuthority('./client-plan-alert-compact-v1.js?v=20260914-1','plan-alert-compact');
-  loadAuthority('./dcc-theme-layout-parity-v1.js?v=20260914-1','theme-layout-parity');
+  loadAuthority('./client-plan-alert-compact-v1.js?v=20260914-1','client-plan-alert-compact');
 })();
