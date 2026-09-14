@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (fase de activación) */
 (function(){
   'use strict';
-  const BUILD='20260914-auth-premium-v4';
+  const BUILD='20260914-auth-premium-v5';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -46,9 +46,13 @@
       #${ROOT_ID} h3{margin:7px 0 5px;color:#f5f3ef;font-size:17px;letter-spacing:-.3px}
       #${ROOT_ID} p{margin:0 0 12px;color:#99a2ad;font-size:10px;line-height:1.5}
       #${ROOT_ID} .dcc-auth-stack{display:grid;gap:8px}
+      #${ROOT_ID} .dcc-auth-divider{display:flex;align-items:center;gap:8px;margin:4px 0;color:#68717c;font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+      #${ROOT_ID} .dcc-auth-divider:before,#${ROOT_ID} .dcc-auth-divider:after{content:"";height:1px;flex:1;background:#27303a}
       #${ROOT_ID} input{height:46px;margin:0;padding:0 12px;border:1px solid #35404a;border-radius:13px;background:#090d11;color:#fff;-webkit-text-fill-color:#fff;font-size:13px;box-shadow:none}
       #${ROOT_ID} input:focus{border-color:#e0b654;box-shadow:0 0 0 3px rgba(217,170,74,.09)}
       #${ROOT_ID} button{height:46px;padding:0 15px;border:1px solid #efcc72;border-radius:13px;background:linear-gradient(135deg,#f1ce70,#d9a63d);color:#151109;font-weight:900;font-size:11px;white-space:nowrap}
+      #${ROOT_ID} button.dcc-auth-google{display:flex;align-items:center;justify-content:center;gap:9px;border-color:#d8dde3;background:#fff;color:#1f2328;font-size:12px}
+      #${ROOT_ID} button.dcc-auth-google span{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;border:1px solid #d9dde2;color:#4285f4;font-size:13px;font-weight:900;background:#fff}
       #${ROOT_ID} button.dcc-auth-secondary{height:40px;border-color:#37414b;background:#0b0f13;color:#b8c0c9;font-weight:800}
       #${ROOT_ID} button:disabled{opacity:.55;cursor:default}
       #${STATUS_ID}{min-height:16px;margin-top:9px!important;color:#9aa3ad!important}
@@ -65,12 +69,28 @@
     const box=login.querySelector('.login-box')||login.firstElementChild||login;
     const choices=box.querySelector('.choices');
     const section=document.createElement('section');section.id=ROOT_ID;
-    section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro</div><h3>Entrar</h3><p>Usa tu email y contraseña. No se enviará ningún correo.</p><div class="dcc-auth-stack"><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="username" placeholder="Email" aria-label="Email de acceso seguro"><input id="dcc-secure-auth-password" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña"><button id="dcc-secure-auth-login" type="button">Entrar</button><button id="dcc-secure-auth-send" class="dcc-auth-secondary" type="button">Enviar enlace por correo</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
+    section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro</div><h3>Entrar</h3><p>Usa Google como acceso principal. La sesión quedará guardada en este dominio.</p><div class="dcc-auth-stack"><button id="dcc-secure-auth-google" class="dcc-auth-google" type="button"><span>G</span>Entrar con Google</button><div class="dcc-auth-divider">alternativa</div><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="username" placeholder="Email" aria-label="Email de acceso seguro"><input id="dcc-secure-auth-password" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña"><button id="dcc-secure-auth-login" class="dcc-auth-secondary" type="button">Entrar con contraseña</button><button id="dcc-secure-auth-send" class="dcc-auth-secondary" type="button">Enviar enlace por correo</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
     if(choices)box.insertBefore(section,choices);else box.appendChild(section);
+    section.querySelector('#dcc-secure-auth-google')?.addEventListener('click',signInGoogle);
     section.querySelector('#dcc-secure-auth-login')?.addEventListener('click',signInPassword);
     section.querySelector('#dcc-secure-auth-send')?.addEventListener('click',requestMagicLink);
     section.querySelector('#dcc-secure-auth-email')?.addEventListener('keydown',e=>{if(e.key==='Enter')section.querySelector('#dcc-secure-auth-password')?.focus()});
     section.querySelector('#dcc-secure-auth-password')?.addEventListener('keydown',e=>{if(e.key==='Enter')signInPassword()});
+  }
+
+  async function signInGoogle(){
+    const db=database();const button=document.getElementById('dcc-secure-auth-google');
+    if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}
+    button.disabled=true;status('Abriendo Google…','info');
+    try{
+      const result=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirectUrl()}});
+      if(result.error)throw result.error;
+    }catch(error){
+      console.error('DCC Auth — Google:',error);
+      const raw=String(error?.message||'No se pudo iniciar sesión con Google.');
+      status(raw,'error');
+      button.disabled=false;
+    }
   }
 
   async function signInPassword(){
