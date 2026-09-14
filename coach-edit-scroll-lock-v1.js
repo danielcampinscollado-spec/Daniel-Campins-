@@ -1,7 +1,7 @@
 /* DCC — mantiene la posición mientras se crea/edita dieta o rutina */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-edit-scroll-lock-v1';
+  const BUILD='20260914-coach-edit-scroll-lock-v2';
   if(window.__dccCoachEditScrollLock===BUILD)return;
   window.__dccCoachEditScrollLock=BUILD;
 
@@ -10,25 +10,25 @@
   let preserveUntil=0;
   let restoring=false;
   let raf=0;
+  let enteringUntil=0;
 
   const norm=v=>String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
 
   function main(){return document.getElementById('coach-main')}
 
+  /* Solo consideramos edición cuando el editor REAL está montado.
+     No basta con estar en la pestaña Alimentación/Entrenamiento. */
   function inDietEdit(){
     const m=main();
     if(!m)return false;
-    return !!m.querySelector('.dcc-n2-editorbar,.dcc-diet-meals,.dcc-diet-body,.dcc-diet-add-meal,.dcc-diet-add-food') ||
-      /diet|dieta|nutrition|aliment/.test(String(window.currentScreen||'').toLowerCase());
+    return !!m.querySelector('.dcc-n2-editorbar,.dcc-diet-meals,.dcc-diet-body,.dcc-diet-add-meal,.dcc-diet-add-food');
   }
 
   function inTrainingEdit(){
     const m=main();
     if(!m)return false;
-    const screen=String(window.currentScreen||'').toLowerCase();
     return !!window.__dccTrainingEdit ||
-      !!m.querySelector('.dcc-tr-actions,.dcc-tr-editrow,.dcc-tr-add,.dcc-tr-remove') ||
-      /createroutine|editroutine|routine|rutina/.test(screen);
+      !!m.querySelector('.dcc-tr-actions,.dcc-tr-editrow,.dcc-tr-add,.dcc-tr-remove,[data-training-editor],.training-editor');
   }
 
   function editContext(){return inDietEdit()||inTrainingEdit()}
@@ -37,12 +37,50 @@
     const el=target?.closest?.('button,a')||target;
     const t=norm(el?.textContent);
     if(el?.closest?.('#coach-nav,.dcc-ca-tabs,.dcc-ca-back'))return true;
-    return t==='cancelar'||t.includes('guardar cambios')||t.includes('guardar rutina')||t.includes('guardar dieta')||
+    return t==='cancelar'||t.includes('guardar cambios')||t.includes('guardar rutina')||t.includes('guardar dieta')||t.includes('guardar plan')||
       t==='resumen'||t==='alimentación'||t==='entrenamiento'||t==='progreso'||t==='clientes'||t==='panel'||
       t==='calendario'||t==='check-in'||t==='mensajes';
   }
 
+  function isEnterEditorControl(target){
+    const el=target?.closest?.('button,a')||target;
+    const t=norm(el?.textContent);
+    return t.includes('continuar dieta')||t.includes('editar plan actual')||t.includes('crear desde cero')||
+      t.includes('renovar usando')||t.includes('crear rutina')||t.includes('editar rutina')||t.includes('continuar rutina');
+  }
+
+  function editorAnchor(){
+    const m=main();
+    if(!m)return null;
+    return m.querySelector('.dcc-n2-editorbar,[data-training-editor],.training-editor,.dcc-tr-actions,.dcc-tr-editrow,.dcc-tr-add');
+  }
+
+  function focusEditor(){
+    if(Date.now()>enteringUntil)return false;
+    const anchor=editorAnchor();
+    if(!anchor)return false;
+    preserveUntil=0;
+    const rect=anchor.getBoundingClientRect();
+    const current=window.scrollY||(document.scrollingElement?.scrollTop||0);
+    const y=Math.max(0,current+rect.top-12);
+    window.scrollTo({top:y,left:0,behavior:'auto'});
+    const m=main();
+    if(m&&m.scrollHeight>m.clientHeight){
+      const mr=m.getBoundingClientRect();
+      const ar=anchor.getBoundingClientRect();
+      if(ar.top<mr.top||ar.bottom>mr.bottom)m.scrollTop=Math.max(0,m.scrollTop+(ar.top-mr.top)-12);
+    }
+    return true;
+  }
+
+  function beginEditorEntry(){
+    preserveUntil=0;
+    enteringUntil=Date.now()+1800;
+    [0,30,80,150,260,420,700,1050,1500].forEach(ms=>setTimeout(focusEditor,ms));
+  }
+
   function remember(ms=1400){
+    if(Date.now()<=enteringUntil)return;
     const scroller=document.scrollingElement||document.documentElement;
     savedWindowY=Math.max(0,window.scrollY||scroller.scrollTop||0);
     const m=main();
@@ -51,7 +89,7 @@
   }
 
   function restore(){
-    if(restoring||Date.now()>preserveUntil)return;
+    if(restoring||Date.now()>preserveUntil||Date.now()<=enteringUntil)return;
     restoring=true;
     try{
       const scroller=document.scrollingElement||document.documentElement;
@@ -64,7 +102,7 @@
   }
 
   function scheduleRestore(){
-    if(Date.now()>preserveUntil)return;
+    if(Date.now()>preserveUntil||Date.now()<=enteringUntil)return;
     cancelAnimationFrame(raf);
     raf=requestAnimationFrame(()=>{
       restore();
@@ -77,12 +115,20 @@
   }
 
   document.addEventListener('pointerdown',e=>{
+    if(isEnterEditorControl(e.target)){
+      preserveUntil=0;
+      return;
+    }
     if(!editContext()||isLeavingControl(e.target))return;
     const hit=e.target?.closest?.('button,input,textarea,select,[contenteditable="true"],.dcc-diet-meal,.dcc-tr-day');
     if(hit)remember();
   },true);
 
   document.addEventListener('click',e=>{
+    if(isEnterEditorControl(e.target)){
+      beginEditorEntry();
+      return;
+    }
     if(!editContext()||isLeavingControl(e.target))return;
     const hit=e.target?.closest?.('button,.dcc-diet-meal,.dcc-tr-day');
     if(hit){remember();scheduleRestore()}
@@ -99,7 +145,8 @@
     if(!document.body||document.body.__dccEditScrollObserver)return;
     document.body.__dccEditScrollObserver=true;
     new MutationObserver(()=>{
-      if(Date.now()<=preserveUntil)scheduleRestore();
+      if(Date.now()<=enteringUntil)focusEditor();
+      else if(Date.now()<=preserveUntil)scheduleRestore();
     }).observe(document.body,{childList:true,subtree:true});
   }
 
