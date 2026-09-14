@@ -1,7 +1,7 @@
-/* DCC live coach consistency v2 — final authority for coach client count and single edit action */
+/* DCC live coach consistency v3 — final authority for coach client count and single edit action */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-live-consistency-v2';
+  const BUILD='20260914-coach-live-consistency-v3';
   if(window.__dccCoachLiveConsistency===BUILD)return;
   window.__dccCoachLiveConsistency=BUILD;
 
@@ -28,7 +28,6 @@
     const main=document.getElementById('coach-main');
     if(!main||!Number.isFinite(count))return;
 
-    // Premium dashboard card.
     const stats=[...main.querySelectorAll('.dcc-p9-stat')];
     const clientCard=stats.find(card=>norm(card.textContent).includes('clientes'));
     if(clientCard){
@@ -38,7 +37,6 @@
       clientCard.classList.toggle('dcc-p9-zero',count<=0);
     }
 
-    // Legacy/current dashboard fallbacks: only elements whose nearby label is CLIENTES.
     [...main.querySelectorAll('.metric,.dcc-stat,.card,[class*="stat"],[class*="metric"]')].forEach(box=>{
       const txt=norm(box.textContent);
       if(!/(^|\s)clientes(\s|$)/.test(txt))return;
@@ -74,13 +72,20 @@
   function dedupeEditClient(){
     const root=document.getElementById('coach-main');
     if(!root)return;
-    const candidates=[...root.querySelectorAll('button,a,[role="button"]')].filter(el=>{
-      const t=norm(el.textContent).replace(/^[✎✏️🖉📝\s]+/,'').trim();
-      return t==='editar cliente';
-    });
+
+    const candidates=[...root.querySelectorAll('button,a,[role="button"],.dcc-client-edit-authority-btn')]
+      .filter(el=>norm(el.textContent).includes('editar cliente'));
+
     if(candidates.length<=1)return;
-    const keep=candidates.find(el=>el.classList.contains('dcc-client-edit-authority-btn')) || candidates.find(el=>el.offsetParent!==null) || candidates[0];
-    candidates.forEach(el=>{if(el!==keep)el.remove()});
+
+    const keep=
+      candidates.find(el=>el.classList.contains('dcc-client-edit-authority-btn')) ||
+      candidates.find(el=>el.offsetParent!==null) ||
+      candidates[0];
+
+    candidates.forEach(el=>{
+      if(el!==keep)el.remove();
+    });
   }
 
   function refresh(){
@@ -110,5 +115,5 @@
   },true);
   window.addEventListener('pageshow',bootstrap);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)bootstrap()});
-  [0,150,400,900,1800,3200].forEach(ms=>setTimeout(bootstrap,ms));
+  [0,100,250,500,900,1500,2500,4000].forEach(ms=>setTimeout(bootstrap,ms));
 })();
