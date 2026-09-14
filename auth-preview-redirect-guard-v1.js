@@ -69,5 +69,6 @@
   loadAuthority('./nutrition-meal-setup-v1.js?v=20260914-3','nutrition-meal-setup');
   loadAuthority('./client-summary-actions-guard-v1.js?v=20260914-1','client-summary-actions');
   loadAuthority('./coach-edit-scroll-lock-v1.js?v=20260914-3','edit-scroll-lock');
-  loadAuthority('./client-plan-alert-compact-v1.js?v=20260914-1','client-plan-alert-compact');
+  loadAuthority('./client-plan-alert-compact-v1.js?v=20260914-1','plan-alert-compact');
+  loadAuthority('./dcc-theme-layout-parity-v1.js?v=20260914-1','theme-layout-parity');
 })();
