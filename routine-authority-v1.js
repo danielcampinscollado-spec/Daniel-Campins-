@@ -1,7 +1,7 @@
-/* DCC — rutinas persistentes y rollback seguro */
+/* DCC — autoridad única de rutinas: persistencia, nueva rutina y rollback seguro */
 (function(){
   'use strict';
-  const BUILD='20260913-routine-authority-v5';
+  const BUILD='20260914-routine-authority-v6';
   if(window.__dccRoutineAuthority===BUILD)return;
   window.__dccRoutineAuthority=BUILD;
 
@@ -9,6 +9,18 @@
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   const clone=v=>JSON.parse(JSON.stringify(v??null));
   const notify=msg=>{try{if(typeof toast==='function')return toast(msg);if(typeof window.toast==='function')return window.toast(msg)}catch(_){}alert(msg)};
+
+  function saveLocal(){
+    try{
+      if(typeof saveData==='function')return saveData();
+      if(typeof window.saveData==='function')return window.saveData();
+    }catch(_){}
+  }
+
+  function routineFor(id){
+    const raw=appData().routines?.[id];
+    return Array.isArray(raw)?raw:Array.isArray(raw?.routine)?raw.routine:[];
+  }
 
   async function reloadRoutines(){
     if(typeof window.loadRoutinesFromSupabase==='function'){
@@ -28,11 +40,28 @@
     return true;
   }
 
-  function applyRoutine(id,routine){
+  function applyRoutine(id,routine,{persist=true}={}){
     const d=appData();
     d.routines=d.routines||{};
     d.routines[id]=clone(routine)||[];
-    try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+    if(persist)saveLocal();
+  }
+
+  function parseBackup(){
+    if(window.__dccTrainingBackup===undefined)return null;
+    try{
+      const parsed=JSON.parse(window.__dccTrainingBackup);
+      return Array.isArray(parsed)?parsed:Array.isArray(parsed?.routine)?parsed.routine:[];
+    }catch(_){
+      return null;
+    }
+  }
+
+  function clearEditorState(){
+    window.__dccTrainingEdit=false;
+    delete window.__dccTrainingBackup;
+    delete window.__dccTrainingCreatingNew;
+    delete window.__dccTrainingArchiveOnSave;
   }
 
   function renderClientRoutine(id){
@@ -40,8 +69,21 @@
     else if(typeof window.showCoach==='function')window.showCoach('routines');
   }
 
+  async function archiveCurrentRoutine(id){
+    const database=db();
+    if(!database)throw new Error('No hay conexión con el servidor');
+    const historyId='routine-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
+    const result=await database.rpc('dcc_start_new_routine',{
+      p_client_id:String(id),
+      p_history_id:historyId
+    });
+    if(result.error)throw result.error;
+    if(result.data!==true)throw new Error('El servidor no confirmó el archivado de la rutina anterior');
+    return true;
+  }
+
   window.saveRoutineToSupabase=async function(id){
-    const routine=clone(appData().routines?.[id])||[];
+    const routine=clone(routineFor(id))||[];
     try{
       await writeRoutine(id,routine);
       applyRoutine(id,routine);
@@ -54,7 +96,7 @@
   };
 
   const addExerciseServerFirst=async function(id,dayIndex){
-    const currentRoutine=clone(appData().routines?.[id])||[];
+    const currentRoutine=clone(routineFor(id))||[];
     const day=currentRoutine?.[dayIndex];
     if(!day){notify('No se encontró el día');return}
 
@@ -84,7 +126,7 @@
     try{
       await writeRoutine(id,currentRoutine);
       applyRoutine(id,currentRoutine);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
+      renderClientRoutine(id);
       notify('Ejercicio guardado');
     }catch(error){
       console.error('DCC añadir ejercicio server-first:',error);
@@ -93,11 +135,11 @@
     }
   };
   addExerciseServerFirst.__dccAuditSafeVideoV2=true;
-  addExerciseServerFirst.__dccRoutineAuthorityV5=true;
+  addExerciseServerFirst.__dccRoutineAuthorityV6=true;
   window.addExercise=addExerciseServerFirst;
 
   window.removeExercise=async function(id,dayIndex,exerciseIndex){
-    const next=clone(appData().routines?.[id])||[];
+    const next=clone(routineFor(id))||[];
     const day=next?.[dayIndex];
     if(!day||!Array.isArray(day.exercises)||!day.exercises[exerciseIndex])return;
     const exercise=day.exercises[exerciseIndex];
@@ -106,7 +148,7 @@
     try{
       await writeRoutine(id,next);
       applyRoutine(id,next);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
+      renderClientRoutine(id);
       notify('Ejercicio eliminado');
     }catch(error){
       console.error('DCC eliminar ejercicio server-first:',error);
@@ -116,7 +158,7 @@
   };
 
   window.removeTrainingDay=async function(id,dayIndex){
-    const next=clone(appData().routines?.[id])||[];
+    const next=clone(routineFor(id))||[];
     if(!next[dayIndex])return;
     const label=next[dayIndex]?.muscle||`Día ${dayIndex+1}`;
     if(!confirm(`¿Eliminar ${label}?`))return;
@@ -125,7 +167,7 @@
     try{
       await writeRoutine(id,next);
       applyRoutine(id,next);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
+      renderClientRoutine(id);
       notify('Día de entrenamiento eliminado');
     }catch(error){
       console.error('DCC eliminar día server-first:',error);
@@ -134,70 +176,104 @@
     }
   };
 
-  window.dccSaveRoutine=async function(id){
-    const draft=clone(appData().routines?.[id])||[];
-    let backup=null;
-    try{
-      if(window.__dccTrainingBackup!==undefined)backup=JSON.parse(window.__dccTrainingBackup);
-    }catch(_){backup=null}
-
-    try{
-      await writeRoutine(id,draft);
-      applyRoutine(id,draft);
-      window.__dccTrainingEdit=false;
-      delete window.__dccTrainingBackup;
-      renderClientRoutine(id);
-      notify('Rutina guardada');
-    }catch(error){
-      console.error('DCC guardar rutina premium:',error);
-      if(backup!==null)applyRoutine(id,backup);
-      else await reloadRoutines();
-      window.__dccTrainingEdit=false;
-      delete window.__dccTrainingBackup;
-      renderClientRoutine(id);
-      alert('No se pudo guardar la rutina. Se ha restaurado la versión anterior.');
-    }
-  };
-
   async function loadPrevious(id){
-    const database=db();if(!database)return null;
-    const result=await database.from('client_routine_history').select('routine,archived_at').eq('client_id',String(id)).order('archived_at',{ascending:false}).limit(1).maybeSingle();
+    const database=db();
+    if(!database)return null;
+    const result=await database.from('client_routine_history')
+      .select('routine,archived_at')
+      .eq('client_id',String(id))
+      .order('archived_at',{ascending:false})
+      .limit(1)
+      .maybeSingle();
     if(result.error)throw result.error;
-    const row=result.data;if(!row)return null;
+    const row=result.data;
+    if(!row)return null;
     const d=appData();
     d.previousRoutines=d.previousRoutines||{};
     d.previousRoutines[id]={routine:clone(row.routine)||[],savedAt:row.archived_at};
-    try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+    saveLocal();
     return d.previousRoutines[id];
   }
-
   window.dccLoadPreviousRoutineFromServer=loadPrevious;
 
-  window.startNewRoutine=async function(id){
+  const createRoutine=async function(id){
+    id=String(id||'');
     if(!id)return;
-    const current=clone(appData().routines?.[id])||[];
-    if(!current.length){notify('No hay una rutina actual para guardar');return}
-    const database=db();
-    if(!database){alert('No hay conexión con el servidor. La rutina no se ha modificado.');return}
-    const historyId='routine-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
+    const current=clone(routineFor(id))||[];
+    if(current.length&&!confirm('La rutina actual se guardará como rutina anterior cuando confirmes los cambios. ¿Crear una nueva?'))return;
+
+    window.__dccTrainingBackup=JSON.stringify(current);
+    window.__dccTrainingCreatingNew=true;
+    window.__dccTrainingArchiveOnSave=current.length>0;
+    window.__dccTrainingEdit=true;
+    window.__dccTrainingOpen=0;
+
+    applyRoutine(id,[{day:1,muscle:'Sin grupos musculares',muscles:[],exercises:[]}],{persist:false});
+    renderClientRoutine(id);
+  };
+  createRoutine.__dccRoutineAuthorityV6=true;
+  window.dccCreateRoutine=createRoutine;
+
+  const cancelRoutine=function(id){
+    id=String(id||'');
+    const backup=parseBackup();
+    if(id&&backup!==null)applyRoutine(id,backup,{persist:false});
+    clearEditorState();
+    if(id)renderClientRoutine(id);
+  };
+  cancelRoutine.__dccRoutineAuthorityV6=true;
+  window.dccCancelRoutine=cancelRoutine;
+
+  const saveRoutine=async function(id){
+    id=String(id||'');
+    if(!id)return false;
+    const draft=clone(routineFor(id))||[];
+    const backup=parseBackup();
+    const creatingNew=window.__dccTrainingCreatingNew===true;
+    const shouldArchive=creatingNew&&window.__dccTrainingArchiveOnSave===true&&Array.isArray(backup)&&backup.length>0;
+    let archived=false;
+
     try{
-      const result=await database.rpc('dcc_start_new_routine',{p_client_id:String(id),p_history_id:historyId});
-      if(result.error)throw result.error;
-      if(result.data!==true)throw new Error('El servidor no confirmó la nueva rutina');
-      const d=appData();
-      d.routines=d.routines||{};
-      d.routines[id]=[];
-      d.previousRoutines=d.previousRoutines||{};
-      d.previousRoutines[id]={routine:current,savedAt:new Date().toISOString()};
-      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
-      await reloadRoutines();
-      await loadPrevious(id);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
-      notify('Nueva rutina creada');
+      if(shouldArchive){
+        await archiveCurrentRoutine(id);
+        archived=true;
+      }
+      await writeRoutine(id,draft);
+      applyRoutine(id,draft);
+
+      if(shouldArchive){
+        const d=appData();
+        d.previousRoutines=d.previousRoutines||{};
+        d.previousRoutines[id]={routine:clone(backup),savedAt:new Date().toISOString()};
+        saveLocal();
+        try{await loadPrevious(id)}catch(error){console.warn('DCC routine history refresh:',error)}
+      }
+
+      clearEditorState();
+      renderClientRoutine(id);
+      notify(creatingNew?'Nueva rutina guardada':'Rutina guardada');
+      return true;
     }catch(error){
-      console.error('DCC nueva rutina atómica:',error);
-      await reloadRoutines();
-      alert('No se pudo crear la nueva rutina. La rutina actual se mantiene intacta.\n\n'+(error?.message||'Error del servidor'));
+      console.error('DCC guardar rutina premium:',error);
+
+      if(archived&&Array.isArray(backup)){
+        try{
+          await writeRoutine(id,backup);
+        }catch(rollbackError){
+          console.error('DCC rollback rutina servidor:',rollbackError);
+        }
+      }
+
+      if(Array.isArray(backup))applyRoutine(id,backup);
+      else await reloadRoutines();
+      clearEditorState();
+      renderClientRoutine(id);
+      alert('No se pudo guardar la rutina. Se ha restaurado la versión anterior.');
+      return false;
     }
   };
+  saveRoutine.__dccRoutineAuthorityV6=true;
+  window.dccSaveRoutine=saveRoutine;
+
+  window.startNewRoutine=createRoutine;
 })();
