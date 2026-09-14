@@ -1,89 +1,49 @@
 /* DCC — navegación estable hacia Calendario del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-calendar-nav-guard-v1';
+  const BUILD='20260914-coach-calendar-nav-guard-v2';
   if(window.__dccCoachCalendarNavGuard===BUILD)return;
   window.__dccCoachCalendarNavGuard=BUILD;
 
-  let recovering=false;
-
   function coachVisible(){
-    const coach=document.getElementById('coach');
-    if(!coach)return false;
+    const coach=document.getElementById('coach');if(!coach)return false;
     try{return getComputedStyle(coach).display!=='none'&&getComputedStyle(coach).visibility!=='hidden'}catch(_){return true}
   }
-
-  function calendarButton(){
-    const nav=document.getElementById('coach-nav');
-    if(!nav)return null;
-    const buttons=[...nav.querySelectorAll('button')];
-    return buttons[2]||null;
-  }
-
+  function calendarButton(){const nav=document.getElementById('coach-nav');return nav?[...nav.querySelectorAll('button')][2]||null:null}
   function markCalendarActive(){
-    const nav=document.getElementById('coach-nav');
-    if(!nav)return;
-    const buttons=[...nav.querySelectorAll('button')];
-    buttons.forEach((b,i)=>{
-      b.classList.toggle('active',i===2);
-      if(i===2)b.setAttribute('aria-current','page');
-      else b.removeAttribute('aria-current');
+    const nav=document.getElementById('coach-nav');if(!nav)return;
+    [...nav.querySelectorAll('button')].forEach((b,i)=>{
+      const active=i===2;
+      if(b.classList.contains('active')!==active)b.classList.toggle('active',active);
+      if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
     });
   }
 
-  function openCalendar(){
-    if(!coachVisible()||typeof window.showCoach!=='function')return;
+  window.dccOpenCoachCalendar=function(){
+    if(!coachVisible())return;
     window.currentScreen='calendar';
-    try{window.showCoach('calendar')}catch(e){console.error('DCC calendar nav:',e);return}
-    markCalendarActive();
+    /* La API del propio calendario llama a su render privado y evita atravesar routers antiguos. */
+    if(typeof window.dccCalendarSetView==='function'){
+      try{window.dccCalendarSetView(window.__dccCalendarView==='agenda'?'agenda':'month');markCalendarActive();return}catch(e){console.error('DCC calendar direct:',e)}
+    }
+    if(typeof window.showCoach==='function'){
+      try{window.showCoach('calendar');window.currentScreen='calendar';markCalendarActive()}catch(e){console.error('DCC calendar fallback:',e)}
+    }
+  };
 
-    // Evita que una capa antigua devuelva la navegación al Panel justo después del toque.
-    setTimeout(()=>{
-      const main=document.getElementById('coach-main');
-      const calendarVisible=!!main?.classList.contains('dcc-cal-v11')||!!main?.querySelector('.dcc-cal');
-      if(window.currentScreen==='calendar'&&calendarVisible){markCalendarActive();return}
-      if(recovering)return;
-      recovering=true;
-      window.currentScreen='calendar';
-      try{window.showCoach('calendar')}catch(e){console.error('DCC calendar nav recovery:',e)}
-      markCalendarActive();
-      setTimeout(()=>{recovering=false},180);
-    },140);
-  }
-
-  function patchButton(){
-    const b=calendarButton();
-    if(!b)return;
-    b.setAttribute('onclick',"showCoach('calendar')");
-  }
+  function patch(){const b=calendarButton();if(!b)return false;b.setAttribute('onclick','dccOpenCoachCalendar()');return true}
 
   document.addEventListener('click',e=>{
-    const b=e.target?.closest?.('#coach-nav button');
-    const target=calendarButton();
-    if(!b||!target||b!==target)return;
-    // Se carga después de la protección de cambios sin guardar: si aquella cancela,
-    // este listener no llega a ejecutarse. Si permite salir, abrimos Calendario una sola vez.
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    openCalendar();
+    const target=calendarButton(),b=e.target?.closest?.('#coach-nav button');
+    if(!target||b!==target)return;
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    window.dccOpenCoachCalendar();
   },true);
 
-  let queued=false;
-  function schedulePatch(){
-    if(queued)return;queued=true;
-    requestAnimationFrame(()=>{queued=false;patchButton();if(window.currentScreen==='calendar')markCalendarActive()});
-  }
-
   function boot(){
-    patchButton();
-    if(document.body&&!document.body.__dccCalendarNavObserver){
-      document.body.__dccCalendarNavObserver=true;
-      new MutationObserver(schedulePatch).observe(document.body,{childList:true,subtree:true});
-    }
+    if(patch())return;
+    let tries=0;const timer=setInterval(()=>{tries++;if(patch()||tries>40)clearInterval(timer)},100);
   }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
-  else boot();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('pageshow',()=>setTimeout(boot,60));
 })();
