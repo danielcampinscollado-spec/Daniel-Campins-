@@ -7,7 +7,7 @@
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){ }return window.supabaseClient||null};
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const client=id=>(appData().clients||[]).find(c=>String(c.id)===String(id))||null;
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const notify=text=>{try{if(typeof toast==='function')return toast(text)}catch(_){ }try{return window.toast?.(text)}catch(_){ }};
   const validEmail=value=>/^\S+@\S+\.\S+$/.test(String(value||'').trim().toLowerCase());
 
