@@ -1,7 +1,7 @@
-/* DCC live coach consistency v3 — final authority for coach client count and single edit action */
+/* DCC live coach consistency v4 — final authority for coach client count and single edit action */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-live-consistency-v3';
+  const BUILD='20260914-coach-live-consistency-v4';
   if(window.__dccCoachLiveConsistency===BUILD)return;
   window.__dccCoachLiveConsistency=BUILD;
 
@@ -69,22 +69,45 @@
     }
   }
 
+  function editControls(root){
+    const leaves=[...root.querySelectorAll('*')].filter(el=>{
+      if(!norm(el.textContent).includes('editar cliente'))return false;
+      return ![...el.children].some(child=>norm(child.textContent).includes('editar cliente'));
+    });
+    const controls=[];
+    leaves.forEach(el=>{
+      const control=el.closest('button,a,[role="button"],.dcc-client-edit-authority-btn,.dcc-ca-detail,[onclick]')||el;
+      if(!controls.includes(control))controls.push(control);
+    });
+    return controls.filter(el=>root.contains(el));
+  }
+
   function dedupeEditClient(){
     const root=document.getElementById('coach-main');
     if(!root)return;
-
-    const candidates=[...root.querySelectorAll('button,a,[role="button"],.dcc-client-edit-authority-btn')]
-      .filter(el=>norm(el.textContent).includes('editar cliente'));
-
-    if(candidates.length<=1)return;
+    const controls=editControls(root);
+    if(controls.length<=1)return;
 
     const keep=
-      candidates.find(el=>el.classList.contains('dcc-client-edit-authority-btn')) ||
-      candidates.find(el=>el.offsetParent!==null) ||
-      candidates[0];
+      controls.find(el=>!el.classList?.contains('dcc-client-edit-authority-btn')&&el.offsetParent!==null) ||
+      controls.find(el=>el.offsetParent!==null) ||
+      controls[0];
 
-    candidates.forEach(el=>{
-      if(el!==keep)el.remove();
+    const id=window.__dccClientAdminId??window.selectedClient??null;
+    if(typeof window.dccOpenClientProfileEditor==='function'&&id!=null){
+      keep.onclick=function(e){
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
+        window.dccOpenClientProfileEditor(id);
+      };
+    }
+
+    controls.forEach(el=>{
+      if(el!==keep){
+        const box=el.classList?.contains('dcc-client-edit-authority-btn')?el.closest('.dcc-ca-profile-actions'):null;
+        el.remove();
+        if(box&&!box.children.length)box.remove();
+      }
     });
   }
 
