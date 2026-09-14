@@ -1,7 +1,7 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  const BUILD='20260914-auth-preview-redirect-v29';
+  const BUILD='20260914-auth-preview-redirect-v30';
   if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
   window.__dccAuthPreviewRedirectGuard=BUILD;
 
@@ -26,15 +26,15 @@
 
   loadAuthority('./coach-dashboard-authority-v1.js?v=20260914-5','dashboard');
   loadAuthority('./coach-client-authority-v1.js?v=20260914-2','client');
-  loadAuthority('./coach-live-consistency-v2.js?v=20260914-5','live-consistency');
+  loadAuthority('./coach-live-consistency-v2.js?v=20260914-6','live-consistency');
   loadAuthority('./dcc-dynamic-greeting-v1.js?v=20260914-3','dynamic-greeting');
   loadAuthority('./coach-edit-safety-v1.js?v=20260914-3','navigation-safety');
   loadAuthority('./nutrition-flow-authority-v1.js?v=20260914-1','nutrition-flow');
   loadAuthority('./nutrition-meal-setup-v1.js?v=20260914-3','nutrition-meal-setup');
-  loadAuthority('./coach-edit-scroll-lock-v1.js?v=20260914-3','edit-scroll-lock');
+  loadAuthority('./coach-edit-scroll-lock-v1.js?v=20260914-4','edit-scroll-lock');
   loadAuthority('./client-plan-alert-compact-v1.js?v=20260914-3','client-plan-alert-compact');
-  loadAuthority('./client-header-compact-v1.js?v=20260914-7','client-header-compact');
+  loadAuthority('./client-header-compact-v1.js?v=20260914-8','client-header-compact');
   loadAuthority('./checkin-premium.js?v=20260914-2','checkin-direct');
   loadAuthority('./messages-premium.js?v=20260914-1','messages-direct');
-  loadAuthority('./coach-calendar-nav-guard-v1.js?v=20260914-9','calendar-nav-guard');
+  loadAuthority('./coach-calendar-nav-guard-v1.js?v=20260914-10','calendar-nav-guard');
 })();
