@@ -75,7 +75,8 @@
   }
 
   function loadFinalCoachClientAuthority(){
-    loadOnce('./coach-client-authority-v2.js?v=20260913-2235','dccCoachClientAuthorityV2');
+    loadOnce('./coach-client-authority-v2.js?v=20260914-0705','dccCoachClientAuthorityV2');
+    loadOnce('./coach-session-sync-v1.js?v=20260914-0705','dccCoachSessionSyncV1');
   }
 
   let queued=false;
