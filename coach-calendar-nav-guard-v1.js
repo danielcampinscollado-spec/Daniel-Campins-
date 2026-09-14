@@ -1,10 +1,11 @@
 /* DCC — navegación estable hacia Calendario del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-calendar-nav-guard-v3';
+  const BUILD='20260914-coach-calendar-nav-guard-v4';
   if(window.__dccCoachCalendarNavGuard===BUILD)return;
   window.__dccCoachCalendarNavGuard=BUILD;
 
+  let navToken=0;
   function coachVisible(){
     const coach=document.getElementById('coach');if(!coach)return false;
     try{return getComputedStyle(coach).display!=='none'&&getComputedStyle(coach).visibility!=='hidden'}catch(_){return true}
@@ -31,22 +32,20 @@
 
   window.dccOpenCoachCalendar=function(){
     if(!coachVisible())return;
+    const mine=++navToken;
     renderCalendar();
-    /* Si termina de cargar una capa antigua justo después del toque, reafirma Calendario sin necesitar un segundo toque. */
-    requestAnimationFrame(()=>{
-      window.currentScreen='calendar';markCalendarActive();
-      setTimeout(()=>{
-        if(window.currentApp==='coach'&&window.currentScreen!=='calendar')renderCalendar();
-        else markCalendarActive();
-      },90);
-    });
+    [80,180,360,700,1200].forEach(delay=>setTimeout(()=>{
+      if(mine!==navToken||window.currentApp!=='coach')return;
+      if(window.currentScreen!=='calendar')renderCalendar();else markCalendarActive();
+    },delay));
   };
 
   function patch(){const b=calendarButton();if(!b)return false;b.setAttribute('onclick','dccOpenCoachCalendar()');return true}
 
   document.addEventListener('click',e=>{
     const target=calendarButton(),b=e.target?.closest?.('#coach-nav button');
-    if(!target||b!==target)return;
+    if(!b)return;
+    if(!target||b!==target){navToken++;return}
     e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
     window.dccOpenCoachCalendar();
   },true);
