@@ -1,7 +1,7 @@
 /* DCC — cabecera compacta del perfil de cliente, misma geometría en claro y oscuro */
 (function(){
   'use strict';
-  const BUILD='20260914-client-header-compact-v4';
+  const BUILD='20260914-client-header-compact-v5';
   if(window.__dccClientHeaderCompact===BUILD)return;
   window.__dccClientHeaderCompact=BUILD;
   const STYLE_ID='dcc-client-header-compact-css';
@@ -14,11 +14,12 @@
       #coach-main.dcc-ca .dcc-ca-back{margin:0 0 8px!important}
       #coach-main.dcc-ca .dcc-client-compact-top{
         display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;
-        gap:8px!important;margin:0 2px 9px!important;padding:0!important;min-height:0!important;height:auto!important;
-        max-height:none!important;position:relative!important;inset:auto!important;transform:none!important
+        gap:8px!important;margin:0 2px 10px!important;padding:0!important;
+        min-height:54px!important;height:54px!important;max-height:54px!important;
+        position:relative!important;inset:auto!important;transform:none!important;overflow:visible!important
       }
       #coach-main.dcc-ca .dcc-client-compact-top .dcc-ca-head{
-        margin:0!important;padding:0!important;min-height:0!important;height:auto!important;max-height:none!important;display:block!important
+        margin:0!important;padding:0!important;min-height:0!important;height:auto!important;max-height:48px!important;display:block!important
       }
       #coach-main.dcc-ca .dcc-client-compact-top .dcc-ca-head h1{
         margin:0!important;padding:0!important;font-size:29px!important;line-height:1!important;letter-spacing:-.8px!important;min-height:0!important;height:auto!important
@@ -38,13 +39,16 @@
       #coach-main.dcc-ca .dcc-ca-metrics{margin-top:0!important}
       #coach-main.dcc-ca .dcc-ca-profile-actions:empty{display:none!important;margin:0!important;padding:0!important;min-height:0!important;height:0!important}
       @media(max-width:430px){
-        #coach-main.dcc-ca .dcc-client-compact-top{grid-template-columns:minmax(86px,1fr) auto!important;gap:6px!important;margin-bottom:8px!important}
+        #coach-main.dcc-ca .dcc-client-compact-top{grid-template-columns:minmax(86px,1fr) auto!important;gap:6px!important;height:50px!important;min-height:50px!important;max-height:50px!important;margin-bottom:8px!important}
         #coach-main.dcc-ca .dcc-client-compact-top .dcc-ca-head h1{font-size:26px!important}
         #coach-main.dcc-ca .dcc-client-compact-top .dcc-ca-goal{font-size:10px!important}
         #coach-main.dcc-ca .dcc-client-compact-actions{gap:4px!important;height:30px!important;min-height:30px!important;max-height:30px!important}
         #coach-main.dcc-ca .dcc-client-compact-actions>button{height:30px!important;min-height:30px!important;padding:5px 8px!important;font-size:8px!important}
       }
-      @media(max-width:355px){#coach-main.dcc-ca .dcc-client-compact-top{grid-template-columns:1fr!important}#coach-main.dcc-ca .dcc-client-compact-actions{justify-content:flex-start!important}}
+      @media(max-width:355px){
+        #coach-main.dcc-ca .dcc-client-compact-top{grid-template-columns:1fr!important;height:auto!important;min-height:78px!important;max-height:none!important;align-content:start!important}
+        #coach-main.dcc-ca .dcc-client-compact-actions{justify-content:flex-start!important}
+      }
     `;(document.head||document.documentElement).appendChild(s);
   }
 
@@ -72,13 +76,12 @@
       }
     }else if(actions){actions.remove()}
 
-    /* Las métricas quedan inmediatamente después de la cabecera: ningún contenedor antiguo puede dejar un hueco. */
     if(metrics.previousElementSibling!==top)top.insertAdjacentElement('afterend',metrics);
     root.querySelectorAll('.dcc-ca-profile-actions').forEach(x=>{if(!x.children.length)x.remove()});
   }
 
   let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
-  function boot(){apply();if(document.body&&!document.body.__dccClientHeaderCompactObserverV4){document.body.__dccClientHeaderCompactObserverV4=true;new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true})}}
+  function boot(){apply();if(document.body&&!document.body.__dccClientHeaderCompactObserverV5){document.body.__dccClientHeaderCompactObserverV5=true;new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true})}}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('pageshow',boot);
 })();
