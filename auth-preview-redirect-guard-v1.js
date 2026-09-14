@@ -1,7 +1,7 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  const BUILD='20260914-auth-preview-redirect-v3';
+  const BUILD='20260914-auth-preview-redirect-v4';
   if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
   window.__dccAuthPreviewRedirectGuard=BUILD;
 
@@ -60,7 +60,7 @@
     },100);
   }
 
-  /* RC: una sola fuente de verdad para el panel y la ficha del cliente. */
-  loadAuthority('./coach-dashboard-authority-v1.js?v=20260914-1','dashboard');
-  loadAuthority('./coach-client-authority-v1.js?v=20260914-1','client');
+  loadAuthority('./coach-dashboard-authority-v1.js?v=20260914-2','dashboard');
+  loadAuthority('./coach-client-authority-v1.js?v=20260914-2','client');
+  loadAuthority('./coach-live-consistency-v2.js?v=20260914-1','live-consistency');
 })();
