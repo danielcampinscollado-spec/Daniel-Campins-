@@ -1,19 +1,23 @@
-/* DCC — asistente inicial de comidas para crear dieta desde cero */
+/* DCC — asistente de estructura de comidas + selector cerrado para añadir comidas */
 (function(){
   'use strict';
-  if(window.__dccNutritionMealSetupV1)return;
-  window.__dccNutritionMealSetupV1=true;
+  const BUILD='20260914-nutrition-meal-setup-v3';
+  if(window.__dccNutritionMealSetup===BUILD)return;
+  window.__dccNutritionMealSetup=BUILD;
 
   const MEALS=['Desayuno','Merienda de mañana','Comida','Pre entreno','Post entreno','Merienda de tarde','Cena','Post cena'];
   let chosenCount=0;
   let selected=[];
   let currentId=null;
+  let currentType='training';
   let baseBlank=null;
 
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
   function injectCss(){
-    if(document.getElementById('dcc-nutrition-meal-setup-v1-css'))return;
+    if(document.getElementById('dcc-nutrition-meal-setup-v3-css'))return;
     const s=document.createElement('style');
-    s.id='dcc-nutrition-meal-setup-v1-css';
+    s.id='dcc-nutrition-meal-setup-v3-css';
     s.textContent=`
       #coach-main .dcc-meal-setup{display:grid;gap:13px;margin-top:8px}
       #coach-main .dcc-meal-setup-card{padding:16px;border:1px solid rgba(224,173,76,.42);border-radius:20px;background:linear-gradient(145deg,#10161a,#090d10)}
@@ -28,15 +32,17 @@
       #coach-main .dcc-meal-option.selected{border-color:#d9aa4a;background:rgba(217,170,74,.08)}
       #coach-main .dcc-meal-option.selected .tick{border-color:#e9c766;background:#e9c766;color:#17120a}
       #coach-main .dcc-meal-option b{font-size:13px}
-      #coach-main .dcc-meal-option small{color:#8d96a1;font-size:9px}
+      #coach-main .dcc-meal-option small{display:block;margin-top:2px;color:#8d96a1;font-size:9px}
       #coach-main .dcc-meal-next{width:100%;min-height:50px;border:1px solid #f1cf71;border-radius:15px;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a;font-weight:900}
       #coach-main .dcc-meal-next:disabled{opacity:.45}
+      #coach-main .dcc-meal-cancel{width:100%;min-height:44px;border:1px solid #38434d;border-radius:14px;background:#0a0f13;color:#ddd;font-weight:800}
       html.dcc-theme-light-premium body #coach-main .dcc-meal-setup-card,
       html.dcc-theme-light-premium body #coach-main .dcc-meal-option{background:linear-gradient(145deg,#fffefa,#f8f0e3)!important;color:#17191d!important;border-color:rgba(183,123,19,.24)!important}
       html.dcc-theme-light-premium body #coach-main .dcc-meal-setup h2{color:#17191d!important}
       html.dcc-theme-light-premium body #coach-main .dcc-meal-setup p,
       html.dcc-theme-light-premium body #coach-main .dcc-meal-option small{color:#747c87!important}
-      html.dcc-theme-light-premium body #coach-main .dcc-meal-count{background:#fffdf8!important;color:#17191d!important;border-color:rgba(183,123,19,.24)!important}
+      html.dcc-theme-light-premium body #coach-main .dcc-meal-count,
+      html.dcc-theme-light-premium body #coach-main .dcc-meal-cancel{background:#fffdf8!important;color:#17191d!important;border-color:rgba(183,123,19,.24)!important}
       html.dcc-theme-light-premium body #coach-main .dcc-meal-count.active{background:linear-gradient(135deg,#f5d577,#dda73e)!important;color:#17110a!important}
     `;
     document.head.appendChild(s);
@@ -47,15 +53,61 @@
     return wrap?wrap.lastElementChild:null;
   }
 
+  function meal(name){return {name,options:[{name:'Opción 1',foods:[]}]}}
+
+  function templateKey(id){return 'dcc:diet-meal-template:v3:'+id}
+  function saveTemplate(id,names){try{localStorage.setItem(templateKey(id),JSON.stringify(names))}catch(_){}}
+
+  async function persistBoth(id,plan){
+    if(!window.supabaseClient)throw new Error('Sin conexión con Supabase');
+    const now=new Date().toISOString();
+    const rows=['training','rest'].map(t=>({
+      client_id:String(id),diet_type:t,
+      calories:plan[t]?.calories||'',protein:plan[t]?.protein||'',
+      meals:Array.isArray(plan[t]?.meals)?plan[t].meals:[],updated_at:now
+    }));
+    const {error}=await window.supabaseClient.from('client_diets').upsert(rows,{onConflict:'client_id,diet_type'});
+    if(error)throw error;
+    // Mantiene además el flujo server-first del módulo premium cuando la RPC está disponible.
+    try{
+      const {error:rpcError}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:plan.training||{},p_rest:plan.rest||{}});
+      if(rpcError)console.warn('DCC diet RPC backup:',rpcError);
+    }catch(_){ }
+  }
+
+  async function persistType(id,type){
+    const d=window.data?.diets?.[id]?.[type];
+    if(!d||!window.supabaseClient)throw new Error('No existe la dieta a guardar');
+    const {error}=await window.supabaseClient.from('client_diets').upsert({
+      client_id:String(id),diet_type:type,calories:d.calories||'',protein:d.protein||'',
+      meals:Array.isArray(d.meals)?d.meals:[],updated_at:new Date().toISOString()
+    },{onConflict:'client_id,diet_type'});
+    if(error)throw error;
+    if(typeof window.saveData==='function')window.saveData();
+  }
+
   function renderStep1(id){
     currentId=id;chosenCount=0;selected=[];injectCss();
     const p=pane();if(!p)return;
-    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>¿Cuántas comidas quieres al día?</h2><p>Elige primero el número de comidas. Después selecciona cuáles serán.</p><div class="dcc-meal-counts">${[1,2,3,4,5,6,7,8].map(n=>`<button type="button" class="dcc-meal-count" onclick="dccMealSetupCount(${n})">${n}</button>`).join('')}</div></div></div>`;
+    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>¿Cuántas comidas quieres al día?</h2><p>Elige primero el número. Después selecciona exactamente qué comidas tendrá la dieta.</p><div class="dcc-meal-counts">${[1,2,3,4,5,6,7,8].map(n=>`<button type="button" class="dcc-meal-count" onclick="dccMealSetupCount(${n})">${n}</button>`).join('')}</div></div></div>`;
   }
 
   function renderStep2(){
     const p=pane();if(!p)return;
-    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Elige ${chosenCount} ${chosenCount===1?'comida':'comidas'}</h2><p>Selecciona exactamente ${chosenCount}. Estas comidas se crearán tanto para día de entrenamiento como para día de descanso.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?'✓':''}</span><span><b>${name}</b><small>${selected.includes(name)?'Seleccionada':'Toca para seleccionar'}</small></span><span>›</span></button>`).join('')}</div></div><button type="button" class="dcc-meal-next" ${selected.length===chosenCount?'':'disabled'} onclick="dccMealSetupCreate()">Crear estructura de dieta</button></div>`;
+    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Elige ${chosenCount} ${chosenCount===1?'comida':'comidas'}</h2><p>Se guardarán con estos nombres y se crearán tanto en día de entrenamiento como en día de descanso.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?'✓':''}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?'Seleccionada':'Toca para seleccionar'}</small></span><span>›</span></button>`).join('')}</div></div><button type="button" class="dcc-meal-next" ${selected.length===chosenCount?'':'disabled'} onclick="dccMealSetupCreate()">Crear estructura de dieta</button></div>`;
+  }
+
+  function remainingMeals(id,type){
+    const current=window.data?.diets?.[id]?.[type]?.meals||[];
+    const used=new Set(current.map(x=>String(x?.name||'').toLowerCase()));
+    return MEALS.filter(name=>!used.has(name.toLowerCase()));
+  }
+
+  function renderAddMealPicker(id,type){
+    currentId=id;currentType=type;injectCss();
+    const p=pane();if(!p)return;
+    const available=remainingMeals(id,type);
+    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>¿Qué comida quieres añadir?</h2><p>Elige una opción. No hace falta escribir el nombre manualmente.</p><div class="dcc-meal-options">${available.length?available.map(name=>`<button type="button" class="dcc-meal-option" onclick="dccMealAddPreset('${name.replace(/'/g,"\\'")}')"><span class="tick">＋</span><span><b>${esc(name)}</b><small>Añadir a este día</small></span><span>›</span></button>`).join(''):'<div class="dcc-diet-empty">Ya están añadidos todos los tipos de comida disponibles.</div>'}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Volver sin añadir</button></div>`;
   }
 
   window.dccMealSetupCount=function(n){chosenCount=n;selected=[];renderStep2()};
@@ -66,43 +118,59 @@
   };
 
   window.dccMealSetupCreate=async function(){
-    if(!currentId||!baseBlank||selected.length!==chosenCount)return;
+    if(!currentId||selected.length!==chosenCount)return;
     const id=currentId,names=[...selected];
-    await baseBlank(id);
-    const make=()=>names.map(name=>({name,options:[{name:'Opción 1',foods:[]}]}));
-    window.data=window.data||{};window.data.diets=window.data.diets||{};
-    window.data.diets[id]={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
     try{
-      if(window.supabaseClient){
-        const {data:ok,error}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:window.data.diets[id].training,p_rest:window.data.diets[id].rest});
-        if(error||ok!==true)throw error||new Error('Guardado no confirmado');
-      }
+      if(baseBlank)await baseBlank(id);
+      const make=()=>names.map(meal);
+      const next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
+      window.data=window.data||{};window.data.diets=window.data.diets||{};window.data.diets[id]=next;
+      await persistBoth(id,next);
+      saveTemplate(id,names);
       if(typeof window.saveData==='function')window.saveData();
       if(typeof window.dccNutritionV2Edit==='function')window.dccNutritionV2Edit(id);
-      if(typeof window.toast==='function')window.toast('Estructura de dieta creada');
+      else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+      if(typeof window.toast==='function')window.toast('Estructura de dieta guardada');
     }catch(error){
       console.error('DCC meal setup:',error);
-      alert('No se pudo guardar la estructura de la dieta.');
+      alert('No se pudo guardar la estructura de la dieta. No se ha aplicado ningún cambio.');
+    }
+  };
+
+  window.dccMealAddPreset=async function(name){
+    const id=currentId,type=currentType;
+    const d=window.data?.diets?.[id]?.[type];
+    if(!d||!MEALS.includes(name))return;
+    d.meals=Array.isArray(d.meals)?d.meals:[];
+    if(!d.meals.some(m=>String(m?.name||'').toLowerCase()===name.toLowerCase()))d.meals.push(meal(name));
+    try{
+      await persistType(id,type);
+      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+      if(typeof window.toast==='function')window.toast(name+' añadida');
+    }catch(error){
+      console.error('DCC add preset meal:',error);
+      alert('No se pudo guardar la nueva comida.');
     }
   };
 
   function install(){
-    const fn=window.dccNutritionV2Blank;
-    if(typeof fn!=='function')return false;
-    if(fn.__dccMealSetupV1)return true;
-    baseBlank=fn;
-    const wrapped=function(id){
-      renderStep1(id);
-      return Promise.resolve();
-    };
-    wrapped.__dccMealSetupV1=true;
-    wrapped.__base=fn;
-    window.dccNutritionV2Blank=wrapped;
-    return true;
+    const blank=window.dccNutritionV2Blank;
+    if(typeof blank==='function'&&!blank.__dccMealSetupV3){
+      baseBlank=blank.__base||blank;
+      const wrapped=function(id){renderStep1(id);return Promise.resolve()};
+      wrapped.__dccMealSetupV3=true;wrapped.__base=baseBlank;window.dccNutritionV2Blank=wrapped;
+    }
+
+    const add=window.dccDietAddMeal;
+    if(typeof add==='function'&&!add.__dccPresetMealV3){
+      const wrappedAdd=function(id,type){renderAddMealPicker(id,type||window.__dccDietType||'training');return Promise.resolve()};
+      wrappedAdd.__dccPresetMealV3=true;wrappedAdd.__base=add;window.dccDietAddMeal=wrappedAdd;
+    }
+    return typeof window.dccNutritionV2Blank==='function'&&typeof window.dccDietAddMeal==='function';
   }
 
   injectCss();
-  if(!install()){
-    let tries=0;const timer=setInterval(()=>{tries++;if(install()||tries>80)clearInterval(timer)},75);
-  }
+  let tries=0;
+  const timer=setInterval(()=>{tries++;if(install()||tries>120)clearInterval(timer)},75);
+  install();
 })();
