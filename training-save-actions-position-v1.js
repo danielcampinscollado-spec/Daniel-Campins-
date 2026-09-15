@@ -1,7 +1,7 @@
 /* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día visible seleccionado */
 (function(){
 'use strict';
-const BUILD='20260915-training-save-actions-position-v4-visible-selected-day';
+const BUILD='20260915-training-save-actions-position-v5-no-vibration';
 if(window.__dccTrainingSaveActionsPosition===BUILD)return;window.__dccTrainingSaveActionsPosition=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -34,14 +34,16 @@ function apply(){
   const root=document.getElementById('coach-main');if(!root)return;
   const actions=actionBox(root),day=activeDay(root);if(!actions||!day)return;
   if(actions===root||actions.contains(day)||day.contains(actions))return;
-  actions.dataset.dccTrainingSaveActions='1';
-  actions.style.setProperty('display','grid','important');
-  actions.style.setProperty('grid-template-columns','1fr 1fr','important');
-  actions.style.setProperty('gap','10px','important');
-  actions.style.setProperty('margin','10px 0 18px','important');
-  actions.style.setProperty('padding','0','important');
-  actions.style.setProperty('min-height','0','important');
-  actions.style.setProperty('height','auto','important');
+  if(actions.dataset.dccTrainingSaveActions!=='1'){
+    actions.dataset.dccTrainingSaveActions='1';
+    actions.style.setProperty('display','grid','important');
+    actions.style.setProperty('grid-template-columns','1fr 1fr','important');
+    actions.style.setProperty('gap','10px','important');
+    actions.style.setProperty('margin','10px 0 18px','important');
+    actions.style.setProperty('padding','0','important');
+    actions.style.setProperty('min-height','0','important');
+    actions.style.setProperty('height','auto','important');
+  }
   if(day.nextElementSibling!==actions)day.insertAdjacentElement('afterend',actions);
 }
 function toast(){
@@ -65,5 +67,6 @@ const style=document.createElement('style');style.textContent=`
 @media(max-width:420px){#coach-main [data-dcc-training-save-actions="1"]{gap:8px!important}}
 `;document.head.appendChild(style);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
-new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','aria-hidden']});
+new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true});
+window.addEventListener('dcc-training-day-change',schedule);
 })();
