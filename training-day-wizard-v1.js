@@ -1,7 +1,7 @@
 /* DCC — selector de días y navegación paso a paso para rutinas */
 (function(){
   'use strict';
-  const BUILD='20260915-training-day-wizard-v3-responsive';
+  const BUILD='20260915-training-day-wizard-v4-decoupled-open';
   if(window.__dccTrainingDayWizardV2===BUILD)return;
   window.__dccTrainingDayWizardV2=BUILD;
 
@@ -23,12 +23,12 @@
   `;(document.head||document.documentElement).appendChild(s)}
 
   function signature(ds){return `${ds.length}:${state.active}`}
-  function html(ds){const n=ds.length||1;const requested=Number(window.__dccTrainingOpen);if(Number.isInteger(requested)&&requested>=0&&requested<n)state.active=requested;state.active=Math.max(0,Math.min(state.active,n-1));const sig=signature(ds);return `<section class="dcc-tdw" data-dcc-tdw="1" data-dcc-sig="${sig}"><div class="dcc-tdw-step"><span class="dcc-tdw-num">1</span><div><h3>¿Cuántos días entrenará?</h3><p>Selecciona el número de días de entrenamiento por semana.</p></div></div><div class="dcc-tdw-count">${[1,2,3,4,5,6,7].map(x=>`<button type="button" class="${x===n?'on':''}" onclick="dccSetTrainingDayCount(${x})">${x}</button>`).join('')}</div><div class="dcc-tdw-config"><span class="dcc-tdw-num">2</span><div><h3>Configura cada día</h3><p>Solo se muestra el día seleccionado. Añade sus músculos y ejercicios.</p></div></div><div class="dcc-tdw-tabs">${ds.map((_,i)=>`<button type="button" class="${i===state.active?'on':''}" onclick="dccTrainingWizardDay(${i})">Día ${i+1}</button>`).join('')}</div></section>`}
+  function html(ds){const n=ds.length||1;state.active=Math.max(0,Math.min(state.active,n-1));const sig=signature(ds);return `<section class="dcc-tdw" data-dcc-tdw="1" data-dcc-sig="${sig}"><div class="dcc-tdw-step"><span class="dcc-tdw-num">1</span><div><h3>¿Cuántos días entrenará?</h3><p>Selecciona el número de días de entrenamiento por semana.</p></div></div><div class="dcc-tdw-count">${[1,2,3,4,5,6,7].map(x=>`<button type="button" class="${x===n?'on':''}" onclick="dccSetTrainingDayCount(${x})">${x}</button>`).join('')}</div><div class="dcc-tdw-config"><span class="dcc-tdw-num">2</span><div><h3>Configura cada día</h3><p>Selecciona el día y usa su flecha para abrirlo. Cambiar de día no lo abre automáticamente.</p></div></div><div class="dcc-tdw-tabs">${ds.map((_,i)=>`<button type="button" class="${i===state.active?'on':''}" onclick="dccTrainingWizardDay(${i})">Día ${i+1}</button>`).join('')}</div></section>`}
 
   function apply(){
     css();if(!window.__dccTrainingEdit){document.querySelector('[data-dcc-tdw="1"]')?.remove();state.lastSig='';return}
     const ds=days(),wrap=document.querySelector('#coach-main .dcc-tr-days');if(!wrap||!ds.length)return;
-    state.active=Math.max(0,Math.min(state.active,ds.length-1));window.__dccTrainingOpen=state.active;
+    state.active=Math.max(0,Math.min(state.active,ds.length-1));
     const sig=signature(ds);let top=document.querySelector('[data-dcc-tdw="1"]');
     if(!top){wrap.insertAdjacentHTML('beforebegin',html(ds));top=document.querySelector('[data-dcc-tdw="1"]');state.lastSig=sig}
     else if(top.dataset.dccSig!==sig){top.outerHTML=html(ds);state.lastSig=sig}
@@ -36,8 +36,8 @@
     document.querySelector('[data-dcc-tdw-nav="1"]')?.remove();
   }
 
-  window.dccSetTrainingDayCount=n=>{const y=window.scrollY||0;n=Math.max(1,Math.min(7,Number(n)||1));const cur=days();if(n<cur.length){const removed=cur.slice(n);const hasWork=removed.some(d=>(d?.exercises||[]).length||((d?.muscles||[]).length));if(hasWork&&!confirm(`Reducir a ${n} días eliminará la configuración de los últimos ${cur.length-n} día(s). ¿Continuar?`))return}const next=cur.slice(0,n);while(next.length<n)next.push(blankDay(next.length));next.forEach((d,i)=>d.day=i+1);setDays(next);state.active=Math.min(state.active,n-1);window.__dccTrainingOpen=state.active;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}))};
-  window.dccTrainingWizardDay=i=>{const y=window.scrollY||0,ds=days();i=Math.max(0,Math.min(Number(i)||0,ds.length-1));state.active=i;window.__dccTrainingOpen=i;try{window.dccClientAdmin(id(),'training')}catch(_){apply()}requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}))};
+  window.dccSetTrainingDayCount=n=>{const y=window.scrollY||0;n=Math.max(1,Math.min(7,Number(n)||1));const cur=days();if(n<cur.length){const removed=cur.slice(n);const hasWork=removed.some(d=>(d?.exercises||[]).length||((d?.muscles||[]).length));if(hasWork&&!confirm(`Reducir a ${n} días eliminará la configuración de los últimos ${cur.length-n} día(s). ¿Continuar?`))return}const next=cur.slice(0,n);while(next.length<n)next.push(blankDay(next.length));next.forEach((d,i)=>d.day=i+1);setDays(next);state.active=Math.min(state.active,n-1);window.__dccTrainingOpen=-1;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}))};
+  window.dccTrainingWizardDay=i=>{const y=window.scrollY||0,ds=days();i=Math.max(0,Math.min(Number(i)||0,ds.length-1));state.active=i;window.__dccTrainingOpen=-1;try{window.dccClientAdmin(id(),'training')}catch(_){apply()}requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}))};
 
   function schedule(){if(state.raf)return;state.raf=requestAnimationFrame(()=>{state.raf=0;apply()})}
   function start(){const root=document.getElementById('coach-main');if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true});schedule()}
