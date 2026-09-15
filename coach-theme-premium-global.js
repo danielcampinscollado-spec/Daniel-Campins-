@@ -10,7 +10,7 @@
   let polishQueued=false;
 
   function installPolish(){
-    document.getElementById(POLISH_ID)?.remove();
+    if(document.getElementById(POLISH_ID))return;
     const style=document.createElement('style');
     style.id=POLISH_ID;
     style.textContent=`
@@ -310,8 +310,7 @@
   }
 
   loadStableTheme();
-  watchNewClientModal();
-  watchCoachMain();
-  document.addEventListener('DOMContentLoaded',()=>{loadStableTheme();installPolish();watchNewClientModal();watchCoachMain()},{once:true});
-  window.addEventListener('pageshow',()=>{loadStableTheme();installPolish();watchNewClientModal();watchCoachMain()});
+  installPolish();
+  document.addEventListener('DOMContentLoaded',()=>{loadStableTheme();installPolish()},{once:true});
+  window.addEventListener('pageshow',()=>{loadStableTheme();installPolish()});
 })();

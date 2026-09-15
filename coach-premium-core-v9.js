@@ -194,8 +194,7 @@
 
   function repaintCurrentDashboard(){
     const main=document.getElementById('coach-main');if(!main||typeof window.showCoach!=='function')return;
-    const t=(main.textContent||'').toUpperCase();
-    const isDashboard=window.currentScreen==='dashboard'||t.includes('PANEL DE ENTRENADOR')||t.includes('CADA CLIENTE ES UN PROCESO')||t.includes('BUENOS DÍAS')||t.includes('BUENAS TARDES')||t.includes('BUENAS NOCHES');
+    const isDashboard=window.__dccCoachRouteIntent==='dashboard'&&window.currentScreen==='dashboard';
     if(isDashboard)window.showCoach('dashboard');
   }
 

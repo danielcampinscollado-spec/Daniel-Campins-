@@ -9,7 +9,7 @@
   const num=v=>{const n=parseFloat(String(v??'').replace(',','.'));return Number.isFinite(n)?n:null};
 
   function injectCss(){
-    document.getElementById('dcc-checkin-premium-css')?.remove();
+    if(document.getElementById('dcc-checkin-premium-css'))return;
     const s=document.createElement('style');
     s.id='dcc-checkin-premium-css';
     s.textContent=`

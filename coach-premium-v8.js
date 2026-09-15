@@ -110,9 +110,9 @@
 
   function afterCore(){
     const m=main();const wasInstant=m?.dataset.dccInstant==='1';
-    if(wasInstant&&typeof window.showCoach==='function'){
+    if(wasInstant&&window.__dccCoachRouteIntent==='dashboard'&&typeof window.showCoach==='function'){
       try{delete m.dataset.dccInstant;window.showCoach('dashboard')}catch(e){}
-    }
+    }else if(wasInstant){try{delete m.dataset.dccInstant}catch(e){}}
     installFinalGuard();enforceClosedAndColors();
     add('./coach-ui-v11.js?v=20260910-1932','coachUi',()=>{installFinalGuard();enforceClosedAndColors()});
   }

@@ -16,12 +16,11 @@
   }
 
   function syncMode(){
-    document.documentElement.classList.add('dcc-theme-light-premium');
     document.body?.classList.toggle('dcc-coach-mode',coachVisible());
   }
 
   function install(){
-    document.getElementById(ID)?.remove();
+    if(document.getElementById(ID))return;
     const s=document.createElement('style');
     s.id=ID;
     s.textContent=`
@@ -328,9 +327,4 @@ html.dcc-theme-light-premium body #coach-nav button.active span{color:#1d1608!im
   window.addEventListener('pageshow',syncMode);
   window.addEventListener('load',syncMode,{once:true});
 
-  const observer=new MutationObserver(syncMode);
-  document.addEventListener('DOMContentLoaded',()=>{
-    const coach=document.getElementById('coach');
-    if(coach)observer.observe(coach,{attributes:true,attributeFilter:['style','class']});
-  },{once:true});
 })();
