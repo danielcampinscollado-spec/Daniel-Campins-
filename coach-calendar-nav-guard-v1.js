@@ -1,7 +1,7 @@
-/* DCC — navegación inferior estable del entrenador; sincroniza también el estado interno de index */
+/* DCC — navegación inferior estable del entrenador: una acción = un render */
 (function(){
   'use strict';
-  const BUILD='20260914-coach-primary-nav-guard-v10';
+  const BUILD='20260915-coach-primary-nav-guard-v11';
   if(window.__dccCoachPrimaryNavGuard===BUILD)return;
   window.__dccCoachPrimaryNavGuard=BUILD;
 
@@ -16,7 +16,7 @@
   function markActive(index){
     navButtons().forEach((b,i)=>{
       const active=i===index;
-      if(b.classList.contains('active')!==active)b.classList.toggle('active',active);
+      b.classList.toggle('active',active);
       if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
     });
   }
@@ -24,39 +24,28 @@
     if(screen==='dashboard')return;
     const main=document.getElementById('coach-main');
     if(main?.dataset?.dccInstant)delete main.dataset.dccInstant;
-    window.__dccCoachRouteIntent=screen;
   }
 
   function openStable(index){
     const screen=ROUTES[index];
-    if(!screen||!coachVisible())return;
+    if(!screen||!coachVisible()||typeof window.showCoach!=='function')return;
     try{
       clearInstantDashboard(screen);
 
-      /* IMPORTANTE: showCoach actualiza el `let currentScreen` interno de index.html.
-         Escribir solo window.currentScreen no lo actualiza y los loaders asíncronos
-         podían interpretar que seguíamos en dashboard y devolver Check-in/Mensajes a Inicio. */
-      if(typeof window.showCoach==='function'){
-        window.showCoach(screen);
-      }else{
-        return;
-      }
-
-      /* Check-in conserva su renderer premium, pero solo DESPUÉS de sincronizar
-         el estado interno mediante showCoach('checkins'). */
-      if(screen==='checkins'&&typeof window.dccRenderCoachCheckins==='function'){
-        window.dccRenderCoachCheckins();
-      }
-
+      /* El estado se fija ANTES del render. Varios módulos premium consultan
+         window.currentScreen durante showCoach; hacerlo después permitía que
+         interpretasen la ruta anterior y repintasen Panel. */
       window.currentScreen=screen;
       window.__dccCoachRouteIntent=screen;
       markActive(index);
 
-      requestAnimationFrame(()=>{
-        window.currentScreen=screen;
-        window.__dccCoachRouteIntent=screen;
-        markActive(index);
-      });
+      /* Un solo punto de render. No volvemos a llamar manualmente al renderer
+         de Check-in: showCoach ya lo hace y la segunda llamada causaba parpadeo. */
+      window.showCoach(screen);
+
+      window.currentScreen=screen;
+      window.__dccCoachRouteIntent=screen;
+      markActive(index);
     }catch(e){console.error('DCC '+screen+' render:',e)}
   }
 
@@ -67,12 +56,11 @@
 
   function patch(){
     const buttons=navButtons();
-    /* Solo parcheamos la navegación premium definitiva de 5 botones.
-       El menú legacy de 7 botones existe durante el arranque y no debe tocarse. */
     if(buttons.length!==5)return false;
     ROUTES.forEach((screen,index)=>{
       const b=buttons[index];
-      if(b&&b.getAttribute('onclick')!==`dccOpenCoachPrimary(${index})`)b.setAttribute('onclick',`dccOpenCoachPrimary(${index})`);
+      const next=`dccOpenCoachPrimary(${index})`;
+      if(b&&b.getAttribute('onclick')!==next)b.setAttribute('onclick',next);
     });
     return true;
   }
@@ -91,8 +79,8 @@
   function boot(){
     if(patch())return;
     let tries=0;
-    const timer=setInterval(()=>{tries++;if(patch()||tries>60)clearInterval(timer)},100);
+    const timer=setInterval(()=>{tries++;if(patch()||tries>30)clearInterval(timer)},100);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-  window.addEventListener('pageshow',()=>setTimeout(boot,60));
+  window.addEventListener('pageshow',()=>setTimeout(boot,40));
 })();
