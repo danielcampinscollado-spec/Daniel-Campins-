@@ -1,5 +1,56 @@
 import { chromium } from 'playwright';
-const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:390,height:844}});await page.goto(process.env.RC_URL,{waitUntil:'domcontentloaded',timeout:30000});await page.waitForTimeout(4000);await page.evaluate(()=>{for(const id of ['login','client']){const e=document.getElementById(id);if(e)e.style.display='none'}const c=document.getElementById('coach');if(c)c.style.display='block';window.currentApp='coach';try{currentApp='coach'}catch(_){};window.showCoach('dashboard')});await page.waitForTimeout(1200);
-const wrappers=await page.evaluate(()=>{let fn=window.showCoach,out=[],seen=new Set();for(let i=0;i<50&&typeof fn==='function'&&!seen.has(fn);i++){seen.add(fn);out.push({i,keys:Object.keys(fn).filter(k=>k.startsWith('__dcc')),src:String(fn).replace(/\s+/g,' ').slice(0,420)});fn=fn.__base||fn.__original}return out});console.log('WRAPPER_OWNERS '+JSON.stringify(wrappers));
-for(const [label,expected] of [['Check-in','checkins'],['Mensajes','messages'],['Clientes','clients'],['Panel','dashboard']]){await page.locator('#coach-nav button').filter({hasText:label}).first().click();const rows=[];for(let i=0;i<15;i++){await page.waitForTimeout(200);rows.push(await page.evaluate(()=>({screen:window.currentScreen,intent:window.__dccCoachRouteIntent,cls:document.getElementById('coach-main')?.className||''}))}console.log('ROUTE '+label+' '+JSON.stringify(rows));if(rows.some(x=>x.screen!==expected))process.exitCode=1}
+
+const url = process.env.RC_URL;
+if (!url) throw new Error('RC_URL missing');
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+await page.waitForTimeout(4000);
+await page.evaluate(() => {
+  for (const id of ['login', 'client']) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  }
+  const coach = document.getElementById('coach');
+  if (coach) coach.style.display = 'block';
+  window.currentApp = 'coach';
+  try { currentApp = 'coach'; } catch (_) {}
+  if (typeof window.showCoach !== 'function') throw new Error('showCoach missing');
+  window.showCoach('dashboard');
+});
+await page.waitForTimeout(1200);
+
+const wrappers = await page.evaluate(() => {
+  let fn = window.showCoach;
+  const out = [];
+  const seen = new Set();
+  for (let i = 0; i < 50 && typeof fn === 'function' && !seen.has(fn); i++) {
+    seen.add(fn);
+    out.push({
+      i,
+      keys: Object.keys(fn).filter(k => k.startsWith('__dcc')),
+      src: String(fn).replace(/\s+/g, ' ').slice(0, 520)
+    });
+    fn = fn.__base || fn.__original;
+  }
+  return out;
+});
+console.log('WRAPPER_OWNERS ' + JSON.stringify(wrappers));
+
+for (const [label, expected] of [['Check-in','checkins'], ['Mensajes','messages'], ['Clientes','clients'], ['Panel','dashboard']]) {
+  await page.locator('#coach-nav button').filter({ hasText: label }).first().click();
+  const rows = [];
+  for (let i = 0; i < 15; i++) {
+    await page.waitForTimeout(200);
+    rows.push(await page.evaluate(() => ({
+      screen: window.currentScreen,
+      intent: window.__dccCoachRouteIntent,
+      cls: document.getElementById('coach-main')?.className || ''
+    })));
+  }
+  console.log('ROUTE ' + label + ' ' + JSON.stringify(rows));
+  if (rows.some(x => x.screen !== expected)) process.exitCode = 1;
+}
+
 await browser.close();
