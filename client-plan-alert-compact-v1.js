@@ -1,44 +1,13 @@
-/* DCC — aviso compacto de planes pendientes */
+/* DCC — aviso compacto de planes pendientes, render síncrono y estable */
 (function(){
-  'use strict';
-  const BUILD='20260914-client-plan-alert-compact-v3';
-  if(window.__dccClientPlanAlertCompact===BUILD)return;
-  window.__dccClientPlanAlertCompact=BUILD;
-
-  const STYLE_ID='dcc-client-plan-alert-compact-css';
-  const norm=v=>String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
-
-  function css(){
-    if(document.getElementById(STYLE_ID))return;
-    const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
-      html body #coach-main.dcc-ca section.dcc-v5-plan,html body #coach-main .dcc-v5-plan{margin:9px 0 11px!important;padding:0!important;border:0!important;border-width:0!important;border-color:transparent!important;outline:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}
-      html body #coach-main .dcc-v5-plan::before,html body #coach-main .dcc-v5-plan::after{display:none!important;content:none!important;border:0!important;box-shadow:none!important}
-      #coach-main .dcc-v5-plan>.dcc-v5-plan-title,#coach-main .dcc-v5-plan>.dcc-v5-plan-list{display:none!important}
-      #coach-main .dcc-plan-compact-alert{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;min-height:52px;padding:9px 12px;border:1px solid rgba(224,173,76,.5);border-radius:16px;background:linear-gradient(145deg,rgba(224,173,76,.10),rgba(255,255,255,.025));box-shadow:none!important;outline:0!important}
-      #coach-main .dcc-plan-compact-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#f4cf69,#dca43c);color:#171109;font-size:17px;font-weight:950}
-      #coach-main .dcc-plan-compact-copy b{display:block;font-size:12px;line-height:1.2;color:inherit}
-      #coach-main .dcc-plan-compact-copy small{display:block;margin-top:3px;color:#8e96a0;font-size:9px;line-height:1.25}
-      body.dcc-light #coach-main .dcc-plan-compact-alert,[data-theme="light"] #coach-main .dcc-plan-compact-alert,html.dcc-theme-light-premium #coach-main .dcc-plan-compact-alert{background:linear-gradient(145deg,#fffaf0,#fbf4e7);border-color:#e4c77f}
-      body.dcc-light #coach-main .dcc-plan-compact-copy small,[data-theme="light"] #coach-main .dcc-plan-compact-copy small,html.dcc-theme-light-premium #coach-main .dcc-plan-compact-copy small{color:#8f887c}
-    `;(document.head||document.documentElement).appendChild(s);
-  }
-
-  function apply(){
-    css();
-    document.querySelectorAll('#coach-main .dcc-v5-plan').forEach(box=>{
-      const items=[...box.querySelectorAll('.dcc-v5-plan-item')];if(!items.length)return;
-      const titles=items.map(x=>norm(x.querySelector('b')?.textContent||x.textContent));
-      const hasDiet=titles.some(t=>/aliment/.test(t)),hasRoutine=titles.some(t=>/rutina|entren/.test(t));
-      let sub='Hay información pendiente de completar.';
-      if(hasDiet&&hasRoutine)sub='Alimentación y rutina pendientes.';else if(hasDiet)sub='Alimentación pendiente.';else if(hasRoutine)sub='Rutina pendiente.';
-      const title=items.length>1?'Tienes planes sin terminar':'Tienes un plan sin terminar';
-      let alert=box.querySelector('.dcc-plan-compact-alert');
-      if(!alert){alert=document.createElement('div');alert.className='dcc-plan-compact-alert';box.appendChild(alert)}
-      const next=`<span class="dcc-plan-compact-icon">!</span><span class="dcc-plan-compact-copy"><b>${title}</b><small>${sub}</small></span>`;
-      if(alert.innerHTML!==next)alert.innerHTML=next;
-    });
-  }
-  let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
-  function observe(){if(!document.body||document.body.__dccPlanAlertCompactObserverV3)return;document.body.__dccPlanAlertCompactObserverV3=true;new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});apply()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observe,{once:true});else observe();
+'use strict';
+const BUILD='20260915-client-plan-alert-compact-v5-stable';if(window.__dccClientPlanAlertCompact===BUILD)return;window.__dccClientPlanAlertCompact=BUILD;
+const STYLE_ID='dcc-client-plan-alert-compact-css',appData=()=>{try{return data||{}}catch(_){return window.data||{}};
+function mealReady(m){if(Array.isArray(m?.options)&&m.options.length)return m.options.some(o=>Array.isArray(o?.foods)&&o.foods.length);return Array.isArray(m?.foods)&&m.foods.length}
+function dietReady(id){const p=appData()?.diets?.[id];return !!p&&['training','rest'].every(t=>Array.isArray(p?.[t]?.meals)&&p[t].meals.length&&p[t].meals.every(mealReady))}
+function routineReady(id){const r=appData()?.routines?.[id],days=Array.isArray(r)?r:(Array.isArray(r?.routine)?r.routine:[]);return days.length>0&&days.every(d=>Array.isArray(d?.exercises)&&d.exercises.length)}
+function css(){if(document.getElementById(STYLE_ID))return;const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`html body #coach-main .dcc-v5-plan{margin:9px 0 11px!important;padding:0!important;border:0!important;outline:0!important;background:none!important;box-shadow:none!important}.dcc-plan-compact-alert{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;min-height:52px;padding:9px 12px;border:1px solid rgba(224,173,76,.5);border-radius:16px;background:linear-gradient(145deg,rgba(224,173,76,.10),rgba(255,255,255,.025))}.dcc-plan-compact-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#f4cf69,#dca43c);color:#171109;font-size:17px;font-weight:950}.dcc-plan-compact-copy b{display:block;font-size:12px}.dcc-plan-compact-copy small{display:block;margin-top:3px;color:#8e96a0;font-size:9px}html.dcc-theme-light-premium .dcc-plan-compact-alert{background:linear-gradient(145deg,#fffaf0,#fbf4e7);border-color:#e4c77f}`;(document.head||document.documentElement).appendChild(s)}
+function apply(id){css();const main=document.querySelector('#coach-main.dcc-ca');if(!main)return;id=String(id??window.__dccClientAdminId??window.selectedClient??'');if(!id)return;main.querySelectorAll('.dcc-v5-plan').forEach(x=>x.remove());const p=[];if(!dietReady(id))p.push('Alimentación');if(!routineReady(id))p.push('Rutina');if(!p.length)return;const metrics=main.querySelector('.dcc-ca-metrics');if(!metrics)return;const box=document.createElement('section');box.className='dcc-v5-plan';box.innerHTML=`<div class="dcc-plan-compact-alert"><span class="dcc-plan-compact-icon">!</span><span class="dcc-plan-compact-copy"><b>${p.length>1?'Tienes planes sin terminar':'Tienes un plan sin terminar'}</b><small>${p.length>1?'Alimentación y rutina pendientes.':p[0]+' pendiente.'}</small></span></div>`;metrics.insertAdjacentElement('afterend',box)}
+function wrap(){const base=window.dccClientAdmin;if(typeof base!=='function'||base.__dccPlanAlertStableV5)return false;const w=function(id){const out=base.apply(this,arguments);apply(id);return out};w.__dccPlanAlertStableV5=true;w.__base=base;window.dccClientAdmin=w;return true}
+function boot(){css();if(!wrap()){let n=0,t=setInterval(()=>{if(wrap()||++n>=12)clearInterval(t)},100)}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();window.dccPlanStatusRefresh=()=>apply(window.__dccClientAdminId??window.selectedClient);
 })();
