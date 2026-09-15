@@ -5,12 +5,12 @@ on:
     paths: ['.github/workflows/rc-browser-smoke.yml','.github/scripts/rc_browser_smoke.mjs']
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   browser-runtime-trace:
     runs-on: ubuntu-latest
     env:
-      RC_URL: https://daniel-campins-mczk3ptcg-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=Z7RPXCq76IMaUb6olw0dL1Q3AFTiQZGJ
+      RC_URL: https://daniel-campins-8okrddi6d-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=FjDJcJA9aN2lLSJIa4AktcVyDAuowZmq
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,17 +20,5 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Run real navigation trace
-        shell: bash
-        run: |
-          set +e
-          node .github/scripts/rc_browser_smoke.mjs 2>&1 | tee .github/runtime-trace.log
-          echo ${PIPESTATUS[0]} > .github/runtime-trace-exit.txt
-          exit 0
-      - name: Persist trace
-        run: |
-          git config user.name dcc-runtime-audit
-          git config user.email actions@users.noreply.github.com
-          git add .github/runtime-trace.log .github/runtime-trace-exit.txt
-          git commit -m '[audit] Persist single-router browser trace' || exit 0
-          git push
+      - name: Run real trainer and client navigation verification
+        run: node .github/scripts/rc_browser_smoke.mjs
