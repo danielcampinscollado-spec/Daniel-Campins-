@@ -72,7 +72,9 @@
   function writableBox(id){const d=getData();for(const key of ['messages','chats','conversations','chatMessages']){const box=d?.[key];if(box&&!Array.isArray(box)&&Array.isArray(box[id]))return box[id]}if(!d.messages||Array.isArray(d.messages))d.messages={};if(!Array.isArray(d.messages[id]))d.messages[id]=[];return d.messages[id]}
   window.dccSendMessage=function(id){const input=document.getElementById('dccChatInput'),txt=input?.value.trim();if(!txt)return;writableBox(id).push({text:txt,sender:'coach',isCoach:true,created_at:new Date().toISOString()});try{if(typeof saveData==='function')saveData()}catch(e){console.error(e)}window.dccOpenChat(id)};
 
+  window.dccRenderCoachMessages=renderMessages;
+
   function install(){const current=window.showCoach;if(typeof current!=='function')return setTimeout(install,60);if(current.__dccMessagesPremium)return;const wrapped=function(screen){if(screen==='messages'){window.currentScreen='messages';window.__dccOpenChat=null;renderMessages();return}return current.apply(this,arguments)};wrapped.__dccMessagesPremium=true;wrapped.__base=current;window.showCoach=wrapped}
 
-  css();install();setTimeout(install,300);setTimeout(install,900);
+  css();
 })();
