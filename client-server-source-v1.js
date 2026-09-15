@@ -9,6 +9,7 @@
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
   let syncing=null;
   let lastRenderedSignature='';
+  let rerendering=false;
 
   function persist(){
     try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(error){console.warn('DCC client sync: no se pudo persistir cache local',error)}
@@ -83,12 +84,13 @@
     if(options.render===false||window.currentApp!=='coach'||typeof window.showCoach!=='function')return;
     const screen=window.currentScreen;
     if(screen!=='dashboard'&&screen!=='clients')return;
-    const signature=screen+':'+rows.map(row=>String(row.id)).join('|');
+    const signature=screen+':'+rows.map(row=>[row.id,row.name,row.status,row.weight,row.goal].join('~')).join('|');
     if(signature===lastRenderedSignature)return;
     lastRenderedSignature=signature;
     queueMicrotask(()=>{
       if(window.currentApp==='coach'&&window.currentScreen===screen&&typeof window.showCoach==='function'){
-        window.showCoach(screen);
+        rerendering=true;
+        try{window.showCoach(screen)}finally{rerendering=false}
       }
     });
   }
@@ -136,28 +138,16 @@
     }
   }
 
-  const installShowCoachWrapper=()=>{
-    const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccClientServerSourceV5)return false;
-    const wrapped=function(screen){
-      if(screen==='clients')clearStaleClients();
-      const out=current.apply(this,arguments);
-      if(screen==='dashboard'||screen==='clients')queueMicrotask(()=>syncClients({render:true}));
-      return out;
-    };
-    wrapped.__dccClientServerSourceV5=true;
-    wrapped.__base=current;
-    window.showCoach=wrapped;
-    return true;
-  };
-
-  function bootstrap(){
-    installShowCoachWrapper();
-    syncCoachVisible();
+  function onCoachScreen(event){
+    if(rerendering)return;
+    const screen=event.detail?.screen||window.currentScreen;
+    if(screen==='dashboard'||screen==='clients')queueMicrotask(()=>syncClients({render:true}));
   }
 
+  function bootstrap(){syncCoachVisible()}
+  document.addEventListener('dcc:coach-screen',onCoachScreen);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootstrap,{once:true});
   else queueMicrotask(bootstrap);
-  window.addEventListener('load',()=>{installShowCoachWrapper();syncCoachVisible()},{once:true});
+  window.addEventListener('load',syncCoachVisible,{once:true});
   window.addEventListener('pageshow',syncCoachVisible);
 })();

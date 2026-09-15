@@ -114,19 +114,6 @@
     window.dccCalendarMove=wrapped;
   }
 
-  function wrapShowCoach(){
-    const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccCalendarSyncV143)return;
-    const wrapped=function(screen){
-      const result=current.apply(this,arguments);
-      if(screen==='calendar')queueMicrotask(forceMonthSync);
-      return result;
-    };
-    wrapped.__dccCalendarSyncV143=true;
-    wrapped.__base=current;
-    window.showCoach=wrapped;
-  }
-
   function install(attempt=0){
     if(!window.__dccCoachCalendarV12||typeof window.dccCalendarSelect!=='function'){
       if(attempt<20)setTimeout(()=>install(attempt+1),100);
@@ -136,11 +123,12 @@
     wrapAsync('dccCalendarSaveSession');
     wrapAsync('dccCalendarDeleteSession');
     wrapMonthMove();
-    wrapShowCoach();
 
     if(window.currentScreen==='calendar')queueMicrotask(forceMonthSync);
     return true;
   }
+
+  document.addEventListener('dcc:coach-screen',event=>{if(event.detail?.screen==='calendar')queueMicrotask(forceMonthSync)});
 
   window.dccCalendarForceMonthSync=forceMonthSync;
   install();

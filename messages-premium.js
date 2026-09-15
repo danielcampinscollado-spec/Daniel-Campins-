@@ -54,7 +54,7 @@
   function timeFmt(d){if(!d)return'';return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
   function dayLabel(d){if(!d)return'';const now=new Date(),a=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(),b=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),dif=Math.round((a-b)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
-  function navActive(){const n=document.getElementById('coach-nav');if(!n)return;n.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===4))}
+  function navActive(){const n=document.getElementById('coach-nav');if(!n)return;n.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===1))}
 
   function card(c){const t=thread(c.id),last=t.at(-1),preview=last?textOf(last):(lastFallback(c)||'Sin mensajes'),time=timeFmt(last?dateOf(last):(c?.lastMessageAt?new Date(c.lastMessageAt):null));return `<article class="dcc-msg-card" data-name="${esc(String(c.name||'').toLowerCase())}"><div class="dcc-msg-avatar">${esc(initials(c.name))}</div><div class="dcc-msg-copy"><div class="dcc-msg-name">${esc(c.name||'Cliente')}</div><div class="dcc-msg-preview">${esc(preview)}</div></div><div class="dcc-msg-meta">${time?`<span class="dcc-msg-time">${esc(time)}</span>`:''}<button class="dcc-msg-open" onclick="dccOpenChat('${esc(c.id)}')">Abrir <span>›</span></button></div></article>`}
 
@@ -67,12 +67,14 @@
   function groupedMessages(id,c){const t=thread(id);if(!t.length)return'<div class="dcc-chat-none">Todavía no hay mensajes. Escribe el primero abajo.</div>';let last='';return t.map(m=>{const d=dateOf(m),lab=dayLabel(d),sep=lab&&lab!==last?`<div class="dcc-chat-day"><span>${esc(lab)}</span></div>`:'';if(lab)last=lab;return sep+bubble(m,c)}).join('')}
 
   window.dccOpenChat=function(id){css();const c=clientById(id);if(!c)return;window.__dccOpenChat=id;const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-chat';main.innerHTML=`<div class="dcc-chat"><button class="dcc-chat-back" onclick="dccCloseChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>Mensajes</button><header class="dcc-chat-person"><div class="dcc-msg-avatar">${esc(initials(c.name))}</div><div class="dcc-chat-person-copy"><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-chat-status"><span class="dcc-chat-online"></span>Conversación activa</div></div></header><div class="dcc-chat-stream" id="dccChatStream">${groupedMessages(id,c)}</div><div class="dcc-chat-composer"><textarea id="dccChatInput" class="dcc-chat-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccSendMessage('${esc(id)}')}"></textarea><button class="dcc-chat-send" onclick="dccSendMessage('${esc(id)}')" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="m22 2-7 20-4-9-9-4Z"/></svg></button></div></div>`;navActive();requestAnimationFrame(()=>{const s=document.getElementById('dccChatStream');if(s)s.scrollTop=s.scrollHeight})};
-  window.dccCloseChat=function(){window.__dccOpenChat=null;renderMessages()};
+  window.dccCloseChat=function(){window.__dccOpenChat=null;const id=window.__dccChatReturnClient;if(id&&typeof window.dccClientAdmin==='function'){window.__dccChatReturnClient=null;window.dccClientAdmin(id,'followup');return}renderMessages()};
 
   function writableBox(id){const d=getData();for(const key of ['messages','chats','conversations','chatMessages']){const box=d?.[key];if(box&&!Array.isArray(box)&&Array.isArray(box[id]))return box[id]}if(!d.messages||Array.isArray(d.messages))d.messages={};if(!Array.isArray(d.messages[id]))d.messages[id]=[];return d.messages[id]}
   window.dccSendMessage=function(id){const input=document.getElementById('dccChatInput'),txt=input?.value.trim();if(!txt)return;writableBox(id).push({text:txt,sender:'coach',isCoach:true,created_at:new Date().toISOString()});try{if(typeof saveData==='function')saveData()}catch(e){console.error(e)}window.dccOpenChat(id)};
 
+  window.dccRenderCoachMessages=renderMessages;
+
   function install(){const current=window.showCoach;if(typeof current!=='function')return setTimeout(install,60);if(current.__dccMessagesPremium)return;const wrapped=function(screen){if(screen==='messages'){window.currentScreen='messages';window.__dccOpenChat=null;renderMessages();return}return current.apply(this,arguments)};wrapped.__dccMessagesPremium=true;wrapped.__base=current;window.showCoach=wrapped}
 
-  css();install();setTimeout(install,300);setTimeout(install,900);
+  css();
 })();

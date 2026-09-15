@@ -1,0 +1,9 @@
+OK runtime-compat library-only
+OK exercise library clean bootstrap
+OK checkin sync data-only
+OK checkin renderer only
+OK messages renderer only
+OK premium core single router
+OK bootstrap no nav wrapper
+OK coach premium loader only
+SYNTAX OK

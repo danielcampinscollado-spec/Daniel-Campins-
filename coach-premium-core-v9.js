@@ -76,8 +76,9 @@
       .dcc-p9-row{width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) auto 16px;align-items:center;gap:10px;padding:10px 11px;border:0;border-bottom:1px solid rgba(255,255,255,.075);background:transparent;color:#f5f2ec;text-align:left;-webkit-tap-highlight-color:transparent}.dcc-p9-row:last-child{border-bottom:0}.dcc-p9-row-icon{width:35px;height:35px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.34);border-radius:50%;background:radial-gradient(circle at 50% 30%,rgba(217,170,74,.09),rgba(10,12,14,.95));color:${GOLD2};font-size:18px}.dcc-p9-row-copy{min-width:0}.dcc-p9-row-copy b{display:block;font-size:12px;line-height:1.15;color:#f6f3ee}.dcc-p9-row-copy span{display:block;margin-top:4px;color:#929ba6;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dcc-p9-badge{padding:6px 9px;border:1px solid rgba(217,170,74,.36);border-radius:999px;background:rgba(217,170,74,.025);color:${GOLD2};font-size:7px;font-weight:850;white-space:nowrap}.dcc-p9-arrow{color:${GOLD2};font-size:18px}.dcc-p9-empty{display:flex;align-items:center;gap:9px;padding:10px 11px;color:#9ba3ad;font-size:10px}.dcc-p9-empty-i{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.32);border-radius:50%;color:${GOLD2}}
 
       .dcc-cl{padding-top:14px}.dcc-cl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:6px 2px 20px}.dcc-cl-head h1{margin:0;font-size:34px;letter-spacing:-1.3px}.dcc-cl-head p{margin:6px 0 0;color:#939aa5;font-size:14px}.dcc-cl-new{border:1px solid #f0c96b;border-radius:15px;padding:12px 16px;background:linear-gradient(135deg,#f0c96b,#d9aa4a);color:#090909;font-weight:800;font-size:12px;white-space:nowrap}
-      .dcc-cl-tools{display:grid;grid-template-columns:1fr 48px;gap:9px}.dcc-cl-search{height:48px;display:flex;align-items:center;gap:10px;padding:0 15px;border:1px solid #333942;border-radius:15px;background:linear-gradient(145deg,#0e1318,#080b0e);color:#8f97a3}.dcc-cl-search input{width:100%;border:0;outline:0;background:none;color:#f5f5f5;font:inherit}.dcc-cl-filter{border:1px solid #333942;border-radius:15px;background:#0d1115;color:#a9b0ba;font-size:19px}
+      .dcc-cl-tools{display:grid;grid-template-columns:1fr;gap:9px}.dcc-cl-search{height:48px;display:flex;align-items:center;gap:10px;padding:0 15px;border:1px solid #333942;border-radius:15px;background:linear-gradient(145deg,#0e1318,#080b0e);color:#8f97a3}.dcc-cl-search input{width:100%;border:0;outline:0;background:none;color:#f5f5f5;font:inherit}.dcc-cl-filter{border:1px solid #333942;border-radius:15px;background:#0d1115;color:#a9b0ba;font-size:19px}
       .dcc-cl-subtools{display:flex;justify-content:space-between;align-items:center;margin:11px 0 14px}.dcc-cl-tabs{display:flex;border:1px solid #292f36;border-radius:22px;overflow:hidden;background:#090c0f}.dcc-cl-tab{padding:9px 18px;border:0;background:none;color:#9aa1ac;font-size:11px}.dcc-cl-tab.active{border:1px solid ${GOLD2};border-radius:21px;background:radial-gradient(circle at 50% 50%,#d9aa4a35,#15100a);color:${GOLD2};box-shadow:0 0 18px #d9aa4a28}.dcc-cl-sort{padding:9px 13px;border:1px solid #343941;border-radius:15px;background:#0a0d10;color:#e8e8e8;font-size:11px}
+      .dcc-cl-card-ref{grid-template-columns:minmax(0,1fr) auto 18px!important;cursor:pointer!important;min-height:92px!important;padding:15px 17px!important}.dcc-cl-card-ref .dcc-cl-training,.dcc-cl-card-ref .dcc-cl-manage{display:none!important}.dcc-cl-ref-meta{display:flex;gap:14px;align-items:center;margin-top:8px;color:#8d96a1;font-size:10px;font-weight:650}.dcc-cl-active{align-self:center;padding:7px 10px;border-radius:999px;background:rgba(57,185,130,.13);color:#47b987;font-size:9px;font-weight:850}.dcc-cl-chevron{align-self:center;color:${GOLD2};font-size:26px;line-height:1}
       .dcc-cl-list{display:grid;gap:9px}.dcc-cl-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,.85fr) 112px;align-items:center;gap:13px;min-height:104px;padding:14px 15px;border:1px solid rgba(217,170,74,.58);border-radius:17px;background:radial-gradient(ellipse at 86% 35%,rgba(217,170,74,.08),transparent 23%),linear-gradient(120deg,#0c1014,#080b0e);box-shadow:0 10px 26px #0005}.dcc-cl-info{min-width:0}.dcc-cl-name{font-size:17px;font-weight:800;color:#f5f3ef}.dcc-cl-goal{margin-top:6px;color:${GOLD2};font-size:12px}.dcc-cl-weight{margin-top:4px;color:#a4abb5;font-size:12px}.dcc-cl-training{padding-left:14px;border-left:1px solid #343a42}.dcc-cl-tr-title{display:flex;align-items:center;gap:7px;color:#f1f1ef;font-size:10px}.dcc-cl-dumbbell{color:${GOLD2};font-size:18px}.dcc-cl-progress{display:flex;align-items:center;gap:8px;margin-top:8px}.dcc-cl-track{height:6px;flex:1;border-radius:8px;background:#2a3037;overflow:hidden}.dcc-cl-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#d9aa4a,#f0c96b)}.dcc-cl-pct{font-size:11px}.dcc-cl-manage{min-height:48px;border:1px solid ${GOLD2};border-radius:13px;background:linear-gradient(145deg,#18140c,#0a0b0c);color:${GOLD2};font-size:11px;font-weight:800;line-height:1.25}
 
       #coach .side{height:62px!important;left:14px!important;right:14px!important;bottom:10px!important;border-radius:21px!important;padding:0 7px!important}
@@ -125,8 +126,8 @@
       if(gap!==null&&gap>=7)attention.push({icon:'!',title:c.name,text:`${gap} DÍAS SIN REGISTRAR ENTRENAMIENTO`,badge:'SEGUIMIENTO',action:`openClient('${esc(c.id)}')`});
     });
     const hr=new Date().getHours(),g=hr<13?'BUENOS DÍAS':hr<20?'BUENAS TARDES':'BUENAS NOCHES';
-    const tasksOpen=window.__dccCoachTasksOpen!==false;
-    const attentionOpen=window.__dccCoachAttentionOpen!==false;
+    const tasksOpen=window.__dccCoachTasksOpen===true;
+    const attentionOpen=window.__dccCoachAttentionOpen===true;
     main.innerHTML=`<div class="dcc-p9">
       <section class="dcc-p9-hero">
         <div class="dcc-p9-hero-top"><div class="dcc-p9-kicker">PANEL DE ENTRENADOR</div><div class="dcc-p9-mark">${icon('dumbbell')}</div></div>
@@ -160,46 +161,57 @@
   }
 
   function clientCard(c){
-    const p=trainingProgress(c),goal=c.goal||c.objective||c.objetivo||'Objetivo por definir',weight=c.weight||c.peso||'';
-    return `<article class="dcc-cl-card" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?'1':'0'}"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div>${weight?`<div class="dcc-cl-weight">${esc(weight)} kg</div>`:''}</div><div class="dcc-cl-training"><div class="dcc-cl-tr-title"><span class="dcc-cl-dumbbell">⌁</span> Entrenamiento</div><div class="dcc-cl-progress"><div class="dcc-cl-track"><div class="dcc-cl-fill" style="width:${p}%"></div></div><span class="dcc-cl-pct">${p}%</span></div></div><button class="dcc-cl-manage" onclick="openClient('${esc(c.id)}')">Gestionar<br>cliente</button></article>`;
+    const goal=c.goal||c.objective||c.objetivo||'Objetivo por definir';
+    const weight=c.weight||c.peso||'';
+    const fat=c.body_fat??c.bodyFat??c.fat??c.grasa??'';
+    return `<article class="dcc-cl-card dcc-cl-card-ref" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?'1':'0'}" onclick="openClient('${esc(c.id)}')"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div><div class="dcc-cl-ref-meta">${weight?`<span>▣ &nbsp;${esc(weight)} kg</span>`:''}${fat!==''?`<span>◌ &nbsp;${esc(fat)} %</span>`:''}</div></div><span class="dcc-cl-active">Activo</span><span class="dcc-cl-chevron">›</span></article>`;
   }
   function renderClients(){
     injectCss();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-clients';const cs=getData()?.clients||[];
-    main.innerHTML=`<div class="dcc-cl"><header class="dcc-cl-head"><div><h1>Clientes</h1><p>Gestiona el proceso de cada persona.</p></div><button class="dcc-cl-new" onclick="newClient()">＋ Nuevo cliente</button></header><div class="dcc-cl-tools"><label class="dcc-cl-search">⌕<input id="dccClientSearch" placeholder="Buscar cliente..." oninput="window.dccFilterClients()"></label><button class="dcc-cl-filter" onclick="toast('Filtros próximamente')">▽</button></div><div class="dcc-cl-subtools"><div class="dcc-cl-tabs"><button class="dcc-cl-tab active" onclick="window.dccClientTab('all',this)">Todos</button><button class="dcc-cl-tab" onclick="window.dccClientTab('pending',this)">Pendientes por revisar</button></div><button class="dcc-cl-sort" onclick="window.dccSortClients()">↕ &nbsp; A-Z⌄</button></div><div class="dcc-cl-list" id="dccClientList">${cs.map(clientCard).join('')||'<div class="dcc-cl-empty">Todavía no hay clientes.</div>'}</div></div>`;
+    main.innerHTML=`<div class="dcc-cl"><header class="dcc-cl-head"><div><h1>Clientes</h1><p>Gestiona y acompaña su progreso.</p></div><button class="dcc-cl-new" onclick="newClient()">＋ Nuevo cliente</button></header><div class="dcc-cl-tools"><label class="dcc-cl-search">⌕<input id="dccClientSearch" placeholder="Buscar cliente..." oninput="window.dccFilterClients()"></label></div><div class="dcc-cl-subtools"><span style="font-size:10px;font-weight:800;color:#8d96a1;letter-spacing:.7px">CLIENTES ACTIVOS</span><button class="dcc-cl-sort" onclick="window.dccSortClients()">↕ &nbsp; A-Z⌄</button></div><div class="dcc-cl-list" id="dccClientList">${cs.map(clientCard).join('')||'<div class="dcc-cl-empty">Todavía no hay clientes.</div>'}</div></div>`;
     window.__dccClientMode='all';window.__dccClientSort='az';
   }
 
-  window.dccFilterClients=function(){const q=(document.getElementById('dccClientSearch')?.value||'').toLowerCase();document.querySelectorAll('.dcc-cl-card').forEach(x=>x.style.display=(x.dataset.name.includes(q)&&(window.__dccClientMode!=='pending'||x.dataset.pending==='1'))?'grid':'none')};
+  window.dccFilterClients=function(){const q=(document.getElementById('dccClientSearch')?.value||'').toLowerCase();document.querySelectorAll('.dcc-cl-card').forEach(x=>x.style.display=x.dataset.name.includes(q)?'grid':'none')};
   window.dccClientTab=function(m,b){window.__dccClientMode=m;document.querySelectorAll('.dcc-cl-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');window.dccFilterClients()};
   window.dccSortClients=function(){const l=document.getElementById('dccClientList');if(!l)return;window.__dccClientSort=window.__dccClientSort==='az'?'za':'az';[...l.querySelectorAll('.dcc-cl-card')].sort((a,b)=>window.__dccClientSort==='az'?a.dataset.name.localeCompare(b.dataset.name):b.dataset.name.localeCompare(a.dataset.name)).forEach(x=>l.appendChild(x))};
 
-  function navHtml(){return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="toast('Calendario próximamente')">${icon('calendar')}<span>Calendario</span></button><button onclick="showCoach('checkins')">${icon('check')}<span>Check-in</span></button><button onclick="showCoach('messages')">${icon('msg')}<span>Mensajes</span></button>`}
-  function enforceNav(){const n=document.getElementById('coach-nav');if(!n)return;const wanted=['Panel','Clientes','Calendario','Check-in','Mensajes'],labels=[...n.querySelectorAll('button span')].map(x=>x.textContent.trim());if(labels.length!==5||wanted.some((x,i)=>labels[i]!==x))n.innerHTML=navHtml();n.style.setProperty('grid-template-columns','repeat(5,minmax(0,1fr))','important')}
-  function active(screen){const n=document.getElementById('coach-nav');if(!n)return;const map={dashboard:0,clients:1,checkins:3,messages:4};n.querySelectorAll('button').forEach(x=>x.classList.remove('active'));const i=map[screen];if(i!==undefined)n.querySelectorAll('button')[i]?.classList.add('active')}
-  function lockNav(){enforceNav();if(typeof window.buildCoachNav==='function'&&!window.buildCoachNav.__dccLocked){const old=window.buildCoachNav;const wrapped=function(){const r=old.apply(this,arguments);requestAnimationFrame(enforceNav);return r};wrapped.__dccLocked=true;window.buildCoachNav=wrapped}}
+  function navHtml(){return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="showCoach('calendar')">${icon('calendar')}<span>Calendario</span></button>`}
+  function enforceNav(){const n=document.getElementById('coach-nav');if(!n)return;const wanted=['Panel','Clientes','Calendario'],labels=[...n.querySelectorAll('button span')].map(x=>x.textContent.trim());if(labels.length!==3||wanted.some((x,i)=>labels[i]!==x))n.innerHTML=navHtml();n.style.setProperty('grid-template-columns','repeat(3,minmax(0,1fr))','important')}
+  function active(screen){const n=document.getElementById('coach-nav');if(!n)return;const map={dashboard:0,clients:1,calendar:2,checkins:1,messages:1};n.querySelectorAll('button').forEach(x=>x.classList.remove('active'));const i=map[screen];if(i!==undefined)n.querySelectorAll('button')[i]?.classList.add('active')}
+  function syncRoute(screen){window.currentApp='coach';window.currentScreen=screen;window.__dccCoachRouteIntent=screen;try{currentApp='coach';currentScreen=screen}catch(_){}}
+  function beforeRoute(screen){return document.dispatchEvent(new CustomEvent('dcc:coach-before-screen',{detail:{screen},cancelable:true}))}
+  function afterRoute(screen){document.dispatchEvent(new CustomEvent('dcc:coach-screen',{detail:{screen}}))}
 
   function install(){
-    injectCss();lockNav();
-    const original=window.showCoach;
-    if(typeof original!=='function'||original.__dccPremiumV9)return;
-    const base=original.__original||original.__base||original;
-    const wrapped=function(screen){
-      if(screen==='dashboard'){window.currentScreen='dashboard';renderDashboard();enforceNav();active('dashboard');return}
-      if(screen==='clients'){window.currentScreen='clients';renderClients();enforceNav();active('clients');return}
+    injectCss();enforceNav();
+    if(window.__dccCoachRouterV40)return;
+    const base=window.showCoach;
+    if(typeof base!=='function')return;
+    const router=function(screen){
+      if(!beforeRoute(screen))return;
+      if(screen!=='dashboard'){
+        window.__dccCoachTasksOpen=false;
+        window.__dccCoachAttentionOpen=false;
+      }
+      syncRoute(screen);
+      if(screen==='dashboard'){renderDashboard();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='clients'){renderClients();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='calendar'){
+        if(typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12();
+        else if(typeof window.dccRenderCoachCalendar==='function')window.dccRenderCoachCalendar();
+        else base.call(this,screen);
+        enforceNav();active(screen);afterRoute(screen);return;
+      }
+      if(screen==='checkins'&&typeof window.dccRenderCoachCheckins==='function'){window.dccRenderCoachCheckins();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='messages'&&typeof window.dccRenderCoachMessages==='function'){window.dccRenderCoachMessages();enforceNav();active(screen);afterRoute(screen);return}
       const main=document.getElementById('coach-main');if(main)main.classList.remove('dcc-p9-dashboard','dcc-premium-clients');
-      const r=base.apply(this,arguments);requestAnimationFrame(()=>{enforceNav();active(screen)});return r;
+      const result=base.apply(this,arguments);enforceNav();active(screen);afterRoute(screen);return result;
     };
-    wrapped.__dccPremiumV9=true;wrapped.__dccPremiumV6=true;wrapped.__original=base;window.showCoach=wrapped;
+    router.__dccPremiumV9=true;router.__dccPremiumV6=true;router.__dccSingleRouterV40=true;router.__original=base;
+    window.__dccCoachRouterV40=router;window.showCoach=router;
   }
 
-  function repaintCurrentDashboard(){
-    const main=document.getElementById('coach-main');if(!main||typeof window.showCoach!=='function')return;
-    const t=(main.textContent||'').toUpperCase();
-    const isDashboard=window.currentScreen==='dashboard'||t.includes('PANEL DE ENTRENADOR')||t.includes('CADA CLIENTE ES UN PROCESO')||t.includes('BUENOS DÍAS')||t.includes('BUENAS TARDES')||t.includes('BUENAS NOCHES');
-    if(isDashboard)window.showCoach('dashboard');
-  }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{install();setTimeout(repaintCurrentDashboard,40)},{once:true});else{install();setTimeout(repaintCurrentDashboard,40)}
-  window.addEventListener('load',()=>{install();setTimeout(repaintCurrentDashboard,60)},{once:true});
-  window.addEventListener('pageshow',()=>setTimeout(repaintCurrentDashboard,40));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.addEventListener('pageshow',()=>{enforceNav();active(window.currentScreen||'dashboard')});
 })();

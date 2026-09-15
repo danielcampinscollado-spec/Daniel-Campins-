@@ -30,14 +30,21 @@
     `;document.head.appendChild(s);
   }
 
-  function patch(id){
+  function isSummary(tab,root){
+    if(tab!=null)return tab==='summary';
+    const active=root?.querySelector('.dcc-ca-tab.active');
+    return !active||String(active.textContent||'').trim().toLowerCase()==='resumen';
+  }
+
+  function patch(id,tab){
     injectCss();
     const c=client(id),root=document.querySelector('#coach-main .dcc-ca-wrap');
-    if(!c||!root)return;
+    if(!root)return;
     root.querySelector('.dcc-access-card')?.remove();
+    if(!c||!isSummary(tab,root))return;
     const card=document.createElement('section');card.className='dcc-access-card';
     const linked=!!c.auth_user_id;
-    card.innerHTML=`<h2>Acceso del cliente</h2><p>Asigna el email que este cliente utilizará para entrar con su enlace seguro. Si cambias el email de una cuenta ya vinculada, la vinculación anterior se revocará.</p><div class="dcc-access-row"><input id="dccClientAccessEmailV1" type="email" inputmode="email" autocomplete="email" value="${esc(c.access_email||'')}" placeholder="cliente@email.com"><button type="button" onclick="dccSaveClientAccessEmailV1('${esc(id)}')">Guardar acceso</button></div><span class="dcc-access-state ${linked?'ok':''}">${linked?'CUENTA VINCULADA':'PENDIENTE DE VINCULACIÓN'}</span>`;
+    card.innerHTML=`<h2>Acceso del cliente</h2><p>Introduce el correo de Google que este cliente utilizará para entrar en DCC Fitness. En su primer acceso con ese mismo correo, la app vinculará automáticamente su cuenta con este perfil. Si cambias el correo después, la vinculación anterior se revocará.</p><div class="dcc-access-row"><input id="dccClientAccessEmailV1" type="email" inputmode="email" autocomplete="email" value="${esc(c.access_email||'')}" placeholder="correo@gmail.com"><button type="button" onclick="dccSaveClientAccessEmailV1('${esc(id)}')">Guardar correo</button></div><span class="dcc-access-state ${linked?'ok':''}">${linked?'CUENTA VINCULADA':'PENDIENTE DE PRIMER ACCESO'}</span>`;
     const firstCard=root.querySelector('.dcc-ca-card');
     if(firstCard)firstCard.insertAdjacentElement('afterend',card);else root.appendChild(card);
   }
@@ -45,19 +52,19 @@
   window.dccSaveClientAccessEmailV1=async function(id){
     const c=client(id),input=document.getElementById('dccClientAccessEmailV1'),email=String(input?.value||'').trim().toLowerCase(),database=db();
     if(!c||!database){notify('No se pudo preparar el acceso');return}
-    if(!validEmail(email)){notify('Introduce un email válido');input?.focus();return}
+    if(!validEmail(email)){notify('Introduce un correo válido');input?.focus();return}
     try{
       const {data:ok,error}=await database.rpc('dcc_set_client_access_email',{p_client_id:id,p_access_email:email});
       if(error||ok!==true)throw error||new Error('Cambio no confirmado');
       const changed=String(c.access_email||'').trim().toLowerCase()!==email;
       c.access_email=email;
       if(changed)c.auth_user_id=null;
-      notify('Email de acceso guardado');
-      patch(id);
+      notify('Correo de acceso guardado');
+      patch(id,'summary');
     }catch(error){
       console.error('DCC guardando email de acceso:',error);
       const duplicate=String(error?.message||'').toLowerCase().includes('duplicate')||String(error?.code||'')==='23505';
-      notify(duplicate?'Ese email ya está asignado a otro cliente':'No se pudo guardar el email de acceso');
+      notify(duplicate?'Ese correo ya está asignado a otro cliente':'No se pudo guardar el correo de acceso');
     }
   };
 
@@ -66,7 +73,7 @@
     if(typeof current!=='function'||current.__dccClientAccessCoachV1)return false;
     const wrapped=function(id,tab){
       const out=current.apply(this,arguments);
-      requestAnimationFrame(()=>patch(id));
+      requestAnimationFrame(()=>patch(id,tab));
       return out;
     };
     wrapped.__dccClientAccessCoachV1=true;

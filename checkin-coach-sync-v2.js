@@ -260,15 +260,15 @@
     if(typeof current!=='function'||current.__dccCheckinRemoteSyncV4)return false;
     const wrapped=function(screen){
       const result=current.apply(this,arguments);
-      if(screen==='checkins')syncCheckinsFromDatabase().then(ok=>{if(ok&&window.currentScreen==='checkins')current('checkins')});
+      if(screen==='checkins')syncCheckinsFromDatabase();
       return result;
     };
     wrapped.__dccCheckinRemoteSyncV3=true;wrapped.__dccCheckinRemoteSyncV4=true;wrapped.__base=current;window.showCoach=wrapped;return true;
   }
 
-  function install(){installReviewEnhancements();installReviewedSync();installNavigationSync();installClientAdminEnhancement()}
+  function install(){installReviewEnhancements();installReviewedSync();installClientAdminEnhancement()}
   injectStyles();install();syncCheckinsFromDatabase();
-  setTimeout(install,300);setTimeout(install,1000);setTimeout(install,2200);
+  
   window.addEventListener('load',()=>setTimeout(()=>{install();syncCheckinsFromDatabase()},120));
 })();
 

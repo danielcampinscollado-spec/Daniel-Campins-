@@ -39,13 +39,13 @@
     if(!window.__dccTrainingEdit){document.querySelector('[data-dcc-tdw="1"]')?.remove();return}
     const ds=days(),wrap=document.querySelector('#coach-main .dcc-tr-days');if(!wrap||!ds.length)return;
     let top=document.querySelector('[data-dcc-tdw="1"]');if(!top){wrap.insertAdjacentHTML('beforebegin',html(ds));top=document.querySelector('[data-dcc-tdw="1"]')}else top.outerHTML=html(ds);
-    const cards=[...document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day')];cards.forEach((card,i)=>{card.style.display=i===state.active?'':'none'});
+    const cards=[...document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day')];cards.forEach(card=>{card.style.display=''});
     let nav=document.querySelector('[data-dcc-tdw-nav="1"]');if(nav)nav.remove();
-    const active=cards[state.active];if(active){active.insertAdjacentHTML('beforeend',`<div class="dcc-tdw-nav" data-dcc-tdw-nav="1"><button class="dcc-tdw-prev" ${state.active===0?'disabled':''} onclick="dccTrainingWizardDay(${state.active-1})">← Anterior</button><button class="dcc-tdw-next" ${state.active>=ds.length-1?'disabled':''} onclick="dccTrainingWizardDay(${state.active+1})">Siguiente día →</button></div>`)}
+    
   }
 
-  window.dccSetTrainingDayCount=n=>{n=Math.max(1,Math.min(7,Number(n)||1));const cur=days();if(n<cur.length){const removed=cur.slice(n);const hasWork=removed.some(d=>(d?.exercises||[]).length||((d?.muscles||[]).length));if(hasWork&&!confirm(`Reducir a ${n} días eliminará la configuración de los últimos ${cur.length-n} día(s). ¿Continuar?`))return}const next=cur.slice(0,n);while(next.length<n)next.push(blankDay(next.length));next.forEach((d,i)=>d.day=i+1);setDays(next);state.active=Math.min(state.active,n-1);window.__dccTrainingOpen=state.active;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}};
-  window.dccTrainingWizardDay=i=>{const ds=days();i=Math.max(0,Math.min(Number(i)||0,ds.length-1));state.active=i;window.__dccTrainingOpen=i;apply();document.querySelector('[data-dcc-tdw="1"]')?.scrollIntoView({behavior:'smooth',block:'start'})};
+  window.dccSetTrainingDayCount=n=>{n=Math.max(1,Math.min(7,Number(n)||1));const cur=days();if(n<cur.length){const removed=cur.slice(n);const hasWork=removed.some(d=>(d?.exercises||[]).length||((d?.muscles||[]).length));if(hasWork&&!confirm(`Reducir a ${n} días eliminará la configuración de los últimos ${cur.length-n} día(s). ¿Continuar?`))return}const next=cur.slice(0,n);while(next.length<n)next.push(blankDay(next.length));next.forEach((d,i)=>d.day=i+1);setDays(next);state.active=Math.min(state.active,n-1);window.__dccTrainingOpen=null;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}};
+  window.dccTrainingWizardDay=i=>{const ds=days();i=Math.max(0,Math.min(Number(i)||0,ds.length-1));state.active=i;window.__dccTrainingOpen=window.__dccTrainingOpen===i?null:i;try{window.dccClientAdmin(id(),'training')}catch(_){apply()}document.querySelector('[data-dcc-tdw="1"]')?.scrollIntoView({behavior:'smooth',block:'start'})};
 
   function schedule(){if(state.raf)return;state.raf=requestAnimationFrame(()=>{state.raf=0;apply()})}
   const obs=new MutationObserver(schedule);
