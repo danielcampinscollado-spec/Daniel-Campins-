@@ -1,49 +1,10 @@
-/* DCC — Editar cliente existe únicamente en Resumen, sin MutationObserver */
+/* DCC — acciones de cliente al final del Resumen, una sola pasada */
 (function(){
-  'use strict';
-  const BUILD='20260914-client-edit-visibility-v1';
-  if(window.__dccClientEditVisibility===BUILD)return;
-  window.__dccClientEditVisibility=BUILD;
-
-  const norm=v=>String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
-  function root(){return document.querySelector('#coach-main.dcc-ca')}
-  function isSummary(r){return norm(r?.querySelector('.dcc-ca-tab.active')?.textContent)==='resumen'}
-  function editButtons(r){return [...(r?.querySelectorAll('button,a,[role="button"],[onclick]')||[])].filter(x=>norm(x.textContent)==='editar cliente')}
-  function infoCard(r){const h=[...r.querySelectorAll('h1,h2,h3,h4')].find(x=>norm(x.textContent)==='información general');return h?.closest('.dcc-ca-card,.dcc-card,.card,section')||null}
-
-  function enforce(){
-    const r=root();if(!r)return;
-    const edits=editButtons(r);
-    if(!isSummary(r)){
-      edits.forEach(x=>x.remove());
-      r.querySelectorAll('.dcc-ca-profile-actions,.dcc-summary-actions-bottom,.dcc-summary-actions-fixed,.dcc-client-compact-actions').forEach(x=>x.remove());
-      return;
-    }
-
-    const card=infoCard(r);if(!card)return;
-    let edit=edits[0]||null;
-    edits.slice(1).forEach(x=>x.remove());
-    const del=[...r.querySelectorAll('button')].find(x=>norm(x.textContent).includes('eliminar cliente'))||null;
-
-    let box=card.querySelector('.dcc-ca-profile-actions,.dcc-summary-actions-bottom');
-    if(!box){box=document.createElement('div');box.className='dcc-ca-profile-actions';card.appendChild(box)}
-
-    if(!edit&&typeof window.dccOpenClientProfileEditor==='function'){
-      edit=document.createElement('button');edit.type='button';edit.className='dcc-ca-edit-client';edit.textContent='Editar cliente';
-      edit.onclick=e=>{e.preventDefault();e.stopPropagation();window.dccOpenClientProfileEditor()};
-    }
-    if(edit&&edit.parentElement!==box)box.appendChild(edit);
-    if(del&&del.parentElement!==box)box.appendChild(del);
-  }
-
-  function wrap(){
-    const base=window.dccClientAdmin;if(typeof base!=='function'||base.__dccEditVisibilityV1)return false;
-    const wrapped=function(){const out=base.apply(this,arguments);requestAnimationFrame(enforce);return out};
-    wrapped.__dccEditVisibilityV1=true;wrapped.__base=base;window.dccClientAdmin=wrapped;return true;
-  }
-
-  function boot(){wrap();requestAnimationFrame(enforce)}
-  boot();let tries=0;const timer=setInterval(()=>{tries++;if(wrap()||tries>80)clearInterval(timer)},100);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
-  window.addEventListener('pageshow',boot);
+'use strict';const BUILD='20260915-client-edit-visibility-v4-bottom-stable';if(window.__dccClientEditVisibility===BUILD)return;window.__dccClientEditVisibility=BUILD;
+const norm=v=>String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
+function css(){if(document.getElementById('dcc-client-actions-bottom-v4-css'))return;const s=document.createElement('style');s.id='dcc-client-actions-bottom-v4-css';s.textContent=`#coach-main.dcc-ca .dcc-ca-profile-actions,#coach-main.dcc-ca .dcc-client-edit-authority-btn{display:none!important}#coach-main.dcc-ca .dcc-summary-actions-final{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 0;padding:13px 0 0;border-top:1px solid rgba(177,119,18,.16)}#coach-main.dcc-ca .dcc-summary-actions-final>button{width:100%!important;min-height:42px!important;height:42px!important;margin:0!important;padding:8px 12px!important;border-radius:14px!important;font-size:10px!important;font-weight:800!important;box-shadow:none!important}#coach-main.dcc-ca .dcc-summary-actions-final>.dcc-ca-edit-client{border:1px solid #d7ae55!important;background:linear-gradient(135deg,#fffaf0,#f4e6bf)!important;color:#7a5415!important}#coach-main.dcc-ca .dcc-summary-actions-final>.dcc-ca-delete{border:1px solid #e3b8ba!important;background:#fff5f5!important;color:#b0444a!important}html:not(.dcc-theme-light-premium) #coach-main.dcc-ca .dcc-summary-actions-final>.dcc-ca-edit-client{background:#151109!important;color:#f0c96b!important;border-color:#8c692b!important}html:not(.dcc-theme-light-premium) #coach-main.dcc-ca .dcc-summary-actions-final>.dcc-ca-delete{background:#12090b!important;color:#ff6870!important;border-color:#6f272b!important}`;(document.head||document.documentElement).appendChild(s)}
+function open(e){e?.preventDefault?.();e?.stopPropagation?.();const id=window.__dccClientAdminId??window.selectedClient;if(typeof window.dccCriticalOpenClientEditor==='function')return window.dccCriticalOpenClientEditor(id);if(typeof window.dccOpenClientProfileEditor==='function')return window.dccOpenClientProfileEditor(id)}
+function place(id,tab){css();const r=document.querySelector('#coach-main.dcc-ca');if(!r)return;r.querySelectorAll('.dcc-summary-actions-final,.dcc-summary-actions-bottom,.dcc-ca-profile-actions').forEach(x=>x.remove());const active=norm(tab||r.querySelector('.dcc-ca-tab.active')?.textContent);if(active!=='summary'&&active!=='resumen')return;const wrap=r.querySelector('.dcc-ca-wrap');if(!wrap)return;const del=[...r.querySelectorAll('button')].find(x=>norm(x.textContent)==='eliminar cliente');const box=document.createElement('div');box.className='dcc-summary-actions-final';const edit=document.createElement('button');edit.type='button';edit.className='dcc-ca-edit-client';edit.textContent='Editar cliente';edit.onclick=open;box.appendChild(edit);if(del)box.appendChild(del);wrap.appendChild(box);window.__dccClientAdminId=String(id??window.selectedClient??'')}
+function install(){const base=window.dccClientAdmin;if(typeof base!=='function'||base.__dccEditVisibilityStableV4)return false;const w=function(id,tab='summary'){const out=base.apply(this,arguments);place(id,tab);return out};w.__dccEditVisibilityStableV4=true;w.__base=base;window.dccClientAdmin=w;return true}
+function boot(){css();if(!install()){let n=0,t=setInterval(()=>{if(install()||++n>=12)clearInterval(t)},100)}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
