@@ -46,3 +46,4 @@ jobs:
           git add coach-premium-core-v9.js coach-theme-premium-global.js .github/workflows/client-card-status-chevron-fix.yml
           git commit -m "Fix client status badge and lateral chevron"
           git push
+# trigger
