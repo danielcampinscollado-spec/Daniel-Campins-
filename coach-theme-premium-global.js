@@ -43,6 +43,9 @@
         grid-template-columns:minmax(0,1fr) 132px!important;gap:16px!important;min-height:96px!important;padding:16px 18px!important;
       }
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-training{display:none!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card.dcc-cl-card-ref{grid-template-columns:minmax(0,1fr) 24px!important;gap:12px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-active{display:none!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-chevron{display:flex!important;align-items:center!important;justify-content:flex-end!important;align-self:stretch!important;color:#b77b13!important;font-size:26px!important;line-height:1!important}
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{
         min-height:50px!important;padding:9px 14px!important;border:1px solid rgba(183,123,19,.40)!important;border-radius:15px!important;
         background:linear-gradient(145deg,#fffdf8 0%,#f8efdf 100%)!important;color:#8d5b08!important;
