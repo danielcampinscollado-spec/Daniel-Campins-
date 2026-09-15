@@ -1,7 +1,7 @@
-/* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día que se está editando */
+/* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día seleccionado */
 (function(){
 'use strict';
-const BUILD='20260915-training-save-actions-position-v2-active-day';
+const BUILD='20260915-training-save-actions-position-v3-selected-day';
 if(window.__dccTrainingSaveActionsPosition===BUILD)return;window.__dccTrainingSaveActionsPosition=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -17,10 +17,8 @@ function actionBox(root){
 function activeDay(root){
   const days=[...root.querySelectorAll('.dcc-tr-days>.dcc-tr-day')];
   if(!days.length)return null;
-  const open=days.find(d=>d.querySelector('.dcc-training-day-rest')&&d.querySelector('.dcc-tr-exercises'));
-  if(open)return open;
-  const idx=Math.max(0,Number(window.__dccTrainingOpen)||0);
-  return days[idx]||days[0];
+  const idx=Math.max(0,Math.min(days.length-1,Number(window.__dccTrainingOpen)||0));
+  return days[idx]||days.find(d=>getComputedStyle(d).display!=='none')||days[0];
 }
 function apply(){
   if(!window.__dccTrainingEdit)return;
