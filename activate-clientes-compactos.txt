@@ -1,0 +1,1 @@
+Activation is performed by git tree aliasing the existing loaded coach status script to the safe loader.
