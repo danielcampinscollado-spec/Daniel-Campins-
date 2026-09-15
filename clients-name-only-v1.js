@@ -1,18 +1,17 @@
-/* DCC — Clientes: nombre + acceso directo a gestionar cliente */
+/* DCC — Clientes: nombre + botón directo Gestionar cliente */
 (function(){
 'use strict';
-const BUILD='20260915-clients-name-only-v1';
+const BUILD='20260915-clients-manage-action-v2';
 if(window.__dccClientsNameOnly===BUILD)return;window.__dccClientsNameOnly=BUILD;
 
 function injectCss(){
-  if(document.getElementById('dcc-clients-name-only-v1'))return;
-  const s=document.createElement('style');
-  s.id='dcc-clients-name-only-v1';
+  let s=document.getElementById('dcc-clients-name-only-v1');
+  if(!s){s=document.createElement('style');s.id='dcc-clients-name-only-v1';document.head.appendChild(s)}
   s.textContent=`
     #coach-main.dcc-premium-clients .dcc-cl-card.dcc-cl-card-ref{
-      grid-template-columns:minmax(0,1fr) 32px!important;
-      min-height:68px!important;
-      padding:12px 16px!important;
+      grid-template-columns:minmax(0,1fr) auto!important;
+      min-height:82px!important;
+      padding:12px 14px 12px 18px!important;
       gap:12px!important;
       align-items:center!important;
     }
@@ -22,16 +21,24 @@ function injectCss(){
     #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-active,
     #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-training,
     #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-manage{display:none!important}
-    #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-info{display:flex!important;align-items:center!important;min-height:40px!important}
-    #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-name{margin:0!important;font-size:16px!important;font-weight:800!important;line-height:1.2!important}
+    #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-info{display:flex!important;align-items:center!important;min-width:0!important;min-height:44px!important}
+    #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-name{margin:0!important;font-size:16px!important;font-weight:800!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
     #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-chevron{
-      display:flex!important;align-items:center!important;justify-content:flex-end!important;
-      width:32px!important;height:100%!important;align-self:stretch!important;
-      color:#d9aa4a!important;font-size:28px!important;line-height:1!important;
-      cursor:pointer!important;
+      box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      width:auto!important;height:44px!important;align-self:center!important;padding:0 13px!important;
+      border:1px solid #d9aa4a!important;border-radius:14px!important;background:transparent!important;
+      color:#9d6a13!important;font-size:12px!important;font-weight:800!important;line-height:1!important;
+      white-space:nowrap!important;cursor:pointer!important;
+    }
+    #coach-main.dcc-premium-clients .dcc-cl-chevron .dcc-manage-arrow{margin-left:8px!important;font-size:21px!important;line-height:1!important;color:#b77b13!important}
+    html:not(.dcc-theme-light-premium) #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-chevron{color:#f0c96b!important;border-color:#d9aa4a!important;background:rgba(217,170,74,.025)!important}
+    @media(max-width:390px){
+      #coach-main.dcc-premium-clients .dcc-cl-card.dcc-cl-card-ref{padding-left:14px!important;padding-right:10px!important;gap:8px!important}
+      #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-name{font-size:15px!important}
+      #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-chevron{height:42px!important;padding:0 10px!important;font-size:11px!important}
+      #coach-main.dcc-premium-clients .dcc-cl-chevron .dcc-manage-arrow{margin-left:6px!important;font-size:19px!important}
     }
   `;
-  document.head.appendChild(s);
 }
 
 function apply(){
@@ -40,7 +47,10 @@ function apply(){
   if(!main||!main.classList.contains('dcc-premium-clients'))return;
   main.querySelectorAll('.dcc-cl-card.dcc-cl-card-ref').forEach(card=>{
     const arrow=card.querySelector('.dcc-cl-chevron');
-    if(arrow){
+    if(!arrow)return;
+    if(arrow.dataset.manageReady!=='1'){
+      arrow.dataset.manageReady='1';
+      arrow.innerHTML='Gestionar cliente<span class="dcc-manage-arrow">›</span>';
       arrow.setAttribute('role','button');
       arrow.setAttribute('aria-label','Gestionar cliente');
       arrow.setAttribute('title','Gestionar cliente');
