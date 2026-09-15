@@ -30,11 +30,18 @@
     `;document.head.appendChild(s);
   }
 
-  function patch(id){
+  function isSummary(tab,root){
+    if(tab!=null)return tab==='summary';
+    const active=root?.querySelector('.dcc-ca-tab.active');
+    return !active||String(active.textContent||'').trim().toLowerCase()==='resumen';
+  }
+
+  function patch(id,tab){
     injectCss();
     const c=client(id),root=document.querySelector('#coach-main .dcc-ca-wrap');
-    if(!c||!root)return;
+    if(!root)return;
     root.querySelector('.dcc-access-card')?.remove();
+    if(!c||!isSummary(tab,root))return;
     const card=document.createElement('section');card.className='dcc-access-card';
     const linked=!!c.auth_user_id;
     card.innerHTML=`<h2>Acceso del cliente</h2><p>Introduce el correo de Google que este cliente utilizará para entrar en DCC Fitness. En su primer acceso con ese mismo correo, la app vinculará automáticamente su cuenta con este perfil. Si cambias el correo después, la vinculación anterior se revocará.</p><div class="dcc-access-row"><input id="dccClientAccessEmailV1" type="email" inputmode="email" autocomplete="email" value="${esc(c.access_email||'')}" placeholder="correo@gmail.com"><button type="button" onclick="dccSaveClientAccessEmailV1('${esc(id)}')">Guardar correo</button></div><span class="dcc-access-state ${linked?'ok':''}">${linked?'CUENTA VINCULADA':'PENDIENTE DE PRIMER ACCESO'}</span>`;
@@ -53,7 +60,7 @@
       c.access_email=email;
       if(changed)c.auth_user_id=null;
       notify('Correo de acceso guardado');
-      patch(id);
+      patch(id,'summary');
     }catch(error){
       console.error('DCC guardando email de acceso:',error);
       const duplicate=String(error?.message||'').toLowerCase().includes('duplicate')||String(error?.code||'')==='23505';
@@ -66,7 +73,7 @@
     if(typeof current!=='function'||current.__dccClientAccessCoachV1)return false;
     const wrapped=function(id,tab){
       const out=current.apply(this,arguments);
-      requestAnimationFrame(()=>patch(id));
+      requestAnimationFrame(()=>patch(id,tab));
       return out;
     };
     wrapped.__dccClientAccessCoachV1=true;
