@@ -1,7 +1,7 @@
 /* DCC — autoridad única de navegación del entrenador */
 (function(){
   'use strict';
-  const BUILD='20260915-coach-navigation-authority-v1';
+  const BUILD='20260915-coach-navigation-authority-v2';
   if(window.__dccCoachNavigationAuthority===BUILD)return;
   window.__dccCoachNavigationAuthority=BUILD;
 
@@ -19,6 +19,15 @@
     }
   }
 
+  function deepest(fn){
+    const seen=new Set();let current=fn;
+    while(typeof current==='function'&&!seen.has(current)){
+      seen.add(current);const next=current.__base||current.__original;
+      if(typeof next!=='function'||next===current)break;current=next;
+    }
+    return current;
+  }
+
   function buttons(){const nav=document.getElementById('coach-nav');return nav?[...nav.querySelectorAll('button')]:[]}
   function mark(screen){
     const index=ROUTES.indexOf(screen),list=buttons();if(index<0||list.length!==5)return;
@@ -27,14 +36,25 @@
 
   function installShowCoachAuthority(){
     const base=window.showCoach;
-    if(typeof base!=='function'||base.__dccNavigationAuthorityV1)return false;
+    if(typeof base!=='function'||base.__dccNavigationAuthorityV2)return false;
+    const core=deepest(base);
     const wrapped=function(screen){
-      if(ROUTE_SET.has(screen)){syncState(screen);mark(screen)}
-      const out=base.apply(this,arguments);
-      if(ROUTE_SET.has(screen)){syncState(screen);mark(screen)}
-      return out;
+      if(!ROUTE_SET.has(screen))return base.apply(this,arguments);
+      syncState(screen);mark(screen);
+      const main=document.getElementById('coach-main');
+      const needsCore=(screen==='checkins'||screen==='messages')&&typeof core==='function'&&core!==base;
+      const oldVisibility=main?.style?.visibility||'';
+      if(needsCore&&main)main.style.visibility='hidden';
+      try{
+        /* Check-in y Mensajes premium interceptan showCoach y antes no actualizaban el
+           binding `let currentScreen` de index.html. El núcleo se ejecuta oculto en la
+           misma tarea y el renderer premium queda como único render visible. */
+        if(needsCore){try{core.apply(this,arguments)}catch(error){console.warn('DCC sync núcleo '+screen+':',error)}syncState(screen)}
+        const out=base.apply(this,arguments);
+        syncState(screen);mark(screen);return out;
+      }finally{if(needsCore&&main)main.style.visibility=oldVisibility}
     };
-    wrapped.__dccNavigationAuthorityV1=true;
+    wrapped.__dccNavigationAuthorityV2=true;
     wrapped.__dccPremiumV9=!!base.__dccPremiumV9;
     wrapped.__dccPremiumV6=!!base.__dccPremiumV6;
     wrapped.__base=base;
@@ -68,9 +88,10 @@
   window.dccOpenCoachMessages=()=>open('messages');
 
   function boot(){
-    installShowCoachAuthority();
-    if(patchNav())return;
-    let tries=0;const timer=setInterval(()=>{tries++;installShowCoachAuthority();if(patchNav()||tries>=20)clearInterval(timer)},100);
+    installShowCoachAuthority();patchNav();
+    /* Check-in y Mensajes vuelven a intentar instalar sus wrappers a 300 y 900 ms.
+       Durante 1,6 s recolocamos esta autoridad por fuera; después no hay polling. */
+    let tries=0;const timer=setInterval(()=>{tries++;installShowCoachAuthority();patchNav();if(tries>=16)clearInterval(timer)},100);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
