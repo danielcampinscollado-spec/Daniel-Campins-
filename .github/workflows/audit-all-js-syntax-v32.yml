@@ -8,12 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check every root JavaScript file
+      - name: Check every JavaScript file
         shell: bash
         run: |
           failed=0
           while IFS= read -r file; do
             echo "Checking $file"
             if ! node --check "$file"; then failed=1; fi
-          done < <(find . -maxdepth 1 -type f -name '*.js' -printf '%f\n' | sort)
+          done < <(find . -type f -name '*.js' -not -path './node_modules/*' -printf '%p\n' | sort)
           exit "$failed"
+      - name: Verify critical navigation invariants
+        shell: bash
+        run: |
+          grep -q 'stale async callbacks must never kick the coach back to Panel' index.html
+          grep -q "if(screen==='checkins')syncCheckinsFromDatabase();" checkin-coach-sync-v2.js
+          ! grep -q "setTimeout(install,300);setTimeout(install,900);" checkin-premium.js
+          ! grep -q "setTimeout(install,300);setTimeout(install,900);" messages-premium.js
+          echo 'Critical navigation invariants OK'
