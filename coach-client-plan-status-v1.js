@@ -1,7 +1,7 @@
 /* DCC — bootstrap estable: autoridades activas de navegación, check-in y mensajes */
 (function(){
   'use strict';
-  const BUILD='20260915-client-quality-bootstrap-v8-nav';
+  const BUILD='20260915-client-quality-bootstrap-v9-single-router';
   if(window.__dccAuditBootstrapStable===BUILD)return;
   window.__dccAuditBootstrapStable=BUILD;
   window.__dccAppQualityV5=true;

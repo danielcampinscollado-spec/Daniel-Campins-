@@ -1,13 +1,9 @@
-CHANGED runtime-compat: remove global openApp/showCoach/data patches
-CHANGED remove checkins
-CHANGED remove messages
-CHANGED remove messageSync
-CHANGED remove messagePositionFix
-CHANGED remove finalShell
-CHANGED remove premiumNav
-CHANGED remove premiumCoachTheme
-CHANGED exercise library no longer boots coach/message/checkin layers
-CHANGED checkin sync: data/review only, no showCoach wrapper
-CHANGED checkin premium renderer: no navigation wrapper
-CHANGED messages premium renderer: export renderer, no navigation wrapper
-premium core route marker missing
+OK runtime-compat library-only
+OK exercise library clean bootstrap
+OK checkin sync data-only
+OK checkin renderer only
+OK messages renderer only
+OK premium core single router
+OK bootstrap no nav wrapper
+OK coach premium loader only
+SYNTAX OK

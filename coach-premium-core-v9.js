@@ -185,7 +185,9 @@
     const base=original.__original||original.__base||original;
     const wrapped=function(screen){
       if(screen==='dashboard'){window.currentScreen='dashboard';renderDashboard();enforceNav();active('dashboard');return}
-      if(screen==='clients'){window.currentScreen='clients';renderClients();enforceNav();active('clients');return}
+      if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';renderClients();enforceNav();active('clients');return}
+      if(screen==='checkins'&&typeof window.dccRenderCoachCheckins==='function'){window.currentScreen='checkins';window.__dccCoachRouteIntent='checkins';window.dccRenderCoachCheckins();enforceNav();active('checkins');return}
+      if(screen==='messages'&&typeof window.dccRenderCoachMessages==='function'){window.currentScreen='messages';window.__dccCoachRouteIntent='messages';window.dccRenderCoachMessages();enforceNav();active('messages');return}
       const main=document.getElementById('coach-main');if(main)main.classList.remove('dcc-p9-dashboard','dcc-premium-clients');
       const r=base.apply(this,arguments);requestAnimationFrame(()=>{enforceNav();active(screen)});return r;
     };
