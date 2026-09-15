@@ -10,7 +10,7 @@ jobs:
   browser-runtime-trace:
     runs-on: ubuntu-latest
     env:
-      RC_URL: https://daniel-campins-eng0vizvg-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=vriivrWrEsKwKpmQafqSb2mP8wj9mpU8
+      RC_URL: https://daniel-campins-586fhis0w-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=43AzAT23sp5Iw6m1yBMD3T1sGXqN1JJE
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,5 +32,5 @@ jobs:
           git config user.name dcc-runtime-audit
           git config user.email actions@users.noreply.github.com
           git add .github/runtime-trace.log .github/runtime-trace-exit.txt
-          git commit -m '[audit] Persist refactored browser runtime trace' || exit 0
+          git commit -m '[audit] Persist final browser runtime trace' || exit 0
           git push
