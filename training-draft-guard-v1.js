@@ -1,7 +1,7 @@
 /* DCC — protege borradores de rutina y controla guardado de rutinas incompletas */
 (function(){
 'use strict';
-const BUILD='20260915-training-draft-guard-v2-save-flow';
+const BUILD='20260915-training-draft-guard-v3-save-home';
 if(window.__dccTrainingDraftGuard===BUILD)return;window.__dccTrainingDraftGuard=BUILD;
 let dirty=false,bypass=false,pending=null,lastEditing=false,snapshot=null,timer=0;
 const clone=v=>JSON.parse(JSON.stringify(v));
@@ -35,7 +35,7 @@ function isFinalSave(el){return /^(guardar\s+cambios|guardar\s+(rutina|entrenami
 document.addEventListener('input',e=>{if(window.__dccTrainingEdit&&e.target.closest('#coach-main .dcc-tr-day'))window.dccMarkTrainingDraftDirty()},true);
 document.addEventListener('change',e=>{if(window.__dccTrainingEdit&&e.target.closest('#coach-main .dcc-tr-day'))window.dccMarkTrainingDraftDirty()},true);
 document.addEventListener('click',e=>{if(!window.__dccTrainingEdit||bypass)return;const el=e.target.closest('button,a');if(!el||isGuardModal(el))return;if(isInternalEditorControl(el)){const t=(el.textContent||'').toLowerCase();if(/guardar músculos|guardar musculos|añadir ejercicio|eliminar|quitar/.test(t))setTimeout(()=>window.dccMarkTrainingDraftDirty(),0);return}if(isFinalSave(el)){const missing=incompleteCount();if(missing>0){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();showIncomplete(missing)}return}if(!dirty)return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();showLeave(()=>el.click())},true);
-function wrapSave(){const fn=window.dccSaveRoutine;if(typeof fn!=='function'||fn.__dccDraftGuard)return;const w=async function(){const id=String(arguments[0]||cid());persistNow();const out=await fn.apply(this,arguments);clearDraft(id);return out};w.__dccDraftGuard=true;window.dccSaveRoutine=w}
+function wrapSave(){const fn=window.dccSaveRoutine;if(typeof fn!=='function'||fn.__dccDraftGuard)return;const w=async function(){const id=String(arguments[0]||cid());persistNow();const out=await fn.apply(this,arguments);clearDraft(id);setTimeout(exitToTrainingHome,80);return out};w.__dccDraftGuard=true;window.dccSaveRoutine=w}
 function watch(){recover();wrapSave();const editing=!!window.__dccTrainingEdit;if(editing&&!lastEditing)captureSnapshot();if(!editing&&lastEditing&&!dirty)snapshot=null;lastEditing=editing}
 setInterval(watch,250);watch();
 window.addEventListener('beforeunload',e=>{if(!window.__dccTrainingEdit||!dirty)return;persistNow();e.preventDefault();e.returnValue=''});
