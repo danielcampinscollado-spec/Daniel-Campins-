@@ -1,7 +1,7 @@
 /* DCC — puente único entre rutas premium y el estado interno legacy */
 (function(){
   'use strict';
-  const BUILD='20260915-coach-route-state-bridge-v1';
+  const BUILD='20260915-coach-route-state-bridge-v2';
   if(window.__dccCoachRouteStateBridge===BUILD)return;
   window.__dccCoachRouteStateBridge=BUILD;
 
@@ -20,16 +20,15 @@
 
   function install(){
     const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccRouteStateBridgeV1)return false;
+    if(typeof current!=='function'||current.__dccRouteStateBridgeV2)return false;
     const core=deepest(current);
     const wrapped=function(screen){
       if(!ROUTES.has(screen))return current.apply(this,arguments);
-
       window.__dccCoachRouteIntent=screen;
 
-      /* Check-in, Mensajes y Calendario pueden ser interceptados por renderers premium
-         antes de llegar al showCoach original. Ejecutar primero el núcleo sincroniza
-         el `let currentScreen` interno de index.html. Todo ocurre en el mismo frame. */
+      /* Algunos renderers premium interceptan la ruta sin llegar al showCoach original.
+         Sincronizamos primero el estado léxico interno y después pintamos el renderer
+         premium, todo de forma síncrona dentro del mismo frame. */
       if((screen==='checkins'||screen==='messages'||screen==='calendar')&&core!==current){
         try{core.call(this,screen)}catch(e){console.warn('DCC route core sync:',e)}
       }
@@ -39,13 +38,15 @@
       window.__dccCoachRouteIntent=screen;
       return out;
     };
-    wrapped.__dccRouteStateBridgeV1=true;
+    wrapped.__dccRouteStateBridgeV2=true;
     wrapped.__base=current;
     window.showCoach=wrapped;
     return true;
   }
 
   install();
-  let tries=0;const timer=setInterval(()=>{tries++;if(install()||tries>=20)clearInterval(timer)},100);
-  window.addEventListener('pageshow',install);
+  /* Check-in/Mensajes reinstalan wrappers a 300 y 900 ms. Durante dos segundos
+     volvemos a colocar este puente por fuera si alguno de ellos cambia showCoach. */
+  let tries=0;const timer=setInterval(()=>{tries++;install();if(tries>=24)clearInterval(timer)},100);
+  window.addEventListener('pageshow',()=>{install();setTimeout(install,350);setTimeout(install,950)});
 })();
