@@ -6038,7 +6038,13 @@ async function openApp(app){
     return;
   }
 
+  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block";
+  if(alreadyOpen){
+    return true;
+  }
+
   currentApp = app;
+  window.currentApp = app;
 
   setupMessageRealtime();
 
@@ -10719,7 +10725,13 @@ async function sendClientMessage(){
 }
 
 function showCoach(screen){
+/* Route lock: stale async callbacks must never kick the coach back to Panel. */
+if(screen==="dashboard" && window.__dccCoachRouteIntent && window.__dccCoachRouteIntent!=="dashboard"){
+  return;
+}
 currentScreen=screen;
+window.currentScreen=screen;
+window.__dccCoachRouteIntent=screen;
 const main=document.getElementById("coach-main");
 let html="";
 
