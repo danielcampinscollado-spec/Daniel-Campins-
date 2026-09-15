@@ -1,7 +1,7 @@
-/* DCC — aviso compacto de planes pendientes */
+/* DCC — aviso compacto de planes pendientes, sin observer global */
 (function(){
   'use strict';
-  const BUILD='20260914-client-plan-alert-compact-v3';
+  const BUILD='20260915-client-plan-alert-compact-v4';
   if(window.__dccClientPlanAlertCompact===BUILD)return;
   window.__dccClientPlanAlertCompact=BUILD;
 
@@ -39,6 +39,11 @@
     });
   }
   let queued=false;function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})}
-  function observe(){if(!document.body||document.body.__dccPlanAlertCompactObserverV3)return;document.body.__dccPlanAlertCompactObserverV3=true;new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true});apply()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observe,{once:true});else observe();
+
+  css();schedule();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});
+  window.addEventListener('pageshow',schedule);
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('.dcc-ca-tabs,.dcc-cl-manage,.dcc-fcl-manage,#coach-nav'))schedule();
+  },true);
 })();
