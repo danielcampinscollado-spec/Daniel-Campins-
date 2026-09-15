@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 const BUILD='20260915-client-plan-alert-compact-v5-stable';if(window.__dccClientPlanAlertCompact===BUILD)return;window.__dccClientPlanAlertCompact=BUILD;
-const STYLE_ID='dcc-client-plan-alert-compact-css',appData=()=>{try{return data||{}}catch(_){return window.data||{}};
+const STYLE_ID='dcc-client-plan-alert-compact-css',appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
 function mealReady(m){if(Array.isArray(m?.options)&&m.options.length)return m.options.some(o=>Array.isArray(o?.foods)&&o.foods.length);return Array.isArray(m?.foods)&&m.foods.length}
 function dietReady(id){const p=appData()?.diets?.[id];return !!p&&['training','rest'].every(t=>Array.isArray(p?.[t]?.meals)&&p[t].meals.length&&p[t].meals.every(mealReady))}
 function routineReady(id){const r=appData()?.routines?.[id],days=Array.isArray(r)?r:(Array.isArray(r?.routine)?r.routine:[]);return days.length>0&&days.every(d=>Array.isArray(d?.exercises)&&d.exercises.length)}
