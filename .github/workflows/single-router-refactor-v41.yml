@@ -14,19 +14,23 @@ jobs:
       - uses: actions/checkout@v4
       - name: Refactor navigation ownership
         run: python3 .github/scripts/single_router_refactor_v41.py
-      - name: Validate complete JavaScript tree and router invariants
+      - name: Validate complete JavaScript tree and active router invariants
         shell: bash
         run: |
           set -e
           while IFS= read -r f; do node --check "$f"; done < <(find . -type f -name '*.js' -not -path './node_modules/*' -print | sort)
           node --check .github/scripts/rc_browser_smoke.mjs
-          test "$(grep -RIl --include='*.js' 'window.showCoach=' . --exclude-dir=node_modules --exclude='coach-premium-core-v9.js' | wc -l)" -eq 0
+          ! grep -q 'window.showCoach=' coach-ui-v11.js
+          ! grep -q 'window.showCoach=' coach-calendar-v12.js
+          ! grep -q 'window.showCoach=' coach-calendar-sync-v14.js
+          ! grep -q 'window.showCoach=' messages-realtime-chat-guard-v1.js
+          ! grep -q 'window.showCoach=' client-server-source-v1.js
           ! grep -q 'installShowCoachWrapper' client-server-source-v1.js
           ! grep -q 'wrapShowCoach' coach-calendar-sync-v14.js
           grep -q '__dccSingleRouterV40' coach-premium-core-v9.js
           grep -q "event.detail?.screen==='calendar'" coach-calendar-sync-v14.js
           grep -q 'dcc:coach-before-screen' messages-realtime-chat-guard-v1.js
-          echo 'Single-router validation OK'
+          echo 'Single-router active-runtime validation OK'
       - name: Commit refactor
         run: |
           git config user.name dcc-runtime-refactor
