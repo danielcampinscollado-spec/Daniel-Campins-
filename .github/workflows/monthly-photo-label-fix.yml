@@ -1,0 +1,33 @@
+name: Fix monthly photo cadence label
+on:
+  push:
+    paths:
+      - '.github/workflows/monthly-photo-label-fix.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: google-auth-rc
+      - name: Fix label
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('client-admin-premium.js')
+          s=p.read_text()
+          start=s.index('function monthlyPhotoText(id){')
+          end=s.index('\nfunction followupPane', start)
+          s=s[:start]+"function monthlyPhotoText(id){return'3 fotos · 1 vez al mes'}"+s[end:]
+          p.write_text(s)
+          PY
+          node --check client-admin-premium.js
+      - name: Commit
+        run: |
+          git config user.name 'dcc-client-hub'
+          git config user.email 'actions@users.noreply.github.com'
+          git add client-admin-premium.js
+          git commit -m '[client] Clarify monthly three-photo check-in cadence'
+          git push origin HEAD:google-auth-rc
