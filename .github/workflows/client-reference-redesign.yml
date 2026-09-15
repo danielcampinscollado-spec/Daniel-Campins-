@@ -13,6 +13,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: google-auth-rc
+      - name: Remove obsolete CSS anchor step
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('.github/scripts/client_reference_redesign.py')
+          s=p.read_text()
+          a=s.index('# Add compact reference-list CSS')
+          b=s.index('p.write_text(s)',a)+len('p.write_text(s)')
+          s=s[:a]+'p.write_text(s)'+s[b:]
+          p.write_text(s)
+          PY
       - name: Apply approved client reference layout
         run: python3 .github/scripts/client_reference_redesign.py
       - name: Validate JavaScript
@@ -21,9 +32,9 @@ jobs:
           node --check client-admin-premium.js
       - name: Commit redesign
         run: |
-          if git diff --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add coach-premium-core-v9.js client-admin-premium.js
+          if git diff --cached --quiet; then exit 0; fi
           git commit -m "[ui] Rebuild client management from approved reference"
           git push origin google-auth-rc
