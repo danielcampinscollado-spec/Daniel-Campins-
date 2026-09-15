@@ -32,7 +32,7 @@
   }
 
   function loadRuntimeFixes(){
-    load('./auth-premium-v1.js?v=20260914-google-rc1','secure-auth','__dccSecureAuthV1');
+    load('./auth-premium-v1.js?v=20260914-google-rc1','secure-auth','__dccSecureAuth');
     load('./training-day-wizard-v1.js?v=20260912-1703','training-day-wizard','__dccTrainingDayWizardV1');
     load('./client-delete-atomic-v4.js?v=20260912-2201','client-delete-atomic','__dccClientDeleteAtomicV6');
     /* El editor actual solo abre/guarda el formulario. La colocación de botones la
