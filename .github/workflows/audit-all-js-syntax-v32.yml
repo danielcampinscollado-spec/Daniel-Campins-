@@ -1,11 +1,9 @@
-name: Full JavaScript syntax audit v32
-# rerun 2026-09-15 after client-plan-alert repair
+name: Full runtime architecture audit v40
 on:
   push:
-    paths:
-      - '.github/workflows/audit-all-js-syntax-v32.yml'
+    paths: ['.github/workflows/audit-all-js-syntax-v32.yml']
 jobs:
-  syntax:
+  audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -13,16 +11,20 @@ jobs:
         shell: bash
         run: |
           failed=0
-          while IFS= read -r file; do
-            echo "Checking $file"
-            if ! node --check "$file"; then failed=1; fi
-          done < <(find . -type f -name '*.js' -not -path './node_modules/*' -printf '%p\n' | sort)
+          while IFS= read -r file; do if ! node --check "$file"; then failed=1; fi; done < <(find . -type f -name '*.js' -not -path './node_modules/*' -printf '%p\n' | sort)
           exit "$failed"
-      - name: Verify critical navigation invariants
+      - name: Verify single-router invariants
         shell: bash
         run: |
-          grep -q 'stale async callbacks must never kick the coach back to Panel' index.html
-          grep -q "if(screen==='checkins')syncCheckinsFromDatabase();" checkin-coach-sync-v2.js
-          ! grep -q "setTimeout(install,300);setTimeout(install,900);" checkin-premium.js
-          ! grep -q "setTimeout(install,300);setTimeout(install,900);" messages-premium.js
-          echo 'Critical navigation invariants OK'
+          ! grep -q 'window.openApp=async function' entrenamientos/runtime-compat.js
+          ! grep -q 'showCoach("dashboard")' entrenamientos/runtime-compat.js
+          ! grep -q 'showCoach' coach-dashboard-bootstrap-v1.js
+          ! grep -q 'showCoach' coach-client-final-consistency-v1.js
+          ! grep -q 'window.showCoach=' rc-coach-stability-v1.js
+          ! grep -q 'dcc-coach-nav-final' coach-client-plan-status-v1.js
+          ! grep -q 'installNavigationSync();' checkin-coach-sync-v2.js
+          ! grep -q 'install();setTimeout(install' checkin-premium.js
+          ! grep -q 'install();setTimeout(install' messages-premium.js
+          grep -q 'dccRenderCoachCheckins' coach-premium-core-v9.js
+          grep -q 'dccRenderCoachMessages' coach-premium-core-v9.js
+          echo 'Single-router invariants OK'
