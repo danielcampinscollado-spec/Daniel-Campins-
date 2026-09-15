@@ -24,5 +24,5 @@ jobs:
           git config user.name dcc-runtime-refactor
           git config user.email actions@users.noreply.github.com
           git add entrenamientos/runtime-compat.js ejercicio-biblioteca.js checkin-coach-sync-v2.js checkin-premium.js messages-premium.js coach-premium-core-v9.js coach-client-plan-status-v1.js coach-premium-v8.js .github/runtime-refactor.log .github/runtime-refactor-exit.txt
-          git commit -m '[runtime] Remove competing navigation authorities' || exit 0
+          git commit -m '[runtime] Complete single-router architecture' || exit 0
           git push
