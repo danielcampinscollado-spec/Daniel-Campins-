@@ -1,7 +1,7 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  const BUILD='20260915-auth-preview-redirect-v32';
+  const BUILD='20260915-auth-preview-redirect-v33';
   if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
   window.__dccAuthPreviewRedirectGuard=BUILD;
 
@@ -24,6 +24,7 @@
   }
   if(!install()){let tries=0;const timer=setInterval(()=>{tries++;if(install()||tries>=80)clearInterval(timer)},100)}
 
+  loadAuthority('./dcc-production-stability-v1.js?v=20260915-3','production-stability');
   loadAuthority('./coach-dashboard-authority-v1.js?v=20260914-5','dashboard');
   loadAuthority('./coach-client-authority-v1.js?v=20260914-2','client');
   loadAuthority('./coach-live-consistency-v2.js?v=20260914-6','live-consistency');
@@ -37,7 +38,7 @@
   loadAuthority('./client-edit-visibility-v1.js?v=20260915-2','client-edit-visibility');
   loadAuthority('./checkin-premium.js?v=20260914-2','checkin-direct');
   loadAuthority('./messages-premium.js?v=20260914-1','messages-direct');
-  loadAuthority('./coach-route-state-bridge-v1.js?v=20260915-1','route-state-bridge');
+  loadAuthority('./coach-route-state-bridge-v1.js?v=20260915-2','route-state-bridge');
   loadAuthority('./coach-calendar-nav-guard-v1.js?v=20260914-10','calendar-nav-guard');
   loadAuthority('./coach-render-stability-v1.js?v=20260915-1','render-stability');
 })();
