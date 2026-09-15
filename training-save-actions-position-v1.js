@@ -1,7 +1,7 @@
-/* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día seleccionado */
+/* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día visible seleccionado */
 (function(){
 'use strict';
-const BUILD='20260915-training-save-actions-position-v3-selected-day';
+const BUILD='20260915-training-save-actions-position-v4-visible-selected-day';
 if(window.__dccTrainingSaveActionsPosition===BUILD)return;window.__dccTrainingSaveActionsPosition=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -14,11 +14,20 @@ function actionBox(root){
   const cp=cancel.parentElement,sp=save.parentElement;
   return cp?.parentElement&&cp.parentElement===sp?.parentElement?cp.parentElement:null;
 }
+function selectedIndex(root,days){
+  const tabs=[...root.querySelectorAll('.dcc-tdw-tabs button')];
+  const selected=tabs.findIndex(b=>b.classList.contains('on'));
+  if(selected>=0&&selected<days.length)return selected;
+  const visible=days.findIndex(d=>d.getAttribute('aria-hidden')!=='true'&&getComputedStyle(d).display!=='none');
+  if(visible>=0)return visible;
+  const open=Number(window.__dccTrainingOpen);
+  if(Number.isFinite(open)&&open>=0&&open<days.length)return open;
+  return 0;
+}
 function activeDay(root){
   const days=[...root.querySelectorAll('.dcc-tr-days>.dcc-tr-day')];
   if(!days.length)return null;
-  const idx=Math.max(0,Math.min(days.length-1,Number(window.__dccTrainingOpen)||0));
-  return days[idx]||days.find(d=>getComputedStyle(d).display!=='none')||days[0];
+  return days[selectedIndex(root,days)]||days[0];
 }
 function apply(){
   if(!window.__dccTrainingEdit)return;
@@ -56,5 +65,5 @@ const style=document.createElement('style');style.textContent=`
 @media(max-width:420px){#coach-main [data-dcc-training-save-actions="1"]{gap:8px!important}}
 `;document.head.appendChild(style);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
-new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true});
+new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','style','aria-hidden']});
 })();
