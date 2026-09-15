@@ -125,8 +125,8 @@
       if(gap!==null&&gap>=7)attention.push({icon:'!',title:c.name,text:`${gap} DÍAS SIN REGISTRAR ENTRENAMIENTO`,badge:'SEGUIMIENTO',action:`openClient('${esc(c.id)}')`});
     });
     const hr=new Date().getHours(),g=hr<13?'BUENOS DÍAS':hr<20?'BUENAS TARDES':'BUENAS NOCHES';
-    const tasksOpen=window.__dccCoachTasksOpen!==false;
-    const attentionOpen=window.__dccCoachAttentionOpen!==false;
+    const tasksOpen=window.__dccCoachTasksOpen===true;
+    const attentionOpen=window.__dccCoachAttentionOpen===true;
     main.innerHTML=`<div class="dcc-p9">
       <section class="dcc-p9-hero">
         <div class="dcc-p9-hero-top"><div class="dcc-p9-kicker">PANEL DE ENTRENADOR</div><div class="dcc-p9-mark">${icon('dumbbell')}</div></div>
@@ -187,6 +187,10 @@
     if(typeof base!=='function')return;
     const router=function(screen){
       if(!beforeRoute(screen))return;
+      if(screen!=='dashboard'){
+        window.__dccCoachTasksOpen=false;
+        window.__dccCoachAttentionOpen=false;
+      }
       syncRoute(screen);
       if(screen==='dashboard'){renderDashboard();enforceNav();active(screen);afterRoute(screen);return}
       if(screen==='clients'){renderClients();enforceNav();active(screen);afterRoute(screen);return}
