@@ -1,27 +1,20 @@
 name: rc-browser-runtime-trace
-
 on:
   push:
-    branches:
-      - google-auth-rc
-    paths:
-      - .github/workflows/rc-browser-smoke.yml
-      - .github/scripts/rc_browser_smoke.mjs
+    branches: [google-auth-rc]
+    paths: ['.github/workflows/rc-browser-smoke.yml','.github/scripts/rc_browser_smoke.mjs']
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   browser-runtime-trace:
     runs-on: ubuntu-latest
     env:
-      RC_URL: https://daniel-campins-ckyk0gv00-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=yEFOZyZVDLSfXrCuYUnvrwPwVJBKDgbs
+      RC_URL: https://daniel-campins-eng0vizvg-danielcampinscollado-4962s-projects.vercel.app/?_vercel_share=vriivrWrEsKwKpmQafqSb2mP8wj9mpU8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+        with: {node-version: '20'}
       - name: Install Playwright
         run: |
           npm init -y >/dev/null 2>&1
@@ -32,13 +25,12 @@ jobs:
         run: |
           set +e
           node .github/scripts/rc_browser_smoke.mjs 2>&1 | tee .github/runtime-trace.log
-          code=${PIPESTATUS[0]}
-          echo "$code" > .github/runtime-trace-exit.txt
+          echo ${PIPESTATUS[0]} > .github/runtime-trace-exit.txt
           exit 0
       - name: Persist trace
         run: |
           git config user.name dcc-runtime-audit
           git config user.email actions@users.noreply.github.com
           git add .github/runtime-trace.log .github/runtime-trace-exit.txt
-          git commit -m '[audit] Persist real browser runtime trace' || exit 0
+          git commit -m '[audit] Persist refactored browser runtime trace' || exit 0
           git push
