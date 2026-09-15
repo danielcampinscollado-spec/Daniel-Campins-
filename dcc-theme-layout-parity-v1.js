@@ -1,7 +1,7 @@
 /* DCC — paridad estructural entre apariencia clara y oscura */
 (function(){
   'use strict';
-  const BUILD='20260914-theme-layout-parity-v1';
+  const BUILD='20260915-theme-layout-parity-v2-mobile-clearance';
   if(window.__dccThemeLayoutParity===BUILD)return;
   window.__dccThemeLayoutParity=BUILD;
 
@@ -38,11 +38,11 @@
       #coach-nav button,#client-nav button{box-sizing:border-box!important}
 
       @media(max-width:700px){
-        #coach-main{padding-left:14px!important;padding-right:14px!important;padding-bottom:112px!important}
-        #client-main{padding-bottom:112px!important}
+        #coach-main{padding-left:14px!important;padding-right:14px!important;padding-bottom:calc(156px + env(safe-area-inset-bottom,0px))!important}
+        #client-main{padding-bottom:calc(136px + env(safe-area-inset-bottom,0px))!important}
         #coach-main.dcc-ca .dcc-ca-head{margin-top:8px!important;margin-bottom:10px!important}
         #coach-main.dcc-ca .dcc-ca-head h1{font-size:31px!important}
-        #coach .side,#client .side{left:10px!important;right:10px!important;bottom:10px!important;width:auto!important;height:68px!important;border-radius:22px!important}
+        #coach .side,#client .side{left:10px!important;right:10px!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;width:auto!important;height:68px!important;border-radius:22px!important}
       }
     `;
     (document.head||document.documentElement).appendChild(s);
