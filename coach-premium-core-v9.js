@@ -160,8 +160,10 @@
   }
 
   function clientCard(c){
-    const p=trainingProgress(c),goal=c.goal||c.objective||c.objetivo||'Objetivo por definir',weight=c.weight||c.peso||'';
-    return `<article class="dcc-cl-card" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?'1':'0'}"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div>${weight?`<div class="dcc-cl-weight">${esc(weight)} kg</div>`:''}</div><div class="dcc-cl-training"><div class="dcc-cl-tr-title"><span class="dcc-cl-dumbbell">⌁</span> Entrenamiento</div><div class="dcc-cl-progress"><div class="dcc-cl-track"><div class="dcc-cl-fill" style="width:${p}%"></div></div><span class="dcc-cl-pct">${p}%</span></div></div><button class="dcc-cl-manage" onclick="openClient('${esc(c.id)}')">Gestionar<br>cliente</button></article>`;
+    const goal=c.goal||c.objective||c.objetivo||'Objetivo por definir';
+    const weight=c.weight||c.peso||'';
+    const fat=c.body_fat??c.bodyFat??c.fat??c.grasa??'';
+    return `<article class="dcc-cl-card dcc-cl-card-ref" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?'1':'0'}" onclick="openClient('${esc(c.id)}')"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div><div class="dcc-cl-ref-meta">${weight?`<span>▣ &nbsp;${esc(weight)} kg</span>`:''}${fat!==''?`<span>◌ &nbsp;${esc(fat)} %</span>`:''}</div></div><span class="dcc-cl-active">Activo</span><span class="dcc-cl-chevron">›</span></article>`;
   }
   function renderClients(){
     injectCss();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-clients';const cs=getData()?.clients||[];
