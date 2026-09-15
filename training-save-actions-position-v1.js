@@ -1,7 +1,7 @@
-/* DCC — coloca Cancelar / Guardar cambios inmediatamente tras el día visible seleccionado */
+/* DCC — mantiene Cancelar / Guardar cambios estables bajo el día visible */
 (function(){
 'use strict';
-const BUILD='20260915-training-save-actions-position-v5-no-vibration';
+const BUILD='20260916-training-save-actions-position-v6-fixed-slot';
 if(window.__dccTrainingSaveActionsPosition===BUILD)return;window.__dccTrainingSaveActionsPosition=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -14,26 +14,12 @@ function actionBox(root){
   const cp=cancel.parentElement,sp=save.parentElement;
   return cp?.parentElement&&cp.parentElement===sp?.parentElement?cp.parentElement:null;
 }
-function selectedIndex(root,days){
-  const tabs=[...root.querySelectorAll('.dcc-tdw-tabs button')];
-  const selected=tabs.findIndex(b=>b.classList.contains('on'));
-  if(selected>=0&&selected<days.length)return selected;
-  const visible=days.findIndex(d=>d.getAttribute('aria-hidden')!=='true'&&getComputedStyle(d).display!=='none');
-  if(visible>=0)return visible;
-  const open=Number(window.__dccTrainingOpen);
-  if(Number.isFinite(open)&&open>=0&&open<days.length)return open;
-  return 0;
-}
-function activeDay(root){
-  const days=[...root.querySelectorAll('.dcc-tr-days>.dcc-tr-day')];
-  if(!days.length)return null;
-  return days[selectedIndex(root,days)]||days[0];
-}
 function apply(){
   if(!window.__dccTrainingEdit)return;
   const root=document.getElementById('coach-main');if(!root)return;
-  const actions=actionBox(root),day=activeDay(root);if(!actions||!day)return;
-  if(actions===root||actions.contains(day)||day.contains(actions))return;
+  const wrap=root.querySelector('.dcc-tr-days');
+  const actions=actionBox(root);
+  if(!wrap||!actions||actions===root||actions.contains(wrap)||wrap.contains(actions)&&actions.parentElement!==wrap)return;
   if(actions.dataset.dccTrainingSaveActions!=='1'){
     actions.dataset.dccTrainingSaveActions='1';
     actions.style.setProperty('display','grid','important');
@@ -44,7 +30,9 @@ function apply(){
     actions.style.setProperty('min-height','0','important');
     actions.style.setProperty('height','auto','important');
   }
-  if(day.nextElementSibling!==actions)day.insertAdjacentElement('afterend',actions);
+  /* Los días no seleccionados están display:none. Dejamos las acciones fijas al final
+     para que al cambiar de Día 1/2/3... no se mueva ningún nodo y no haya vibración. */
+  if(actions.parentElement!==wrap||actions!==wrap.lastElementChild)wrap.appendChild(actions);
 }
 function toast(){
   document.getElementById('dcc-training-saved-toast')?.remove();
@@ -68,5 +56,4 @@ const style=document.createElement('style');style.textContent=`
 `;document.head.appendChild(style);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
 new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true});
-window.addEventListener('dcc-training-day-change',schedule);
 })();
