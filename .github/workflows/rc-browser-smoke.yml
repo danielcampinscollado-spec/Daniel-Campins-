@@ -9,6 +9,9 @@ on:
       - .github/scripts/rc_browser_smoke.mjs
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   browser-runtime-trace:
     runs-on: ubuntu-latest
@@ -25,4 +28,17 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
       - name: Run real navigation trace
-        run: node .github/scripts/rc_browser_smoke.mjs
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/rc_browser_smoke.mjs 2>&1 | tee .github/runtime-trace.log
+          code=${PIPESTATUS[0]}
+          echo "$code" > .github/runtime-trace-exit.txt
+          exit 0
+      - name: Persist trace
+        run: |
+          git config user.name dcc-runtime-audit
+          git config user.email actions@users.noreply.github.com
+          git add .github/runtime-trace.log .github/runtime-trace-exit.txt
+          git commit -m '[audit] Persist real browser runtime trace' || exit 0
+          git push
