@@ -173,34 +173,38 @@
   window.dccClientTab=function(m,b){window.__dccClientMode=m;document.querySelectorAll('.dcc-cl-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');window.dccFilterClients()};
   window.dccSortClients=function(){const l=document.getElementById('dccClientList');if(!l)return;window.__dccClientSort=window.__dccClientSort==='az'?'za':'az';[...l.querySelectorAll('.dcc-cl-card')].sort((a,b)=>window.__dccClientSort==='az'?a.dataset.name.localeCompare(b.dataset.name):b.dataset.name.localeCompare(a.dataset.name)).forEach(x=>l.appendChild(x))};
 
-  function navHtml(){return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="toast('Calendario próximamente')">${icon('calendar')}<span>Calendario</span></button><button onclick="showCoach('checkins')">${icon('check')}<span>Check-in</span></button><button onclick="showCoach('messages')">${icon('msg')}<span>Mensajes</span></button>`}
+  function navHtml(){return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="showCoach('calendar')">${icon('calendar')}<span>Calendario</span></button><button onclick="showCoach('checkins')">${icon('check')}<span>Check-in</span></button><button onclick="showCoach('messages')">${icon('msg')}<span>Mensajes</span></button>`}
   function enforceNav(){const n=document.getElementById('coach-nav');if(!n)return;const wanted=['Panel','Clientes','Calendario','Check-in','Mensajes'],labels=[...n.querySelectorAll('button span')].map(x=>x.textContent.trim());if(labels.length!==5||wanted.some((x,i)=>labels[i]!==x))n.innerHTML=navHtml();n.style.setProperty('grid-template-columns','repeat(5,minmax(0,1fr))','important')}
-  function active(screen){const n=document.getElementById('coach-nav');if(!n)return;const map={dashboard:0,clients:1,checkins:3,messages:4};n.querySelectorAll('button').forEach(x=>x.classList.remove('active'));const i=map[screen];if(i!==undefined)n.querySelectorAll('button')[i]?.classList.add('active')}
-  function lockNav(){enforceNav();if(typeof window.buildCoachNav==='function'&&!window.buildCoachNav.__dccLocked){const old=window.buildCoachNav;const wrapped=function(){const r=old.apply(this,arguments);requestAnimationFrame(enforceNav);return r};wrapped.__dccLocked=true;window.buildCoachNav=wrapped}}
+  function active(screen){const n=document.getElementById('coach-nav');if(!n)return;const map={dashboard:0,clients:1,calendar:2,checkins:3,messages:4};n.querySelectorAll('button').forEach(x=>x.classList.remove('active'));const i=map[screen];if(i!==undefined)n.querySelectorAll('button')[i]?.classList.add('active')}
+  function syncRoute(screen){window.currentApp='coach';window.currentScreen=screen;window.__dccCoachRouteIntent=screen;try{currentApp='coach';currentScreen=screen}catch(_){}}
+  function beforeRoute(screen){return document.dispatchEvent(new CustomEvent('dcc:coach-before-screen',{detail:{screen},cancelable:true}))}
+  function afterRoute(screen){document.dispatchEvent(new CustomEvent('dcc:coach-screen',{detail:{screen}}))}
 
   function install(){
-    injectCss();lockNav();
-    const original=window.showCoach;
-    if(typeof original!=='function'||original.__dccPremiumV9)return;
-    const base=original.__original||original.__base||original;
-    const wrapped=function(screen){
-      if(screen==='dashboard'){window.currentScreen='dashboard';renderDashboard();enforceNav();active('dashboard');return}
-      if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';renderClients();enforceNav();active('clients');return}
-      if(screen==='checkins'&&typeof window.dccRenderCoachCheckins==='function'){window.currentScreen='checkins';window.__dccCoachRouteIntent='checkins';window.dccRenderCoachCheckins();enforceNav();active('checkins');return}
-      if(screen==='messages'&&typeof window.dccRenderCoachMessages==='function'){window.currentScreen='messages';window.__dccCoachRouteIntent='messages';window.dccRenderCoachMessages();enforceNav();active('messages');return}
+    injectCss();enforceNav();
+    if(window.__dccCoachRouterV40)return;
+    const base=window.showCoach;
+    if(typeof base!=='function')return;
+    const router=function(screen){
+      if(!beforeRoute(screen))return;
+      syncRoute(screen);
+      if(screen==='dashboard'){renderDashboard();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='clients'){renderClients();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='calendar'){
+        if(typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12();
+        else if(typeof window.dccRenderCoachCalendar==='function')window.dccRenderCoachCalendar();
+        else base.call(this,screen);
+        enforceNav();active(screen);afterRoute(screen);return;
+      }
+      if(screen==='checkins'&&typeof window.dccRenderCoachCheckins==='function'){window.dccRenderCoachCheckins();enforceNav();active(screen);afterRoute(screen);return}
+      if(screen==='messages'&&typeof window.dccRenderCoachMessages==='function'){window.dccRenderCoachMessages();enforceNav();active(screen);afterRoute(screen);return}
       const main=document.getElementById('coach-main');if(main)main.classList.remove('dcc-p9-dashboard','dcc-premium-clients');
-      const r=base.apply(this,arguments);requestAnimationFrame(()=>{enforceNav();active(screen)});return r;
+      const result=base.apply(this,arguments);enforceNav();active(screen);afterRoute(screen);return result;
     };
-    wrapped.__dccPremiumV9=true;wrapped.__dccPremiumV6=true;wrapped.__original=base;window.showCoach=wrapped;
+    router.__dccPremiumV9=true;router.__dccPremiumV6=true;router.__dccSingleRouterV40=true;router.__original=base;
+    window.__dccCoachRouterV40=router;window.showCoach=router;
   }
 
-  function repaintCurrentDashboard(){
-    const main=document.getElementById('coach-main');if(!main||typeof window.showCoach!=='function')return;
-    const isDashboard=window.__dccCoachRouteIntent==='dashboard'&&window.currentScreen==='dashboard';
-    if(isDashboard)window.showCoach('dashboard');
-  }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{install();setTimeout(repaintCurrentDashboard,40)},{once:true});else{install();setTimeout(repaintCurrentDashboard,40)}
-  window.addEventListener('load',()=>{install();setTimeout(repaintCurrentDashboard,60)},{once:true});
-  window.addEventListener('pageshow',()=>setTimeout(repaintCurrentDashboard,40));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.addEventListener('pageshow',()=>{enforceNav();active(window.currentScreen||'dashboard')});
 })();

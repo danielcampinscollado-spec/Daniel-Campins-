@@ -168,32 +168,9 @@
     else if(screen==='messages')patchMessages();
   }
 
-  function hasPremium(fn,depth){
-    if(!fn||typeof fn!=='function'||depth>8)return false;
-    if(fn.__dccPremiumV9||fn.__dccPremiumV6)return true;
-    return hasPremium(fn.__base,depth+1)||hasPremium(fn.__original,depth+1);
-  }
-
-  function install(attempt){
-    injectCss();
-    const current=window.showCoach;
-    if(typeof current!=='function'||!hasPremium(current,0)){
-      if((attempt||0)<30)setTimeout(()=>install((attempt||0)+1),60);
-      return;
-    }
-    if(current.__dccUIV11){patchNav(window.currentScreen);return}
-    const wrapped=function(screen){
-      if(screen==='calendar'){renderCalendar();return}
-      const r=current.apply(this,arguments);
-      requestAnimationFrame(()=>afterScreen(screen));
-      setTimeout(()=>afterScreen(screen),40);
-      return r;
-    };
-    wrapped.__dccUIV11=true;wrapped.__base=current;window.showCoach=wrapped;
-    requestAnimationFrame(()=>afterScreen(window.currentScreen||''));
-  }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>install(0),{once:true});else install(0);
-  window.addEventListener('load',()=>setTimeout(()=>install(0),80),{once:true});
-  window.addEventListener('pageshow',()=>setTimeout(()=>{install(0);afterScreen(window.currentScreen||'')},70));
+  window.dccRenderCoachCalendar=renderCalendar;
+  function bootUi(){injectCss();afterScreen(window.currentScreen||'')}
+  document.addEventListener('dcc:coach-screen',event=>afterScreen(event.detail?.screen||window.currentScreen||''));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootUi,{once:true});else bootUi();
+  window.addEventListener('pageshow',()=>afterScreen(window.currentScreen||''));
 })();

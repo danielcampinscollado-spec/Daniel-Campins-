@@ -141,13 +141,8 @@
   window.dccCalendarSelect=function(y,m,d){const x=new Date(y,m,d,12);window.__dccCalendarSelected=dateKey(x);window.__dccCalendarMonthTs=new Date(y,m,1,12).getTime();renderCalendar(true)};
   window.dccCalendarSetView=function(v){window.__dccCalendarView=v==='agenda'?'agenda':'month';renderCalendar(true)};
 
-  function hasV11(fn,depth){if(!fn||typeof fn!=='function'||depth>12)return false;if(fn.__dccUIV11)return true;return hasV11(fn.__base,depth+1)||hasV11(fn.__original,depth+1)}
-  function install(attempt){
-    injectCss();const current=window.showCoach;if(typeof current!=='function'||!hasV11(current,0)){if((attempt||0)<50)setTimeout(()=>install((attempt||0)+1),80);return}
-    if(current.__dccCalendarV12){if(window.currentScreen==='calendar')renderCalendar(true);return}
-    const wrapped=function(screen){if(screen==='calendar'){renderCalendar(true);return}return current.apply(this,arguments)};wrapped.__dccCalendarV12=true;wrapped.__base=current;window.showCoach=wrapped;
-    if(window.currentScreen==='calendar')renderCalendar(true);
-  }
-
-  install(0);window.addEventListener('pageshow',()=>setTimeout(()=>install(0),90));
+  window.dccRenderCoachCalendarV12=function(){renderCalendar(true)};
+  injectCss();
+  if(window.currentScreen==='calendar')queueMicrotask(()=>renderCalendar(true));
+  window.addEventListener('pageshow',()=>{if(window.currentScreen==='calendar')renderCalendar(true)});
 })();
