@@ -1,4 +1,4 @@
-/* DCC — puente único entre rutas premium y el estado interno legacy */
+/* DCC — puente entre rutas premium y el estado interno legacy, sin parpadeos */
 (function(){
   'use strict';
   const BUILD='20260915-coach-route-state-bridge-v2';
@@ -24,19 +24,26 @@
     const core=deepest(current);
     const wrapped=function(screen){
       if(!ROUTES.has(screen))return current.apply(this,arguments);
-      window.__dccCoachRouteIntent=screen;
 
-      /* Algunos renderers premium interceptan la ruta sin llegar al showCoach original.
-         Sincronizamos primero el estado léxico interno y después pintamos el renderer
-         premium, todo de forma síncrona dentro del mismo frame. */
-      if((screen==='checkins'||screen==='messages'||screen==='calendar')&&core!==current){
-        try{core.call(this,screen)}catch(e){console.warn('DCC route core sync:',e)}
-      }
-
-      const out=current.apply(this,arguments);
       window.currentScreen=screen;
       window.__dccCoachRouteIntent=screen;
-      return out;
+
+      /* Algunos renderers premium interceptan estas rutas sin ejecutar el showCoach
+         original. Sincronizamos el estado lexical legacy de forma atómica y ocultamos
+         únicamente ese render intermedio durante la misma tarea de JavaScript. */
+      const needsCoreSync=(screen==='checkins'||screen==='messages'||screen==='calendar')&&core!==current;
+      const main=document.getElementById('coach-main');
+      const oldVisibility=main?.style?.visibility||'';
+      if(needsCoreSync&&main)main.style.visibility='hidden';
+      try{
+        if(needsCoreSync){try{core.call(this,screen)}catch(e){console.warn('DCC route core sync:',e)}}
+        const out=current.apply(this,arguments);
+        window.currentScreen=screen;
+        window.__dccCoachRouteIntent=screen;
+        return out;
+      }finally{
+        if(needsCoreSync&&main)main.style.visibility=oldVisibility;
+      }
     };
     wrapped.__dccRouteStateBridgeV2=true;
     wrapped.__base=current;
@@ -45,8 +52,6 @@
   }
 
   install();
-  /* Check-in/Mensajes reinstalan wrappers a 300 y 900 ms. Durante dos segundos
-     volvemos a colocar este puente por fuera si alguno de ellos cambia showCoach. */
-  let tries=0;const timer=setInterval(()=>{tries++;install();if(tries>=24)clearInterval(timer)},100);
-  window.addEventListener('pageshow',()=>{install();setTimeout(install,350);setTimeout(install,950)});
+  let tries=0;const timer=setInterval(()=>{tries++;if(install()||tries>=12)clearInterval(timer)},120);
+  window.addEventListener('pageshow',install);
 })();
