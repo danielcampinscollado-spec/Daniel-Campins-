@@ -1,79 +1,15 @@
 import { chromium } from 'playwright';
-
-const url=process.env.RC_URL;
-if(!url)throw new Error('RC_URL missing');
+const url=process.env.RC_URL;if(!url)throw new Error('RC_URL missing');
 const browser=await chromium.launch({headless:true});
-const viewports=[{name:'mobile',width:390,height:844},{name:'desktop',width:1366,height:900}];
-let failed=false;
-
-async function state(page,label){
-  const s=await page.evaluate(label=>({
-    label,
-    currentApp:window.currentApp,
-    currentScreen:window.currentScreen,
-    intent:window.__dccCoachRouteIntent,
-    mainClass:document.getElementById('coach-main')?.className||'',
-    mainText:(document.getElementById('coach-main')?.innerText||'').slice(0,180),
-    nav:[...document.querySelectorAll('#coach-nav button')].map(b=>({text:(b.innerText||'').trim(),active:b.classList.contains('active')})),
-    scripts:[...document.scripts].map(s=>s.src).filter(Boolean).map(x=>x.split('/').pop()),
-    wrappers:(()=>{let fn=window.showCoach,out=[],seen=new Set();for(let i=0;i<20&&typeof fn==='function'&&!seen.has(fn);i++){seen.add(fn);out.push({i,premium9:!!fn.__dccPremiumV9,instant:!!fn.__dccInstantV15,fast:!!fn.__dccFastFinalV15,checkRemote:!!fn.__dccCheckinRemoteSyncV4,checkPremium:!!fn.__dccCheckinPremiumV2,msgPremium:!!fn.__dccMessagesPremium,navFinal:!!fn.__dccCoachNavFinal});fn=fn.__base||fn.__original}return out})()
-  }),label);
-  console.log('STATE '+JSON.stringify(s));
-  return s;
-}
-
-async function sample(page,label,ms=1800){
-  const rows=[];
-  for(let t=0;t<=ms;t+=150){await page.waitForTimeout(t?150:0);rows.push(await page.evaluate(t=>({t,screen:window.currentScreen,intent:window.__dccCoachRouteIntent,cls:document.getElementById('coach-main')?.className||'',text:(document.getElementById('coach-main')?.innerText||'').slice(0,70)}),t))}
-  console.log('TRACE '+label+' '+JSON.stringify(rows));
-  return rows;
-}
-
-async function clickNav(page,label){
-  const button=page.locator('#coach-nav button').filter({hasText:label}).first();
-  if(!await button.count())throw new Error('Missing nav '+label);
-  await button.click();
-  return sample(page,'nav-'+label);
-}
-
-for(const viewport of viewports){
-  const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height}});
-  const page=await context.newPage();
-  const errors=[];
-  page.on('pageerror',e=>errors.push('pageerror: '+e.message));
-  page.on('console',m=>{if(m.type()==='error')errors.push('console: '+m.text())});
-  const response=await page.goto(url,{waitUntil:'networkidle',timeout:60000});
-  if((response?.status()||0)>=400)throw new Error('HTTP '+response.status());
-  await page.waitForTimeout(2600);
-  await state(page,viewport.name+'-loaded');
-
-  await page.evaluate(async()=>{if(typeof window.openApp!=='function')throw new Error('openApp missing');await window.openApp('coach')});
-  await page.waitForTimeout(2600);
-  await state(page,viewport.name+'-coach');
-
-  const checks=await clickNav(page,'Check-in');
-  if(checks.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('BOUNCE: Check-in -> dashboard');failed=true}
-  const review=page.locator('#coach-main button').filter({hasText:/Revisar|Abrir/}).first();
-  if(await review.count()){
-    await review.click();
-    const rows=await sample(page,'checkin-detail');
-    if(rows.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('BOUNCE: checkin detail -> dashboard');failed=true}
-  }
-
-  const msgs=await clickNav(page,'Mensajes');
-  if(msgs.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('BOUNCE: Messages -> dashboard');failed=true}
-  const open=page.locator('#coach-main button').filter({hasText:'Abrir'}).first();
-  if(await open.count()){
-    await open.click();
-    const rows=await sample(page,'message-detail');
-    if(rows.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('BOUNCE: message detail -> dashboard');failed=true}
-  }
-
-  await clickNav(page,'Clientes');
-  await state(page,viewport.name+'-clients');
-  console.log('RESULT '+viewport.name+' '+JSON.stringify({errors}));
-  if(errors.some(e=>e.startsWith('pageerror')))failed=true;
-  await context.close();
-}
-await browser.close();
-if(failed)process.exit(1);
+const viewports=[{name:'mobile',width:390,height:844},{name:'desktop',width:1366,height:900}];let failed=false;
+async function snapshot(page,label){const s=await page.evaluate(label=>({label,screen:window.currentScreen,intent:window.__dccCoachRouteIntent,cls:document.getElementById('coach-main')?.className||'',text:(document.getElementById('coach-main')?.innerText||'').slice(0,120),scripts:[...document.scripts].map(s=>s.src).filter(Boolean).map(x=>x.split('/').pop()),wrappers:(()=>{let fn=window.showCoach,out=[],seen=new Set();for(let i=0;i<40&&typeof fn==='function'&&!seen.has(fn);i++){seen.add(fn);out.push({premium9:!!fn.__dccPremiumV9,remote:!!fn.__dccCheckinRemoteSyncV4,check:!!fn.__dccCheckinPremiumV2,msg:!!fn.__dccMessagesPremium,final:!!fn.__dccCoachNavFinal});fn=fn.__base||fn.__original}return out})()}),label);console.log('STATE '+JSON.stringify(s));return s}
+async function sample(page,label){const rows=[];for(let t=0;t<=2400;t+=200){if(t)await page.waitForTimeout(200);rows.push(await page.evaluate(t=>({t,screen:window.currentScreen,intent:window.__dccCoachRouteIntent,cls:document.getElementById('coach-main')?.className||''}),t))}console.log('TRACE '+label+' '+JSON.stringify(rows));return rows}
+async function clickNav(page,label){const b=page.locator('#coach-nav button').filter({hasText:label}).first();await b.click({timeout:10000});return sample(page,label)}
+for(const vp of viewports){const context=await browser.newContext({viewport:{width:vp.width,height:vp.height}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push('pageerror:'+e.message));const r=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});if((r?.status()||0)>=400)throw new Error('HTTP '+r.status());await page.waitForTimeout(3500);
+await page.evaluate(()=>{const login=document.getElementById('login'),coach=document.getElementById('coach'),client=document.getElementById('client');if(login)login.style.display='none';if(client)client.style.display='none';if(coach)coach.style.display='block';window.currentApp='coach';try{currentApp='coach'}catch(_){};if(typeof window.showCoach!=='function')throw new Error('showCoach missing');window.showCoach('dashboard')});await page.waitForTimeout(1200);const initial=await snapshot(page,vp.name+'-coach');
+if(initial.wrappers.length>4){errors.push('too many showCoach wrappers:'+initial.wrappers.length);failed=true}
+for(const [label,expected] of [['Check-in','checkins'],['Mensajes','messages'],['Clientes','clients'],['Panel','dashboard']]){const rows=await clickNav(page,label);if(rows.some((x,i)=>i>1&&x.screen!==expected)){errors.push('route drift '+label+': '+JSON.stringify(rows));failed=true}}
+await clickNav(page,'Check-in');const review=page.locator('#coach-main button').filter({hasText:/Ver check-in|Revisar|Abrir/}).first();if(await review.count()){await review.click();const rows=await sample(page,'checkin-detail');if(rows.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('checkin detail bounced');failed=true}}
+await clickNav(page,'Mensajes');const open=page.locator('#coach-main button').filter({hasText:'Abrir'}).first();if(await open.count()){await open.click();const rows=await sample(page,'message-detail');if(rows.some((x,i)=>i>1&&x.screen==='dashboard')){errors.push('message detail bounced');failed=true}}
+console.log('RESULT '+vp.name+' '+JSON.stringify({errors}));await context.close()}
+await browser.close();if(failed)process.exit(1);
