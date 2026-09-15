@@ -11,50 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Make dashboard accordions closed and exclusive
-        shell: python
-        run: |
-          from pathlib import Path
-          p=Path('coach-premium-core-v9.js')
-          s=p.read_text()
-          old="""  window.dccCoachTogglePanel=function(which){
-    const el=document.getElementById(which==='attention'?'dccP9Attention':'dccP9Tasks');
-    if(!el)return;
-    const closed=el.classList.toggle('closed');
-    if(which==='attention')window.__dccCoachAttentionOpen=!closed;else window.__dccCoachTasksOpen=!closed;
-  };"""
-          new="""  window.dccCoachTogglePanel=function(which){
-    const isAttention=which==='attention';
-    const el=document.getElementById(isAttention?'dccP9Attention':'dccP9Tasks');
-    if(!el)return;
-    const shouldOpen=el.classList.contains('closed');
-    document.querySelectorAll('#dccP9Tasks,#dccP9Attention').forEach(panel=>panel.classList.add('closed'));
-    window.__dccCoachTasksOpen=false;
-    window.__dccCoachAttentionOpen=false;
-    if(shouldOpen){
-      el.classList.remove('closed');
-      if(isAttention)window.__dccCoachAttentionOpen=true;else window.__dccCoachTasksOpen=true;
-    }
-  };"""
-          if old not in s: raise SystemExit('toggle block not found')
-          s=s.replace(old,new,1)
-          old2="""    const tasksOpen=window.__dccCoachTasksOpen!==false;
-    const attentionOpen=window.__dccCoachAttentionOpen!==false;"""
-          new2="""    const tasksOpen=window.__dccCoachTasksOpen===true;
-    const attentionOpen=window.__dccCoachAttentionOpen===true;"""
-          if old2 not in s: raise SystemExit('open state block not found')
-          s=s.replace(old2,new2,1)
-          old3="""      if(!beforeRoute(screen))return;
-      syncRoute(screen);"""
-          new3="""      if(!beforeRoute(screen))return;
-      if(screen!=='dashboard'){
-        window.__dccCoachTasksOpen=false;
-        window.__dccCoachAttentionOpen=false;
-      }
-      syncRoute(screen);"""
-          if old3 not in s: raise SystemExit('router block not found')
-          s=s.replace(old3,new3,1)
-          p.write_text(s)
+      - name: Close dashboard accordions between tabs
+        run: python3 -c "from pathlib import Path; p=Path('coach-premium-core-v9.js'); s=p.read_text(); a='    const tasksOpen=window.__dccCoachTasksOpen!==false;\\n    const attentionOpen=window.__dccCoachAttentionOpen!==false;'; b='    const tasksOpen=window.__dccCoachTasksOpen===true;\\n    const attentionOpen=window.__dccCoachAttentionOpen===true;'; assert a in s; s=s.replace(a,b,1); a2='      if(!beforeRoute(screen))return;\\n      syncRoute(screen);'; b2=\"      if(!beforeRoute(screen))return;\\n      if(screen!=='dashboard'){\\n        window.__dccCoachTasksOpen=false;\\n        window.__dccCoachAttentionOpen=false;\\n      }\\n      syncRoute(screen);\"; assert a2 in s; p.write_text(s.replace(a2,b2,1))"
       - name: Validate JavaScript
         run: node --check coach-premium-core-v9.js
       - name: Commit fix
