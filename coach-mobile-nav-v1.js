@@ -1,0 +1,27 @@
+/* DCC — navegación móvil del entrenador. Fuente visual única. */
+(function(){
+'use strict';
+const BUILD='20260916-coach-mobile-nav-v1';
+if(window.__dccCoachMobileNav===BUILD)return;
+window.__dccCoachMobileNav=BUILD;
+const ID='dcc-coach-mobile-nav-v1-css';
+let s=document.getElementById(ID);if(!s){s=document.createElement('style');s.id=ID;(document.head||document.documentElement).appendChild(s)}
+s.textContent=`
+@media(max-width:900px){
+ html.dcc-theme-light-premium,html.dcc-theme-light-premium body,html.dcc-theme-light-premium body #coach{background:#f5efe4!important;background-color:#f5efe4!important}
+ html.dcc-theme-light-premium body #coach{min-height:100dvh!important;overflow-x:hidden!important}
+ html.dcc-theme-light-premium body #coach::before,html.dcc-theme-light-premium body #coach::after{background:#f5efe4!important}
+ body #coach#coach > .side{position:fixed!important;left:18px!important;right:18px!important;bottom:max(12px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:5px!important;border:1.5px solid rgba(214,160,48,.78)!important;outline:0!important;border-radius:38px!important;background:#fffdf9!important;background-image:none!important;box-shadow:0 12px 30px rgba(103,76,29,.13),inset 0 0 0 5px #fffdf9,inset 0 1px 0 rgba(255,255,255,.98)!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important;transform:none!important;transition:none!important;animation:none!important}
+ body #coach#coach > .side::before,body #coach#coach > .side::after{display:none!important;content:none!important;background:none!important;box-shadow:none!important;filter:none!important}
+ body #coach#coach > .side>h2,body #coach#coach > .side>.out{display:none!important}
+ body #coach#coach #coach-nav#coach-nav{position:relative!important;isolation:isolate!important;inset:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;gap:2px!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;outline:0!important;border-radius:33px!important;background:#fffdf9!important;background-image:none!important;box-shadow:0 0 0 4px #fffdf9,inset 0 0 0 3px #fffdf9!important;overflow:hidden!important;box-sizing:border-box!important}
+ body #coach#coach #coach-nav#coach-nav::before{display:block!important;content:''!important;position:absolute!important;inset:0!important;z-index:0!important;border-radius:33px!important;background:#fffdf9!important;box-shadow:inset 0 0 0 3px #fffdf9!important;pointer-events:none!important}
+ body #coach#coach #coach-nav#coach-nav::after,body #coach#coach #coach-nav#coach-nav button::before,body #coach#coach #coach-nav#coach-nav button::after{display:none!important;content:none!important}
+ body #coach#coach #coach-nav#coach-nav button,body #coach#coach #coach-nav#coach-nav button:not(.active){position:relative!important;z-index:1!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:7px 3px!important;gap:4px!important;border:1px solid transparent!important;border-radius:31px!important;outline:0!important;background:transparent!important;color:#5f6268!important;-webkit-text-fill-color:#5f6268!important;box-shadow:none!important;text-shadow:none!important;filter:none!important;transition:none!important;animation:none!important;box-sizing:border-box!important}
+ body #coach#coach #coach-nav#coach-nav button svg{display:block!important;width:24px!important;height:24px!important;flex:0 0 24px!important;color:#5f6268!important;stroke:currentColor!important;filter:none!important}
+ body #coach#coach #coach-nav#coach-nav button span{display:block!important;margin:0!important;color:#5f6268!important;-webkit-text-fill-color:#5f6268!important;font-size:11px!important;line-height:1!important;font-weight:600!important;white-space:nowrap!important;text-shadow:none!important}
+ body #coach#coach #coach-nav#coach-nav button.active{border:1.5px solid rgba(205,146,27,.78)!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 46%,#e2a72f 100%)!important;color:#17140d!important;-webkit-text-fill-color:#17140d!important;box-shadow:0 5px 14px rgba(185,126,18,.20),inset 0 1px 0 rgba(255,255,255,.92),inset 0 0 0 2px rgba(255,244,190,.36)!important}
+ body #coach#coach #coach-nav#coach-nav button.active svg,body #coach#coach #coach-nav#coach-nav button.active span{color:#17140d!important;-webkit-text-fill-color:#17140d!important;stroke:currentColor!important;font-weight:800!important}
+}
+`;
+})();
