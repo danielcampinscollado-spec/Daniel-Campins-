@@ -51,15 +51,15 @@ function installStyles(){
   html.dcc-theme-light-premium #client-main .dct3-start{background:linear-gradient(135deg,#f5d581,#dca83e)!important;color:#18140c!important;border-color:#e9bd55!important}html.dcc-theme-light-premium #client-main .dct3-view{background:#fffaf1!important;color:#6e4b0e!important;border-color:rgba(185,122,17,.30)!important}
 
   /* Menús premium: iconos dorados + activo iluminado */
-  html.dcc-theme-light-premium #client-nav,html.dcc-theme-light-premium #coach-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
-  html.dcc-theme-light-premium #client-nav button,html.dcc-theme-light-premium #coach-nav button{color:#e8b94f!important;background:transparent!important;border:1px solid transparent!important;text-shadow:0 0 10px rgba(232,185,79,.10)!important}
-  html.dcc-theme-light-premium #client-nav button svg,html.dcc-theme-light-premium #coach-nav button svg{color:#e8b94f!important;stroke:currentColor!important;filter:drop-shadow(0 0 5px rgba(232,185,79,.12))}
-  html.dcc-theme-light-premium #client-nav button span,html.dcc-theme-light-premium #coach-nav button span{color:#e5c778!important}
-  html.dcc-theme-light-premium #client-nav button.active,html.dcc-theme-light-premium #coach-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.45),0 0 20px rgba(237,187,72,.62),0 8px 20px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.65)!important;transform:translateY(-1px)}
-  html.dcc-theme-light-premium #client-nav button.active svg,html.dcc-theme-light-premium #coach-nav button.active svg{color:#1e1708!important;stroke:currentColor!important;filter:none!important}html.dcc-theme-light-premium #client-nav button.active span,html.dcc-theme-light-premium #coach-nav button.active span{color:#1e1708!important;font-weight:700!important}
-  html.dcc-theme-light-premium #client-nav::before,html.dcc-theme-light-premium #client-nav::after,html.dcc-theme-light-premium #coach-nav::before,html.dcc-theme-light-premium #coach-nav::after{background:transparent!important}
+  html.dcc-theme-light-premium #client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
+  html.dcc-theme-light-premium #client-nav button{color:#e8b94f!important;background:transparent!important;border:1px solid transparent!important;text-shadow:0 0 10px rgba(232,185,79,.10)!important}
+  html.dcc-theme-light-premium #client-nav button svg{color:#e8b94f!important;stroke:currentColor!important;filter:drop-shadow(0 0 5px rgba(232,185,79,.12))}
+  html.dcc-theme-light-premium #client-nav button span{color:#e5c778!important}
+  html.dcc-theme-light-premium #client-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.45),0 0 20px rgba(237,187,72,.62),0 8px 20px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.65)!important;transform:translateY(-1px)}
+  html.dcc-theme-light-premium #client-nav button.active svg{color:#1e1708!important;stroke:currentColor!important;filter:none!important}html.dcc-theme-light-premium #client-nav button.active span{color:#1e1708!important;font-weight:700!important}
+  html.dcc-theme-light-premium #client-nav::before,html.dcc-theme-light-premium #client-nav::after{background:transparent!important}
   /* elimina cualquier franja oscura de los contenedores inmediatos del nav */
-  html.dcc-theme-light-premium body :has(>#client-nav),html.dcc-theme-light-premium body :has(>#coach-nav){background:transparent!important;background-color:transparent!important;box-shadow:none!important}
+  html.dcc-theme-light-premium body :has(>#client-nav){background:transparent!important;background-color:transparent!important;box-shadow:none!important}
 
   /* Menú lateral entrenador en escritorio */
   html.dcc-theme-light-premium .side{background:linear-gradient(180deg,#fffaf1 0%,#f1e7d7 100%)!important;color:#17191d!important;border-right-color:rgba(186,126,20,.24)!important;box-shadow:12px 0 30px rgba(83,63,31,.05)!important}
