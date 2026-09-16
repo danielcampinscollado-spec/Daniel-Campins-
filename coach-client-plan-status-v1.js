@@ -1,20 +1,13 @@
-/* DCC — bootstrap estable: carga funciones visuales; la navegación pertenece al core */
+/* DCC client quality bootstrap v72 — rollback calendar custom modules to restore stable navigation */
 (function(){
 'use strict';
-const BUILD='20260916-client-quality-bootstrap-v77-calendar-emergency-rollback';
-if(window.__dccAuditBootstrapStable===BUILD)return;window.__dccAuditBootstrapStable=BUILD;window.__dccAppQualityV5=true;
-function load(src,key,onload){const old=document.querySelector('script[data-dcc-stable="'+key+'"]');if(old){if(onload){if(old.dataset.loaded==='1')onload();else old.addEventListener('load',onload,{once:true})}return}const s=document.createElement('script');s.src=src;s.async=false;s.dataset.dccStable=key;s.onload=()=>{s.dataset.loaded='1';onload?.()};s.onerror=()=>console.error('DCC: no se pudo cargar '+src);(document.head||document.documentElement).appendChild(s)}
-load('./exercise-premium-pectoral-v1.js?v=20260911-1','exercise-premium');
-load('./exercise-guidance-v1.js?v=20260911-1','exercise-guidance');
-load('./auth-premium-v1.js?v=20260914-auth-google-rc1','secure-auth');
-load('./clients-name-only-v1.js?v=20260916-10','clients-name-only');
-load('./coach-dashboard-authority-v1.js?v=20260916-5','coach-dashboard-authority');
-load('./coach-client-profile-v2.js?v=20260915-1','coach-client-profile-v2',()=>load('./coach-client-profile-light-v1.js?v=20260915-1','coach-client-profile-light-v1',()=>load('./coach-client-profile-actions-v1.js?v=20260915-3','coach-client-profile-actions-v1',()=>load('./coach-client-delete-position-v1.js?v=20260915-1','coach-client-delete-position-v1',()=>load('./coach-client-spacing-nutrition-v1.js?v=20260915-3','coach-client-spacing-nutrition-v1')))));
-load('./nutrition-meal-setup-v1.js?v=20260915-2','nutrition-meal-setup',()=>load('./nutrition-meal-order-guard-v1.js?v=20260915-1','nutrition-meal-order-guard'));
-load('./nutrition-avoid-reminder-v1.js?v=20260915-2','nutrition-avoid-reminder');
-load('./nutrition-single-day-valid-v1.js?v=20260915-1','nutrition-single-day-valid');
-load('./diet-missing-day-confirm-v1.js?v=20260915-1','diet-missing-day-confirm');
-load('./training-inline-fix.js?v=20260915-restore1','training-inline-fix',()=>load('./training-coach-fixes-v1.js?v=20260915-restore1','training-coach-fixes',()=>load('./training-defaults-v1.js?v=20260915-restore1','training-defaults',()=>load('./training-day-wizard-v1.js?v=20260916-6','training-day-wizard',()=>load('./training-editor-stability-v1.js?v=20260915-2','training-editor-stability',()=>load('./training-exercise-picker-v2.js?v=20260915-3','training-exercise-picker-v2',()=>load('./training-draft-guard-v1.js?v=20260915-3','training-draft-guard',()=>load('./coach-editor-flow-v1.js?v=20260915-2','coach-editor-flow',()=>load('./training-interaction-fix-v1.js?v=20260915-2','training-interaction-fix',()=>load('./training-save-actions-position-v1.js?v=20260916-6','training-save-actions-position',()=>load('./training-home-actions-v1.js?v=20260916-3','training-home-actions')))))))))));
-load('./bottom-nav-light-premium-v1.js?v=20260916-28','bottom-nav-light-premium');
-load('./checkin-premium.js?v=20260915-router-v39','checkin-premium',()=>load('./messages-premium.js?v=20260915-router-v39','messages-premium'));
+const BUILD='20260916-client-quality-bootstrap-v72-calendar-refined';
+if(window.__dccClientQualityBootstrap===BUILD)return;
+window.__dccClientQualityBootstrap=BUILD;
+function load(src,id,cb){
+  if(document.getElementById(id)){cb&&cb();return}
+  const s=document.createElement('script');s.id=id;s.src=src;s.onload=()=>cb&&cb();s.onerror=()=>console.error('DCC no pudo cargar',src);document.body.appendChild(s)
+}
+load('./auth-premium-v1.js?v=20260914-auth-google-rc1','auth-premium-v1',()=>load('./auth-session-guard-v2.js?v=20260914-rc2','auth-session-guard-v2',()=>load('./data-authority-v1.js?v=20260914-rc2','data-authority-v1',()=>load('./server-actions-v1.js?v=20260914-rc2','server-actions-v1',()=>load('./client-create-authority-v1.js?v=20260914-rc3','client-create-authority-v1',()=>load('./client-delete-persist-v1.js?v=20260914-rc3','client-delete-persist-v1',()=>load('./coach-client-critical-authority-v1.js?v=20260914-rc3','coach-client-critical-authority-v1',()=>load('./client-server-source-v1.js?v=20260914-rc2','client-server-source-v1',()=>load('./diet-server-source-v1.js?v=20260914-rc2','diet-server-source-v1',()=>load('./local-cache-authority-v1.js?v=20260914-rc2','local-cache-authority-v1',()=>load('./dcc-production-stability-v1.js?v=20260914-rc3','dcc-production-stability-v1',()=>load('./dcc-dynamic-greeting-v1.js?v=20260914-1','dcc-dynamic-greeting-v1',()=>load('./new-client-premium-v1.js?v=20260914-3','new-client-premium-v1',()=>load('./clients-name-only-v1.js?v=20260916-10','clients-name-only-v1',()=>load('./coach-client-profile-v2.js?v=20260915-1','coach-client-profile-v2',()=>load('./coach-client-profile-light-v1.js?v=20260915-1','coach-client-profile-light-v1',()=>load('./coach-client-profile-actions-v1.js?v=20260915-3','coach-client-profile-actions-v1',()=>load('./coach-client-delete-position-v1.js?v=20260915-1','coach-client-delete-position-v1',()=>load('./coach-client-spacing-nutrition-v1.js?v=20260915-3','coach-client-spacing-nutrition-v1',()=>load('./nutrition-avoid-reminder-v1.js?v=20260915-2','nutrition-avoid-reminder-v1',()=>load('./nutrition-single-day-valid-v1.js?v=20260915-1','nutrition-single-day-valid-v1',()=>load('./diet-missing-day-confirm-v1.js?v=20260915-1','diet-missing-day-confirm-v1',()=>load('./training-home-actions-v1.js?v=20260916-3','training-home-actions-v1',()=>load('./training-interaction-fix-v1.js?v=20260916-2','training-interaction-fix-v1',()=>load('./coach-dashboard-authority-v1.js?v=20260916-5','coach-dashboard-authority-v1',()=>load('./bottom-nav-light-premium-v1.js?v=20260916-28','bottom-nav-light-premium'))))))))))))))))))))))))));
+load('./coach-calendar-v12.js?v=20260916-122','coach-calendar-v12',()=>load('./coach-calendar-form-fix-v15.js?v=20260916-22','coach-calendar-form-v15'));
 })();
