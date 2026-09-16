@@ -1,13 +1,77 @@
-/* DCC client quality bootstrap v72 — rollback calendar custom modules to restore stable navigation */
+/* DCC bootstrap de soporte — carga determinista, sin renderizadores competidores. */
 (function(){
 'use strict';
-const BUILD='20260916-client-quality-bootstrap-v72-calendar-refined';
-if(window.__dccClientQualityBootstrap===BUILD)return;
-window.__dccClientQualityBootstrap=BUILD;
-function load(src,id,cb){
-  if(document.getElementById(id)){cb&&cb();return}
-  const s=document.createElement('script');s.id=id;s.src=src;s.onload=()=>cb&&cb();s.onerror=()=>console.error('DCC no pudo cargar',src);document.body.appendChild(s)
+const BUILD='20260916-support-bootstrap-audit-v1';
+if(window.__dccSupportBootstrap===BUILD)return;
+window.__dccSupportBootstrap=BUILD;
+
+function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
+function existing(path){return [...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname.endsWith('/'+path)}catch(_){return false}})}
+function load(src){
+  const path=pathOf(src);
+  if(existing(path))return Promise.resolve();
+  return new Promise(resolve=>{
+    const s=document.createElement('script');s.src=src;s.async=false;s.dataset.dccSupport=path;
+    s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};
+    (document.head||document.documentElement).appendChild(s);
+  });
 }
-load('./auth-premium-v1.js?v=20260914-auth-google-rc1','auth-premium-v1',()=>load('./auth-session-guard-v2.js?v=20260914-rc2','auth-session-guard-v2',()=>load('./data-authority-v1.js?v=20260914-rc2','data-authority-v1',()=>load('./server-actions-v1.js?v=20260914-rc2','server-actions-v1',()=>load('./client-create-authority-v1.js?v=20260914-rc3','client-create-authority-v1',()=>load('./client-delete-persist-v1.js?v=20260914-rc3','client-delete-persist-v1',()=>load('./coach-client-critical-authority-v1.js?v=20260914-rc3','coach-client-critical-authority-v1',()=>load('./client-server-source-v1.js?v=20260914-rc2','client-server-source-v1',()=>load('./diet-server-source-v1.js?v=20260914-rc2','diet-server-source-v1',()=>load('./local-cache-authority-v1.js?v=20260914-rc2','local-cache-authority-v1',()=>load('./dcc-production-stability-v1.js?v=20260914-rc3','dcc-production-stability-v1',()=>load('./dcc-dynamic-greeting-v1.js?v=20260914-1','dcc-dynamic-greeting-v1',()=>load('./new-client-premium-v1.js?v=20260914-3','new-client-premium-v1',()=>load('./clients-name-only-v1.js?v=20260916-10','clients-name-only-v1',()=>load('./coach-client-profile-v2.js?v=20260915-1','coach-client-profile-v2',()=>load('./coach-client-profile-light-v1.js?v=20260915-1','coach-client-profile-light-v1',()=>load('./coach-client-profile-actions-v1.js?v=20260915-3','coach-client-profile-actions-v1',()=>load('./coach-client-delete-position-v1.js?v=20260915-1','coach-client-delete-position-v1',()=>load('./coach-client-spacing-nutrition-v1.js?v=20260915-3','coach-client-spacing-nutrition-v1',()=>load('./nutrition-avoid-reminder-v1.js?v=20260915-2','nutrition-avoid-reminder-v1',()=>load('./nutrition-single-day-valid-v1.js?v=20260915-1','nutrition-single-day-valid-v1',()=>load('./diet-missing-day-confirm-v1.js?v=20260915-1','diet-missing-day-confirm-v1',()=>load('./training-home-actions-v1.js?v=20260916-3','training-home-actions-v1',()=>load('./training-interaction-fix-v1.js?v=20260916-2','training-interaction-fix-v1',()=>load('./coach-dashboard-authority-v1.js?v=20260916-5','coach-dashboard-authority-v1',()=>load('./bottom-nav-light-premium-v1.js?v=20260916-28','bottom-nav-light-premium'))))))))))))))))))))))))));
-load('./coach-calendar-v12.js?v=20260916-122','coach-calendar-v12',()=>load('./coach-calendar-form-fix-v15.js?v=20260916-22','coach-calendar-form-v15'));
+
+const modules=[
+  './exercise-premium-pectoral-v1.js?v=20260916-audit1',
+  './exercise-guidance-v1.js?v=20260916-audit1',
+  './auth-preview-redirect-guard-v1.js?v=20260916-audit1',
+  './auth-premium-v1.js?v=20260916-audit1',
+  './auth-session-guard-v2.js?v=20260916-audit1',
+  './auth-client-claim-v1.js?v=20260916-audit1',
+  './local-cache-authority-v1.js?v=20260916-audit1',
+  './data-authority-v1.js?v=20260916-audit1',
+  './server-actions-v1.js?v=20260916-audit1',
+  './client-server-source-v1.js?v=20260916-audit1',
+  './client-create-authority-v1.js?v=20260916-audit1',
+  './client-delete-persist-v1.js?v=20260916-audit1',
+  './client-delete-atomic-v4.js?v=20260916-audit1',
+  './client-access-coach-v1.js?v=20260916-audit1',
+  './client-profile-edit-authority-v2.js?v=20260916-audit1',
+  './coach-client-critical-authority-v1.js?v=20260916-audit1',
+  './client-current-fat-dedupe-v1.js?v=20260916-audit1',
+  './coach-client-final-consistency-v1.js?v=20260916-audit1',
+  './routine-authority-v1.js?v=20260916-audit1',
+  './training-progress-authority-v1.js?v=20260916-audit1',
+  './training-finish-route-fix-v1.js?v=20260916-audit1',
+  './client-metrics-modal-v1.js?v=20260916-audit1',
+  './body-fat-authority-v1.js?v=20260916-audit1',
+  './coach-weight-authority-v1.js?v=20260916-audit1',
+  './checkin-review-authority-v1.js?v=20260916-audit1',
+  './diet-editor-state-fix-v1.js?v=20260916-audit1',
+  './diet-legacy-compat-v1.js?v=20260916-audit1',
+  './diet-editor-save-exit-v1.js?v=20260916-audit1',
+  './diet-server-source-v1.js?v=20260916-audit1',
+  './diet-editor-save-visibility-v1.js?v=20260916-audit1',
+  './messages-realtime-chat-guard-v1.js?v=20260916-audit1',
+  './rc-coach-stability-v1.js?v=20260916-audit1',
+  './dcc-production-stability-v1.js?v=20260916-audit1',
+  './dcc-dynamic-greeting-v1.js?v=20260916-audit1',
+  './new-client-premium-v1.js?v=20260916-audit1',
+  './coach-client-profile-v2.js?v=20260916-audit1',
+  './coach-client-profile-light-v1.js?v=20260916-audit1',
+  './coach-client-profile-actions-v1.js?v=20260916-audit1',
+  './coach-client-delete-position-v1.js?v=20260916-audit1',
+  './coach-client-spacing-nutrition-v1.js?v=20260916-audit1',
+  './nutrition-avoid-reminder-v1.js?v=20260916-audit1',
+  './nutrition-single-day-valid-v1.js?v=20260916-audit1',
+  './diet-missing-day-confirm-v1.js?v=20260916-audit1',
+  './training-inline-fix.js?v=20260916-audit1',
+  './training-home-actions-v1.js?v=20260916-audit1',
+  './training-interaction-fix-v1.js?v=20260916-audit1',
+  './coach-calendar-v12.js?v=20260916-audit1',
+  './coach-calendar-form-fix-v15.js?v=20260916-audit1'
+];
+
+(async()=>{
+  for(const src of modules)await load(src);
+  window.__dccSupportBootstrapReady=true;
+  document.dispatchEvent(new CustomEvent('dcc:support-ready'));
+  if(window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12();
+})();
 })();
