@@ -1,11 +1,11 @@
-/* DCC — seguimiento persistente sin observador global del DOM */
+/* DCC — seguimiento persistente, render inmediato y sincronización en segundo plano. */
 (function(){
 'use strict';
-const BUILD='20260916-followup-hardfix-v5-event-driven';
+const BUILD='20260916-followup-v6-instant-notes';
 if(window.__dccFollowupHardfix===BUILD)return;
 window.__dccFollowupHardfix=BUILD;
 
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null}
 function appData(){try{return typeof data!=='undefined'?data:(window.data||{})}catch(_){return window.data||{}}}
 function client(id){return (appData().clients||[]).find(c=>String(c.id)===String(id))||null}
@@ -15,15 +15,16 @@ function persistLocal(){try{if(typeof saveData==='function')saveData();else if(t
 function freqLabel(v,photos){if(v==='weekly')return'Semanal';if(v==='biweekly')return'Cada 2 semanas';if(v==='monthly')return'Mensual';return photos?'Desactivadas':'Desactivado'}
 function dateLabel(v){if(!v)return'Sin fecha';const m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);const d=m?new Date(+m[1],+m[2]-1,+m[3]):new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}).replace('.','')}
 function cleanNotes(v){return Array.isArray(v)?v.filter(n=>n&&String(n.text||'').trim()).map(n=>({text:String(n.text||'').trim(),date:n.date||new Date().toISOString()})):[]}
+function localRow(id){const cl=client(id);if(!cl)return null;return{id:cl.id,checkin_frequency:cl.checkin_frequency??cl.checkinFrequency??'weekly',photo_frequency:cl.photo_frequency??cl.photoFrequency??'monthly',next_diet_review:cl.next_diet_review??cl.nextDietReview??null,next_routine_review:cl.next_routine_review??cl.nextRoutineReview??null,followup_configured_at:cl.followup_configured_at??cl.followupConfiguredAt??null,coach_notes:cleanNotes(cl.coach_notes?.length?cl.coach_notes:cl.coachNotes)}}
 function applyServerRow(cl,row){if(!cl||!row)return;cl.checkinFrequency=row.checkin_frequency??cl.checkinFrequency;cl.checkin_frequency=row.checkin_frequency;cl.photoFrequency=row.photo_frequency??cl.photoFrequency;cl.photo_frequency=row.photo_frequency;cl.nextDietReview=row.next_diet_review||'';cl.next_diet_review=row.next_diet_review;cl.nextRoutineReview=row.next_routine_review||'';cl.next_routine_review=row.next_routine_review;cl.followupConfiguredAt=row.followup_configured_at||null;cl.followup_configured_at=row.followup_configured_at||null;cl.coachNotes=cleanNotes(row.coach_notes);cl.coach_notes=cleanNotes(row.coach_notes);persistLocal()}
 
 function ensureLayoutCss(){
-  if(document.getElementById('dcc-followup-hardfix-layout-v5'))return;
-  ['dcc-followup-hardfix-layout-v3','dcc-followup-hardfix-layout-v4'].forEach(id=>document.getElementById(id)?.remove());
-  const s=document.createElement('style');s.id='dcc-followup-hardfix-layout-v5';s.textContent=`
+  if(document.getElementById('dcc-followup-layout-v6'))return;
+  ['dcc-followup-hardfix-layout-v3','dcc-followup-hardfix-layout-v4','dcc-followup-hardfix-layout-v5'].forEach(id=>document.getElementById(id)?.remove());
+  const s=document.createElement('style');s.id='dcc-followup-layout-v6';s.textContent=`
     #coach-main.dcc-ca .dcc-followup-summary{overflow:hidden}
-    #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{grid-template-columns:minmax(0,1fr) 104px!important;align-items:center!important;padding:11px 16px 11px 14px!important;column-gap:14px!important}
-    #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;padding:0 6px!important;text-align:center!important;line-height:1.25!important;box-sizing:border-box!important;transform:translateX(9px)!important}
+    #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{display:grid!important;grid-template-columns:minmax(0,1fr) 104px!important;align-items:center!important;padding:11px 16px 11px 14px!important;column-gap:14px!important}
+    #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{display:flex!important;align-items:center!important;justify-content:center!important;justify-self:stretch!important;width:100%!important;min-width:0!important;margin:0!important;padding:0 6px!important;text-align:center!important;line-height:1.25!important;box-sizing:border-box!important;transform:translateX(9px)!important}
     @media(max-width:390px){#coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{grid-template-columns:minmax(0,1fr) 96px!important;padding-left:12px!important;padding-right:16px!important}#coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{padding:0 5px!important;transform:translateX(7px)!important}}
   `;(document.head||document.documentElement).appendChild(s)
 }
@@ -35,30 +36,31 @@ async function saveNotesRpc(id,notes){const database=db();if(!database)throw new
 function notesRoot(){return document.querySelector('#coach-main.dcc-ca .dcc-profile-v2-notes')}
 function configCard(){return notesRoot()?.querySelector('.dcc-v2-card:first-child')||null}
 function notesCard(){const cs=notesRoot()?.querySelectorAll('.dcc-v2-card');return cs?.[1]||null}
-function renderConfig(row){ensureLayoutCss();const card=configCard();if(!card||!row)return;const configured=!!row.followup_configured_at;if(!configured)return;card.innerHTML=`<div class="dcc-v2-head"><div><h2>Configuración actual</h2><div class="dcc-v2-sub">Seguimiento guardado para este cliente</div></div><span style="font-size:9px;font-weight:900;color:#2e8b5c">✓ Guardado</span></div><div class="dcc-followup-summary" style="display:grid;margin-top:12px;border:1px solid rgba(177,119,18,.18);border-radius:15px"><div class="dcc-v2-row"><span>Check-in</span><b>${esc(freqLabel(row.checkin_frequency,false))}</b></div><div class="dcc-v2-row"><span>Fotos de progreso</span><b>${esc(freqLabel(row.photo_frequency,true))}</b></div><div class="dcc-v2-row"><span>Revisar alimentación</span><b>${esc(dateLabel(row.next_diet_review))}</b></div><div class="dcc-v2-row"><span>Revisar rutina</span><b>${esc(dateLabel(row.next_routine_review))}</b></div></div><button type="button" id="dccHardfixEditFollowup" class="dcc-v2-save" style="margin-top:12px;background:transparent;color:#8d5b08">Modificar seguimiento</button>`}
+function renderConfig(row){ensureLayoutCss();const card=configCard();if(!card||!row||!row.followup_configured_at)return;card.innerHTML=`<div class="dcc-v2-head"><div><h2>Configuración actual</h2><div class="dcc-v2-sub">Seguimiento guardado para este cliente</div></div><span style="font-size:9px;font-weight:900;color:#2e8b5c">✓ Guardado</span></div><div class="dcc-followup-summary" style="display:grid;margin-top:12px;border:1px solid rgba(177,119,18,.18);border-radius:15px"><div class="dcc-v2-row"><span>Check-in</span><b>${esc(freqLabel(row.checkin_frequency,false))}</b></div><div class="dcc-v2-row"><span>Fotos de progreso</span><b>${esc(freqLabel(row.photo_frequency,true))}</b></div><div class="dcc-v2-row"><span>Revisar alimentación</span><b>${esc(dateLabel(row.next_diet_review))}</b></div><div class="dcc-v2-row"><span>Revisar rutina</span><b>${esc(dateLabel(row.next_routine_review))}</b></div></div><button type="button" id="dccHardfixEditFollowup" class="dcc-v2-save" style="margin-top:12px;background:transparent;color:#8d5b08">Modificar seguimiento</button>`}
 function renderNotes(row){const card=notesCard();if(!card||!row)return;const listHost=[...card.children].find(el=>el.tagName==='DIV'&&String(el.getAttribute('style')||'').includes('margin-top'))||card.querySelector('div[style*="margin-top"]');if(!listHost)return;const notes=cleanNotes(row.coach_notes);listHost.innerHTML=notes.length?notes.slice().reverse().map((n,i)=>{const real=notes.length-1-i;return `<div class="dcc-v2-note"><button type="button" data-dcc-note-delete="${real}">Eliminar</button><small>${esc(dateLabel(n.date))}</small><p>${esc(n.text)}</p></div>`}).join(''):'<div class="dcc-v2-sub" style="padding:8px 0">Todavía no hay notas.</div>'}
 function renderEditForm(row){const card=configCard();if(!card)return;const cf=row?.checkin_frequency||'weekly',pf=row?.photo_frequency||'monthly',diet=row?.next_diet_review||'',routine=row?.next_routine_review||'';card.innerHTML=`<div class="dcc-v2-head"><div><h2>Modificar seguimiento</h2><div class="dcc-v2-sub">Actualiza las frecuencias o fechas guardadas</div></div></div><div class="dcc-v2-form"><div class="dcc-v2-field"><label>Check-in</label><select id="dccV2CheckFreq"><option value="weekly" ${cf==='weekly'?'selected':''}>Semanal</option><option value="biweekly" ${cf==='biweekly'?'selected':''}>Cada 2 semanas</option><option value="monthly" ${cf==='monthly'?'selected':''}>Mensual</option><option value="off" ${cf==='off'?'selected':''}>Desactivado</option></select></div><div class="dcc-v2-field"><label>Fotos de progreso</label><select id="dccV2PhotoFreq"><option value="weekly" ${pf==='weekly'?'selected':''}>Semanal</option><option value="biweekly" ${pf==='biweekly'?'selected':''}>Cada 2 semanas</option><option value="monthly" ${pf==='monthly'?'selected':''}>Mensual</option><option value="off" ${pf==='off'?'selected':''}>Desactivadas</option></select></div><div class="dcc-v2-field"><label>Revisar alimentación</label><input id="dccV2DietDate" type="date" value="${esc(diet)}"></div><div class="dcc-v2-field"><label>Revisar rutina</label><input id="dccV2RoutineDate" type="date" value="${esc(routine)}"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" id="dccHardfixCancelFollowup" class="dcc-v2-save" style="background:transparent;color:#6f7782">Cancelar</button><button type="button" id="dccHardfixSaveFollowup" class="dcc-v2-save">Actualizar seguimiento</button></div></div>`}
+function renderLocal(id){const row=localRow(id);if(!row||!notesRoot())return;renderConfig(row);renderNotes(row);document.dispatchEvent(new CustomEvent('dcc:followup-ready'))}
 
 let syncToken=0;
 async function syncVisible(){const root=notesRoot(),id=selectedId();if(!root||!id)return;const token=++syncToken;try{const row=await readRow(id);if(token!==syncToken||String(selectedId())!==String(id)||!notesRoot())return;applyServerRow(client(id),row);renderConfig(row);renderNotes(row);document.dispatchEvent(new CustomEvent('dcc:followup-ready'))}catch(e){console.error('DCC seguimiento sync:',e)}}
-async function saveFollowup(button){const id=selectedId();if(!id)return;const cf=document.getElementById('dccV2CheckFreq')?.value||'weekly',pf=document.getElementById('dccV2PhotoFreq')?.value||'monthly',diet=document.getElementById('dccV2DietDate')?.value||null,routine=document.getElementById('dccV2RoutineDate')?.value||null;if(button){button.disabled=true;button.textContent='Guardando…'}try{const row=await saveConfigRpc(id,cf,pf,diet,routine);applyServerRow(client(id),row);renderConfig(row);renderNotes(row);document.dispatchEvent(new CustomEvent('dcc:followup-ready'));toastMsg('Seguimiento guardado')}catch(e){console.error('DCC seguimiento:',e);toastMsg('No se pudo guardar el seguimiento');if(button){button.disabled=false;button.textContent='Guardar seguimiento'}}}
+async function saveFollowup(button){const id=selectedId();if(!id)return;const cf=document.getElementById('dccV2CheckFreq')?.value||'weekly',pf=document.getElementById('dccV2PhotoFreq')?.value||'monthly',diet=document.getElementById('dccV2DietDate')?.value||null,routine=document.getElementById('dccV2RoutineDate')?.value||null;if(button){button.disabled=true;button.textContent='Guardando…'}try{const row=await saveConfigRpc(id,cf,pf,diet,routine);applyServerRow(client(id),row);renderConfig(row);renderNotes(row);toastMsg('Seguimiento guardado')}catch(e){console.error('DCC seguimiento:',e);toastMsg('No se pudo guardar el seguimiento');if(button){button.disabled=false;button.textContent='Actualizar seguimiento'}}}
 async function addNote(button){const id=selectedId(),el=document.getElementById('dccV2NewNote'),text=el?.value?.trim();if(!id||!text)return;if(button){button.disabled=true;button.textContent='Guardando…'}try{const current=await readRow(id),notes=cleanNotes(current?.coach_notes);notes.push({text,date:new Date().toISOString()});const row=await saveNotesRpc(id,notes);applyServerRow(client(id),row);if(el)el.value='';renderNotes(row);toastMsg('Nota guardada');if(button){button.disabled=false;button.textContent='Añadir nota'}}catch(e){console.error('DCC nota:',e);toastMsg('No se pudo guardar la nota');if(button){button.disabled=false;button.textContent='Añadir nota'}}}
 async function deleteNote(index){const id=selectedId();if(!id)return;try{const current=await readRow(id),notes=cleanNotes(current?.coach_notes);if(index>=0&&index<notes.length)notes.splice(index,1);const row=await saveNotesRpc(id,notes);applyServerRow(client(id),row);renderNotes(row);toastMsg('Nota eliminada')}catch(e){console.error('DCC eliminar nota:',e);toastMsg('No se pudo eliminar la nota')}}
 
 function installNotesHook(){
   const current=window.dccCoachNotes;
-  if(typeof current!=='function'||current.__dccHardfixHook)return;
+  if(typeof current!=='function'||current.__dccInstantHook)return;
   const base=current;
-  const wrapped=function(){const out=base.apply(this,arguments);requestAnimationFrame(()=>syncVisible());return out};
-  wrapped.__dccHardfixHook=true;
+  const wrapped=function(id){const out=base.apply(this,arguments);const cid=String(id||selectedId());renderLocal(cid);requestAnimationFrame(()=>syncVisible());return out};
+  wrapped.__dccInstantHook=true;
   wrapped.__dccBase=base;
   window.dccCoachNotes=wrapped;
 }
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
-  if(t.id==='dccHardfixEditFollowup'){e.preventDefault();e.stopImmediatePropagation();readRow(selectedId()).then(renderEditForm);return}
-  if(t.id==='dccHardfixCancelFollowup'){e.preventDefault();e.stopImmediatePropagation();readRow(selectedId()).then(r=>{renderConfig(r);renderNotes(r)});return}
+  if(t.id==='dccHardfixEditFollowup'){e.preventDefault();e.stopImmediatePropagation();renderEditForm(localRow(selectedId()));return}
+  if(t.id==='dccHardfixCancelFollowup'){e.preventDefault();e.stopImmediatePropagation();renderLocal(selectedId());return}
   if(t.id==='dccHardfixSaveFollowup'){e.preventDefault();e.stopImmediatePropagation();saveFollowup(t);return}
   if(t.hasAttribute('data-dcc-note-delete')){e.preventDefault();e.stopImmediatePropagation();deleteNote(Number(t.getAttribute('data-dcc-note-delete')));return}
   const txt=(t.textContent||'').trim();
@@ -70,6 +72,6 @@ ensureLayoutCss();
 installNotesHook();
 document.addEventListener('dcc:profile-critical-ready',installNotesHook);
 document.addEventListener('dcc:support-ready',installNotesHook);
-window.addEventListener('pageshow',()=>{installNotesHook();if(notesRoot())syncVisible()});
-if(notesRoot())syncVisible();
+window.addEventListener('pageshow',()=>{installNotesHook();if(notesRoot()){renderLocal(selectedId());syncVisible()}});
+if(notesRoot()){renderLocal(selectedId());syncVisible()}
 })();
