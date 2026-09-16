@@ -1,7 +1,7 @@
 /* DCC — hard fix persistencia de seguimiento y notas */
 (function(){
 'use strict';
-const BUILD='20260916-followup-hardfix-v3-layout';
+const BUILD='20260916-followup-hardfix-v4-layout-right';
 if(window.__dccFollowupHardfix===BUILD)return;
 window.__dccFollowupHardfix=BUILD;
 
@@ -18,15 +18,16 @@ function cleanNotes(v){return Array.isArray(v)?v.filter(n=>n&&String(n.text||'')
 function applyServerRow(cl,row){if(!cl||!row)return;cl.checkinFrequency=row.checkin_frequency??cl.checkinFrequency;cl.checkin_frequency=row.checkin_frequency;cl.photoFrequency=row.photo_frequency??cl.photoFrequency;cl.photo_frequency=row.photo_frequency;cl.nextDietReview=row.next_diet_review||'';cl.next_diet_review=row.next_diet_review;cl.nextRoutineReview=row.next_routine_review||'';cl.next_routine_review=row.next_routine_review;cl.followupConfiguredAt=row.followup_configured_at||null;cl.followup_configured_at=row.followup_configured_at||null;cl.coachNotes=cleanNotes(row.coach_notes);cl.coach_notes=cleanNotes(row.coach_notes);persistLocal()}
 
 function ensureLayoutCss(){
-  if(document.getElementById('dcc-followup-hardfix-layout-v3'))return;
+  if(document.getElementById('dcc-followup-hardfix-layout-v4'))return;
+  const old=document.getElementById('dcc-followup-hardfix-layout-v3');if(old)old.remove();
   const s=document.createElement('style');
-  s.id='dcc-followup-hardfix-layout-v3';
+  s.id='dcc-followup-hardfix-layout-v4';
   s.textContent=`
     #coach-main.dcc-ca .dcc-followup-summary{overflow:hidden}
     #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{
       grid-template-columns:minmax(0,1fr) 104px!important;
       align-items:center!important;
-      padding:11px 14px!important;
+      padding:11px 16px 11px 14px!important;
       column-gap:14px!important;
     }
     #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{
@@ -35,18 +36,22 @@ function ensureLayoutCss(){
       justify-content:center!important;
       width:100%!important;
       min-width:0!important;
-      padding:0 8px!important;
+      padding:0 6px!important;
       text-align:center!important;
       line-height:1.25!important;
       box-sizing:border-box!important;
+      transform:translateX(9px)!important;
     }
     @media(max-width:390px){
       #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{
         grid-template-columns:minmax(0,1fr) 96px!important;
         padding-left:12px!important;
-        padding-right:12px!important;
+        padding-right:16px!important;
       }
-      #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{padding:0 6px!important}
+      #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{
+        padding:0 5px!important;
+        transform:translateX(7px)!important;
+      }
     }
   `;
   (document.head||document.documentElement).appendChild(s);
@@ -64,8 +69,8 @@ function renderNotes(row){const card=notesCard();if(!card||!row)return;const lis
 function renderEditForm(row){const card=configCard();if(!card)return;const cf=row?.checkin_frequency||'weekly',pf=row?.photo_frequency||'monthly',diet=row?.next_diet_review||'',routine=row?.next_routine_review||'';card.innerHTML=`<div class="dcc-v2-head"><div><h2>Modificar seguimiento</h2><div class="dcc-v2-sub">Actualiza las frecuencias o fechas guardadas</div></div></div><div class="dcc-v2-form"><div class="dcc-v2-field"><label>Check-in</label><select id="dccV2CheckFreq"><option value="weekly" ${cf==='weekly'?'selected':''}>Semanal</option><option value="biweekly" ${cf==='biweekly'?'selected':''}>Cada 2 semanas</option><option value="monthly" ${cf==='monthly'?'selected':''}>Mensual</option><option value="off" ${cf==='off'?'selected':''}>Desactivado</option></select></div><div class="dcc-v2-field"><label>Fotos de progreso</label><select id="dccV2PhotoFreq"><option value="weekly" ${pf==='weekly'?'selected':''}>Semanal</option><option value="biweekly" ${pf==='biweekly'?'selected':''}>Cada 2 semanas</option><option value="monthly" ${pf==='monthly'?'selected':''}>Mensual</option><option value="off" ${pf==='off'?'selected':''}>Desactivadas</option></select></div><div class="dcc-v2-field"><label>Revisar alimentación</label><input id="dccV2DietDate" type="date" value="${esc(diet)}"></div><div class="dcc-v2-field"><label>Revisar rutina</label><input id="dccV2RoutineDate" type="date" value="${esc(routine)}"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" id="dccHardfixCancelFollowup" class="dcc-v2-save" style="background:transparent;color:#6f7782">Cancelar</button><button type="button" id="dccHardfixSaveFollowup" class="dcc-v2-save">Actualizar seguimiento</button></div></div>`}
 
 let lastSyncKey='';
-async function syncVisible(force=false){const root=notesRoot(),id=selectedId();if(!root||!id)return;const key=id+':'+(root.dataset.dccHardfixInstance||(root.dataset.dccHardfixInstance=String(Date.now())));if(!force&&lastSyncKey===key)return;lastSyncKey=key;try{const row=await readRow(id);applyServerRow(client(id),row);renderConfig(row);renderNotes(row)}catch(e){console.error('DCC hardfix sync:',e)}}
-async function saveFollowup(button){const id=selectedId();if(!id)return;const cf=document.getElementById('dccV2CheckFreq')?.value||'weekly',pf=document.getElementById('dccV2PhotoFreq')?.value||'monthly',diet=document.getElementById('dccV2DietDate')?.value||null,routine=document.getElementById('dccV2RoutineDate')?.value||null;if(button){button.disabled=true;button.textContent='Guardando…'}try{const row=await saveConfigRpc(id,cf,pf,diet,routine);applyServerRow(client(id),row);renderConfig(row);renderNotes(row);toastMsg('Seguimiento guardado')}catch(e){console.error('DCC hardfix seguimiento:',e);toastMsg('No se pudo guardar el seguimiento');if(button){button.disabled=false;button.textContent='Guardar seguimiento'}}}
+async function syncVisible(force=false){const root=notesRoot(),id=selectedId();if(!root||!id)return;const key=id+':'+(root.dataset.dccHardfixInstance||(root.dataset.dccHardfixInstance=String(Date.now())));if(!force&&lastSyncKey===key)return;lastSyncKey=key;try{const row=await readRow(id);applyServerRow(client(id),row);renderConfig(row);renderNotes(row);document.dispatchEvent(new CustomEvent('dcc:followup-ready'))}catch(e){console.error('DCC hardfix sync:',e)}}
+async function saveFollowup(button){const id=selectedId();if(!id)return;const cf=document.getElementById('dccV2CheckFreq')?.value||'weekly',pf=document.getElementById('dccV2PhotoFreq')?.value||'monthly',diet=document.getElementById('dccV2DietDate')?.value||null,routine=document.getElementById('dccV2RoutineDate')?.value||null;if(button){button.disabled=true;button.textContent='Guardando…'}try{const row=await saveConfigRpc(id,cf,pf,diet,routine);applyServerRow(client(id),row);renderConfig(row);renderNotes(row);document.dispatchEvent(new CustomEvent('dcc:followup-ready'));toastMsg('Seguimiento guardado')}catch(e){console.error('DCC hardfix seguimiento:',e);toastMsg('No se pudo guardar el seguimiento');if(button){button.disabled=false;button.textContent='Guardar seguimiento'}}}
 async function addNote(button){const id=selectedId(),el=document.getElementById('dccV2NewNote'),text=el?.value?.trim();if(!id||!text)return;if(button){button.disabled=true;button.textContent='Guardando…'}try{const current=await readRow(id),notes=cleanNotes(current?.coach_notes);notes.push({text,date:new Date().toISOString()});const row=await saveNotesRpc(id,notes);applyServerRow(client(id),row);if(el)el.value='';renderNotes(row);toastMsg('Nota guardada');if(button){button.disabled=false;button.textContent='Añadir nota'}}catch(e){console.error('DCC hardfix nota:',e);toastMsg('No se pudo guardar la nota');if(button){button.disabled=false;button.textContent='Añadir nota'}}}
 async function deleteNote(index){const id=selectedId();if(!id)return;try{const current=await readRow(id),notes=cleanNotes(current?.coach_notes);if(index>=0&&index<notes.length)notes.splice(index,1);const row=await saveNotesRpc(id,notes);applyServerRow(client(id),row);renderNotes(row);toastMsg('Nota eliminada')}catch(e){console.error('DCC hardfix eliminar nota:',e);toastMsg('No se pudo eliminar la nota')}}
 
@@ -85,5 +90,5 @@ const obs=new MutationObserver(()=>setTimeout(()=>syncVisible(false),0));
 if(document.body)obs.observe(document.body,{childList:true,subtree:true});else document.addEventListener('DOMContentLoaded',()=>obs.observe(document.body,{childList:true,subtree:true}),{once:true});
 document.addEventListener('dcc:coach-screen',()=>setTimeout(()=>syncVisible(true),0));
 window.addEventListener('pageshow',()=>setTimeout(()=>syncVisible(true),0));
-setTimeout(()=>syncVisible(true),500);
+setTimeout(()=>syncVisible(true),350);
 })();
