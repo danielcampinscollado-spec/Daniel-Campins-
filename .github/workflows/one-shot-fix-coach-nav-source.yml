@@ -1,0 +1,41 @@
+name: One-shot coach nav source cleanup
+on:
+  push:
+    paths:
+      - '.github/workflows/one-shot-fix-coach-nav-source.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fix navigation at source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('coach-premium-core-v9.js')
+          s=p.read_text()
+          old=s
+          s=s.replace("background:#11110f!important;background-image:none!important;box-shadow:0 12px 30px rgba(0,0,0,.24)!important", "background:#fffdf9!important;background-image:none!important;box-shadow:0 12px 30px rgba(103,76,29,.13),inset 0 1px 0 rgba(255,255,255,.98)!important")
+          s=s.replace("background:#11110f!important;background-image:none!important;box-shadow:none!important", "background:#fffdf9!important;background-image:none!important;box-shadow:none!important")
+          s=s.replace("background:transparent!important;color:#d7aa4b!important;box-shadow:none!important", "background:transparent!important;color:#5f6268!important;box-shadow:none!important")
+          if s==old:
+              raise SystemExit('No se encontraron las reglas negras esperadas en coach-premium-core-v9.js')
+          p.write_text(s)
+
+          p=Path('coach-premium-v8.js')
+          s=p.read_text()
+          s=s.replace("20260916-coach-loader-audit-v1", "20260916-coach-loader-audit-v2")
+          s=s.replace("./coach-premium-core-v9.js?v=20260916-audit1", "./coach-premium-core-v9.js?v=20260916-audit2")
+          p.write_text(s)
+          PY
+      - name: Commit source fix
+        run: |
+          git config user.name 'dcc-source-cleanup'
+          git config user.email 'actions@users.noreply.github.com'
+          git add coach-premium-core-v9.js coach-premium-v8.js
+          git commit -m 'Fix coach navigation white surface at source'
+          git push origin HEAD:main
