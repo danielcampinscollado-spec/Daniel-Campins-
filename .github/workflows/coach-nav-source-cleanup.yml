@@ -1,0 +1,75 @@
+name: Coach nav source cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/coach-nav-source-cleanup.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove legacy coach bottom-nav style sources
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          # 1) index.html: keep client prepaint untouched, remove coach from that legacy prepaint.
+          p=Path('index.html'); s=p.read_text()
+          reps={
+            '#client-nav,#coach-nav':'#client-nav',
+            '#client-nav button,#coach-nav button':'#client-nav button',
+            '#client-nav button svg,#coach-nav button svg':'#client-nav button svg',
+            '#client-nav button span,#coach-nav button span':'#client-nav button span',
+            '#client-nav button.active,#coach-nav button.active':'#client-nav button.active',
+            '#client-nav button.active *,#coach-nav button.active *':'#client-nav button.active *',
+          }
+          for a,b in reps.items(): s=s.replace(a,b)
+          # Remove legacy coach-specific mobile button styling; the dedicated nav file owns it now.
+          s=re.sub(r'\n#coach-nav button\s*\{.*?\n\}', '', s, flags=re.S)
+          s=re.sub(r'\n#coach-nav button svg\s*\{.*?\n\}', '', s, flags=re.S)
+          s=re.sub(r'\n#coach-nav button span\s*\{.*?\n\}', '', s, flags=re.S)
+          s=re.sub(r'\n#coach-nav button\.active\s*\{.*?\n\}', '', s, flags=re.S)
+          s=re.sub(r'\n#coach-nav button\.active svg\s*\{.*?\n\}', '', s, flags=re.S)
+          p.write_text(s)
+
+          # 2) coach-light-stable-v1.js: remove both legacy bottom-nav sections only.
+          p=Path('coach-light-stable-v1.js'); s=p.read_text()
+          s,n1=re.subn(r'\n/\* Barra inferior: una sola apariencia estable \*/.*?(?=\n/\* Correcciones de superficies)', '\n', s, count=1, flags=re.S)
+          s,n2=re.subn(r'\n/\* Barra inferior: geometría fija; el activo nunca sale del marco\. \*/.*?(?=\n@media\(max-width:700px\)\{)', '\n', s, count=1, flags=re.S)
+          # In its remaining mobile media block, remove only the old .side geometry line.
+          s=re.sub(r'\n\s*html\.dcc-theme-light-premium body #coach \.side\{[^\n]*\}', '', s)
+          if n1!=1 or n2!=1: raise SystemExit(f'coach-light nav blocks not found: {n1}, {n2}')
+          p.write_text(s)
+
+          # 3) coach-theme-premium-global.js: remove its legacy nav polish and mobile nav radius rules.
+          p=Path('coach-theme-premium-global.js'); s=p.read_text()
+          s,n3=re.subn(r'\n\s*/\* Barra inferior \*/.*?(?=\n\s*/\* Clientes \*/)', '\n', s, count=1, flags=re.S)
+          s=re.sub(r'\n\s*html\.dcc-theme-light-premium body #coach \.side\{[^\n]*\}', '', s)
+          s=re.sub(r'\n\s*html\.dcc-theme-light-premium body #coach #coach-nav\{[^\n]*\}', '', s)
+          if n3!=1: raise SystemExit(f'coach-theme nav block not found: {n3}')
+          p.write_text(s)
+
+          # 4) Verify no dedicated coach-nav CSS remains in legacy theme files.
+          for f in ['coach-light-stable-v1.js','coach-theme-premium-global.js']:
+            t=Path(f).read_text()
+            if '#coach-nav' in t or re.search(r'#coach\s+\.side\s*\{',t):
+              raise SystemExit(f'legacy coach nav selector remains in {f}')
+
+          # Dedicated source must still exist and contain the three-column coach nav.
+          nav=Path('bottom-nav-light-premium-v1.js').read_text()
+          assert '#coach-nav' in nav and 'repeat(3,minmax(0,1fr))' in nav
+          PY
+      - name: Commit source cleanup
+        run: |
+          git config user.name 'dcc-source-cleanup'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html coach-light-stable-v1.js coach-theme-premium-global.js
+          git diff --cached --check
+          git commit -m 'Remove conflicting coach bottom navigation style sources'
+          git push
