@@ -1,19 +1,27 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v22-nav-first';
+const BUILD='20260916-support-bootstrap-v23-clean-nav-today';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
+
+/* Primer pintado: evita que el lateral oscuro original llegue a verse alrededor de la barra. */
+(function navPrepaint(){
+ if(document.getElementById('dcc-coach-nav-prepaint-v2'))return;
+ const s=document.createElement('style');s.id='dcc-coach-nav-prepaint-v2';s.textContent=`@media(max-width:900px){body #coach#coach>.side{background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;border-color:#d9a43a!important;outline:0!important;box-shadow:0 12px 30px rgba(103,76,29,.11),inset 0 0 0 8px #fffdf9!important;-webkit-box-shadow:0 12px 30px rgba(103,76,29,.11),inset 0 0 0 8px #fffdf9!important}body #coach#coach #coach-nav#coach-nav{background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:none!important;-webkit-box-shadow:none!important}body #coach#coach>.side::before,body #coach#coach>.side::after{display:none!important;content:none!important}}`;(document.head||document.documentElement).appendChild(s)
+})();
+
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
 function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname&&got.search===wanted.search}catch(_){return false}})}catch(_){return null}}
 const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
 
-/* La barra del entrenador se fija ANTES de cargar cualquier otra capa visual. */
-const coachNav='./coach-mobile-nav-v1.js?v=20260916-approved3';
+/* Una sola autoridad visual para la barra móvil del entrenador. */
+const coachNav='./bottom-nav-light-premium-v1.js?v=20260916-approved4';
 const profileCritical=[
   './dcc-app-core-v1.js?v=20260916-clean1',
+  './coach-dashboard-schedule-v1.js?v=20260916-today1',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
   './coach-client-profile-actions-v1.js?v=20260916-runtime2',
