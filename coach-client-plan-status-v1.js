@@ -1,7 +1,7 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v26-core-v12';
+const BUILD='20260916-support-bootstrap-v27-calendar-nav';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
@@ -11,6 +11,7 @@ function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has
 function loadMany(list){return Promise.all(list.map(load))}
 const profileCritical=[
   './coach-premium-core-v10.js?v=20260916-core12a',
+  './bottom-nav-light-premium-v1.js?v=20260916-nav33a',
   './dcc-app-core-v1.js?v=20260916-clean1',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
@@ -28,11 +29,21 @@ const groups={
  messages:['./messages-realtime-chat-guard-v1.js?v=20260916-runtime1']
 };
 const loadedGroups=new Set();
-function loadGroup(name){if(!groups[name]||loadedGroups.has(name))return Promise.resolve();loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar'&&window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12()})}
+function renderCalendarIfActive(){if(window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12()}
+function loadGroup(name){
+ if(!groups[name])return Promise.resolve();
+ if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}
+ loadedGroups.add(name);
+ return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive()})
+}
 function routeFeature(raw){const s=String(raw||'').toLowerCase();if(/calendar/.test(s))return'calendar';if(/diet|food|nutrition|aliment/.test(s))return'diet';if(/routine|training|workout|entren/.test(s))return'training';if(/message|chat|mensaje/.test(s))return'messages';if(/client|note|resumen|profile|checkin|check-in/.test(s))return'profile';return''}
 function featureFromEvent(e){const d=e?.detail;return routeFeature(typeof d==='string'?d:(d?.screen||d?.route||d?.name||window.currentScreen||''))}
-function warmFeature(name){if(name)loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
-document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');if(!el)return;warmFeature(routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||'')))},{capture:true,passive:true});
+function warmFeature(name){if(!name)return Promise.resolve();return loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
+function featureFromElement(el){if(!el)return'';return routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||''))}
+document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));
+document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));
+document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});
+document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(!feature)return;setTimeout(()=>warmFeature(feature),0)},false);
 function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
-(async()=>{await loadMany(profileCritical);window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);warmFeature(routeFeature(window.currentScreen||''))})();
+(async()=>{await loadMany(profileCritical);window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));warmFeature('calendar');idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);warmFeature(routeFeature(window.currentScreen||''))})();
 })();
