@@ -1,7 +1,7 @@
 /* DCC coach premium loader — una sola autoridad de navegación: coach-premium-core-v9. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-loader-audit-v1';
+const BUILD='20260916-coach-loader-audit-v2';
 if(window.__dccCoachPremiumLoader===BUILD)return;
 window.__dccCoachPremiumLoader=BUILD;
 function add(src,key,done){
@@ -9,7 +9,7 @@ function add(src,key,done){
   if(existing){done?.();return}
   const x=document.createElement('script');x.src=src;x.async=false;x.dataset.dccLoader=key;if(done)x.onload=done;(document.head||document.documentElement).appendChild(x)
 }
-if(!window.showCoach?.__dccPremiumV9)add('./coach-premium-core-v9.js?v=20260916-audit1','coachCore');
+if(!window.showCoach?.__dccPremiumV9)add('./coach-premium-core-v9.js?v=20260916-audit2','coachCore');
 })();
 
 /* DCC fast client entry v17 — pinta navegación e inicio antes de sincronizar Supabase */
