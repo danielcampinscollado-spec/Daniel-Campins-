@@ -1,14 +1,12 @@
-/* DCC coach premium loader — autoridad consolidada: coach-premium-core-v10. */
+/* DCC coach premium compatibility — sin cargar autoridades antiguas del entrenador. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-loader-core10';
+const BUILD='20260916-coach-loader-clean-v18';
 if(window.__dccCoachPremiumLoader===BUILD)return;
 window.__dccCoachPremiumLoader=BUILD;
-function add(src,key,done){const existing=[...document.scripts].find(s=>(s.src||'').includes('/'+src.replace(/^\.\//,'').split('?')[0]));if(existing){done?.();return}const x=document.createElement('script');x.src=src;x.async=false;x.dataset.dccLoader=key;if(done)x.onload=done;(document.head||document.documentElement).appendChild(x)}
-if(!window.__dccCoachCoreV10)add('./coach-premium-core-v10.js?v=20260916-core10a','coachCoreV10');
 })();
 
-/* DCC fast client entry v17 — pinta navegación e inicio antes de sincronizar Supabase */
+/* DCC fast client entry v17 — pinta navegación e inicio antes de sincronizar Supabase. */
 (function(){
 'use strict';
 if(window.__dccFastClientEntryV17)return;window.__dccFastClientEntryV17=true;
