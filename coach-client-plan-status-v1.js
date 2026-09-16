@@ -1,7 +1,7 @@
 /* DCC bootstrap de soporte — carga determinista, sin renderizadores competidores. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-audit-v5';
+const BUILD='20260916-support-bootstrap-audit-v6-session-alert';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 
@@ -20,6 +20,7 @@ function load(src){
 const modules=[
   './coach-calendar-v12.js?v=20260916-audit3',
   './coach-calendar-form-fix-v15.js?v=20260916-audit1',
+  './client-session-alert-v1.js?v=20260916-1414',
   './exercise-premium-pectoral-v1.js?v=20260916-audit1',
   './exercise-guidance-v1.js?v=20260916-audit1',
   './auth-preview-redirect-guard-v1.js?v=20260916-audit1',
