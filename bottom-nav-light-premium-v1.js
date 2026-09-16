@@ -1,11 +1,14 @@
 /* DCC — autoridad final de navegación entrenador: Light claro / Original oscuro. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-nav-theme-v16-final';
+const BUILD='20260916-coach-nav-theme-v17-rebuild-safe';
 if(window.__dccBottomNavLightPremium===BUILD)return;
 window.__dccBottomNavLightPremium=BUILD;
 
-function isLight(){return document.documentElement.classList.contains('dcc-theme-light-premium')}
+function isLight(){
+  if(document.documentElement.classList.contains('dcc-theme-light-premium'))return true;
+  try{return localStorage.getItem('dcc:theme:v1')==='light-premium'}catch(_){return false}
+}
 function imp(el,p,v){if(el)el.style.setProperty(p,v,'important')}
 
 function installCss(){
@@ -21,7 +24,7 @@ function installCss(){
   html.dcc-theme-light-premium body #coach#coach .side,html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav{background:#fffdf9!important;background-image:none!important;background-color:#fffdf9!important}
   html.dcc-theme-light-premium body #coach#coach .side{border:1px solid rgba(201,151,47,.34)!important;box-shadow:0 10px 28px rgba(83,61,25,.12),inset 0 1px 0 #fff!important}
   html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav{border:0!important;box-shadow:none!important}
-  html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button:not(.active){background:transparent!important;background-image:none!important;color:#69707d!important;border:1px solid transparent!important;box-shadow:none!important;text-shadow:none!important;filter:none!important}
+  html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button:not(.active){background:transparent!important;color:#69707d!important;border:1px solid transparent!important;box-shadow:none!important;text-shadow:none!important;filter:none!important}
   html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button:not(.active) svg,html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button:not(.active) span{color:#69707d!important;stroke:currentColor!important;filter:none!important}
   html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button.active{background:linear-gradient(145deg,#ffe79a 0%,#f4c857 55%,#e9ad35 100%)!important;color:#17140d!important;border:1px solid rgba(209,151,35,.52)!important;box-shadow:0 4px 12px rgba(197,137,25,.18),inset 0 1px 0 rgba(255,255,255,.78)!important;transform:none!important}
   html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button.active svg,html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button.active span{color:#17140d!important;stroke:currentColor!important;filter:none!important}
@@ -33,7 +36,6 @@ function installCss(){
   html:not(.dcc-theme-light-premium) body #coach#coach #coach-nav#coach-nav button.active svg,html:not(.dcc-theme-light-premium) body #coach#coach #coach-nav#coach-nav button.active span{color:#17140d!important;stroke:currentColor!important}
   #coach-nav button::before,#coach-nav button::after{display:none!important;content:none!important}
 }
-/* Las tarjetas compactas de Clientes respetan el tema seleccionado. */
 html:not(.dcc-theme-light-premium) body #coach#coach #coach-main.dcc-premium-clients .dcc-cl-card.dcc-cl-card-ref{background:linear-gradient(145deg,#17191e 0%,#0f1115 100%)!important;background-color:#111318!important;border-color:rgba(224,171,62,.34)!important;box-shadow:0 8px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.035)!important}
 html:not(.dcc-theme-light-premium) body #coach#coach #coach-main.dcc-premium-clients .dcc-client-avatar{background:linear-gradient(145deg,#26231c,#171713)!important;color:#e0ad43!important;border-color:rgba(224,171,62,.38)!important;box-shadow:none!important}
 html:not(.dcc-theme-light-premium) body #coach#coach #coach-main.dcc-premium-clients .dcc-client-name-ref{color:#f4f1e9!important}
@@ -48,7 +50,6 @@ function apply(){
   const nav=document.getElementById('coach-nav');
   if(!side||!nav)return;
   const light=isLight();
-  /* La fuente legacy pinta Light en negro. Aquí el tema real manda también por inline !important. */
   imp(side,'height','68px');imp(side,'padding','5px');imp(side,'overflow','hidden');imp(side,'border-radius','27px');
   imp(nav,'display','grid');imp(nav,'grid-template-columns','repeat(3,minmax(0,1fr))');imp(nav,'gap','2px');imp(nav,'width','100%');imp(nav,'height','100%');imp(nav,'padding','0');imp(nav,'margin','0');imp(nav,'overflow','hidden');imp(nav,'border-radius','22px');
   if(light){
@@ -58,14 +59,30 @@ function apply(){
     imp(side,'background','linear-gradient(145deg,#27241e 0%,#151512 58%,#211f19 100%)');imp(side,'background-color','#151512');imp(side,'border','1px solid rgba(224,171,62,.72)');imp(side,'box-shadow','0 12px 34px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,226,151,.08)');
     imp(nav,'background','transparent');imp(nav,'background-image','none');imp(nav,'border','0');imp(nav,'box-shadow','none');
   }
-  [...nav.querySelectorAll('button')].forEach(btn=>{imp(btn,'width','100%');imp(btn,'height','100%');imp(btn,'min-width','0');imp(btn,'min-height','0');imp(btn,'margin','0');imp(btn,'transform','none');imp(btn,'align-self','stretch');});
+  [...nav.querySelectorAll('button')].forEach(btn=>{
+    const active=btn.classList.contains('active');
+    imp(btn,'width','100%');imp(btn,'height','100%');imp(btn,'min-width','0');imp(btn,'min-height','0');imp(btn,'margin','0');imp(btn,'transform','none');imp(btn,'align-self','stretch');
+    if(active){
+      imp(btn,'background','linear-gradient(145deg,#ffe79a 0%,#f4c857 55%,#e9ad35 100%)');imp(btn,'color','#17140d');imp(btn,'border','1px solid rgba(209,151,35,.52)');
+    }else if(light){
+      imp(btn,'background','transparent');imp(btn,'color','#69707d');imp(btn,'border','1px solid transparent');imp(btn,'box-shadow','none');
+    }else{
+      imp(btn,'background','transparent');imp(btn,'color','#d9aa4a');imp(btn,'border','1px solid transparent');imp(btn,'box-shadow','none');
+    }
+    btn.querySelectorAll('svg,span').forEach(x=>{imp(x,'color',active?'#17140d':(light?'#69707d':'#d9aa4a'));});
+  });
 }
 
-function lateApply(){requestAnimationFrame(()=>requestAnimationFrame(apply))}
+let queued=false;
+function lateApply(){if(queued)return;queued=true;requestAnimationFrame(()=>requestAnimationFrame(()=>{queued=false;apply()}))}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',lateApply,{once:true});else lateApply();
 window.addEventListener('load',lateApply);
 window.addEventListener('pageshow',lateApply);
 document.addEventListener('dcc:coach-screen',lateApply);
 const rootObserver=new MutationObserver(m=>{if(m.some(x=>x.type==='attributes'&&x.attributeName==='class'))lateApply()});
 rootObserver.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+/* El router reconstruye la barra al cambiar Panel/Clientes/Calendario. Observamos solo inserciones/eliminaciones,
+   no cambios de estilo, para reaplicar la apariencia sin bucles ni vibración. */
+const domObserver=new MutationObserver(m=>{if(m.some(x=>x.type==='childList'&&(x.addedNodes.length||x.removedNodes.length)))lateApply()});
+domObserver.observe(document.body||document.documentElement,{childList:true,subtree:true});
 })();
