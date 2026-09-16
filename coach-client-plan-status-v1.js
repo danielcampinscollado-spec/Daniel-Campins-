@@ -1,7 +1,7 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v21-nav-refresh';
+const BUILD='20260916-support-bootstrap-v22-nav-first';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
@@ -10,17 +10,16 @@ const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
 
-/* Solo lo necesario para pintar inmediatamente el panel y la ficha. */
+/* La barra del entrenador se fija ANTES de cargar cualquier otra capa visual. */
+const coachNav='./coach-mobile-nav-v1.js?v=20260916-approved3';
 const profileCritical=[
   './dcc-app-core-v1.js?v=20260916-clean1',
-  './coach-mobile-nav-v1.js?v=20260916-approved2',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
   './coach-client-profile-actions-v1.js?v=20260916-runtime2',
   './coach-followup-hardfix-v1.js?v=20260916-runtime2'
 ];
 
-/* Autoridades comunes. Ya no existe una capa "stability" que vuelva a inyectar parches. */
 const core=[
   './auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./auth-premium-v1.js?v=20260916-runtime1','./auth-session-guard-v2.js?v=20260916-runtime1','./auth-client-claim-v1.js?v=20260916-runtime1','./local-cache-authority-v1.js?v=20260916-runtime1','./data-authority-v1.js?v=20260916-runtime1','./server-actions-v1.js?v=20260916-runtime1','./client-server-source-v1.js?v=20260916-runtime1','./client-create-authority-v1.js?v=20260916-runtime1','./client-delete-atomic-v4.js?v=20260916-runtime1','./client-access-coach-v1.js?v=20260916-runtime1','./client-profile-edit-authority-v2.js?v=20260916-runtime1','./coach-client-critical-authority-v1.js?v=20260916-runtime1','./coach-client-final-consistency-v1.js?v=20260916-runtime1','./new-client-premium-v1.js?v=20260916-runtime1','./dcc-dynamic-greeting-v1.js?v=20260916-runtime1'
 ];
@@ -42,6 +41,7 @@ document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)
 document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');if(!el)return;warmFeature(routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||'')))},{capture:true,passive:true});
 function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
 (async()=>{
+  await load(coachNav);
   await loadMany(profileCritical);
   window.__dccProfileCriticalReady=true;
   document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));
