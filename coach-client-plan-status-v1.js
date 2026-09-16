@@ -1,7 +1,7 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v20-clean-runtime';
+const BUILD='20260916-support-bootstrap-v21-nav-refresh';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
@@ -13,7 +13,7 @@ function loadMany(list){return Promise.all(list.map(load))}
 /* Solo lo necesario para pintar inmediatamente el panel y la ficha. */
 const profileCritical=[
   './dcc-app-core-v1.js?v=20260916-clean1',
-  './coach-mobile-nav-v1.js?v=20260916-clean1',
+  './coach-mobile-nav-v1.js?v=20260916-approved2',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
   './coach-client-profile-actions-v1.js?v=20260916-runtime2',
