@@ -1,13 +1,14 @@
 /* DCC bootstrap de soporte — carga determinista, sin renderizadores competidores. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-audit-v12-followup-rpc';
+const BUILD='20260916-support-bootstrap-audit-v13-profile-transition';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
 function existing(path){return [...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname.endsWith('/'+path)}catch(_){return false}})}
 function load(src){const path=pathOf(src);if(existing(path))return Promise.resolve();return new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=false;s.dataset.dccSupport=path;s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)})}
 const modules=[
+'./coach-profile-transition-guard-v1.js?v=20260916-1600',
 './coach-calendar-v12.js?v=20260916-1448',
 './coach-calendar-sync-v14.js?v=20260916-1448',
 './coach-calendar-form-fix-v15.js?v=20260916-audit1',
