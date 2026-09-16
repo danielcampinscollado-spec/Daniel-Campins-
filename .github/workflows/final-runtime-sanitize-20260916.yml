@@ -1,0 +1,74 @@
+name: final-runtime-sanitize-20260916
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/final-runtime-sanitize-20260916.yml']
+permissions:
+  contents: write
+jobs:
+  sanitize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Remove last legacy reinsertion and validate runtime graph
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          old='<script src="./nutrition-plan-premium-v1.js?v=20260911-1"></script>\n'
+          s=s.replace(old,'')
+          p.write_text(s,encoding='utf-8')
+
+          srcs=re.findall(r'<script[^>]+src=["\']([^"\']+)["\']',s,re.I)
+          local=[x for x in srcs if x.startswith('./')]
+          paths=[x.split('?',1)[0] for x in local]
+          dup=sorted({x for x in paths if paths.count(x)>1})
+          assert not dup, f'Direct script duplicates: {dup}'
+          assert s.count('./checkin-coach-sync-v2.js')==1
+          assert s.count('./nutrition-plan-premium-v1.js')==1
+
+          forbidden=[
+            'bottom-nav-light-premium-v1.js','clients-name-only-v1.js','clients-search-final-fix.js',
+            'coach-dashboard-authority-v1.js','coach-dashboard-bootstrap-v1.js','coach-navigation-authority-v1.js',
+            'dcc-coach-nav-final-v1.js','coach-bottom-nav-fix-v1.js','coach-calendar-nav-guard-v1.js',
+            'coach-calendar-sync-v14.js','coach-calendar-alignment-v13.js','coach-premium-final-v2.js',
+            'coach-ui-v11.js','coach-premium-v7.js'
+          ]
+          runtime=s+Path('coach-client-plan-status-v1.js').read_text(encoding='utf-8')+Path('coach-premium-v8.js').read_text(encoding='utf-8')
+          loaded=[x for x in forbidden if x in runtime]
+          assert not loaded, f'Obsolete runtime modules still loaded: {loaded}'
+
+          for f in ['dcc-theme-system-v1.js','coach-theme-premium-global.js','coach-light-stable-v1.js']:
+            assert '#coach-nav' not in Path(f).read_text(encoding='utf-8'), f'Coach nav still styled by {f}'
+          core=Path('coach-premium-core-v9.js').read_text(encoding='utf-8')
+          assert '#coach-nav' in core and "showCoach('calendar')" in core
+          assert 'dccRenderCoachCalendarV12' in core
+          support=Path('coach-client-plan-status-v1.js').read_text(encoding='utf-8')
+          assert support.index('coach-calendar-v12.js') < support.index('coach-calendar-form-fix-v15.js')
+          lib=Path('ejercicio-biblioteca.js').read_text(encoding='utf-8')
+          assert "createElement('script')" not in lib and 'createElement("script")' not in lib
+          alltext='\n'.join(x.read_text(encoding='utf-8',errors='ignore') for x in [Path('index.html'),*Path('.').glob('*.js')])
+          assert 'serviceWorker.register' not in alltext and 'navigator.serviceWorker' not in alltext
+          print('Runtime graph OK')
+          print('Direct local scripts:',len(local))
+          print('Duplicate direct scripts: 0')
+          print('Obsolete competing runtime modules loaded: 0')
+          print('Coach nav theme competitors: 0')
+          print('Service worker registrations: 0')
+          PY
+          for f in *.js; do node --check "$f" >/dev/null; done
+          echo "Root JavaScript syntax: OK"
+      - name: Commit sanitation and remove one-shot workflow
+        run: |
+          rm .github/workflows/final-runtime-sanitize-20260916.yml
+          git config user.name dcc-runtime-audit
+          git config user.email actions@users.noreply.github.com
+          git add index.html .github/workflows/final-runtime-sanitize-20260916.yml
+          git commit -m 'Audit: finalize single-authority runtime graph'
+          git push origin HEAD:main
