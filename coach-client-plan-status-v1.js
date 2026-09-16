@@ -1,7 +1,7 @@
 /* DCC bootstrap de soporte — carga determinista, sin renderizadores competidores. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-audit-v2';
+const BUILD='20260916-support-bootstrap-audit-v3';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 
@@ -65,7 +65,8 @@ const modules=[
   './diet-missing-day-confirm-v1.js?v=20260916-audit1',
   './training-inline-fix.js?v=20260916-audit1',
   './training-home-actions-v1.js?v=20260916-audit1',
-  './training-interaction-fix-v1.js?v=20260916-audit1'
+  './training-interaction-fix-v1.js?v=20260916-audit1',
+  './workout-session-premium-v3.js?v=20260916-audit2'
 ];
 
 (async()=>{

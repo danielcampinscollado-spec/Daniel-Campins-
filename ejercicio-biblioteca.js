@@ -1,16 +1,6 @@
 /* DCC — Biblioteca propia premium de ejercicios */
 (function(){
   const realFetch=window.fetch.bind(window);
-  window.fetch=function(input,init){
-    const url=String(input||'');
-    if(url.includes('exercise-dataset.com/exercises.json')){
-      return Promise.resolve(new Response(JSON.stringify({exercises:[]}),{status:200,headers:{'Content-Type':'application/json'}}));
-    }
-    return realFetch(input,init);
-  };
-
-  document.write('<script src="./entrenamientos/runtime-compat.js"><\/script>');
-  window.fetch=realFetch;
 
   if(!document.getElementById('dcc-client-metrics-stable')){
     const style=document.createElement('style');
@@ -57,16 +47,7 @@
 
   /* Los módulos de UI se cargan únicamente desde el bootstrap de soporte. */
 
-  /* La pantalla premium del entrenamiento activo se carga al final,
-     después de que el resto de renderizadores hayan terminado. */
-  window.addEventListener('load',()=>{
-    try{if(typeof data!=='undefined')window.data=data;}catch(_){ }
-    if(document.querySelector('script[data-dcc-workout-premium]'))return;
-    const workoutPremium=document.createElement('script');
-    workoutPremium.src='./workout-session-premium-v3.js?v=20260910-1';
-    workoutPremium.dataset.dccWorkoutPremium='1';
-    document.body.appendChild(workoutPremium);
-  },{once:true});
+  /* La UI del entrenamiento activo se carga desde el bootstrap determinista. */
 
   /* Evitar perder un entrenamiento por tocar otra pestaña sin querer. */
   if(!window.__dccWorkoutNavGuardInstalled){
