@@ -1,11 +1,11 @@
-/* DCC coach dashboard authority v4 — conteo único, inmediato y completo de tareas */
+/* DCC coach dashboard authority v5 — tareas sincronizadas con el estado real */
 (function(){
   'use strict';
-  const BUILD='20260914-dashboard-authority-v4';
+  const BUILD='20260916-dashboard-authority-v5-real-plan-state';
   if(window.__dccCoachDashboardAuthority===BUILD)return;
   window.__dccCoachDashboardAuthority=BUILD;
 
-  const CACHE='dcc:coach-dashboard-snapshot:v4';
+  const CACHE='dcc:coach-dashboard-snapshot:v5';
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const isDashboard=()=>window.currentApp==='coach'&&window.currentScreen==='dashboard';
   const norm=v=>String(v??'').trim().toLowerCase();
@@ -14,9 +14,13 @@
   function routineDays(id){const r=appData()?.routines?.[id];return Array.isArray(r)?r:(Array.isArray(r?.routine)?r.routine:[])}
   function routineComplete(id){const days=routineDays(id);return days.length>0&&days.every(day=>Array.isArray(day?.exercises)&&day.exercises.length>0)}
   function mealReady(meal){if(Array.isArray(meal?.options)&&meal.options.length)return meal.options.some(o=>Array.isArray(o?.foods)&&o.foods.length>0);return Array.isArray(meal?.foods)&&meal.foods.length>0}
+  function dietDayComplete(day){return Array.isArray(day?.meals)&&day.meals.length>0&&day.meals.every(mealReady)}
   function dietComplete(id){
     const p=appData()?.diets?.[id];
-    return !!p&&['training','rest'].every(type=>Array.isArray(p?.[type]?.meals)&&p[type].meals.length>0&&p[type].meals.every(mealReady));
+    if(!p)return false;
+    // La app considera válido un plan con día de entrenamiento, descanso o ambos.
+    // El panel debe usar exactamente la misma regla y no crear tareas fantasma.
+    return dietDayComplete(p.training)||dietDayComplete(p.rest);
   }
   function pendingCheck(id){const x=appData()?.checkins?.[id];return !!((x?.sentAt??x?.sent_at)&&!x?.reviewed)}
   function pendingClient(c){return norm(c?.status)==='pendiente'}
@@ -79,7 +83,7 @@
   function patchCached(){const s=readCache();if(s)patch(s,false)}
   let queued=false;
   function patchLive(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;patch(snapshot(),true)})}
-  function wrap(name){const fn=window[name];if(typeof fn!=='function'||fn.__dccDashboardLiveV4)return false;const wrapped=async function(){const out=await fn.apply(this,arguments);patchLive();return out};wrapped.__dccDashboardLiveV4=true;wrapped.__base=fn;window[name]=wrapped;return true}
+  function wrap(name){const fn=window[name];if(typeof fn!=='function'||fn.__dccDashboardLiveV5)return false;const wrapped=async function(){const out=await fn.apply(this,arguments);patchLive();return out};wrapped.__dccDashboardLiveV5=true;wrapped.__base=fn;window[name]=wrapped;return true}
   function install(){
     ['loadClientsFromSupabase','loadRoutinesFromSupabase','loadCheckinsFromSupabase','loadWorkoutHistoryFromSupabase','loadDietsFromSupabase'].forEach(wrap);
     if(isDashboard()){
