@@ -260,7 +260,7 @@
     const existing=[...document.scripts].find(s=>(s.src||'').includes(name));
     if(existing){installPolish();return}
     const script=document.createElement('script');
-    script.src='./coach-light-stable-v1.js?v=20260912-2';
+    script.src='./coach-light-stable-v1.js?v=20260916-audit1';
     script.async=false;script.dataset.dccCoachStable='1';
     script.onload=installPolish;
     script.onerror=()=>console.error('DCC: no se pudo cargar el tema estable del entrenador');

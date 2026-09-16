@@ -55,15 +55,7 @@
     .then(payload=>{const records=Array.isArray(payload?.ejercicios)?payload.ejercicios:[];if(!Array.isArray(window.exerciseLibraryFull))window.exerciseLibraryFull=[];window.exerciseLibraryFull.length=0;records.forEach(ex=>window.exerciseLibraryFull.push(mapExercise(ex)));window.dispatchEvent(new CustomEvent('dcc:exercise-library-ready',{detail:{count:window.exerciseLibraryFull.length}}));return window.exerciseLibraryFull})
     .catch(error=>{console.error('DCC — error cargando biblioteca propia:',error);if(Array.isArray(window.exerciseLibraryFull))window.exerciseLibraryFull.length=0;return[]});
 
-  const inlineEditor=document.createElement('script');
-  inlineEditor.src='./training-inline-fix.js?v=20260908-3';
-  inlineEditor.async=true;
-  document.head.appendChild(inlineEditor);
-
-  const clientsSearchFix=document.createElement('script');
-  clientsSearchFix.src='./clients-search-final-fix.js?v=20260908-1';
-  clientsSearchFix.async=true;
-  document.head.appendChild(clientsSearchFix);
+  /* Los módulos de UI se cargan únicamente desde el bootstrap de soporte. */
 
   /* La pantalla premium del entrenamiento activo se carga al final,
      después de que el resto de renderizadores hayan terminado. */

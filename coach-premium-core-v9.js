@@ -81,9 +81,27 @@
       .dcc-cl-card-ref{grid-template-columns:minmax(0,1fr) 24px!important;cursor:pointer!important;min-height:92px!important;padding:15px 17px!important}.dcc-cl-card-ref .dcc-cl-training,.dcc-cl-card-ref .dcc-cl-manage{display:none!important}.dcc-cl-ref-meta{display:flex;gap:14px;align-items:center;margin-top:8px;color:#8d96a1;font-size:10px;font-weight:650}.dcc-cl-active{display:none!important}.dcc-cl-chevron{display:flex!important;align-items:center!important;justify-content:flex-end!important;align-self:stretch!important;color:${GOLD2};font-size:26px;line-height:1}
       .dcc-cl-list{display:grid;gap:9px}.dcc-cl-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(135px,.85fr) 112px;align-items:center;gap:13px;min-height:104px;padding:14px 15px;border:1px solid rgba(217,170,74,.58);border-radius:17px;background:radial-gradient(ellipse at 86% 35%,rgba(217,170,74,.08),transparent 23%),linear-gradient(120deg,#0c1014,#080b0e);box-shadow:0 10px 26px #0005}.dcc-cl-info{min-width:0}.dcc-cl-name{font-size:17px;font-weight:800;color:#f5f3ef}.dcc-cl-goal{margin-top:6px;color:${GOLD2};font-size:12px}.dcc-cl-weight{margin-top:4px;color:#a4abb5;font-size:12px}.dcc-cl-training{padding-left:14px;border-left:1px solid #343a42}.dcc-cl-tr-title{display:flex;align-items:center;gap:7px;color:#f1f1ef;font-size:10px}.dcc-cl-dumbbell{color:${GOLD2};font-size:18px}.dcc-cl-progress{display:flex;align-items:center;gap:8px;margin-top:8px}.dcc-cl-track{height:6px;flex:1;border-radius:8px;background:#2a3037;overflow:hidden}.dcc-cl-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#d9aa4a,#f0c96b)}.dcc-cl-pct{font-size:11px}.dcc-cl-manage{min-height:48px;border:1px solid ${GOLD2};border-radius:13px;background:linear-gradient(145deg,#18140c,#0a0b0c);color:${GOLD2};font-size:11px;font-weight:800;line-height:1.25}
 
-      #coach .side{height:62px!important;left:14px!important;right:14px!important;bottom:10px!important;border-radius:21px!important;padding:0 7px!important}
-      #coach-nav{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;height:100%!important}
-      #coach-nav button{height:100%!important;padding:5px 2px!important;font-size:8px!important;transition:none!important;transform:none!important}#coach-nav button svg{width:21px!important;height:21px!important}#coach-nav button span{font-size:7.3px!important;margin-top:2px!important}
+      .dcc-client-card-authority{position:relative;display:flex;align-items:center;width:100%;height:64px;min-height:64px;padding:6px 10px;gap:9px;border:1px solid rgba(201,151,47,.30);border-radius:17px;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(255,250,239,.82));box-shadow:0 6px 15px rgba(86,63,25,.06),inset 0 1px 0 rgba(255,255,255,.98);cursor:pointer;overflow:hidden;color:#111318}
+      .dcc-client-card-authority:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#f6d66f,#d79a27)}
+      .dcc-client-avatar-authority{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border:1px solid rgba(190,134,27,.30);border-radius:14px;background:linear-gradient(145deg,#fffaf0,#f8e7b7);color:#9c6810}.dcc-client-avatar-authority svg{width:23px;height:23px}
+      .dcc-client-copy-authority{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.dcc-client-copy-authority strong{color:#111318!important;font-size:15.5px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dcc-client-copy-authority small{color:#858c98;font-size:9.8px;font-weight:600}
+      .dcc-client-manage-authority{flex:0 0 auto;min-width:106px;height:36px;padding:0 7px 0 10px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1.3px solid #c9952f;border-radius:12px;background:rgba(255,252,245,.82);color:#714909;font-size:10.8px;font-weight:820}.dcc-client-manage-authority span{width:20px;height:20px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#f8d978,#e5ad3d);color:#2f220b;font-size:16px}
+      html:not(.dcc-theme-light-premium) body #coach .dcc-client-card-authority{background:linear-gradient(145deg,#10151a,#080b0e);color:#f5f3ef;border-color:rgba(217,170,74,.42)}html:not(.dcc-theme-light-premium) body #coach .dcc-client-copy-authority strong{color:#f5f3ef!important}html:not(.dcc-theme-light-premium) body #coach .dcc-client-copy-authority small{color:#8d96a1}
+
+      /* Navegación entrenador: única autoridad visual móvil. */
+      @media(max-width:900px){
+        body #coach#coach > .side{position:fixed!important;left:18px!important;right:18px!important;bottom:12px!important;top:auto!important;width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:5px!important;border:1.5px solid rgba(214,160,48,.78)!important;border-radius:38px!important;background:#11110f!important;background-image:none!important;box-shadow:0 12px 30px rgba(0,0,0,.24)!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+        body #coach#coach > .side>h2,body #coach#coach > .side>.out{display:none!important}
+        body #coach#coach #coach-nav#coach-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:2px!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;border-radius:33px!important;background:#11110f!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important;box-sizing:border-box!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+        body #coach#coach #coach-nav#coach-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;min-width:0!important;margin:0!important;padding:7px 3px!important;gap:4px!important;border:1px solid transparent!important;border-radius:31px!important;background:transparent!important;color:#d7aa4b!important;box-shadow:none!important;transition:none!important;transform:none!important}
+        body #coach#coach #coach-nav#coach-nav button svg{width:24px!important;height:24px!important;flex:0 0 24px!important;color:currentColor!important;stroke:currentColor!important}
+        body #coach#coach #coach-nav#coach-nav button span{margin:0!important;color:currentColor!important;font-size:11px!important;line-height:1!important;font-weight:600!important;white-space:nowrap!important}
+        body #coach#coach #coach-nav#coach-nav button.active{border:1.5px solid rgba(205,146,27,.78)!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 46%,#e2a72f 100%)!important;color:#17140d!important;box-shadow:0 5px 14px rgba(185,126,18,.20),inset 0 1px 0 rgba(255,255,255,.92)!important}
+        html.dcc-theme-light-premium body #coach#coach > .side{background:#fffdf9!important;background-image:none!important;box-shadow:0 12px 30px rgba(103,76,29,.13),inset 0 1px 0 rgba(255,255,255,.98)!important}
+        html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav{background:#fffdf9!important;background-image:none!important}
+        html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button:not(.active){background:transparent!important;color:#5f6268!important}
+        html.dcc-theme-light-premium body #coach#coach #coach-nav#coach-nav button.active{color:#17140d!important}
+      }
 
       @media(max-width:600px){
         .dcc-p9-title{font-size:27px}.dcc-p9-hero{min-height:142px;padding:16px}.dcc-p9-motto{right:16px;bottom:15px;font-size:5.8px}.dcc-p9-stat{min-height:67px;padding:9px 10px;grid-template-columns:32px minmax(0,1fr) 14px}.dcc-p9-stat-ico{width:31px;height:31px}.dcc-p9-stat-ico svg{width:24px;height:24px}.dcc-p9-stat strong{font-size:21px}.dcc-p9-stat span{font-size:6.4px}.dcc-p9-accordion-head{grid-template-columns:35px minmax(0,1fr) auto 20px;padding:11px 12px}.dcc-p9-head-ico{width:34px;height:34px}.dcc-p9-row{grid-template-columns:35px minmax(0,1fr) auto 14px;padding:9px 10px}.dcc-p9-row-icon{width:33px;height:33px}.dcc-p9-row-copy b{font-size:11.5px}.dcc-p9-row-copy span{font-size:8.5px}
@@ -98,7 +116,12 @@
 
   function daysSince(v){if(!v)return null;const d=new Date(v);return Number.isFinite(d.getTime())?Math.floor((Date.now()-d.getTime())/86400000):null}
   function latestWorkout(id){const d=getData(),h=d?.workoutHistory?.[id]||[];return h.slice().sort((a,b)=>new Date(b.date)-new Date(a.date))[0]||null}
-  function hasRoutine(id){const r=getData()?.routines?.[id];return Array.isArray(r)&&r.length>0}
+  function routineDays(id){const r=getData()?.routines?.[id];return Array.isArray(r)?r:(Array.isArray(r?.routine)?r.routine:[])}
+  function routineComplete(id){const days=routineDays(id);return days.length>0&&days.every(day=>Array.isArray(day?.exercises)&&day.exercises.length>0)}
+  function mealReady(meal){if(Array.isArray(meal?.options)&&meal.options.length)return meal.options.some(o=>Array.isArray(o?.foods)&&o.foods.length>0);return Array.isArray(meal?.foods)&&meal.foods.length>0}
+  function dietDayComplete(day){return Array.isArray(day?.meals)&&day.meals.length>0&&day.meals.every(mealReady)}
+  function dietComplete(id){const p=getData()?.diets?.[id];return !!p&&(dietDayComplete(p.training)||dietDayComplete(p.rest))}
+  function pendingClient(c){return String(c?.status||'').trim().toLowerCase()==='pendiente'}
   function pendingCheck(c){const x=getData()?.checkins?.[c.id];return !!(x?.sentAt&&!x?.reviewed)}
   function trainingProgress(c){const d=getData(),r=d?.routines?.[c.id];if(!Array.isArray(r)||!r.length)return 0;const h=d?.workoutHistory?.[c.id]||[];if(!h.length)return 0;const recent=h.filter(x=>{const gap=daysSince(x.date);return gap!==null&&gap<=30}).length;return Math.min(100,Math.round(recent/Math.max(1,r.length*4)*100))}
 
@@ -121,7 +144,9 @@
     const d=getData(),cs=Array.isArray(d.clients)?d.clients:[],tasks=[],attention=[];
     cs.forEach(c=>{
       if(pendingCheck(c))tasks.push({icon:'✓',title:'REVISAR CHECK-IN',text:c.name,badge:'HOY',action:`reviewCheckin('${esc(c.id)}')`});
-      if(!hasRoutine(c.id))tasks.push({icon:'＋',title:'ASIGNAR RUTINA',text:c.name,badge:'PENDIENTE',action:`openClient('${esc(c.id)}')`});
+      if(!routineComplete(c.id))tasks.push({icon:'＋',title:'COMPLETAR RUTINA',text:c.name,badge:'PENDIENTE',action:`openClient('${esc(c.id)}')`});
+      if(!dietComplete(c.id))tasks.push({icon:'＋',title:'COMPLETAR ALIMENTACIÓN',text:c.name,badge:'PENDIENTE',action:`openClient('${esc(c.id)}')`});
+      if(pendingClient(c))tasks.push({icon:'＋',title:'REVISAR CLIENTE',text:c.name,badge:'PENDIENTE',action:`openClient('${esc(c.id)}')`});
       const gap=daysSince(latestWorkout(c.id)?.date);
       if(gap!==null&&gap>=7)attention.push({icon:'!',title:c.name,text:`${gap} DÍAS SIN REGISTRAR ENTRENAMIENTO`,badge:'SEGUIMIENTO',action:`openClient('${esc(c.id)}')`});
     });
@@ -160,11 +185,12 @@
     </div>`;
   }
 
+  function clientSince(c){
+    const raw=c?.created_at||c?.createdAt||c?.start_date||c?.startDate;if(!raw)return'';const d=new Date(raw);if(!Number.isFinite(d.getTime()))return'';return `Desde ${d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})}`
+  }
   function clientCard(c){
-    const goal=c.goal||c.objective||c.objetivo||'Objetivo por definir';
-    const weight=c.weight||c.peso||'';
-    const fat=c.body_fat??c.bodyFat??c.fat??c.grasa??'';
-    return `<article class="dcc-cl-card dcc-cl-card-ref" data-name="${esc(c.name).toLowerCase()}" data-pending="${pendingCheck(c)?'1':'0'}" onclick="openClient('${esc(c.id)}')"><div class="dcc-cl-info"><div class="dcc-cl-name">${esc(c.name)}</div><div class="dcc-cl-goal">${esc(goal)}</div><div class="dcc-cl-ref-meta">${weight?`<span>▣ &nbsp;${esc(weight)} kg</span>`:''}${fat!==''?`<span>◌ &nbsp;${esc(fat)} %</span>`:''}</div></div><span class="dcc-cl-active">Activo</span><span class="dcc-cl-chevron">›</span></article>`;
+    const id=esc(c.id),name=esc(c.name||'Cliente'),since=esc(clientSince(c));
+    return `<article class="dcc-client-card-authority" data-name="${name.toLowerCase()}" onclick="openClient('${id}')"><span class="dcc-client-avatar-authority">${icon('clients')}</span><span class="dcc-client-copy-authority"><strong>${name}</strong>${since?`<small>${since}</small>`:''}</span><button type="button" class="dcc-client-manage-authority" onclick="event.stopPropagation();openClient('${id}')">Gestionar<span>›</span></button></article>`;
   }
   function renderClients(){
     injectCss();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-clients';const cs=getData()?.clients||[];
@@ -172,9 +198,9 @@
     window.__dccClientMode='all';window.__dccClientSort='az';
   }
 
-  window.dccFilterClients=function(){const q=(document.getElementById('dccClientSearch')?.value||'').toLowerCase();document.querySelectorAll('.dcc-cl-card').forEach(x=>x.style.display=x.dataset.name.includes(q)?'grid':'none')};
+  window.dccFilterClients=function(){const q=(document.getElementById('dccClientSearch')?.value||'').toLowerCase();document.querySelectorAll('.dcc-client-card-authority').forEach(x=>x.style.display=x.dataset.name.includes(q)?'flex':'none')};
   window.dccClientTab=function(m,b){window.__dccClientMode=m;document.querySelectorAll('.dcc-cl-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');window.dccFilterClients()};
-  window.dccSortClients=function(){const l=document.getElementById('dccClientList');if(!l)return;window.__dccClientSort=window.__dccClientSort==='az'?'za':'az';[...l.querySelectorAll('.dcc-cl-card')].sort((a,b)=>window.__dccClientSort==='az'?a.dataset.name.localeCompare(b.dataset.name):b.dataset.name.localeCompare(a.dataset.name)).forEach(x=>l.appendChild(x))};
+  window.dccSortClients=function(){const l=document.getElementById('dccClientList');if(!l)return;window.__dccClientSort=window.__dccClientSort==='az'?'za':'az';[...l.querySelectorAll('.dcc-client-card-authority')].sort((a,b)=>window.__dccClientSort==='az'?a.dataset.name.localeCompare(b.dataset.name):b.dataset.name.localeCompare(a.dataset.name)).forEach(x=>l.appendChild(x))};
 
   function navHtml(){return `<button onclick="showCoach('dashboard')">${icon('panel')}<span>Panel</span></button><button onclick="showCoach('clients')">${icon('clients')}<span>Clientes</span></button><button onclick="showCoach('calendar')">${icon('calendar')}<span>Calendario</span></button>`}
   function enforceNav(){const n=document.getElementById('coach-nav');if(!n)return;const wanted=['Panel','Clientes','Calendario'],labels=[...n.querySelectorAll('button span')].map(x=>x.textContent.trim());if(labels.length!==3||wanted.some((x,i)=>labels[i]!==x))n.innerHTML=navHtml();n.style.setProperty('grid-template-columns','repeat(3,minmax(0,1fr))','important')}

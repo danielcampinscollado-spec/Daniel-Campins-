@@ -239,7 +239,7 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-chat-row.mine .dcc-cha
 html.dcc-theme-light-premium body #coach #coach-main .dcc-chat-row:not(.mine) .dcc-chat-bubble{background:#fffefa!important}
 html.dcc-theme-light-premium body #coach #coach-main .dcc-cal-day{color:#24272d!important;background:transparent!important}
 html.dcc-theme-light-premium body #coach #coach-main .dcc-cal-day.selected{background:#fff2ca!important;color:#895807!important;border-color:#d9aa4a!important}
-html.dcc-theme-light-premium body #coach #coach-main .dcc-cal-day.today{background:#1b1b18!important;color:#fff8e8!important}
+html.dcc-theme-light-premium body #coach #coach-main .dcc-cal-day.today:not(.selected){background:#1b1b18!important;color:#fff8e8!important}
 
 /* Modal del entrenador */
 body.dcc-coach-mode #modal{background:rgba(31,25,17,.42)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important}
