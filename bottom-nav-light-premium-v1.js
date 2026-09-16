@@ -1,14 +1,25 @@
 /* DCC — barra inferior del entrenador. Única fuente visual móvil. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-nav-v30-no-dark-rim';
+const BUILD='20260916-coach-nav-v31-light-canvas';
 if(window.__dccBottomNavLightPremium===BUILD)return;
 window.__dccBottomNavLightPremium=BUILD;
 const STYLE_ID='dcc-bottom-nav-light-premium-v1';
 let s=document.getElementById(STYLE_ID);
 if(!s){s=document.createElement('style');s.id=STYLE_ID;(document.head||document.documentElement).appendChild(s)}
 s.textContent=`
+html.dcc-theme-light-premium body,
+html.dcc-theme-light-premium body .app,
+html.dcc-theme-light-premium body #coach,
+html.dcc-theme-light-premium body #coach #coach-main{
+  background-color:#f5efe4!important;
+}
+html.dcc-theme-light-premium body .app,
+html.dcc-theme-light-premium body #coach{
+  background-image:radial-gradient(circle at 88% 0,rgba(214,163,61,.08),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;
+}
 @media(max-width:900px){
+ body #coach#coach{background:#f5efe4!important;background-image:linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important}
  body #coach#coach > .side{position:fixed!important;left:18px!important;right:18px!important;bottom:12px!important;top:auto!important;width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:5px!important;border:1.5px solid rgba(214,160,48,.78)!important;outline:0!important;border-radius:38px!important;background:#fffdf9!important;background-image:none!important;background-color:#fffdf9!important;box-shadow:0 12px 30px rgba(103,76,29,.13),inset 0 0 0 5px #fffdf9,inset 0 1px 0 rgba(255,255,255,.98)!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important;transform:none!important;transition:none!important;animation:none!important}
  body #coach#coach > .side::before,body #coach#coach > .side::after{display:none!important;content:none!important;background:none!important;box-shadow:none!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
  body #coach#coach > .side>h2,body #coach#coach > .side>.out{display:none!important}
