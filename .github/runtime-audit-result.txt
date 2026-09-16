@@ -1,0 +1,12 @@
+direct_local_scripts=16
+duplicate_direct_scripts=[]
+checkin_direct_count=1
+nutrition_v1_direct_count=1
+obsolete_runtime_loaded=[]
+coach_nav_theme_conflicts=[]
+core_nav_authority=True
+calendar_v12_router=True
+calendar_load_order=True
+exercise_hidden_loader=True
+service_worker_registration=False
+syntax_failures=[]
