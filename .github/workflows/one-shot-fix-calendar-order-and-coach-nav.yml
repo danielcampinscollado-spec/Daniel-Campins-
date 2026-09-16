@@ -1,0 +1,72 @@
+name: One-shot agenda default and light coach nav
+on:
+  push:
+    paths:
+      - '.github/workflows/one-shot-fix-calendar-order-and-coach-nav.yml'
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fix agenda order and ensure final light coach nav
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          # 1) Calendario: Agenda es la vista principal y aparece primero.
+          p=Path('coach-calendar-v12.js')
+          s=p.read_text()
+          old=s
+          s=s.replace("/* DCC coach calendar v12.3 — autoridad única de calendario y agenda */", "/* DCC coach calendar v12.4 — agenda-first, autoridad única de calendario */")
+          s=s.replace("const BUILD='20260916-coach-calendar-v123-self-contained';", "const BUILD='20260916-coach-calendar-v124-agenda-first';")
+          s=s.replace("const GOLD='#d9aa4a', GOLD2='#f0c96b', STYLE_ID='dcc-coach-calendar-v123-css';", "const GOLD='#d9aa4a', GOLD2='#f0c96b', STYLE_ID='dcc-coach-calendar-v124-css';")
+          s=s.replace("['dcc-coach-calendar-v121-css','dcc-coach-calendar-v122-css'].forEach", "['dcc-coach-calendar-v121-css','dcc-coach-calendar-v122-css','dcc-coach-calendar-v123-css'].forEach")
+          s=s.replace("view=window.__dccCalendarView==='agenda'?'agenda':'month'", "view=window.__dccCalendarView==='month'?'month':'agenda'")
+          oldtabs="<div class=\"dcc-cal-tabs\"><button type=\"button\" class=\"dcc-cal-tab ${view==='month'?'active':''}\" onclick=\"dccCalendarSetView('month')\">Mes</button><button type=\"button\" class=\"dcc-cal-tab ${view==='agenda'?'active':''}\" onclick=\"dccCalendarSetView('agenda')\">Agenda</button></div>"
+          newtabs="<div class=\"dcc-cal-tabs\"><button type=\"button\" class=\"dcc-cal-tab ${view==='agenda'?'active':''}\" onclick=\"dccCalendarSetView('agenda')\">Agenda</button><button type=\"button\" class=\"dcc-cal-tab ${view==='month'?'active':''}\" onclick=\"dccCalendarSetView('month')\">Mes</button></div>"
+          if oldtabs not in s:
+              raise SystemExit('No se encontró el bloque de pestañas del calendario')
+          s=s.replace(oldtabs,newtabs)
+          if s==old:
+              raise SystemExit('coach-calendar-v12.js no cambió')
+          p.write_text(s)
+
+          # 2) Barra inferior: mantener una única hoja visual final, cargada después del tema estable.
+          p=Path('bottom-nav-light-premium-v1.js')
+          s=p.read_text().replace("20260916-coach-nav-v28-no-dark-backdrop", "20260916-coach-nav-v29-final-light-surface")
+          p.write_text(s)
+
+          p=Path('coach-light-stable-v1.js')
+          s=p.read_text()
+          marker="  window.addEventListener('load',syncMode,{once:true});\n\n})();"
+          loader="  window.addEventListener('load',syncMode,{once:true});\n\n  /* La barra móvil se carga al final de la capa Light para que ninguna regla anterior pueda repintarla en negro. */\n  if(![...document.scripts].some(x=>(x.src||'').includes('/bottom-nav-light-premium-v1.js'))){\n    const nav=document.createElement('script');\n    nav.src='./bottom-nav-light-premium-v1.js?v=20260916-29';\n    nav.async=false;\n    (document.head||document.documentElement).appendChild(nav);\n  }\n\n})();"
+          if marker not in s:
+              raise SystemExit('No se encontró el cierre esperado de coach-light-stable-v1.js')
+          s=s.replace(marker,loader)
+          p.write_text(s)
+
+          # 3) Forzar URL nueva del calendario en el bootstrap de soporte.
+          p=Path('coach-client-plan-status-v1.js')
+          s=p.read_text()
+          s=s.replace("20260916-support-bootstrap-audit-v4", "20260916-support-bootstrap-audit-v5")
+          s=s.replace("./coach-calendar-v12.js?v=20260916-audit2", "./coach-calendar-v12.js?v=20260916-audit3")
+          p.write_text(s)
+
+          # 4) URL nueva para las dos capas que han cambiado.
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace("./coach-client-plan-status-v1.js?v=20260916-audit4", "./coach-client-plan-status-v1.js?v=20260916-audit5")
+          s=s.replace("./coach-light-stable-v1.js?v=20260916-audit2", "./coach-light-stable-v1.js?v=20260916-audit3")
+          p.write_text(s)
+          PY
+      - name: Commit fixes
+        run: |
+          git config user.name 'dcc-agenda-nav-fix'
+          git config user.email 'actions@users.noreply.github.com'
+          git add coach-calendar-v12.js bottom-nav-light-premium-v1.js coach-light-stable-v1.js coach-client-plan-status-v1.js index.html
+          git commit -m 'Make agenda first and lock coach nav to light surface'
+          git push origin HEAD:main
