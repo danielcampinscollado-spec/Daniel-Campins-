@@ -1,18 +1,51 @@
-/* DCC — barra inferior Light Premium aprobada, persistente para entrenador y cliente */
+/* DCC — barra inferior Light Premium aprobada: CSS estático, sin observers ni reescrituras */
 (function(){
 'use strict';
-const BUILD='20260916-bottom-nav-approved-v2-persistent';
-if(window.__dccBottomNavLightPremium===BUILD)return;window.__dccBottomNavLightPremium=BUILD;
-let raf=0;
-function set(el,p,v){if(!el)return;if(el.style.getPropertyValue(p)!==v||el.style.getPropertyPriority(p)!=='important')el.style.setProperty(p,v,'important')}
-function applyShell(side,nav){
- if(!side||!nav)return;
- const shell={position:'fixed',left:'14px',right:'14px',bottom:'10px',top:'auto',width:'auto',height:'70px','min-height':'70px',margin:'0',padding:'5px',border:'1px solid rgba(199,151,55,.26)','border-radius':'27px',background:'rgba(255,252,246,.97)','background-color':'rgba(255,252,246,.97)','box-shadow':'0 12px 30px rgba(83,61,25,.13), inset 0 1px 0 rgba(255,255,255,.95)','backdrop-filter':'blur(18px)','-webkit-backdrop-filter':'blur(18px)',overflow:'hidden','z-index':'9999','box-sizing':'border-box'};Object.entries(shell).forEach(([p,v])=>set(side,p,v));
- const nr={position:'relative',inset:'auto',width:'100%',height:'100%','min-height':'0',margin:'0',padding:'0',gap:'3px',border:'0','border-radius':'22px',background:'transparent','background-color':'transparent','box-shadow':'none',overflow:'hidden','box-sizing':'border-box'};Object.entries(nr).forEach(([p,v])=>set(nav,p,v));
- [...nav.querySelectorAll('button')].forEach(b=>{const active=b.classList.contains('active');const br={position:'relative',display:'flex','flex-direction':'column','align-items':'center','justify-content':'center',width:'100%',height:'100%','min-width':'0','min-height':'0',margin:'0',padding:'4px 2px',border:active?'1px solid rgba(209,151,35,.58)':'1px solid transparent','border-radius':'20px',outline:'0',background:active?'linear-gradient(145deg,#ffe79a 0%,#f3c553 55%,#e8aa31 100%)':'transparent','background-color':active?'#f3c553':'transparent',color:active?'#17140d':'#777f8c','box-shadow':active?'0 5px 14px rgba(197,137,25,.20), inset 0 1px 0 rgba(255,255,255,.66)':'none',transform:'none','box-sizing':'border-box'};Object.entries(br).forEach(([p,v])=>set(b,p,v));b.querySelectorAll('svg').forEach(x=>{set(x,'width','21px');set(x,'height','21px');set(x,'color',active?'#17140d':'#777f8c');set(x,'stroke','currentColor');set(x,'filter','none')});b.querySelectorAll('span').forEach(x=>{set(x,'color',active?'#17140d':'#777f8c');set(x,'font-size','8px');set(x,'line-height','1');set(x,'font-weight',active?'800':'650');set(x,'margin-top','2px')})});
+const BUILD='20260916-bottom-nav-white-gold-static-v3';
+if(window.__dccBottomNavLightPremium===BUILD)return;
+window.__dccBottomNavLightPremium=BUILD;
+let s=document.getElementById('dcc-bottom-nav-light-premium-v1');
+if(!s){s=document.createElement('style');s.id='dcc-bottom-nav-light-premium-v1';(document.head||document.documentElement).appendChild(s)}
+s.textContent=`
+@media(max-width:900px){
+  body #coach .side,body #client .side{
+    position:fixed!important;left:14px!important;right:14px!important;bottom:10px!important;top:auto!important;
+    width:auto!important;height:70px!important;min-height:70px!important;margin:0!important;padding:5px!important;
+    border:1px solid rgba(199,151,55,.26)!important;border-radius:27px!important;
+    background:rgba(255,252,246,.985)!important;background-color:rgba(255,252,246,.985)!important;
+    box-shadow:0 12px 30px rgba(83,61,25,.13),inset 0 1px 0 rgba(255,255,255,.98)!important;
+    backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+    overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important;
+    transform:none!important;animation:none!important;transition:none!important;
+  }
+  body #coach .side>h2,body #client .side>h2,body #coach .side>.out,body #client .side>.out{display:none!important}
+  body #coach #coach-nav,body #client #client-nav{
+    position:relative!important;inset:auto!important;width:100%!important;height:100%!important;min-height:0!important;
+    margin:0!important;padding:0!important;display:flex!important;align-items:stretch!important;gap:3px!important;
+    border:0!important;border-radius:22px!important;background:transparent!important;background-color:transparent!important;
+    box-shadow:none!important;overflow:hidden!important;box-sizing:border-box!important;
+    transform:none!important;animation:none!important;transition:none!important;
+  }
+  body #coach #coach-nav button,body #client #client-nav button{
+    position:relative!important;display:flex!important;flex:1 1 0!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;width:auto!important;height:100%!important;min-width:0!important;min-height:0!important;
+    margin:0!important;padding:4px 2px!important;border:1px solid transparent!important;border-radius:20px!important;outline:0!important;
+    background:transparent!important;background-color:transparent!important;color:#777f8c!important;box-shadow:none!important;text-shadow:none!important;
+    transform:none!important;animation:none!important;transition:none!important;box-sizing:border-box!important;
+  }
+  body #coach #coach-nav button.active,body #client #client-nav button.active{
+    border-color:rgba(209,151,35,.58)!important;
+    background:linear-gradient(145deg,#ffe79a 0%,#f3c553 55%,#e8aa31 100%)!important;background-color:#f3c553!important;
+    color:#17140d!important;box-shadow:0 5px 14px rgba(197,137,25,.20),inset 0 1px 0 rgba(255,255,255,.66)!important;
+  }
+  body #coach #coach-nav button::before,body #client #client-nav button::before,
+  body #coach #coach-nav button::after,body #client #client-nav button::after,
+  body #coach #coach-nav::before,body #client #client-nav::before,
+  body #coach #coach-nav::after,body #client #client-nav::after{display:none!important;content:none!important}
+  body #coach #coach-nav button svg,body #client #client-nav button svg{width:21px!important;height:21px!important;color:#777f8c!important;stroke:currentColor!important;filter:none!important;transform:none!important;animation:none!important;transition:none!important}
+  body #coach #coach-nav button.active svg,body #client #client-nav button.active svg{color:#17140d!important}
+  body #coach #coach-nav button span,body #client #client-nav button span{color:#777f8c!important;font-size:8px!important;line-height:1!important;font-weight:650!important;margin-top:2px!important;text-shadow:none!important;transform:none!important;animation:none!important;transition:none!important}
+  body #coach #coach-nav button.active span,body #client #client-nav button.active span{color:#17140d!important;font-weight:800!important}
 }
-function apply(){if(!matchMedia('(max-width:900px)').matches)return;applyShell(document.querySelector('#coach .side'),document.getElementById('coach-nav'));applyShell(document.querySelector('#client .side'),document.getElementById('client-nav'))}
-function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;apply()})}
-function boot(){let s=document.getElementById('dcc-bottom-nav-light-premium-v1');if(!s){s=document.createElement('style');s.id='dcc-bottom-nav-light-premium-v1';document.head.appendChild(s)}s.textContent='@media(max-width:900px){body #coach .side>h2,body #client .side>h2,body #coach .side>.out,body #client .side>.out{display:none!important}body #coach #coach-nav button::before,body #client #client-nav button::before,body #coach #coach-nav button::after,body #client #client-nav button::after{display:none!important;content:none!important}}';schedule();setTimeout(apply,80);setTimeout(apply,350)}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();window.addEventListener('load',schedule,{once:true});window.addEventListener('pageshow',schedule);window.addEventListener('resize',schedule);window.addEventListener('dcc:themechange',schedule);document.addEventListener('dcc:coach-screen',schedule);document.addEventListener('dcc:client-screen',schedule);new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+`;
 })();
