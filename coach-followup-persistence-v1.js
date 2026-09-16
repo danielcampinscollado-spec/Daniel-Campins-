@@ -1,7 +1,7 @@
 /* DCC — seguimiento del entrenador persistente + estado guardado */
 (function(){
 'use strict';
-const BUILD='20260916-followup-persistence-v1';
+const BUILD='20260916-followup-persistence-v2';
 if(window.__dccCoachFollowupPersistence===BUILD)return;
 window.__dccCoachFollowupPersistence=BUILD;
 
@@ -25,8 +25,8 @@ function normalize(cl){
   if(!cl)return cl;
   if(cl.checkin_frequency!=null)cl.checkinFrequency=cl.checkin_frequency;
   if(cl.photo_frequency!=null)cl.photoFrequency=cl.photo_frequency;
-  if(hasOwn(cl,'next_diet_review'))cl.nextDietReview=cl.next_diet_review||'';
-  if(hasOwn(cl,'next_routine_review'))cl.nextRoutineReview=cl.next_routine_review||'';
+  if(cl.next_diet_review!=null||cl.followup_configured_at)cl.nextDietReview=cl.next_diet_review||'';
+  if(cl.next_routine_review!=null||cl.followup_configured_at)cl.nextRoutineReview=cl.next_routine_review||'';
   if(cl.followup_configured_at)cl.followupConfiguredAt=cl.followup_configured_at;
   return cl;
 }
