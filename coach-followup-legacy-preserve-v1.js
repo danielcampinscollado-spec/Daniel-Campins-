@@ -1,7 +1,7 @@
-/* DCC — conserva notas locales antiguas hasta migrarlas a Supabase */
+/* DCC — migración puntual de notas locales antiguas. Sin observadores persistentes. */
 (function(){
 'use strict';
-const BUILD='20260916-followup-legacy-preserve-v1';
+const BUILD='20260916-followup-legacy-preserve-v2-once';
 if(window.__dccFollowupLegacyPreserve===BUILD)return;
 window.__dccFollowupLegacyPreserve=BUILD;
 function dataRef(){try{return typeof data!=='undefined'?data:(window.data||{})}catch(_){return window.data||{}}}
@@ -13,8 +13,6 @@ function preserve(){
     }
   });
 }
+/* Es una compatibilidad de migración: basta ejecutarla una vez por sesión. */
 preserve();
-document.addEventListener('dcc:coach-screen',preserve);
-document.addEventListener('dcc:support-ready',preserve);
-window.addEventListener('pageshow',preserve);
 })();
