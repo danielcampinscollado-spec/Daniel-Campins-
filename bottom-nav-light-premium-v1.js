@@ -1,7 +1,7 @@
 /* DCC — barra inferior del entrenador. Única fuente visual móvil. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-nav-v28-no-dark-backdrop';
+const BUILD='20260916-coach-nav-v29-final-light-surface';
 if(window.__dccBottomNavLightPremium===BUILD)return;
 window.__dccBottomNavLightPremium=BUILD;
 const STYLE_ID='dcc-bottom-nav-light-premium-v1';

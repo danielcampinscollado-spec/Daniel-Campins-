@@ -1,12 +1,12 @@
-/* DCC coach calendar v12.3 — autoridad única de calendario y agenda */
+/* DCC coach calendar v12.4 — agenda-first, autoridad única de calendario */
 (function(){
   'use strict';
-  const BUILD='20260916-coach-calendar-v123-self-contained';
+  const BUILD='20260916-coach-calendar-v124-agenda-first';
   if(window.__dccCoachCalendarBuild===BUILD)return;
   window.__dccCoachCalendarBuild=BUILD;
   window.__dccCoachCalendarV12=true;
 
-  const GOLD='#d9aa4a', GOLD2='#f0c96b', STYLE_ID='dcc-coach-calendar-v123-css';
+  const GOLD='#d9aa4a', GOLD2='#f0c96b', STYLE_ID='dcc-coach-calendar-v124-css';
   const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   const weekdays=['L','M','X','J','V','S','D'];
   const cache=window.__dccCalendarSessionsByMonth=window.__dccCalendarSessionsByMonth||{};
@@ -33,7 +33,7 @@
   }
 
   function injectCss(){
-    ['dcc-coach-calendar-v121-css','dcc-coach-calendar-v122-css'].forEach(id=>document.getElementById(id)?.remove());
+    ['dcc-coach-calendar-v121-css','dcc-coach-calendar-v122-css','dcc-coach-calendar-v123-css'].forEach(id=>document.getElementById(id)?.remove());
     if(document.getElementById(STYLE_ID))return;
     const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
       #coach-main.dcc-cal-v11{background:radial-gradient(circle at 92% 0,rgba(217,170,74,.075),transparent 26%),linear-gradient(180deg,#07090c,#040608)!important;padding:16px 14px 110px!important;color:#f6f3ed!important}
@@ -142,10 +142,10 @@
 
   function renderCalendar(fetch=true){
     injectCss();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-cal-v11';window.currentScreen='calendar';
-    const m=monthDate(),sel=selectedDate(),view=window.__dccCalendarView==='agenda'?'agenda':'month',rows=sessionsForDate(dateKey(sel));
+    const m=monthDate(),sel=selectedDate(),view=window.__dccCalendarView==='month'?'month':'agenda',rows=sessionsForDate(dateKey(sel));
     const monthMarkup=`<section class="dcc-cal-card"><div class="dcc-cal-month-head"><button type="button" class="dcc-cal-move" onclick="dccCalendarMove(-1)">‹</button><strong>${months[m.getMonth()]} ${m.getFullYear()}</strong><button type="button" class="dcc-cal-move" onclick="dccCalendarMove(1)">›</button></div><div class="dcc-cal-week">${weekdays.map(x=>`<span>${x}</span>`).join('')}</div><div class="dcc-cal-grid">${calendarCells(m)}</div></section>`;
     const agendaMarkup=`<section class="dcc-cal-agenda"><div class="dcc-cal-agenda-top"><button type="button" class="dcc-cal-agenda-back" onclick="dccCalendarSetView('month')">‹</button><div class="dcc-cal-agenda-title"><h2>Agenda del día</h2><p>${prettyDate(sel)}</p></div><span class="dcc-cal-count">${rows.length}</span></div>${agendaHtml(sel)}</section>`;
-    main.innerHTML=`<div class="dcc-cal"><header class="dcc-cal-head"><div><h1>Calendario</h1><p>Gestiona tus entrenamientos personales.</p></div><button type="button" class="dcc-cal-new" onclick="dccCalendarNewSession()">＋ Nuevo entreno</button></header><div class="dcc-cal-tabs"><button type="button" class="dcc-cal-tab ${view==='month'?'active':''}" onclick="dccCalendarSetView('month')">Mes</button><button type="button" class="dcc-cal-tab ${view==='agenda'?'active':''}" onclick="dccCalendarSetView('agenda')">Agenda</button></div>${view==='month'?monthMarkup:agendaMarkup}</div>`;
+    main.innerHTML=`<div class="dcc-cal"><header class="dcc-cal-head"><div><h1>Calendario</h1><p>Gestiona tus entrenamientos personales.</p></div><button type="button" class="dcc-cal-new" onclick="dccCalendarNewSession()">＋ Nuevo entreno</button></header><div class="dcc-cal-tabs"><button type="button" class="dcc-cal-tab ${view==='agenda'?'active':''}" onclick="dccCalendarSetView('agenda')">Agenda</button><button type="button" class="dcc-cal-tab ${view==='month'?'active':''}" onclick="dccCalendarSetView('month')">Mes</button></div>${view==='month'?monthMarkup:agendaMarkup}</div>`;
     patchNav();if(fetch)loadMonth(m,false);
   }
 

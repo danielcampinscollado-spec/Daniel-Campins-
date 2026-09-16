@@ -546,4 +546,12 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
   window.addEventListener('pageshow',syncMode);
   window.addEventListener('load',syncMode,{once:true});
 
+  /* La barra móvil se carga al final de la capa Light para que ninguna regla anterior pueda repintarla en negro. */
+  if(![...document.scripts].some(x=>(x.src||'').includes('/bottom-nav-light-premium-v1.js'))){
+    const nav=document.createElement('script');
+    nav.src='./bottom-nav-light-premium-v1.js?v=20260916-29';
+    nav.async=false;
+    (document.head||document.documentElement).appendChild(nav);
+  }
+
 })();
