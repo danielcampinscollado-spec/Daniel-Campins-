@@ -1,7 +1,7 @@
 /* DCC bootstrap de soporte — carga determinista, sin renderizadores competidores. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-audit-v1';
+const BUILD='20260916-support-bootstrap-audit-v2';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 
@@ -18,6 +18,8 @@ function load(src){
 }
 
 const modules=[
+  './coach-calendar-v12.js?v=20260916-audit1',
+  './coach-calendar-form-fix-v15.js?v=20260916-audit1',
   './exercise-premium-pectoral-v1.js?v=20260916-audit1',
   './exercise-guidance-v1.js?v=20260916-audit1',
   './auth-preview-redirect-guard-v1.js?v=20260916-audit1',
@@ -63,9 +65,7 @@ const modules=[
   './diet-missing-day-confirm-v1.js?v=20260916-audit1',
   './training-inline-fix.js?v=20260916-audit1',
   './training-home-actions-v1.js?v=20260916-audit1',
-  './training-interaction-fix-v1.js?v=20260916-audit1',
-  './coach-calendar-v12.js?v=20260916-audit1',
-  './coach-calendar-form-fix-v15.js?v=20260916-audit1'
+  './training-interaction-fix-v1.js?v=20260916-audit1'
 ];
 
 (async()=>{
