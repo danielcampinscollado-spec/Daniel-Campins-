@@ -1,0 +1,31 @@
+name: audit-cache-bust-final
+on:
+  push:
+    branches: [audit-saneamiento-2026-09-16-1133]
+    paths: ['.github/workflows/audit-cache-bust-final.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: audit-saneamiento-2026-09-16-1133}
+      - name: Bust only modified direct script URLs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          s=s.replace('./ejercicio-biblioteca.js\"></script>','./ejercicio-biblioteca.js?v=20260916-audit1\"></script>')
+          s=s.replace('./nutrition-plan-premium-v1.js?v=20260911-1','./nutrition-plan-premium-v1.js?v=20260916-audit1')
+          p.write_text(s,encoding='utf-8')
+          assert 'ejercicio-biblioteca.js?v=20260916-audit1' in s
+          assert 'nutrition-plan-premium-v1.js?v=20260916-audit1' in s
+          PY
+      - name: Commit
+        run: |
+          git config user.name dcc-deep-audit
+          git config user.email actions@users.noreply.github.com
+          git add index.html
+          git commit -m '[audit] Bust caches for cleaned direct runtime files'
+          git push origin HEAD:audit-saneamiento-2026-09-16-1133
