@@ -1,54 +1,37 @@
-/* DCC bootstrap de soporte — runtime consolidado y carga por ruta. */
+/* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v19-instant-notes-nav';
+const BUILD='20260916-support-bootstrap-v20-clean-runtime';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
-
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
 function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname&&got.search===wanted.search}catch(_){return false}})}catch(_){return null}}
 const pending=new Map();
-function load(src){
-  const key=src;
-  if(exactExisting(src))return Promise.resolve();
-  if(pending.has(key))return pending.get(key);
-  const job=new Promise(resolve=>{
-    const s=document.createElement('script');
-    s.src=src;
-    s.async=true;
-    s.dataset.dccSupport=pathOf(src);
-    s.onload=resolve;
-    s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};
-    (document.head||document.documentElement).appendChild(s);
-  }).finally(()=>pending.delete(key));
-  pending.set(key,job);
-  return job;
-}
+function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
 
-/* Ruta crítica real: navegación móvil + una sola ficha de cliente. */
+/* Solo lo necesario para pintar inmediatamente el panel y la ficha. */
 const profileCritical=[
-  './bottom-nav-light-premium-v1.js?v=20260916-runtime2',
+  './dcc-app-core-v1.js?v=20260916-clean1',
+  './coach-mobile-nav-v1.js?v=20260916-clean1',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
   './coach-client-profile-actions-v1.js?v=20260916-runtime2',
   './coach-followup-hardfix-v1.js?v=20260916-runtime2'
 ];
 
-/* Núcleo: datos, seguridad y operaciones comunes. No incluye editores pesados. */
+/* Autoridades comunes. Ya no existe una capa "stability" que vuelva a inyectar parches. */
 const core=[
-  './auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./auth-premium-v1.js?v=20260916-runtime1','./auth-session-guard-v2.js?v=20260916-runtime1','./auth-client-claim-v1.js?v=20260916-runtime1','./local-cache-authority-v1.js?v=20260916-runtime1','./data-authority-v1.js?v=20260916-runtime1','./server-actions-v1.js?v=20260916-runtime1','./client-server-source-v1.js?v=20260916-runtime1','./client-create-authority-v1.js?v=20260916-runtime1','./client-delete-atomic-v4.js?v=20260916-runtime1','./client-access-coach-v1.js?v=20260916-runtime1','./client-profile-edit-authority-v2.js?v=20260916-runtime1','./coach-client-critical-authority-v1.js?v=20260916-runtime1','./coach-client-final-consistency-v1.js?v=20260916-runtime1','./new-client-premium-v1.js?v=20260916-runtime1','./dcc-production-stability-v1.js?v=20260916-runtime1','./dcc-dynamic-greeting-v1.js?v=20260916-runtime1'
+  './auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./auth-premium-v1.js?v=20260916-runtime1','./auth-session-guard-v2.js?v=20260916-runtime1','./auth-client-claim-v1.js?v=20260916-runtime1','./local-cache-authority-v1.js?v=20260916-runtime1','./data-authority-v1.js?v=20260916-runtime1','./server-actions-v1.js?v=20260916-runtime1','./client-server-source-v1.js?v=20260916-runtime1','./client-create-authority-v1.js?v=20260916-runtime1','./client-delete-atomic-v4.js?v=20260916-runtime1','./client-access-coach-v1.js?v=20260916-runtime1','./client-profile-edit-authority-v2.js?v=20260916-runtime1','./coach-client-critical-authority-v1.js?v=20260916-runtime1','./coach-client-final-consistency-v1.js?v=20260916-runtime1','./new-client-premium-v1.js?v=20260916-runtime1','./dcc-dynamic-greeting-v1.js?v=20260916-runtime1'
 ];
 
 const groups={
   profile:['./client-current-fat-dedupe-v1.js?v=20260916-runtime1','./coach-client-delete-position-v1.js?v=20260916-runtime1','./client-metrics-modal-v1.js?v=20260916-runtime1','./body-fat-authority-v1.js?v=20260916-runtime1','./coach-weight-authority-v1.js?v=20260916-runtime1','./checkin-review-authority-v1.js?v=20260916-runtime1'],
   calendar:['./coach-calendar-v12.js?v=20260916-runtime1','./coach-calendar-sync-v14.js?v=20260916-runtime1','./coach-calendar-form-fix-v15.js?v=20260916-runtime1'],
   diet:['./coach-client-spacing-nutrition-v1.js?v=20260916-runtime1','./diet-editor-state-fix-v1.js?v=20260916-runtime1','./diet-legacy-compat-v1.js?v=20260916-runtime1','./diet-editor-save-exit-v1.js?v=20260916-runtime1','./diet-server-source-v1.js?v=20260916-runtime1','./diet-editor-save-visibility-v1.js?v=20260916-runtime1','./nutrition-avoid-reminder-v1.js?v=20260916-runtime1','./nutrition-single-day-valid-v1.js?v=20260916-runtime1','./diet-missing-day-confirm-v1.js?v=20260916-runtime1'],
-  training:['./exercise-premium-pectoral-v1.js?v=20260916-runtime1','./exercise-guidance-v1.js?v=20260916-runtime1','./routine-authority-v1.js?v=20260916-runtime1','./training-progress-authority-v1.js?v=20260916-runtime1','./training-finish-route-fix-v1.js?v=20260916-runtime1','./training-inline-fix.js?v=20260916-runtime1','./training-home-actions-v1.js?v=20260916-runtime1','./training-interaction-fix-v1.js?v=20260916-runtime1','./workout-session-premium-v3.js?v=20260916-runtime1'],
-  messages:['./messages-realtime-chat-guard-v1.js?v=20260916-runtime1'],
-  client:['./client-session-alert-v1.js?v=20260916-runtime1','./rc-coach-stability-v1.js?v=20260916-runtime1']
+  training:['./training-day-wizard-v1.js?v=20260916-clean1','./exercise-premium-pectoral-v1.js?v=20260916-runtime1','./exercise-guidance-v1.js?v=20260916-runtime1','./routine-authority-v1.js?v=20260916-runtime1','./training-progress-authority-v1.js?v=20260916-runtime1','./training-finish-route-fix-v1.js?v=20260916-runtime1','./training-inline-fix.js?v=20260916-runtime1','./training-home-actions-v1.js?v=20260916-runtime1','./training-interaction-fix-v1.js?v=20260916-runtime1','./workout-session-premium-v3.js?v=20260916-runtime1'],
+  messages:['./messages-realtime-chat-guard-v1.js?v=20260916-runtime1']
 };
-
 const loadedGroups=new Set();
 function loadGroup(name){if(!groups[name]||loadedGroups.has(name))return Promise.resolve();loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar'&&window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12()})}
 function routeFeature(raw){const s=String(raw||'').toLowerCase();if(/calendar/.test(s))return'calendar';if(/diet|food|nutrition|aliment/.test(s))return'diet';if(/routine|training|workout|entren/.test(s))return'training';if(/message|chat|mensaje/.test(s))return'messages';if(/client|note|resumen|profile|checkin|check-in/.test(s))return'profile';return''}
@@ -57,15 +40,12 @@ function warmFeature(name){if(name)loadGroup(name).catch(e=>console.error('DCC f
 document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));
 document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));
 document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');if(!el)return;warmFeature(routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||'')))},{capture:true,passive:true});
-function idle(fn,timeout=2200){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,500)}
-
+function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
 (async()=>{
   await loadMany(profileCritical);
   window.__dccProfileCriticalReady=true;
   document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));
-  idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1800);
-  idle(()=>load('./coach-followup-legacy-preserve-v1.js?v=20260916-runtime1'),3200);
+  idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);
   warmFeature(routeFeature(window.currentScreen||''));
-  setTimeout(()=>loadGroup('client'),4500);
 })();
 })();
