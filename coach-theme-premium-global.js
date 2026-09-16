@@ -24,19 +24,6 @@
       html.dcc-theme-light-premium body #coach #coach-main.dcc-p9-dashboard .dcc-p9-row-icon svg,
       html.dcc-theme-light-premium body #coach #coach-main.dcc-p9-dashboard .dcc-p9-empty-i svg{color:#b77b13!important;stroke:currentColor!important}
 
-      /* Barra inferior */
-      html.dcc-theme-light-premium body #coach .side{
-        background:linear-gradient(145deg,#fffdf8 0%,#f5ecdd 100%)!important;
-        border:1px solid rgba(177,119,18,.30)!important;
-        box-shadow:0 10px 26px rgba(78,58,28,.10),inset 0 1px 0 rgba(255,255,255,.96)!important;
-        padding:4px!important;box-sizing:border-box!important;
-      }
-      html.dcc-theme-light-premium body #coach #coach-nav{
-        width:100%!important;height:100%!important;border-radius:18px!important;
-        background:linear-gradient(145deg,#27241e 0%,#151512 58%,#211f19 100%)!important;
-        border:1px solid rgba(224,171,62,.72)!important;
-        box-shadow:inset 0 1px 0 rgba(255,226,151,.08)!important;overflow:hidden!important;
-      }
 
       /* Clientes */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{
@@ -252,8 +239,6 @@
       }
 
       @media(max-width:700px){
-        html.dcc-theme-light-premium body #coach .side{padding:4px!important;border-radius:23px!important}
-        html.dcc-theme-light-premium body #coach #coach-nav{border-radius:18px!important}
         html.dcc-theme-light-premium body #modal.dcc-new-client-overlay .modal-box{border-radius:24px!important}
       }
       @media(max-width:600px){
