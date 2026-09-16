@@ -89,9 +89,11 @@ function apply(){
   const label=main.querySelector('.dcc-cl-subtools>span');
   if(label)label.setAttribute('data-dcc-label',`CLIENTES ACTIVOS (${cards.length})`);
   cards.forEach(card=>{
-    const oldName=card.querySelector('.dcc-cl-name')?.textContent?.trim()||card.dataset.name||'Cliente';
+    const oldName=card.querySelector('.dcc-cl-name')?.textContent?.trim()||card.querySelector('.dcc-client-name-ref')?.textContent?.trim()||card.dataset.name||'Cliente';
     const c=clientForCard(card,oldName);
     const since=formatSince(c?.created_at||c?.createdAt||c?.start_date||c?.startDate);
+    const currentSince=card.querySelector(':scope > .dcc-client-copy .dcc-client-since')?.textContent?.trim()||'';
+    if(card.dataset.dccReferenceReady==='5'&&card.querySelector(':scope > .dcc-client-copy')&&currentSince===since)return;
     card.querySelectorAll(':scope > .dcc-client-avatar,:scope > .dcc-client-copy,:scope > .dcc-client-name-ref,:scope > .dcc-manage-client-btn').forEach(el=>el.remove());
     const avatar=document.createElement('span');avatar.className='dcc-client-avatar';avatar.innerHTML=userIcon;
     const copy=document.createElement('span');copy.className='dcc-client-copy';
