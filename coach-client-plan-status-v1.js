@@ -1,17 +1,21 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v27-calendar-nav';
+const BUILD='20260916-support-bootstrap-v28-core13-prepaint';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
+function installCoachNavShell(){
+ let s=document.getElementById('dcc-coach-nav-bootstrap-shell');if(!s){s=document.createElement('style');s.id='dcc-coach-nav-bootstrap-shell';(document.head||document.documentElement).appendChild(s)}
+ s.textContent=`@media(max-width:900px){body #coach#coach>.side{position:fixed!important;left:30px!important;right:30px!important;bottom:max(14px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:4px!important;border:1.5px solid #d6a33c!important;outline:0!important;border-radius:39px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important}body #coach#coach>.side::before,body #coach#coach>.side::after{display:none!important;content:none!important}body #coach#coach>.side>h2,body #coach#coach>.side>.out{display:none!important}body #coach#coach #coach-nav#coach-nav{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;outline:0!important;border-radius:34px!important;background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important}body #coach#coach #coach-nav#coach-nav::before,body #coach#coach #coach-nav#coach-nav::after,body #coach#coach #coach-nav#coach-nav button::before,body #coach#coach #coach-nav#coach-nav button::after{display:none!important;content:none!important}body #coach#coach #coach-nav#coach-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:7px 3px!important;gap:4px!important;border:1.5px solid transparent!important;border-radius:34px!important;background:transparent!important;background-image:none!important;color:#666b73!important;-webkit-text-fill-color:#666b73!important;box-shadow:none!important;filter:none!important}body #coach#coach #coach-nav#coach-nav button.active{border-color:#d9a43a!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;background-color:#f3c64d!important;color:#17140d!important;-webkit-text-fill-color:#17140d!important;box-shadow:0 5px 14px rgba(185,126,18,.18),inset 0 1px 0 rgba(255,255,255,.92)!important}}`;
+}
+installCoachNavShell();
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
 function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname&&got.search===wanted.search}catch(_){return false}})}catch(_){return null}}
 const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
+const coachAuthority='./coach-premium-core-v13.js?v=20260916-core13a';
 const profileCritical=[
-  './coach-premium-core-v10.js?v=20260916-core12a',
-  './bottom-nav-light-premium-v1.js?v=20260916-nav33a',
   './dcc-app-core-v1.js?v=20260916-clean1',
   './coach-client-profile-v2.js?v=20260916-runtime2',
   './coach-client-profile-light-v1.js?v=20260916-runtime2',
@@ -30,20 +34,12 @@ const groups={
 };
 const loadedGroups=new Set();
 function renderCalendarIfActive(){if(window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12()}
-function loadGroup(name){
- if(!groups[name])return Promise.resolve();
- if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}
- loadedGroups.add(name);
- return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive()})
-}
+function loadGroup(name){if(!groups[name])return Promise.resolve();if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive()})}
 function routeFeature(raw){const s=String(raw||'').toLowerCase();if(/calendar/.test(s))return'calendar';if(/diet|food|nutrition|aliment/.test(s))return'diet';if(/routine|training|workout|entren/.test(s))return'training';if(/message|chat|mensaje/.test(s))return'messages';if(/client|note|resumen|profile|checkin|check-in/.test(s))return'profile';return''}
 function featureFromEvent(e){const d=e?.detail;return routeFeature(typeof d==='string'?d:(d?.screen||d?.route||d?.name||window.currentScreen||''))}
 function warmFeature(name){if(!name)return Promise.resolve();return loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
 function featureFromElement(el){if(!el)return'';return routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||''))}
-document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));
-document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));
-document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});
-document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(!feature)return;setTimeout(()=>warmFeature(feature),0)},false);
+document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(!feature)return;setTimeout(()=>warmFeature(feature),0)},false);
 function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
-(async()=>{await loadMany(profileCritical);window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));warmFeature('calendar');idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);warmFeature(routeFeature(window.currentScreen||''))})();
+(async()=>{await load(coachAuthority);await loadMany(profileCritical);window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));warmFeature('calendar');idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);warmFeature(routeFeature(window.currentScreen||''))})();
 })();
