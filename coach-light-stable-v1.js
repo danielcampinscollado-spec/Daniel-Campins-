@@ -284,7 +284,6 @@ body.dcc-coach-mode .dcc-new-client-close{
   border-color:rgba(177,119,18,.30)!important;
 }
 
-
 /* Correcciones de superficies que seguían heredando el tema oscuro */
 html.dcc-theme-light-premium body #coach #coach-main.dcc-message-chat-v2{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.08),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;color:#17191d!important}
 html.dcc-theme-light-premium body #coach #coach-main .dcc-cl-search,
@@ -299,7 +298,6 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row b{color:#17191
 html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-head span,
 html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#747d88!important}
 
-
 /* === CSS consolidado desde coach-theme-premium-global.js === */
 /* Panel: iconos de tareas en Light Premium */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-p9-dashboard .dcc-p9-row-icon,
@@ -310,7 +308,6 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
       }
       html.dcc-theme-light-premium body #coach #coach-main.dcc-p9-dashboard .dcc-p9-row-icon svg,
       html.dcc-theme-light-premium body #coach #coach-main.dcc-p9-dashboard .dcc-p9-empty-i svg{color:#b77b13!important;stroke:currentColor!important}
-
 
       /* Clientes */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{
@@ -546,12 +543,5 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
   window.addEventListener('pageshow',syncMode);
   window.addEventListener('load',syncMode,{once:true});
 
-  /* La barra móvil se carga al final de la capa Light para que ninguna regla anterior pueda repintarla en negro. */
-  if(![...document.scripts].some(x=>(x.src||'').includes('/bottom-nav-light-premium-v1.js'))){
-    const nav=document.createElement('script');
-    nav.src='./bottom-nav-light-premium-v1.js?v=20260916-29';
-    nav.async=false;
-    (document.head||document.documentElement).appendChild(nav);
-  }
-
+  /* La barra inferior del entrenador pertenece únicamente a coach-premium-core-v13.js. */
 })();
