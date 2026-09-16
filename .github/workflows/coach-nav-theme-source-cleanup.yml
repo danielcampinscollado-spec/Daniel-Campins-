@@ -1,0 +1,62 @@
+name: Coach nav theme source cleanup
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove legacy coach-nav theme declarations
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('dcc-theme-system-v1.js')
+          s=p.read_text()
+          replacements={
+            'html.dcc-theme-light-premium #client-nav,html.dcc-theme-light-premium #coach-nav':'html.dcc-theme-light-premium #client-nav',
+            'html.dcc-theme-light-premium #client-nav button,html.dcc-theme-light-premium #coach-nav button':'html.dcc-theme-light-premium #client-nav button',
+            'html.dcc-theme-light-premium #client-nav button svg,html.dcc-theme-light-premium #coach-nav button svg':'html.dcc-theme-light-premium #client-nav button svg',
+            'html.dcc-theme-light-premium #client-nav button span,html.dcc-theme-light-premium #coach-nav button span':'html.dcc-theme-light-premium #client-nav button span',
+            'html.dcc-theme-light-premium #client-nav button.active,html.dcc-theme-light-premium #coach-nav button.active':'html.dcc-theme-light-premium #client-nav button.active',
+            'html.dcc-theme-light-premium #client-nav button.active svg,html.dcc-theme-light-premium #coach-nav button.active svg':'html.dcc-theme-light-premium #client-nav button.active svg',
+            'html.dcc-theme-light-premium #client-nav button.active span,html.dcc-theme-light-premium #coach-nav button.active span':'html.dcc-theme-light-premium #client-nav button.active span',
+            'html.dcc-theme-light-premium #client-nav::before,html.dcc-theme-light-premium #client-nav::after,html.dcc-theme-light-premium #coach-nav::before,html.dcc-theme-light-premium #coach-nav::after':'html.dcc-theme-light-premium #client-nav::before,html.dcc-theme-light-premium #client-nav::after',
+            'html.dcc-theme-light-premium body :has(>#client-nav),html.dcc-theme-light-premium body :has(>#coach-nav)':'html.dcc-theme-light-premium body :has(>#client-nav)'
+          }
+          changed=0
+          for old,new in replacements.items():
+            n=s.count(old)
+            if n:
+              s=s.replace(old,new)
+              changed+=n
+          if changed == 0:
+            raise SystemExit('Expected legacy coach-nav selectors were not found; refusing blind edit')
+          p.write_text(s)
+          print('Removed legacy coach-nav selector occurrences:', changed)
+
+          # Bust the directly loaded theme-system URL without touching app logic.
+          idx=Path('index.html')
+          h=idx.read_text()
+          old='./dcc-theme-system-v1.js?v=20260912-0705'
+          new='./dcc-theme-system-v1.js?v=20260916-0919'
+          if old in h:
+            h=h.replace(old,new)
+          elif new not in h:
+            raise SystemExit('Theme system script URL not found; refusing blind index edit')
+          idx.write_text(h)
+          PY
+      - name: Commit cleaned source
+        run: |
+          git config user.name "dcc-source-cleanup"
+          git config user.email "actions@users.noreply.github.com"
+          git add dcc-theme-system-v1.js index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Remove remaining black coach nav rule from Light theme source"
+          git push
