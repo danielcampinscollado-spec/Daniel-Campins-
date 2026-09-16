@@ -1,88 +1,28 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260916-support-bootstrap-v30-fresh-calendar-compact-nav';
+const BUILD='20260916-support-bootstrap-v29-calendar14-clean';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
-
-/* La antigua capa coach-light cargaba otra barra móvil después del núcleo.
-   Se retira antes de que el parser llegue a ese script del index. */
-window.__dccCoachLightStableV1=true;
-document.getElementById('dcc-coach-light-stable-v1')?.remove();
-document.getElementById('dcc-bottom-nav-light-premium-v1')?.remove();
-
-function installCoachNavShell(){
-  let s=document.getElementById('dcc-coach-nav-bootstrap-shell');
-  if(!s){s=document.createElement('style');s.id='dcc-coach-nav-bootstrap-shell';(document.head||document.documentElement).appendChild(s)}
-  s.textContent=`@media(max-width:900px){
-    body #coach#coach>.side{position:fixed!important;left:24px!important;right:24px!important;bottom:max(12px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;height:64px!important;min-height:64px!important;margin:0!important;padding:3px!important;border:1.5px solid #d6a33c!important;outline:0!important;border-radius:33px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:0 8px 22px rgba(93,67,25,.10)!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important}
-    body #coach#coach>.side::before,body #coach#coach>.side::after{display:none!important;content:none!important}
-    body #coach#coach>.side>h2,body #coach#coach>.side>.out{display:none!important}
-    body #coach#coach #coach-nav#coach-nav{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;outline:0!important;border-radius:29px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important}
-    body #coach#coach #coach-nav#coach-nav::before,body #coach#coach #coach-nav#coach-nav::after,body #coach#coach #coach-nav#coach-nav button::before,body #coach#coach #coach-nav#coach-nav button::after{display:none!important;content:none!important}
-    body #coach#coach #coach-nav#coach-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:5px 3px!important;gap:3px!important;border:1.5px solid transparent!important;border-radius:29px!important;background:#fffdf9!important;background-image:none!important;color:#666b73!important;-webkit-text-fill-color:#666b73!important;box-shadow:none!important;filter:none!important}
-    body #coach#coach #coach-nav#coach-nav button svg{width:21px!important;height:21px!important;flex:0 0 21px!important}
-    body #coach#coach #coach-nav#coach-nav button span{font-size:10px!important;line-height:1!important}
-    body #coach#coach #coach-nav#coach-nav button.active{border-color:#d9a43a!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;background-color:#f3c64d!important;color:#17140d!important;-webkit-text-fill-color:#17140d!important;box-shadow:0 4px 12px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.92)!important}
-  }`;
-}
+function installCoachNavShell(){let s=document.getElementById('dcc-coach-nav-bootstrap-shell');if(!s){s=document.createElement('style');s.id='dcc-coach-nav-bootstrap-shell';(document.head||document.documentElement).appendChild(s)}s.textContent=`@media(max-width:900px){body #coach#coach>.side{position:fixed!important;left:30px!important;right:30px!important;bottom:max(14px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto!important;height:76px!important;min-height:76px!important;margin:0!important;padding:4px!important;border:1.5px solid #d6a33c!important;outline:0!important;border-radius:39px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;overflow:hidden!important;z-index:9999!important;box-sizing:border-box!important}body #coach#coach>.side::before,body #coach#coach>.side::after{display:none!important;content:none!important}body #coach#coach>.side>h2,body #coach#coach>.side>.out{display:none!important}body #coach#coach #coach-nav#coach-nav{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;outline:0!important;border-radius:34px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important}body #coach#coach #coach-nav#coach-nav::before,body #coach#coach #coach-nav#coach-nav::after,body #coach#coach #coach-nav#coach-nav button::before,body #coach#coach #coach-nav#coach-nav button::after{display:none!important;content:none!important}body #coach#coach #coach-nav#coach-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:7px 3px!important;gap:4px!important;border:1.5px solid transparent!important;border-radius:34px!important;background:#fffdf9!important;background-image:none!important;color:#666b73!important;-webkit-text-fill-color:#666b73!important;box-shadow:none!important;filter:none!important}body #coach#coach #coach-nav#coach-nav button.active{border-color:#d9a43a!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;background-color:#f3c64d!important;color:#17140d!important;-webkit-text-fill-color:#17140d!important;box-shadow:0 5px 14px rgba(185,126,18,.18),inset 0 1px 0 rgba(255,255,255,.92)!important}}`}
 installCoachNavShell();
-
-function compactCoachNav(){
-  if(!matchMedia('(max-width:900px)').matches)return;
-  document.getElementById('dcc-bottom-nav-light-premium-v1')?.remove();
-  const side=document.querySelector('#coach > .side'),nav=document.getElementById('coach-nav');
-  if(!side||!nav)return;
-  const imp=(el,p,v)=>el.style.setProperty(p,v,'important');
-  [['left','24px'],['right','24px'],['bottom','max(12px, env(safe-area-inset-bottom))'],['height','64px'],['min-height','64px'],['padding','3px'],['border','1.5px solid #d6a33c'],['border-radius','33px'],['background','#fffdf9'],['background-color','#fffdf9'],['background-image','none'],['box-shadow','0 8px 22px rgba(93,67,25,.10)'],['overflow','hidden']].forEach(([p,v])=>imp(side,p,v));
-  [['height','100%'],['padding','0'],['border','0'],['border-radius','29px'],['background','#fffdf9'],['background-color','#fffdf9'],['background-image','none'],['box-shadow','none'],['overflow','hidden']].forEach(([p,v])=>imp(nav,p,v));
-  nav.querySelectorAll('button').forEach(b=>{
-    const on=b.classList.contains('active'),c=on?'#17140d':'#666b73';
-    [['height','100%'],['padding','5px 3px'],['gap','3px'],['border-radius','29px'],['background',on?'linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)':'#fffdf9'],['background-color',on?'#f3c64d':'#fffdf9'],['background-image',on?'linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)':'none'],['color',c],['-webkit-text-fill-color',c],['border',on?'1.5px solid #d9a43a':'1.5px solid transparent'],['box-shadow',on?'0 4px 12px rgba(185,126,18,.16), inset 0 1px 0 rgba(255,255,255,.92)':'none']].forEach(([p,v])=>imp(b,p,v));
-    const svg=b.querySelector('svg'),span=b.querySelector('span');if(svg){imp(svg,'width','21px');imp(svg,'height','21px')}if(span){imp(span,'font-size','10px');imp(span,'line-height','1')}
-  });
-}
-function navSoon(){requestAnimationFrame(()=>{compactCoachNav();setTimeout(compactCoachNav,30)})}
-
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
 function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname&&got.search===wanted.search}catch(_){return false}})}catch(_){return null}}
 const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
-
-const coachAuthority='./coach-premium-core-v13.js?v=20260916-core13b';
-const profileCritical=['./dcc-app-core-v1.js?v=20260916-clean1','./coach-client-profile-v2.js?v=20260916-runtime3','./coach-client-profile-light-v1.js?v=20260916-runtime3','./coach-client-profile-actions-v1.js?v=20260916-runtime3','./coach-followup-hardfix-v1.js?v=20260916-runtime2'];
+const coachAuthority='./coach-premium-core-v13.js?v=20260916-core13a';
+const profileCritical=['./dcc-app-core-v1.js?v=20260916-clean1','./coach-client-profile-v2.js?v=20260916-runtime2','./coach-client-profile-light-v1.js?v=20260916-runtime2','./coach-client-profile-actions-v1.js?v=20260916-runtime2','./coach-followup-hardfix-v1.js?v=20260916-runtime2'];
 const core=['./auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./auth-premium-v1.js?v=20260916-runtime1','./auth-session-guard-v2.js?v=20260916-runtime1','./auth-client-claim-v1.js?v=20260916-runtime1','./local-cache-authority-v1.js?v=20260916-runtime1','./data-authority-v1.js?v=20260916-runtime1','./server-actions-v1.js?v=20260916-runtime1','./client-server-source-v1.js?v=20260916-runtime1','./client-create-authority-v1.js?v=20260916-runtime1','./client-delete-atomic-v4.js?v=20260916-runtime1','./client-access-coach-v1.js?v=20260916-runtime1','./client-profile-edit-authority-v2.js?v=20260916-runtime1','./coach-client-critical-authority-v1.js?v=20260916-runtime1','./coach-client-final-consistency-v1.js?v=20260916-runtime1','./new-client-premium-v1.js?v=20260916-runtime1','./dcc-dynamic-greeting-v1.js?v=20260916-runtime1'];
-const groups={
-  profile:['./client-current-fat-dedupe-v1.js?v=20260916-runtime1','./coach-client-delete-position-v1.js?v=20260916-runtime2','./client-metrics-modal-v1.js?v=20260916-runtime1','./body-fat-authority-v1.js?v=20260916-runtime1','./coach-weight-authority-v1.js?v=20260916-runtime1','./checkin-review-authority-v1.js?v=20260916-runtime1'],
-  calendar:['./coach-calendar-v12.js?v=20260916-calendar14b','./coach-calendar-sync-v14.js?v=20260916-calendar14b','./coach-calendar-form-fix-v15.js?v=20260916-calendar22b'],
-  diet:['./coach-client-spacing-nutrition-v1.js?v=20260916-runtime1','./diet-editor-state-fix-v1.js?v=20260916-runtime1','./diet-legacy-compat-v1.js?v=20260916-runtime1','./diet-editor-save-exit-v1.js?v=20260916-runtime1','./diet-server-source-v1.js?v=20260916-runtime1','./diet-editor-save-visibility-v1.js?v=20260916-runtime1','./nutrition-avoid-reminder-v1.js?v=20260916-runtime1','./nutrition-single-day-valid-v1.js?v=20260916-runtime1','./diet-missing-day-confirm-v1.js?v=20260916-runtime1'],
-  training:['./training-day-wizard-v1.js?v=20260916-clean1','./exercise-premium-pectoral-v1.js?v=20260916-runtime1','./exercise-guidance-v1.js?v=20260916-runtime1','./routine-authority-v1.js?v=20260916-runtime1','./training-progress-authority-v1.js?v=20260916-runtime1','./training-finish-route-fix-v1.js?v=20260916-runtime1','./training-inline-fix.js?v=20260916-runtime1','./training-home-actions-v1.js?v=20260916-runtime1','./training-interaction-fix-v1.js?v=20260916-runtime1','./workout-session-premium-v3.js?v=20260916-runtime1'],
-  messages:['./messages-realtime-chat-guard-v1.js?v=20260916-runtime1']
-};
+const groups={profile:['./client-current-fat-dedupe-v1.js?v=20260916-runtime1','./coach-client-delete-position-v1.js?v=20260916-runtime1','./client-metrics-modal-v1.js?v=20260916-runtime1','./body-fat-authority-v1.js?v=20260916-runtime1','./coach-weight-authority-v1.js?v=20260916-runtime1','./checkin-review-authority-v1.js?v=20260916-runtime1'],calendar:['./coach-calendar-v12.js?v=20260916-calendar14a','./coach-calendar-sync-v14.js?v=20260916-runtime1','./coach-calendar-form-fix-v15.js?v=20260916-runtime1'],diet:['./coach-client-spacing-nutrition-v1.js?v=20260916-runtime1','./diet-editor-state-fix-v1.js?v=20260916-runtime1','./diet-legacy-compat-v1.js?v=20260916-runtime1','./diet-editor-save-exit-v1.js?v=20260916-runtime1','./diet-server-source-v1.js?v=20260916-runtime1','./diet-editor-save-visibility-v1.js?v=20260916-runtime1','./nutrition-avoid-reminder-v1.js?v=20260916-runtime1','./nutrition-single-day-valid-v1.js?v=20260916-runtime1','./diet-missing-day-confirm-v1.js?v=20260916-runtime1'],training:['./training-day-wizard-v1.js?v=20260916-clean1','./exercise-premium-pectoral-v1.js?v=20260916-runtime1','./exercise-guidance-v1.js?v=20260916-runtime1','./routine-authority-v1.js?v=20260916-runtime1','./training-progress-authority-v1.js?v=20260916-runtime1','./training-finish-route-fix-v1.js?v=20260916-runtime1','./training-inline-fix.js?v=20260916-runtime1','./training-home-actions-v1.js?v=20260916-runtime1','./training-interaction-fix-v1.js?v=20260916-runtime1','./workout-session-premium-v3.js?v=20260916-runtime1'],messages:['./messages-realtime-chat-guard-v1.js?v=20260916-runtime1']};
 const loadedGroups=new Set();
 function renderCalendarIfActive(){if(window.currentApp==='coach'&&window.currentScreen==='calendar'&&typeof window.dccRenderCoachCalendarV12==='function')window.dccRenderCoachCalendarV12()}
-function loadGroup(name){if(!groups[name])return Promise.resolve();if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive();navSoon()})}
+function loadGroup(name){if(!groups[name])return Promise.resolve();if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive()})}
 function routeFeature(raw){const s=String(raw||'').toLowerCase();if(/calendar/.test(s))return'calendar';if(/diet|food|nutrition|aliment/.test(s))return'diet';if(/routine|training|workout|entren/.test(s))return'training';if(/message|chat|mensaje/.test(s))return'messages';if(/client|note|resumen|profile|checkin|check-in/.test(s))return'profile';return''}
 function featureFromEvent(e){const d=e?.detail;return routeFeature(typeof d==='string'?d:(d?.screen||d?.route||d?.name||window.currentScreen||''))}
 function warmFeature(name){if(!name)return Promise.resolve();return loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
 function featureFromElement(el){if(!el)return'';return routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||''))}
-document.addEventListener('dcc:coach-screen',e=>{warmFeature(featureFromEvent(e));setTimeout(navSoon,0)});
-document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));
-document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});
-document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(feature)setTimeout(()=>warmFeature(feature),0);if(e.target?.closest?.('#coach-nav'))setTimeout(navSoon,20)},false);
+document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(!feature)return;setTimeout(()=>warmFeature(feature),0)},false);
 function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
-
-(async()=>{
-  await load(coachAuthority);
-  installCoachNavShell();navSoon();
-  document.addEventListener('dcc:feature-ready',()=>setTimeout(navSoon,0));
-  document.addEventListener('dcc:support-ready',()=>setTimeout(navSoon,0));
-  window.addEventListener('pageshow',navSoon);
-  await loadMany(profileCritical);
-  window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));
-  warmFeature('calendar');
-  idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'));navSoon()}).catch(e=>console.error('DCC core:',e))},1400);
-  warmFeature(routeFeature(window.currentScreen||''));
-})();
+(async()=>{await load(coachAuthority);await loadMany(profileCritical);window.__dccProfileCriticalReady=true;document.dispatchEvent(new CustomEvent('dcc:profile-critical-ready'));warmFeature('calendar');idle(()=>{loadMany(core).then(()=>{window.__dccSupportBootstrapReady=true;document.dispatchEvent(new CustomEvent('dcc:support-ready'))}).catch(e=>console.error('DCC core:',e))},1400);warmFeature(routeFeature(window.currentScreen||''))})();
 })();

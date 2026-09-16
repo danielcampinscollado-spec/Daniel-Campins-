@@ -1,7 +1,7 @@
 /* DCC — Perfil entrenador · Light Premium */
 (function(){
 'use strict';
-const BUILD='20260916-coach-client-profile-light-v2-compact';
+const BUILD='20260915-coach-client-profile-light-v1';
 if(window.__dccCoachClientProfileLight===BUILD)return;
 window.__dccCoachClientProfileLight=BUILD;
 const ID='dcc-coach-client-profile-light-v1-css';
@@ -9,32 +9,6 @@ function install(){
   let s=document.getElementById(ID);
   if(!s){s=document.createElement('style');s.id=ID;document.head.appendChild(s)}
   s.textContent=`
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca{
-  padding-top:8px!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-wrap{
-  padding-top:0!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-back{
-  margin:0 0 5px!important;
-  padding:8px 13px!important;
-  min-height:38px!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilebar{
-  margin:4px 2px 8px!important;
-  min-height:0!important;
-  align-items:center!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilecopy h1{
-  font-size:30px!important;
-  line-height:1.02!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilegoal{
-  margin-top:4px!important;
-}
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-tabs{
-  margin:8px 0 10px!important;
-}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v2-card{
   background:linear-gradient(145deg,#fffefa 0%,#fbf6ec 100%)!important;
   background-color:#fffaf1!important;
@@ -92,10 +66,6 @@ html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v2-save{
   box-shadow:0 8px 20px rgba(185,125,20,.15)!important;
 }
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v2-note button{color:#b54444!important}
-@media(max-width:390px){
-  html.dcc-theme-light-premium body #coach #coach-main.dcc-ca{padding-top:6px!important}
-  html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilecopy h1{font-size:28px!important}
-}
 `;
 }
 install();
