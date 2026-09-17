@@ -1,17 +1,24 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v5-supabase-bridge';
+const BUILD='20260917-nutrition-editor-authority-v6-data-bridge';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
 const clone=v=>JSON.parse(JSON.stringify(v??null));
-const getSupabase=()=>window.supabaseClient||(typeof supabaseClient!=='undefined'?supabaseClient:null);
-const initialSupabase=getSupabase();
-if(initialSupabase&&!window.supabaseClient)window.supabaseClient=initialSupabase;
+const getSupabase=()=>{try{return typeof supabaseClient!=='undefined'?supabaseClient:(window.supabaseClient||null)}catch(_){return window.supabaseClient||null}};
+const getAppData=()=>{try{return typeof data!=='undefined'?data:(window.data||null)}catch(_){return window.data||null}};
+function bridgeAppGlobals(){
+  const db=getSupabase();
+  const appData=getAppData();
+  if(db)window.supabaseClient=db;
+  if(appData)window.data=appData;
+  return{db,appData};
+}
+bridgeAppGlobals();
 let busy=false;
 
-function client(id){return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
+function client(id){bridgeAppGlobals();return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoidText(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
 function normalizeOptions(m){
   if(Array.isArray(m?.options)&&m.options.length)return m.options;
@@ -20,6 +27,7 @@ function normalizeOptions(m){
 }
 function writeOptions(m,o){m.options=o;delete m.foods}
 function normalizedPlan(id){
+  bridgeAppGlobals();
   const current=clone(window.data?.diets?.[id])||{};
   return{
     training:clone(current.training)||{calories:'',protein:'',meals:[]},
@@ -27,9 +35,8 @@ function normalizedPlan(id){
   };
 }
 async function persist(id,next){
-  const db=getSupabase();
+  const{db}=bridgeAppGlobals();
   if(!db)throw new Error('Sin conexión con Supabase');
-  if(!window.supabaseClient)window.supabaseClient=db;
   const serverPlan={
     training:clone(next?.training)||{calories:'',protein:'',meals:[]},
     rest:clone(next?.rest)||{calories:'',protein:'',meals:[]}
@@ -47,6 +54,7 @@ async function commit(id,mutate){
   if(busy){if(typeof window.toast==='function')window.toast('Guardando alimentación…');return false}
   busy=true;
   try{
+    bridgeAppGlobals();
     const next=normalizedPlan(id);
     const changed=mutate(next);
     if(changed===false)return false;
@@ -65,14 +73,17 @@ async function commit(id,mutate){
   }finally{busy=false}
 }
 function rerender(id,mi){
+  bridgeAppGlobals();
   if(Number.isInteger(mi))window.__dccDietOpenMeal=mi;
   if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
 }
 function installNutritionRoute(){
+  bridgeAppGlobals();
   const current=window.showCoach;
   if(typeof current!=='function'||current.__dccNutritionV2RouteGuard)return;
   const base=current;
   const wrapped=function(screen){
+    bridgeAppGlobals();
     if(screen==='diets'){
       const id=window.selectedClient||window.__dccClientAdminId||null;
       if(id&&typeof window.dccNutritionV2Home==='function')return window.dccNutritionV2Home(id);
@@ -85,9 +96,9 @@ function installNutritionRoute(){
   window.showCoach=wrapped;
 }
 function installNutritionEntries(){
+  bridgeAppGlobals();
   window.dccNewDietPlan=function(id){
-    const db=getSupabase();
-    if(db&&!window.supabaseClient)window.supabaseClient=db;
+    bridgeAppGlobals();
     window.__dccDietEditing=false;
     window.selectedClient=id;
     if(typeof window.dccNutritionV2New==='function')return window.dccNutritionV2New(id);
@@ -97,8 +108,7 @@ function installNutritionEntries(){
   window.dccNewDietPlan.__dccNutritionV2Direct=true;
 
   window.dccEditDietPlan=function(id){
-    const db=getSupabase();
-    if(db&&!window.supabaseClient)window.supabaseClient=db;
+    bridgeAppGlobals();
     window.selectedClient=id;
     if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);
     if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
@@ -108,6 +118,7 @@ function installNutritionEntries(){
 }
 
 window.dccDietAddMeal=function(id,type){
+  bridgeAppGlobals();
   if(typeof window.dccNutritionMealAddStart==='function')return window.dccNutritionMealAddStart(id,type||window.__dccDietType||'training');
   if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
   return false;
@@ -115,6 +126,7 @@ window.dccDietAddMeal=function(id,type){
 window.dccDietAddMeal.__dccNutritionEditorAuthority=true;
 
 window.dccDietAddFood=async function(id,type,mealIndex,optionIndex){
+  bridgeAppGlobals();
   const avoid=avoidText(id);
   if(avoid)alert(`Aviso del cliente\nNo incluir: ${avoid}.`);
   const name=prompt('Nombre del alimento','');
@@ -136,6 +148,7 @@ window.dccDietAddFood.__dccNutritionEditorAuthority=true;
 window.dccDietAddFood.__dccNativeAvoidWarning=true;
 
 window.dccDietRemoveFood=async function(id,type,mealIndex,foodIndex,optionIndex){
+  bridgeAppGlobals();
   if(!confirm('¿Eliminar este alimento?'))return;
   const ok=await commit(id,next=>{
     const meal=next?.[type]?.meals?.[mealIndex];
@@ -149,6 +162,7 @@ window.dccDietRemoveFood=async function(id,type,mealIndex,foodIndex,optionIndex)
 };
 
 window.dccDietAddOption=async function(id,type,mealIndex){
+  bridgeAppGlobals();
   let newIndex=null;
   const ok=await commit(id,next=>{
     const meal=next?.[type]?.meals?.[mealIndex];
@@ -167,6 +181,7 @@ window.dccDietAddOption=async function(id,type,mealIndex){
 };
 
 window.dccDietRemoveOption=async function(id,type,mealIndex,optionIndex){
+  bridgeAppGlobals();
   if(optionIndex<1)return;
   const ok=await commit(id,next=>{
     const meal=next?.[type]?.meals?.[mealIndex];
@@ -184,6 +199,7 @@ window.dccDietRemoveOption=async function(id,type,mealIndex,optionIndex){
 };
 
 window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
+  bridgeAppGlobals();
   const current=window.data?.diets?.[id]?.[type]?.meals?.[mealIndex];
   if(!current)return;
   const currentOptions=normalizeOptions(current);
@@ -208,6 +224,6 @@ window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
 
 installNutritionRoute();
 installNutritionEntries();
-document.addEventListener('DOMContentLoaded',()=>{installNutritionRoute();installNutritionEntries()},{once:true});
-window.addEventListener('pageshow',()=>{installNutritionRoute();installNutritionEntries()});
+document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries()},{once:true});
+window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries()});
 })();
