@@ -1,7 +1,7 @@
 /* DCC — Flujo premium de alimentación V2 (aislado de gestión de clientes) */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-plan-v2-saved-plan-detection';
+const BUILD='20260917-nutrition-plan-v2-meal-authority-v10';
 if(window.__dccNutritionPlanPremiumV2===BUILD)return;
 window.__dccNutritionPlanPremiumV2=BUILD;
 const G='#e0ad4c',G2='#f4cf69';
@@ -25,7 +25,7 @@ function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v9';
+    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v10-rpc';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
