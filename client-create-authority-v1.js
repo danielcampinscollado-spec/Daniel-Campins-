@@ -1,8 +1,8 @@
 /* DCC — autoridad atómica para alta de clientes + email de acceso seguro */
 (function(){
   'use strict';
-  if(window.__dccClientCreateAuthorityV2)return;
-  window.__dccClientCreateAuthorityV2=true;
+  if(window.__dccClientCreateAuthorityV3)return;
+  window.__dccClientCreateAuthorityV3=true;
 
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){ }return window.supabaseClient||null};
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
@@ -41,7 +41,8 @@
     const database=db();
     if(!database){notify('No se pudo conectar con la base de datos');return}
     const button=document.getElementById('dcc-create-client-btn');
-    if(button){button.disabled=true;button.innerHTML='Creando cliente…'}
+    if(button?.dataset.dccCreating==='1')return;
+    if(button){button.dataset.dccCreating='1';button.disabled=true;button.innerHTML='Creando cliente…'}
 
     const id='client_'+Date.now();
     try{
@@ -78,33 +79,56 @@
       notify('Cliente creado correctamente');
     }catch(error){
       console.error('DCC alta atómica de cliente:',error);
-      const duplicate=String(error?.message||'').toLowerCase().includes('duplicate')||String(error?.code||'')==='23505';
-      notify(duplicate?'Ese email de acceso ya está asignado a otro cliente':'No se pudo guardar el cliente');
-      if(button){button.disabled=false;button.innerHTML='Crear cliente <span>→</span>'}
+      const message=String(error?.message||'').toLowerCase();
+      const duplicate=message.includes('duplicate')||String(error?.code||'')==='23505';
+      const forbidden=message.includes('forbidden')||message.includes('authorized');
+      notify(duplicate?'Ese email de acceso ya está asignado a otro cliente':forbidden?'Tu sesión de entrenador ha caducado. Vuelve a iniciar sesión.':'No se pudo guardar el cliente');
+      if(button){button.dataset.dccCreating='0';button.disabled=false;button.innerHTML='Crear cliente <span>→</span>'}
     }
   }
 
   function installCreate(){
     window.createClient=createClientAtomic;
-    window.createClient.__dccAtomicCreateV2=true;
+    window.createClient.__dccAtomicCreateV3=true;
   }
 
   function installNewClient(){
     const current=window.newClient;
-    if(typeof current!=='function'||current.__dccAccessEmailV2)return false;
+    if(typeof current!=='function'||current.__dccAccessEmailV3)return false;
     const wrapped=function(){
       const out=current.apply(this,arguments);
       queueMicrotask(injectAccessEmailField);
       requestAnimationFrame(injectAccessEmailField);
+      setTimeout(injectAccessEmailField,0);
+      setTimeout(injectAccessEmailField,80);
       return out;
     };
-    wrapped.__dccAccessEmailV2=true;
+    wrapped.__dccAccessEmailV3=true;
     wrapped.__base=current;
     window.newClient=wrapped;
     return true;
   }
 
-  function install(){installCreate();installNewClient();injectAccessEmailField()}
+  function installCreateButtonAuthority(){
+    if(window.__dccClientCreateClickAuthorityV3)return;
+    window.__dccClientCreateClickAuthorityV3=true;
+    document.addEventListener('click',function(event){
+      const button=event.target?.closest?.('#dcc-create-client-btn');
+      if(!button)return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      createClientAtomic();
+    },true);
+  }
+
+  function observeNewClientModal(){
+    if(window.__dccClientCreateModalObserverV3)return;
+    window.__dccClientCreateModalObserverV3=true;
+    const observer=new MutationObserver(()=>injectAccessEmailField());
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+  }
+
+  function install(){installCreate();installNewClient();installCreateButtonAuthority();observeNewClientModal();injectAccessEmailField()}
   install();
   document.addEventListener('DOMContentLoaded',install,{once:true});
   window.addEventListener('load',install,{once:true});
