@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v8-food-library';
+const BUILD='20260917-nutrition-editor-authority-v9-food-selector-guard';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -42,12 +42,15 @@ async function openFoodSelector(ctx){const ready=await ensureFoodLibrary();if(!r
 window.dccDietAddFood=async function(id,type,mealIndex,optionIndex){bridgeAppGlobals();const avoid=avoidText(id);if(avoid)alert(`Aviso del cliente\nNo incluir: ${avoid}.`);return openFoodSelector({id,type,mealIndex,optionIndex})};
 window.dccDietAddFood.__dccNutritionEditorAuthority=true;window.dccDietAddFood.__dccNativeAvoidWarning=true;window.dccDietAddFood.__dccFoodLibrarySelector=true;
 
+function installFoodTapGuard(){if(window.__dccFoodTapGuardV1)return;window.__dccFoodTapGuardV1=true;document.addEventListener('click',e=>{const b=e.target?.closest?.('.dcc-diet-add-food');if(!b)return;const raw=b.getAttribute('onclick')||'';const m=raw.match(/dccDietAddFood\('([^']+)','([^']+)',(\d+),(\d+)\)/);if(!m)return;e.preventDefault();e.stopImmediatePropagation();const id=m[1],type=m[2],mealIndex=Number(m[3]),optionIndex=Number(m[4]);const avoid=avoidText(id);if(avoid)alert(`Aviso del cliente\nNo incluir: ${avoid}.`);openFoodSelector({id,type,mealIndex,optionIndex})},true)}
+installFoodTapGuard();
+
 window.dccDietRemoveFood=async function(id,type,mealIndex,foodIndex,optionIndex){bridgeAppGlobals();if(!confirm('¿Eliminar este alimento?'))return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(!options[optionIndex]||!Array.isArray(options[optionIndex].foods))throw new Error('No existe la opción seleccionada');options[optionIndex].foods.splice(foodIndex,1);writeOptions(meal,options)});if(ok)rerender(id,mealIndex)};
 window.dccDietAddOption=async function(id,type,mealIndex){bridgeAppGlobals();let newIndex=null;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(options.length>=3)return false;options.push({name:'Opción '+(options.length+1),foods:[]});newIndex=options.length-1;writeOptions(meal,options)});if(ok){window.__dccDietOptionMap=window.__dccDietOptionMap||{};window.__dccDietOptionMap[mealIndex]=newIndex;rerender(id,mealIndex)}};
 window.dccDietRemoveOption=async function(id,type,mealIndex,optionIndex){bridgeAppGlobals();if(optionIndex<1)return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(!options[optionIndex])return false;options.splice(optionIndex,1);writeOptions(meal,options)});if(ok){window.__dccDietOptionMap=window.__dccDietOptionMap||{};window.__dccDietOptionMap[mealIndex]=0;rerender(id,mealIndex)}};
 window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){bridgeAppGlobals();const current=window.data?.diets?.[id]?.[type]?.meals?.[mealIndex];if(!current)return;const currentOptions=normalizeOptions(current),food=currentOptions?.[optionIndex]?.foods?.[foodIndex];if(!food)return;const name=prompt('Nombre del alimento',food[0]);if(name===null)return;const quantity=prompt('Cantidad',food[1]);if(quantity===null)return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal),target=options?.[optionIndex]?.foods?.[foodIndex];if(!target)throw new Error('No existe el alimento seleccionado');target[0]=name||target[0];target[1]=quantity;writeOptions(meal,options)});if(ok)rerender(id,mealIndex)};
 
 installNutritionRoute();installNutritionEntries();installFirstPlanDirect();
-document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()},{once:true});
-window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()});
+document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect();installFoodTapGuard()},{once:true});
+window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect();installFoodTapGuard()});
 })();
