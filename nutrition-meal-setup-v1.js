@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260917-nutrition-meal-setup-v9-server-first';
+  const BUILD='20260917-nutrition-meal-setup-v10-rpc-authority';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
@@ -60,24 +60,24 @@
 
   async function persistBoth(id,plan){
     if(!window.supabaseClient)throw new Error('Sin conexión con Supabase');
-    const now=new Date().toISOString();
-    const rows=['training','rest'].map(t=>({client_id:String(id),diet_type:t,calories:plan[t]?.calories||'',protein:plan[t]?.protein||'',meals:Array.isArray(plan[t]?.meals)?plan[t].meals:[],updated_at:now}));
-    const{error}=await window.supabaseClient.from('client_diets').upsert(rows,{onConflict:'client_id,diet_type'});
+    const serverPlan={
+      training:clone(plan?.training)||{calories:'',protein:'',meals:[]},
+      rest:clone(plan?.rest)||{calories:'',protein:'',meals:[]}
+    };
+    const{data:ok,error}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:serverPlan.training,p_rest:serverPlan.rest});
     if(error)throw error;
-    try{
-      const{data:ok,error:rpcError}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:plan.training||{},p_rest:plan.rest||{}});
-      if(rpcError)console.warn('DCC diet RPC mirror:',rpcError);
-      else if(ok!==true)console.warn('DCC diet RPC mirror did not confirm true');
-    }catch(error){console.warn('DCC diet RPC mirror:',error)}
-    return true;
+    if(ok!==true)throw new Error('El servidor no confirmó el guardado de la dieta');
+    return serverPlan;
   }
 
   async function persistType(id,type,day){
-    if(!window.supabaseClient)throw new Error('Sin conexión con Supabase');
-    const row={client_id:String(id),diet_type:type,calories:day?.calories||'',protein:day?.protein||'',meals:Array.isArray(day?.meals)?day.meals:[],updated_at:new Date().toISOString()};
-    const{error}=await window.supabaseClient.from('client_diets').upsert(row,{onConflict:'client_id,diet_type'});
-    if(error)throw error;
-    return true;
+    const current=clone(window.data?.diets?.[id])||{};
+    const next={
+      training:clone(current.training)||{calories:'',protein:'',meals:[]},
+      rest:clone(current.rest)||{calories:'',protein:'',meals:[]}
+    };
+    next[type]=clone(day)||{calories:'',protein:'',meals:[]};
+    return persistBoth(id,next);
   }
 
   function renderStep1(id){
@@ -117,10 +117,10 @@
     const make=()=>names.map(meal);
     const next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
     try{
-      await persistBoth(id,next);
+      const saved=await persistBoth(id,next);
       window.data=window.data||{};
       window.data.diets=window.data.diets||{};
-      window.data.diets[id]=clone(next);
+      window.data.diets[id]=clone(saved);
       if(typeof window.saveData==='function')window.saveData();
       try{localStorage.setItem('dcc:diet-meal-template:v4:'+id,JSON.stringify(names))}catch(_){}
       if(typeof window.dccNutritionV2Edit==='function')window.dccNutritionV2Edit(id);else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
@@ -139,8 +139,8 @@
     if(nextDay.meals.some(m=>normalizeMealName(m?.name)===normalizeMealName(name)))return;
     nextDay.meals.push(meal(name));
     try{
-      await persistType(id,type,nextDay);
-      window.data.diets[id][type]=clone(nextDay);
+      const saved=await persistType(id,type,nextDay);
+      window.data.diets[id]=clone(saved);
       if(typeof window.saveData==='function')window.saveData();
       if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
       if(typeof window.toast==='function')window.toast(name+' añadida');
