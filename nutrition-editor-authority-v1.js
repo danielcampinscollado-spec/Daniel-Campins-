@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v3-route-guard';
+const BUILD='20260917-nutrition-editor-authority-v4-direct-entry';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -78,6 +78,24 @@ function installNutritionRoute(){
   wrapped.__dccNutritionV2RouteGuard=true;
   wrapped.__base=base;
   window.showCoach=wrapped;
+}
+function installNutritionEntries(){
+  window.dccNewDietPlan=function(id){
+    window.__dccDietEditing=false;
+    window.selectedClient=id;
+    if(typeof window.dccNutritionV2New==='function')return window.dccNutritionV2New(id);
+    if(typeof window.toast==='function')window.toast('Cargando creación de alimentación…');
+    return false;
+  };
+  window.dccNewDietPlan.__dccNutritionV2Direct=true;
+
+  window.dccEditDietPlan=function(id){
+    window.selectedClient=id;
+    if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);
+    if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
+    return false;
+  };
+  window.dccEditDietPlan.__dccNutritionV2Direct=true;
 }
 
 window.dccDietAddMeal=function(id,type){
@@ -180,6 +198,7 @@ window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
 };
 
 installNutritionRoute();
-document.addEventListener('DOMContentLoaded',installNutritionRoute,{once:true});
-window.addEventListener('pageshow',installNutritionRoute);
+installNutritionEntries();
+document.addEventListener('DOMContentLoaded',()=>{installNutritionRoute();installNutritionEntries()},{once:true});
+window.addEventListener('pageshow',()=>{installNutritionRoute();installNutritionEntries()});
 })();
