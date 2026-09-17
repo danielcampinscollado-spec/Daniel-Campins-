@@ -1,10 +1,11 @@
 /* DCC — Flujo premium de alimentación V2 (aislado de gestión de clientes) */
 (function(){
 'use strict';
-if(window.__dccNutritionPlanPremiumV2)return;
-window.__dccNutritionPlanPremiumV2=true;
+const BUILD='20260917-nutrition-plan-v2-single-authority';
+if(window.__dccNutritionPlanPremiumV2===BUILD)return;
+window.__dccNutritionPlanPremiumV2=BUILD;
 const G='#e0ad4c',G2='#f4cf69';
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 const clone=v=>JSON.parse(JSON.stringify(v??null));
 const fmt=v=>{const d=v?new Date(v):new Date();return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'})};
 function css(){if(document.getElementById('dcc-nutrition-v2-css'))return;const s=document.createElement('style');s.id='dcc-nutrition-v2-css';s.textContent=`
@@ -16,14 +17,14 @@ function pane(){const w=document.querySelector('#coach-main .dcc-ca-wrap');retur
 function client(id){return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoid(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
 function plan(id){return window.data?.diets?.[id]||null}
-function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>Array.isArray(p?.[k]?.meals)&&p[k].meals.length)))}
+function hasPlan(id){const diets=window.data?.diets;if(!diets||!Object.prototype.hasOwnProperty.call(diets,id))return false;const p=diets[id];return !!(p&&typeof p==='object'&&(p.training||p.rest))}
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 let mealAuthorityPromise=null;
 function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v8';
+    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v9';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
