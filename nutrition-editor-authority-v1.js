@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v2-safe-add-meal';
+const BUILD='20260917-nutrition-editor-authority-v3-route-guard';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -62,6 +62,22 @@ async function commit(id,mutate){
 function rerender(id,mi){
   if(Number.isInteger(mi))window.__dccDietOpenMeal=mi;
   if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+}
+function installNutritionRoute(){
+  const current=window.showCoach;
+  if(typeof current!=='function'||current.__dccNutritionV2RouteGuard)return;
+  const base=current;
+  const wrapped=function(screen){
+    if(screen==='diets'){
+      const id=window.selectedClient||window.__dccClientAdminId||null;
+      if(id&&typeof window.dccNutritionV2Home==='function')return window.dccNutritionV2Home(id);
+      return base.call(this,'clients');
+    }
+    return base.apply(this,arguments);
+  };
+  wrapped.__dccNutritionV2RouteGuard=true;
+  wrapped.__base=base;
+  window.showCoach=wrapped;
 }
 
 window.dccDietAddMeal=function(id,type){
@@ -162,4 +178,8 @@ window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
   });
   if(ok)rerender(id,mealIndex);
 };
+
+installNutritionRoute();
+document.addEventListener('DOMContentLoaded',installNutritionRoute,{once:true});
+window.addEventListener('pageshow',installNutritionRoute);
 })();
