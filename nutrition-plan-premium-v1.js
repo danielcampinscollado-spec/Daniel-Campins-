@@ -1,7 +1,7 @@
 /* DCC — flujo guiado y seguro de creación de alimentación. */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-visual-audit-v10-light-final-notes';
+const BUILD='20260917-nutrition-visual-audit-v11-draft-status';
 if(window.__dccNutritionVisualOnly===BUILD)return;
 window.__dccNutritionVisualOnly=BUILD;
 const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
@@ -42,6 +42,7 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-nutrition-create-foote
 #coach-main .dcc-nutrition-final{display:grid;gap:10px}#coach-main .dcc-nutrition-final-title{display:flex;align-items:center;gap:9px}#coach-main .dcc-nutrition-final-check{width:28px;height:28px;display:grid;place-items:center;flex:0 0 28px;border-radius:50%;background:#fff3cf;border:1px solid rgba(183,123,19,.25);color:#8a6117;font-weight:900}#coach-main .dcc-nutrition-final .dcc-nutrition-create-next{width:100%}
 #coach-main .dcc-nutrition-notes{margin:0;padding:11px 12px;border:1px solid rgba(183,123,19,.18);border-radius:14px;background:#fff}#coach-main .dcc-nutrition-notes summary{cursor:pointer;list-style:none;font-size:11px;font-weight:900;color:#17191d}#coach-main .dcc-nutrition-notes summary::-webkit-details-marker{display:none}#coach-main .dcc-nutrition-notes small{display:block;margin:6px 0 8px;color:#858b93;font-size:9px;line-height:1.4}#coach-main .dcc-nutrition-notes textarea{width:100%;min-height:82px;padding:10px 11px;border:1px solid rgba(183,123,19,.24);border-radius:12px;background:#fff;color:#17191d;font:inherit;font-size:11px;line-height:1.45;resize:vertical;outline:none}
 #coach-main .dcc-rest-builder{display:grid;gap:12px;margin-top:10px}#coach-main .dcc-rest-back{width:max-content;max-width:100%;min-height:42px;padding:0 14px;border:1px solid rgba(183,123,19,.32);border-radius:13px;background:#fffdf8;color:#765217;font-weight:900;font-size:11px}#coach-main .dcc-rest-head,#coach-main .dcc-rest-card{padding:15px;border:1px solid rgba(183,123,19,.22);border-radius:18px;background:#fffdf8}#coach-main .dcc-rest-head h2{margin:0;font-size:19px;color:#17191d}#coach-main .dcc-rest-head p{margin:6px 0 0;color:#747c87;font-size:10px;line-height:1.45}#coach-main .dcc-rest-list,#coach-main .dcc-rest-order{display:grid;gap:6px}#coach-main .dcc-rest-pick{width:100%;min-height:48px;display:grid;grid-template-columns:1fr 32px;align-items:center;padding:8px 11px;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fff;color:#17191d;text-align:left;font-weight:850}#coach-main .dcc-rest-pick.added{opacity:.42}#coach-main .dcc-rest-pick span:last-child{font-size:20px;text-align:center}#coach-main .dcc-rest-row{display:grid;grid-template-columns:28px 1fr 32px;align-items:center;gap:8px;min-height:46px;padding:7px 8px;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fff}#coach-main .dcc-rest-num{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(135deg,#f5d577,#dda73e);font-size:10px;font-weight:900}#coach-main .dcc-rest-remove{width:30px;height:30px;border:1px solid rgba(180,75,80,.2);border-radius:9px;background:#fff;color:#b44b50;font-weight:900}#coach-main .dcc-rest-empty{padding:18px;border:1px dashed rgba(183,123,19,.28);border-radius:13px;color:#8a8f96;font-size:10px;text-align:center}#coach-main .dcc-rest-create{width:100%;min-height:52px;border:1px solid #e3b34f;border-radius:15px;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a;font-weight:900}#coach-main .dcc-rest-create:disabled{opacity:.42}
+html.dcc-theme-light-premium body #coach #coach-main .dcc-n2-status.dcc-draft-status{border-color:rgba(183,123,19,.35)!important;background:#fff4d8!important;color:#8a6117!important}html.dcc-theme-light-premium body #coach #coach-main .dcc-draft-alert{padding:12px 14px;border:1px solid rgba(183,123,19,.25);border-radius:16px;background:#fff8e8;color:#765217;font-size:11px;line-height:1.45}html.dcc-theme-light-premium body #coach #coach-main .dcc-draft-alert b{color:#17191d}
 @media(max-width:520px){#coach-main .dcc-nutrition-create-actions{grid-template-columns:1fr}}
 `;(document.head||document.documentElement).appendChild(s)
 }
@@ -82,8 +83,29 @@ function showFinalStep(id,names,withRest){
  footer.querySelector('.dcc-nutrition-create-next')?.addEventListener('click',()=>finishCreation(id,names,withRest,readNotes()));
 }
 
+function applyOverviewDraftState(){
+ const id=selectedClientId(),names=creationNames(id),main=document.getElementById('coach-main');
+ if(!id||!names.length||!main)return;
+ const root=main.querySelector('.dcc-n2');if(!root||main.querySelector('.dcc-diet-meals'))return;
+ const status=root.querySelector('.dcc-n2-status');if(status){status.textContent='Sin terminar';status.classList.remove('off');status.classList.add('dcc-draft-status')}
+ const planTitle=root.querySelector('.dcc-n2-plan b');if(planTitle)planTitle.textContent='Plan en creación';
+ const planSub=root.querySelector('.dcc-n2-plan span');if(planSub)planSub.textContent='Termina la configuración antes de poder editar el plan';
+ const meta=root.querySelectorAll('.dcc-n2-meta > div');
+ if(meta[0]){const b=meta[0].querySelector('b');if(b)b.textContent=`${dayMeals(id,'training').length} ${dayMeals(id,'training').length===1?'comida':'comidas'}`}
+ if(meta[1]){const b=meta[1].querySelector('b');if(b)b.textContent=foodCount(dayMeals(id,'rest'))>0?`${dayMeals(id,'rest').length} ${dayMeals(id,'rest').length===1?'comida':'comidas'}`:'Pendiente'}
+ let alertBox=root.querySelector('.dcc-draft-alert');if(!alertBox){alertBox=document.createElement('div');alertBox.className='dcc-draft-alert';const card=root.querySelector('.dcc-n2-card');if(card)card.insertAdjacentElement('afterend',alertBox)}
+ if(alertBox)alertBox.innerHTML='<b>Esta alimentación todavía no está acabada.</b><br>Continúa la configuración y guárdala al final. Hasta entonces no se mostrará como un plan activo ni aparecerá la opción de editar plan.';
+ const actions=root.querySelector('.dcc-n2-actions');if(actions)actions.innerHTML=`<button type="button" class="dcc-n2-btn primary" data-dcc-continue-draft><span class="i">›</span><span>Continuar configuración<small>Retoma el plan exactamente donde lo dejaste</small></span><span class="dcc-n2-arrow">›</span></button>`;
+ actions?.querySelector('[data-dcc-continue-draft]')?.addEventListener('click',()=>continueDraft(id));
+}
+async function continueDraft(id){
+ window.__dccDietType='training';window.__dccDietEditing=true;window.__dccDietOpenMeal=null;
+ if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);
+ if(typeof window.dccClientAdmin==='function')return window.dccClientAdmin(id,'food');
+}
+
 function applyCreationFlow(){
- hookClientAdmin();hookMealSetupCreate();
+ hookClientAdmin();hookMealSetupCreate();applyOverviewDraftState();
  const id=selectedClientId(),names=creationNames(id),main=document.getElementById('coach-main');
  if(!id||!names.length||!main||restBuilder)return;
  const mealsBox=main.querySelector('.dcc-diet-meals');if(!mealsBox)return;
