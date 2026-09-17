@@ -1,11 +1,11 @@
 /* DCC — asistente de estructura de comidas + selector cerrado para añadir comidas */
 (function(){
   'use strict';
-  const BUILD='20260914-nutrition-meal-setup-v3';
+  const BUILD='20260917-nutrition-meal-setup-v4-preset-authority';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
-  const MEALS=['Desayuno','Merienda de mañana','Comida','Pre entreno','Post entreno','Merienda de tarde','Cena','Post cena'];
+  const MEALS=['Desayuno','Media mañana','Comida','Media tarde','Cena','Pre-entreno','Post-entreno','Post-cena'];
   let chosenCount=0;
   let selected=[];
   let currentId=null;
@@ -68,7 +68,6 @@
     }));
     const {error}=await window.supabaseClient.from('client_diets').upsert(rows,{onConflict:'client_id,diet_type'});
     if(error)throw error;
-    // Mantiene además el flujo server-first del módulo premium cuando la RPC está disponible.
     try{
       const {error:rpcError}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:plan.training||{},p_rest:plan.rest||{}});
       if(rpcError)console.warn('DCC diet RPC backup:',rpcError);
@@ -97,10 +96,17 @@
     p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Elige ${chosenCount} ${chosenCount===1?'comida':'comidas'}</h2><p>Se guardarán con estos nombres y se crearán tanto en día de entrenamiento como en día de descanso.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?'✓':''}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?'Seleccionada':'Toca para seleccionar'}</small></span><span>›</span></button>`).join('')}</div></div><button type="button" class="dcc-meal-next" ${selected.length===chosenCount?'':'disabled'} onclick="dccMealSetupCreate()">Crear estructura de dieta</button></div>`;
   }
 
+  function normalizeMealName(name){
+    const n=String(name||'').trim().toLowerCase().replace(/[-–—]/g,' ').replace(/\s+/g,' ');
+    if(n==='merienda de mañana')return 'media mañana';
+    if(n==='merienda de tarde')return 'media tarde';
+    return n;
+  }
+
   function remainingMeals(id,type){
     const current=window.data?.diets?.[id]?.[type]?.meals||[];
-    const used=new Set(current.map(x=>String(x?.name||'').toLowerCase()));
-    return MEALS.filter(name=>!used.has(name.toLowerCase()));
+    const used=new Set(current.map(x=>normalizeMealName(x?.name)));
+    return MEALS.filter(name=>!used.has(normalizeMealName(name)));
   }
 
   function renderAddMealPicker(id,type){
@@ -142,7 +148,7 @@
     const d=window.data?.diets?.[id]?.[type];
     if(!d||!MEALS.includes(name))return;
     d.meals=Array.isArray(d.meals)?d.meals:[];
-    if(!d.meals.some(m=>String(m?.name||'').toLowerCase()===name.toLowerCase()))d.meals.push(meal(name));
+    if(!d.meals.some(m=>normalizeMealName(m?.name)===normalizeMealName(name)))d.meals.push(meal(name));
     try{
       await persistType(id,type);
       if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
@@ -171,6 +177,11 @@
 
   injectCss();
   let tries=0;
-  const timer=setInterval(()=>{tries++;if(install()||tries>120)clearInterval(timer)},75);
+  const timer=setInterval(()=>{
+    tries++;
+    install();
+    if(tries>80)clearInterval(timer);
+  },75);
   install();
+  window.addEventListener('pageshow',install);
 })();
