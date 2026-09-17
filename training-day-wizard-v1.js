@@ -1,11 +1,11 @@
 /* DCC — selector de días y navegación paso a paso para rutinas */
 (function(){
   'use strict';
-  const BUILD='20260917-training-day-wizard-v7-auto-open';
+  const BUILD='20260917-training-day-wizard-v8-force-auto-open';
   if(window.__dccTrainingDayWizardV2===BUILD)return;
   window.__dccTrainingDayWizardV2=BUILD;
 
-  const state={active:0,raf:0,lastSig:''};
+  const state={active:0,raf:0,lastSig:'',forcing:false};
   function id(){return String(window.selectedClient??'')}
   function days(){const r=window.data?.routines?.[id()];return Array.isArray(r)?r:Array.isArray(r?.routine)?r.routine:[]}
   function setDays(next){const cid=id();if(!cid||!window.data)return;window.data.routines=window.data.routines||{};const r=window.data.routines[cid];if(Array.isArray(r))window.data.routines[cid]=next;else if(r&&typeof r==='object'&&Array.isArray(r.routine))r.routine=next;else window.data.routines[cid]=next}
@@ -32,6 +32,19 @@
     if(top){top.dataset.dccSig=signature(ds);[...top.querySelectorAll('.dcc-tdw-tabs button')].forEach((b,i)=>b.classList.toggle('on',i===state.active))}
     const cards=[...document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day')];
     cards.forEach((card,i)=>{const show=i===state.active;if(show){card.style.removeProperty('display');card.removeAttribute('aria-hidden')}else{card.style.setProperty('display','none','important');card.setAttribute('aria-hidden','true')}});
+
+    /* En edición, el día seleccionado debe estar siempre desplegado. */
+    const selected=cards[state.active];
+    if(window.__dccTrainingEdit&&selected&&!selected.classList.contains('open')&&!state.forcing){
+      window.__dccTrainingOpen=state.active;
+      if(typeof window.dccClientAdmin==='function'){
+        state.forcing=true;
+        requestAnimationFrame(()=>{
+          try{window.dccClientAdmin(id(),'training')}catch(e){console.error('DCC training auto-open:',e)}
+          finally{state.forcing=false;schedule()}
+        });
+      }
+    }
   }
 
   function apply(){
