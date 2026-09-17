@@ -1,11 +1,14 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v4-direct-entry';
+const BUILD='20260917-nutrition-editor-authority-v5-supabase-bridge';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
 const clone=v=>JSON.parse(JSON.stringify(v??null));
+const getSupabase=()=>window.supabaseClient||(typeof supabaseClient!=='undefined'?supabaseClient:null);
+const initialSupabase=getSupabase();
+if(initialSupabase&&!window.supabaseClient)window.supabaseClient=initialSupabase;
 let busy=false;
 
 function client(id){return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
@@ -24,12 +27,14 @@ function normalizedPlan(id){
   };
 }
 async function persist(id,next){
-  if(!window.supabaseClient)throw new Error('Sin conexión con Supabase');
+  const db=getSupabase();
+  if(!db)throw new Error('Sin conexión con Supabase');
+  if(!window.supabaseClient)window.supabaseClient=db;
   const serverPlan={
     training:clone(next?.training)||{calories:'',protein:'',meals:[]},
     rest:clone(next?.rest)||{calories:'',protein:'',meals:[]}
   };
-  const{data:ok,error}=await window.supabaseClient.rpc('dcc_save_diet_plan',{
+  const{data:ok,error}=await db.rpc('dcc_save_diet_plan',{
     p_client_id:String(id),
     p_training:serverPlan.training,
     p_rest:serverPlan.rest
@@ -81,6 +86,8 @@ function installNutritionRoute(){
 }
 function installNutritionEntries(){
   window.dccNewDietPlan=function(id){
+    const db=getSupabase();
+    if(db&&!window.supabaseClient)window.supabaseClient=db;
     window.__dccDietEditing=false;
     window.selectedClient=id;
     if(typeof window.dccNutritionV2New==='function')return window.dccNutritionV2New(id);
@@ -90,6 +97,8 @@ function installNutritionEntries(){
   window.dccNewDietPlan.__dccNutritionV2Direct=true;
 
   window.dccEditDietPlan=function(id){
+    const db=getSupabase();
+    if(db&&!window.supabaseClient)window.supabaseClient=db;
     window.selectedClient=id;
     if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);
     if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
