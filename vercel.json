@@ -10,6 +10,15 @@
       ]
     },
     {
+      "source": "/nutrition-plan-premium-v1.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
       "source": "/nutrition-plan-premium-v2.js",
       "headers": [
         {
