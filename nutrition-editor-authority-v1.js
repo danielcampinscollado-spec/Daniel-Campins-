@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v1';
+const BUILD='20260917-nutrition-editor-authority-v2-safe-add-meal';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -63,6 +63,13 @@ function rerender(id,mi){
   if(Number.isInteger(mi))window.__dccDietOpenMeal=mi;
   if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
 }
+
+window.dccDietAddMeal=function(id,type){
+  if(typeof window.dccNutritionMealAddStart==='function')return window.dccNutritionMealAddStart(id,type||window.__dccDietType||'training');
+  if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
+  return false;
+};
+window.dccDietAddMeal.__dccNutritionEditorAuthority=true;
 
 window.dccDietAddFood=async function(id,type,mealIndex,optionIndex){
   const avoid=avoidText(id);
