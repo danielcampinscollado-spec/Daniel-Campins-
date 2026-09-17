@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v6-data-bridge';
+const BUILD='20260917-nutrition-editor-authority-v7-first-plan-direct';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -17,6 +17,7 @@ function bridgeAppGlobals(){
 }
 bridgeAppGlobals();
 let busy=false;
+let firstPlanLoader=null;
 
 function client(id){bridgeAppGlobals();return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoidText(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
@@ -26,6 +27,52 @@ function normalizeOptions(m){
   return[{name:'Opción 1',foods:[]}];
 }
 function writeOptions(m,o){m.options=o;delete m.foods}
+function savedDay(day){return !!(day&&typeof day==='object'&&(day.updated_at||(Array.isArray(day.meals)&&day.meals.length>0)))}
+function hasInitializedPlan(id){
+  bridgeAppGlobals();
+  const p=window.data?.diets?.[id];
+  return !!(p&&typeof p==='object'&&(p.__dccPlanInitialized===true||savedDay(p.training)||savedDay(p.rest)));
+}
+function ensureFirstPlanSetup(){
+  if(typeof window.dccNutritionMealSetupStart==='function')return Promise.resolve(true);
+  if(firstPlanLoader)return firstPlanLoader;
+  firstPlanLoader=new Promise(resolve=>{
+    const s=document.createElement('script');
+    s.src='./nutrition-meal-setup-v1.js?v=20260917-meal-authority-v11-real-globals';
+    s.async=false;
+    s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');
+    s.onerror=()=>{firstPlanLoader=null;resolve(false)};
+    (document.head||document.documentElement).appendChild(s);
+  });
+  return firstPlanLoader;
+}
+function installFirstPlanDirect(){
+  const current=window.dccNutritionV2New;
+  if(typeof current!=='function'||current.__dccFirstPlanDirect)return;
+  const base=current;
+  const wrapped=async function(id){
+    bridgeAppGlobals();
+    window.selectedClient=id;
+    if(!hasInitializedPlan(id)){
+      const ready=await ensureFirstPlanSetup();
+      if(!ready){
+        alert('No se pudo cargar el asistente para crear la dieta.');
+        return false;
+      }
+      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+      const opened=window.dccNutritionMealSetupStart(id);
+      if(opened===false){
+        alert('No se pudo abrir el asistente de comidas.');
+        return false;
+      }
+      return opened;
+    }
+    return base.apply(this,arguments);
+  };
+  wrapped.__dccFirstPlanDirect=true;
+  wrapped.__base=base;
+  window.dccNutritionV2New=wrapped;
+}
 function normalizedPlan(id){
   bridgeAppGlobals();
   const current=clone(window.data?.diets?.[id])||{};
@@ -224,6 +271,7 @@ window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
 
 installNutritionRoute();
 installNutritionEntries();
-document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries()},{once:true});
-window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries()});
+installFirstPlanDirect();
+document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()},{once:true});
+window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()});
 })();
