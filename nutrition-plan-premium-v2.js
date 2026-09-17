@@ -1,7 +1,7 @@
 /* DCC — Flujo premium de alimentación V2 (aislado de gestión de clientes) */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-plan-v2-meal-authority-v10';
+const BUILD='20260917-nutrition-plan-v2-editor-authority-v1';
 if(window.__dccNutritionPlanPremiumV2===BUILD)return;
 window.__dccNutritionPlanPremiumV2=BUILD;
 const G='#e0ad4c',G2='#f4cf69';
@@ -43,6 +43,29 @@ function ensureMealAuthority(){
   });
   return mealAuthorityPromise;
 }
+let editorAuthorityPromise=null;
+function ensureEditorAuthority(){
+  if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return Promise.resolve(true);
+  if(editorAuthorityPromise)return editorAuthorityPromise;
+  editorAuthorityPromise=new Promise(resolve=>{
+    const wanted='nutrition-editor-authority-v1.js?v=20260917-server-first-v1';
+    const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
+    if(exact){
+      if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return resolve(true);
+      exact.addEventListener('load',()=>resolve(window.dccDietAddFood?.__dccNutritionEditorAuthority===true),{once:true});
+      exact.addEventListener('error',()=>resolve(false),{once:true});
+      setTimeout(()=>resolve(window.dccDietAddFood?.__dccNutritionEditorAuthority===true),1200);
+      return;
+    }
+    const s=document.createElement('script');
+    s.src='./'+wanted;
+    s.async=false;
+    s.onload=()=>resolve(window.dccDietAddFood?.__dccNutritionEditorAuthority===true);
+    s.onerror=()=>{editorAuthorityPromise=null;resolve(false)};
+    (document.head||document.documentElement).appendChild(s);
+  });
+  return editorAuthorityPromise;
+}
 function key(id){return 'dcc:diet-history:v2:'+id}
 const historyLoaded={};
 function history(id){const cached=window.data?.dietHistory?.[id];if(Array.isArray(cached))return cached;try{const x=JSON.parse(localStorage.getItem(key(id))||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
@@ -58,11 +81,11 @@ function editor(id){window.__dccDietEditing=true;window.__dccDietOpenMeal=null;c
 function historyView(id,i){window.__dccDietEditing=false;const p=shell(id);if(!p)return;const x=history(id)[i];if(!x)return overview(id);const t=x.plan?.training?.meals?.length||0,r=x.plan?.rest?.meals?.length||0;p.innerHTML=`<div class="dcc-n2"><div class="dcc-n2-backrow"><button class="dcc-n2-back" onclick="dccNutritionV2Home('${id}')">←</button><div><h2>${esc(x.label||'Plan anterior')}</h2><p>Archivado ${fmt(x.archivedAt)}</p></div></div><section class="dcc-n2-card"><div class="dcc-n2-plan"><span class="dcc-n2-ico">↺</span><div><b>Plan archivado</b><span>Esta versión no modifica el plan actual.</span></div></div><div class="dcc-n2-meta"><div><small>Entrenamiento</small><b>${t} comidas</b></div><div><small>Descanso</small><b>${r} comidas</b></div></div></section><button class="dcc-n2-btn primary" onclick="dccNutritionV2Restore('${id}',${i})"><span class="i">↺</span><span>Restaurar este plan<small>El plan actual se archivará antes de restaurarlo</small></span><span class="dcc-n2-arrow">›</span></button></div>`}
 window.dccNutritionV2Home=overview;
 window.dccNutritionV2New=async id=>{const ready=await ensureMealAuthority();if(hasPlan(id))return menu(id);if(ready&&typeof window.dccNutritionMealSetupStart==='function')return window.dccNutritionMealSetupStart(id);return window.dccNutritionV2Blank(id)};
-window.dccNutritionV2Edit=editor;window.dccNutritionV2History=historyView;
-window.dccNutritionV2Blank=async id=>{if(!hasPlan(id)){const ready=await ensureMealAuthority();if(ready&&typeof window.dccNutritionMealSetupStart==='function')return window.dccNutritionMealSetupStart(id)}const next={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};try{await transition(id,next,hasPlan(id)?'Plan anterior · antes de crear desde cero':null);editor(id)}catch(e){nutritionError(e)}};
-window.dccNutritionV2Renew=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · renovación');editor(id)}catch(e){nutritionError(e)}};
-window.dccNutritionV2Duplicate=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · antes de duplicar');editor(id)}catch(e){nutritionError(e)}};
+window.dccNutritionV2Edit=async id=>{await ensureEditorAuthority();return editor(id)};window.dccNutritionV2History=historyView;
+window.dccNutritionV2Blank=async id=>{if(!hasPlan(id)){const ready=await ensureMealAuthority();if(ready&&typeof window.dccNutritionMealSetupStart==='function')return window.dccNutritionMealSetupStart(id)}const next={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};try{await transition(id,next,hasPlan(id)?'Plan anterior · antes de crear desde cero':null);await ensureEditorAuthority();editor(id)}catch(e){nutritionError(e)}};
+window.dccNutritionV2Renew=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · renovación');await ensureEditorAuthority();editor(id)}catch(e){nutritionError(e)}};
+window.dccNutritionV2Duplicate=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · antes de duplicar');await ensureEditorAuthority();editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Restore=async(id,i)=>{const x=history(id)[i];if(!x)return;try{await transition(id,clone(x.plan),hasPlan(id)?'Plan anterior · antes de restaurar':null);if(typeof window.toast==='function')window.toast('Plan restaurado');overview(id)}catch(e){nutritionError(e)}};
 function intercept(e){const b=e.target.closest&&e.target.closest('.dcc-ca-tab');if(!b||b.textContent.trim()!=='Alimentación')return;const id=window.selectedClient;if(!id)return;e.preventDefault();e.stopImmediatePropagation();overview(id)}
-document.addEventListener('click',intercept,true);css();ensureMealAuthority();
+document.addEventListener('click',intercept,true);css();ensureMealAuthority();ensureEditorAuthority();
 })();
