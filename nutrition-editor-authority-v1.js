@@ -1,277 +1,53 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v7-first-plan-direct';
+const BUILD='20260917-nutrition-editor-authority-v8-food-library';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
 const clone=v=>JSON.parse(JSON.stringify(v??null));
 const getSupabase=()=>{try{return typeof supabaseClient!=='undefined'?supabaseClient:(window.supabaseClient||null)}catch(_){return window.supabaseClient||null}};
 const getAppData=()=>{try{return typeof data!=='undefined'?data:(window.data||null)}catch(_){return window.data||null}};
-function bridgeAppGlobals(){
-  const db=getSupabase();
-  const appData=getAppData();
-  if(db)window.supabaseClient=db;
-  if(appData)window.data=appData;
-  return{db,appData};
-}
+function bridgeAppGlobals(){const db=getSupabase(),appData=getAppData();if(db)window.supabaseClient=db;if(appData)window.data=appData;return{db,appData}}
 bridgeAppGlobals();
-let busy=false;
-let firstPlanLoader=null;
-
-function client(id){bridgeAppGlobals();return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
+let busy=false,firstPlanLoader=null,foodLibraryLoader=null;
+function client(id){bridgeAppGlobals();return(window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoidText(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
-function normalizeOptions(m){
-  if(Array.isArray(m?.options)&&m.options.length)return m.options;
-  if(Array.isArray(m?.foods))return[{name:'Opción 1',foods:m.foods}];
-  return[{name:'Opción 1',foods:[]}];
-}
+function normalizeOptions(m){if(Array.isArray(m?.options)&&m.options.length)return m.options;if(Array.isArray(m?.foods))return[{name:'Opción 1',foods:m.foods}];return[{name:'Opción 1',foods:[]}]}
 function writeOptions(m,o){m.options=o;delete m.foods}
-function savedDay(day){return !!(day&&typeof day==='object'&&(day.updated_at||(Array.isArray(day.meals)&&day.meals.length>0)))}
-function hasInitializedPlan(id){
-  bridgeAppGlobals();
-  const p=window.data?.diets?.[id];
-  return !!(p&&typeof p==='object'&&(p.__dccPlanInitialized===true||savedDay(p.training)||savedDay(p.rest)));
-}
-function ensureFirstPlanSetup(){
-  if(typeof window.dccNutritionMealSetupStart==='function')return Promise.resolve(true);
-  if(firstPlanLoader)return firstPlanLoader;
-  firstPlanLoader=new Promise(resolve=>{
-    const s=document.createElement('script');
-    s.src='./nutrition-meal-setup-v1.js?v=20260917-meal-authority-v11-real-globals';
-    s.async=false;
-    s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');
-    s.onerror=()=>{firstPlanLoader=null;resolve(false)};
-    (document.head||document.documentElement).appendChild(s);
-  });
-  return firstPlanLoader;
-}
-function installFirstPlanDirect(){
-  const current=window.dccNutritionV2New;
-  if(typeof current!=='function'||current.__dccFirstPlanDirect)return;
-  const base=current;
-  const wrapped=async function(id){
-    bridgeAppGlobals();
-    window.selectedClient=id;
-    if(!hasInitializedPlan(id)){
-      const ready=await ensureFirstPlanSetup();
-      if(!ready){
-        alert('No se pudo cargar el asistente para crear la dieta.');
-        return false;
-      }
-      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
-      const opened=window.dccNutritionMealSetupStart(id);
-      if(opened===false){
-        alert('No se pudo abrir el asistente de comidas.');
-        return false;
-      }
-      return opened;
-    }
-    return base.apply(this,arguments);
-  };
-  wrapped.__dccFirstPlanDirect=true;
-  wrapped.__base=base;
-  window.dccNutritionV2New=wrapped;
-}
-function normalizedPlan(id){
-  bridgeAppGlobals();
-  const current=clone(window.data?.diets?.[id])||{};
-  return{
-    training:clone(current.training)||{calories:'',protein:'',meals:[]},
-    rest:clone(current.rest)||{calories:'',protein:'',meals:[]}
-  };
-}
-async function persist(id,next){
-  const{db}=bridgeAppGlobals();
-  if(!db)throw new Error('Sin conexión con Supabase');
-  const serverPlan={
-    training:clone(next?.training)||{calories:'',protein:'',meals:[]},
-    rest:clone(next?.rest)||{calories:'',protein:'',meals:[]}
-  };
-  const{data:ok,error}=await db.rpc('dcc_save_diet_plan',{
-    p_client_id:String(id),
-    p_training:serverPlan.training,
-    p_rest:serverPlan.rest
-  });
-  if(error)throw error;
-  if(ok!==true)throw new Error('El servidor no confirmó el guardado de la dieta');
-  return serverPlan;
-}
-async function commit(id,mutate){
-  if(busy){if(typeof window.toast==='function')window.toast('Guardando alimentación…');return false}
-  busy=true;
-  try{
-    bridgeAppGlobals();
-    const next=normalizedPlan(id);
-    const changed=mutate(next);
-    if(changed===false)return false;
-    const saved=await persist(id,next);
-    window.data=window.data||{};
-    window.data.diets=window.data.diets||{};
-    saved.__dccPlanInitialized=true;
-    window.data.diets[id]=saved;
-    if(typeof window.saveData==='function')window.saveData();
-    return true;
-  }catch(error){
-    console.error('DCC nutrition editor server-first:',error);
-    if(typeof window.toast==='function')window.toast('No se pudo guardar la alimentación');
-    else alert('No se pudo guardar la alimentación. No se ha aplicado ningún cambio.');
-    return false;
-  }finally{busy=false}
-}
-function rerender(id,mi){
-  bridgeAppGlobals();
-  if(Number.isInteger(mi))window.__dccDietOpenMeal=mi;
-  if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
-}
-function installNutritionRoute(){
-  bridgeAppGlobals();
-  const current=window.showCoach;
-  if(typeof current!=='function'||current.__dccNutritionV2RouteGuard)return;
-  const base=current;
-  const wrapped=function(screen){
-    bridgeAppGlobals();
-    if(screen==='diets'){
-      const id=window.selectedClient||window.__dccClientAdminId||null;
-      if(id&&typeof window.dccNutritionV2Home==='function')return window.dccNutritionV2Home(id);
-      return base.call(this,'clients');
-    }
-    return base.apply(this,arguments);
-  };
-  wrapped.__dccNutritionV2RouteGuard=true;
-  wrapped.__base=base;
-  window.showCoach=wrapped;
-}
-function installNutritionEntries(){
-  bridgeAppGlobals();
-  window.dccNewDietPlan=function(id){
-    bridgeAppGlobals();
-    window.__dccDietEditing=false;
-    window.selectedClient=id;
-    if(typeof window.dccNutritionV2New==='function')return window.dccNutritionV2New(id);
-    if(typeof window.toast==='function')window.toast('Cargando creación de alimentación…');
-    return false;
-  };
-  window.dccNewDietPlan.__dccNutritionV2Direct=true;
+function savedDay(day){return!!(day&&typeof day==='object'&&(day.updated_at||(Array.isArray(day.meals)&&day.meals.length>0)))}
+function hasInitializedPlan(id){bridgeAppGlobals();const p=window.data?.diets?.[id];return!!(p&&typeof p==='object'&&(p.__dccPlanInitialized===true||savedDay(p.training)||savedDay(p.rest)))}
+function ensureFirstPlanSetup(){if(typeof window.dccNutritionMealSetupStart==='function')return Promise.resolve(true);if(firstPlanLoader)return firstPlanLoader;firstPlanLoader=new Promise(resolve=>{const s=document.createElement('script');s.src='./nutrition-meal-setup-v1.js?v=20260917-meal-authority-v11-real-globals';s.async=false;s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');s.onerror=()=>{firstPlanLoader=null;resolve(false)};(document.head||document.documentElement).appendChild(s)});return firstPlanLoader}
+function ensureFoodLibrary(){if(window.DCCFoodLibrary?.foods?.length)return Promise.resolve(true);if(foodLibraryLoader)return foodLibraryLoader;foodLibraryLoader=new Promise(resolve=>{const s=document.createElement('script');s.src='./nutrition-food-library-v1.js?v=20260917-food-library-v1';s.async=false;s.onload=()=>resolve(!!window.DCCFoodLibrary?.foods?.length);s.onerror=()=>{foodLibraryLoader=null;resolve(false)};(document.head||document.documentElement).appendChild(s)});return foodLibraryLoader}
+function installFirstPlanDirect(){const current=window.dccNutritionV2New;if(typeof current!=='function'||current.__dccFirstPlanDirect)return;const base=current;const wrapped=async function(id){bridgeAppGlobals();window.selectedClient=id;if(!hasInitializedPlan(id)){const ready=await ensureFirstPlanSetup();if(!ready){alert('No se pudo cargar el asistente para crear la dieta.');return false}if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');const opened=window.dccNutritionMealSetupStart(id);if(opened===false){alert('No se pudo abrir el asistente de comidas.');return false}return opened}return base.apply(this,arguments)};wrapped.__dccFirstPlanDirect=true;wrapped.__base=base;window.dccNutritionV2New=wrapped}
+function normalizedPlan(id){bridgeAppGlobals();const current=clone(window.data?.diets?.[id])||{};return{training:clone(current.training)||{calories:'',protein:'',meals:[]},rest:clone(current.rest)||{calories:'',protein:'',meals:[]}}}
+async function persist(id,next){const{db}=bridgeAppGlobals();if(!db)throw new Error('Sin conexión con Supabase');const serverPlan={training:clone(next?.training)||{calories:'',protein:'',meals:[]},rest:clone(next?.rest)||{calories:'',protein:'',meals:[]}};const{data:ok,error}=await db.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:serverPlan.training,p_rest:serverPlan.rest});if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó el guardado de la dieta');return serverPlan}
+async function commit(id,mutate){if(busy){if(typeof window.toast==='function')window.toast('Guardando alimentación…');return false}busy=true;try{bridgeAppGlobals();const next=normalizedPlan(id);const changed=mutate(next);if(changed===false)return false;const saved=await persist(id,next);window.data=window.data||{};window.data.diets=window.data.diets||{};saved.__dccPlanInitialized=true;window.data.diets[id]=saved;if(typeof window.saveData==='function')window.saveData();return true}catch(error){console.error('DCC nutrition editor server-first:',error);if(typeof window.toast==='function')window.toast('No se pudo guardar la alimentación');else alert('No se pudo guardar la alimentación. No se ha aplicado ningún cambio.');return false}finally{busy=false}}
+function rerender(id,mi){bridgeAppGlobals();if(Number.isInteger(mi))window.__dccDietOpenMeal=mi;if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food')}
 
-  window.dccEditDietPlan=function(id){
-    bridgeAppGlobals();
-    window.selectedClient=id;
-    if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);
-    if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
-    return false;
-  };
-  window.dccEditDietPlan.__dccNutritionV2Direct=true;
-}
+function installNutritionRoute(){bridgeAppGlobals();const current=window.showCoach;if(typeof current!=='function'||current.__dccNutritionV2RouteGuard)return;const base=current;const wrapped=function(screen){bridgeAppGlobals();if(screen==='diets'){const id=window.selectedClient||window.__dccClientAdminId||null;if(id&&typeof window.dccNutritionV2Home==='function')return window.dccNutritionV2Home(id);return base.call(this,'clients')}return base.apply(this,arguments)};wrapped.__dccNutritionV2RouteGuard=true;wrapped.__base=base;window.showCoach=wrapped}
+function installNutritionEntries(){bridgeAppGlobals();window.dccNewDietPlan=function(id){bridgeAppGlobals();window.__dccDietEditing=false;window.selectedClient=id;if(typeof window.dccNutritionV2New==='function')return window.dccNutritionV2New(id);if(typeof window.toast==='function')window.toast('Cargando creación de alimentación…');return false};window.dccNewDietPlan.__dccNutritionV2Direct=true;window.dccEditDietPlan=function(id){bridgeAppGlobals();window.selectedClient=id;if(typeof window.dccNutritionV2Edit==='function')return window.dccNutritionV2Edit(id);if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');return false};window.dccEditDietPlan.__dccNutritionV2Direct=true}
 
-window.dccDietAddMeal=function(id,type){
-  bridgeAppGlobals();
-  if(typeof window.dccNutritionMealAddStart==='function')return window.dccNutritionMealAddStart(id,type||window.__dccDietType||'training');
-  if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');
-  return false;
-};
+window.dccDietAddMeal=function(id,type){bridgeAppGlobals();if(typeof window.dccNutritionMealAddStart==='function')return window.dccNutritionMealAddStart(id,type||window.__dccDietType||'training');if(typeof window.toast==='function')window.toast('Cargando editor de alimentación…');return false};
 window.dccDietAddMeal.__dccNutritionEditorAuthority=true;
 
-window.dccDietAddFood=async function(id,type,mealIndex,optionIndex){
-  bridgeAppGlobals();
-  const avoid=avoidText(id);
-  if(avoid)alert(`Aviso del cliente\nNo incluir: ${avoid}.`);
-  const name=prompt('Nombre del alimento','');
-  if(!name)return;
-  const quantity=prompt('Cantidad','');
-  if(quantity===null)return;
-  const ok=await commit(id,next=>{
-    const meal=next?.[type]?.meals?.[mealIndex];
-    if(!meal)throw new Error('No existe la comida seleccionada');
-    const options=normalizeOptions(meal);
-    if(!options[optionIndex])throw new Error('No existe la opción seleccionada');
-    options[optionIndex].foods=Array.isArray(options[optionIndex].foods)?options[optionIndex].foods:[];
-    options[optionIndex].foods.push([name,quantity]);
-    writeOptions(meal,options);
-  });
-  if(ok)rerender(id,mealIndex);
-};
-window.dccDietAddFood.__dccNutritionEditorAuthority=true;
-window.dccDietAddFood.__dccNativeAvoidWarning=true;
+function foodSelectorCss(){if(document.getElementById('dcc-food-selector-css'))return;const s=document.createElement('style');s.id='dcc-food-selector-css';s.textContent=`
+.dcc-food-modal{position:fixed;inset:0;z-index:99999;background:rgba(12,14,18,.45);display:flex;align-items:flex-end;justify-content:center;padding:14px}.dcc-food-sheet{width:min(620px,100%);max-height:88vh;overflow:hidden;display:flex;flex-direction:column;background:#fffdf8;border:1px solid rgba(183,123,19,.25);border-radius:24px 24px 18px 18px;box-shadow:0 24px 70px rgba(0,0,0,.22)}.dcc-food-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px}.dcc-food-head b{font-size:17px;color:#17191d}.dcc-food-close{width:38px;height:38px;border:1px solid #eadfc9;border-radius:12px;background:#fff;color:#5f646c;font-size:20px}.dcc-food-cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:0 12px 12px}.dcc-food-cat{min-height:52px;padding:6px 4px;border:1px solid #eadfc9;border-radius:12px;background:#fff;color:#626871;font-size:9px;font-weight:900}.dcc-food-cat.active{border-color:#d9a83f;background:#fff3cf;color:#6f4d12}.dcc-food-search{margin:0 12px 10px;width:calc(100% - 24px);height:44px;padding:0 13px;border:1px solid #e6ddce;border-radius:13px;background:#fff;color:#17191d;font:inherit;font-size:12px;outline:none}.dcc-food-list{overflow:auto;padding:0 12px 14px;display:grid;gap:6px}.dcc-food-row{width:100%;min-height:46px;display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #eee5d6;border-radius:13px;background:#fff;color:#17191d;text-align:left;font-size:12px;font-weight:800}.dcc-food-row small{color:#9a7a3d;font-size:9px}.dcc-food-detail{padding:0 14px 16px;display:grid;gap:10px}.dcc-food-back{width:max-content;border:0;background:transparent;color:#8a6117;font-weight:900}.dcc-food-picked{padding:13px;border:1px solid #eadfc9;border-radius:14px;background:#fffaf0}.dcc-food-picked b{display:block;color:#17191d}.dcc-food-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dcc-food-fields input,.dcc-food-fields select{height:46px;padding:0 11px;border:1px solid #e1d6c4;border-radius:12px;background:#fff;color:#17191d;font:inherit}.dcc-food-add{height:50px;border:1px solid #d9a83f;border-radius:14px;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a;font-weight:900}.dcc-food-empty{padding:22px;text-align:center;color:#858b93;font-size:11px}@media(max-width:520px){.dcc-food-modal{padding:0}.dcc-food-sheet{max-height:92vh;border-radius:24px 24px 0 0}.dcc-food-cats{grid-template-columns:repeat(3,1fr)}}`;document.head.appendChild(s)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function openFoodSelector(ctx){const ready=await ensureFoodLibrary();if(!ready){alert('No se pudo cargar la biblioteca de alimentos.');return false}foodSelectorCss();document.querySelector('.dcc-food-modal')?.remove();const lib=window.DCCFoodLibrary;let category=lib.categories[0]?.id||'protein',query='',picked=null;const modal=document.createElement('div');modal.className='dcc-food-modal';modal.innerHTML='<div class="dcc-food-sheet"></div>';document.body.appendChild(modal);const sheet=modal.firstElementChild;const close=()=>modal.remove();modal.addEventListener('click',e=>{if(e.target===modal)close()});
+ function render(){if(picked){sheet.innerHTML=`<div class="dcc-food-head"><b>Añadir alimento</b><button class="dcc-food-close" type="button">×</button></div><div class="dcc-food-detail"><button class="dcc-food-back" type="button">‹ Volver a alimentos</button><div class="dcc-food-picked"><b>${esc(picked.name)}</b><small>Elige cantidad y unidad</small></div><div class="dcc-food-fields"><input id="dcc-food-qty" type="number" min="0" step="any" inputmode="decimal" placeholder="Cantidad"><select id="dcc-food-unit">${picked.units.map(u=>`<option value="${esc(u)}"${u===picked.defaultUnit?' selected':''}>${esc(u)}</option>`).join('')}</select></div><button class="dcc-food-add" type="button">Añadir a esta comida</button></div>`;sheet.querySelector('.dcc-food-close').onclick=close;sheet.querySelector('.dcc-food-back').onclick=()=>{picked=null;render()};sheet.querySelector('.dcc-food-add').onclick=async()=>{const qty=sheet.querySelector('#dcc-food-qty').value.trim(),unit=sheet.querySelector('#dcc-food-unit').value;if(!qty){sheet.querySelector('#dcc-food-qty').focus();return}const ok=await commit(ctx.id,next=>{const meal=next?.[ctx.type]?.meals?.[ctx.mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(!options[ctx.optionIndex])throw new Error('No existe la opción seleccionada');options[ctx.optionIndex].foods=Array.isArray(options[ctx.optionIndex].foods)?options[ctx.optionIndex].foods:[];options[ctx.optionIndex].foods.push([picked.name,`${qty} ${unit}`]);writeOptions(meal,options)});if(ok){close();rerender(ctx.id,ctx.mealIndex)}};setTimeout(()=>sheet.querySelector('#dcc-food-qty')?.focus(),30);return}
+ const foods=lib.search(query,category);sheet.innerHTML=`<div class="dcc-food-head"><b>Añadir alimento</b><button class="dcc-food-close" type="button">×</button></div><div class="dcc-food-cats">${lib.categories.map(c=>`<button type="button" class="dcc-food-cat${c.id===category?' active':''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div><input class="dcc-food-search" type="search" placeholder="Buscar alimento…" value="${esc(query)}"><div class="dcc-food-list">${foods.length?foods.map(f=>`<button type="button" class="dcc-food-row" data-food="${f.id}"><span>${esc(f.name)}</span><small>${esc(f.defaultUnit)} ›</small></button>`).join(''):'<div class="dcc-food-empty">No hay alimentos que coincidan con la búsqueda.</div>'}</div>`;sheet.querySelector('.dcc-food-close').onclick=close;sheet.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{category=b.dataset.cat;query='';render()});const search=sheet.querySelector('.dcc-food-search');search.oninput=()=>{query=search.value;render()};sheet.querySelectorAll('[data-food]').forEach(b=>b.onclick=()=>{picked=lib.find(b.dataset.food);render()})}
+ render();return true}
 
-window.dccDietRemoveFood=async function(id,type,mealIndex,foodIndex,optionIndex){
-  bridgeAppGlobals();
-  if(!confirm('¿Eliminar este alimento?'))return;
-  const ok=await commit(id,next=>{
-    const meal=next?.[type]?.meals?.[mealIndex];
-    if(!meal)throw new Error('No existe la comida seleccionada');
-    const options=normalizeOptions(meal);
-    if(!options[optionIndex]||!Array.isArray(options[optionIndex].foods))throw new Error('No existe la opción seleccionada');
-    options[optionIndex].foods.splice(foodIndex,1);
-    writeOptions(meal,options);
-  });
-  if(ok)rerender(id,mealIndex);
-};
+window.dccDietAddFood=async function(id,type,mealIndex,optionIndex){bridgeAppGlobals();const avoid=avoidText(id);if(avoid)alert(`Aviso del cliente\nNo incluir: ${avoid}.`);return openFoodSelector({id,type,mealIndex,optionIndex})};
+window.dccDietAddFood.__dccNutritionEditorAuthority=true;window.dccDietAddFood.__dccNativeAvoidWarning=true;window.dccDietAddFood.__dccFoodLibrarySelector=true;
 
-window.dccDietAddOption=async function(id,type,mealIndex){
-  bridgeAppGlobals();
-  let newIndex=null;
-  const ok=await commit(id,next=>{
-    const meal=next?.[type]?.meals?.[mealIndex];
-    if(!meal)throw new Error('No existe la comida seleccionada');
-    const options=normalizeOptions(meal);
-    if(options.length>=3)return false;
-    options.push({name:'Opción '+(options.length+1),foods:[]});
-    newIndex=options.length-1;
-    writeOptions(meal,options);
-  });
-  if(ok){
-    window.__dccDietOptionMap=window.__dccDietOptionMap||{};
-    window.__dccDietOptionMap[mealIndex]=newIndex;
-    rerender(id,mealIndex);
-  }
-};
+window.dccDietRemoveFood=async function(id,type,mealIndex,foodIndex,optionIndex){bridgeAppGlobals();if(!confirm('¿Eliminar este alimento?'))return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(!options[optionIndex]||!Array.isArray(options[optionIndex].foods))throw new Error('No existe la opción seleccionada');options[optionIndex].foods.splice(foodIndex,1);writeOptions(meal,options)});if(ok)rerender(id,mealIndex)};
+window.dccDietAddOption=async function(id,type,mealIndex){bridgeAppGlobals();let newIndex=null;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(options.length>=3)return false;options.push({name:'Opción '+(options.length+1),foods:[]});newIndex=options.length-1;writeOptions(meal,options)});if(ok){window.__dccDietOptionMap=window.__dccDietOptionMap||{};window.__dccDietOptionMap[mealIndex]=newIndex;rerender(id,mealIndex)}};
+window.dccDietRemoveOption=async function(id,type,mealIndex,optionIndex){bridgeAppGlobals();if(optionIndex<1)return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal);if(!options[optionIndex])return false;options.splice(optionIndex,1);writeOptions(meal,options)});if(ok){window.__dccDietOptionMap=window.__dccDietOptionMap||{};window.__dccDietOptionMap[mealIndex]=0;rerender(id,mealIndex)}};
+window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){bridgeAppGlobals();const current=window.data?.diets?.[id]?.[type]?.meals?.[mealIndex];if(!current)return;const currentOptions=normalizeOptions(current),food=currentOptions?.[optionIndex]?.foods?.[foodIndex];if(!food)return;const name=prompt('Nombre del alimento',food[0]);if(name===null)return;const quantity=prompt('Cantidad',food[1]);if(quantity===null)return;const ok=await commit(id,next=>{const meal=next?.[type]?.meals?.[mealIndex];if(!meal)throw new Error('No existe la comida seleccionada');const options=normalizeOptions(meal),target=options?.[optionIndex]?.foods?.[foodIndex];if(!target)throw new Error('No existe el alimento seleccionado');target[0]=name||target[0];target[1]=quantity;writeOptions(meal,options)});if(ok)rerender(id,mealIndex)};
 
-window.dccDietRemoveOption=async function(id,type,mealIndex,optionIndex){
-  bridgeAppGlobals();
-  if(optionIndex<1)return;
-  const ok=await commit(id,next=>{
-    const meal=next?.[type]?.meals?.[mealIndex];
-    if(!meal)throw new Error('No existe la comida seleccionada');
-    const options=normalizeOptions(meal);
-    if(!options[optionIndex])return false;
-    options.splice(optionIndex,1);
-    writeOptions(meal,options);
-  });
-  if(ok){
-    window.__dccDietOptionMap=window.__dccDietOptionMap||{};
-    window.__dccDietOptionMap[mealIndex]=0;
-    rerender(id,mealIndex);
-  }
-};
-
-window.dccDietEditFood=async function(id,type,mealIndex,foodIndex,optionIndex){
-  bridgeAppGlobals();
-  const current=window.data?.diets?.[id]?.[type]?.meals?.[mealIndex];
-  if(!current)return;
-  const currentOptions=normalizeOptions(current);
-  const food=currentOptions?.[optionIndex]?.foods?.[foodIndex];
-  if(!food)return;
-  const name=prompt('Nombre del alimento',food[0]);
-  if(name===null)return;
-  const quantity=prompt('Cantidad',food[1]);
-  if(quantity===null)return;
-  const ok=await commit(id,next=>{
-    const meal=next?.[type]?.meals?.[mealIndex];
-    if(!meal)throw new Error('No existe la comida seleccionada');
-    const options=normalizeOptions(meal);
-    const target=options?.[optionIndex]?.foods?.[foodIndex];
-    if(!target)throw new Error('No existe el alimento seleccionado');
-    target[0]=name||target[0];
-    target[1]=quantity;
-    writeOptions(meal,options);
-  });
-  if(ok)rerender(id,mealIndex);
-};
-
-installNutritionRoute();
-installNutritionEntries();
-installFirstPlanDirect();
+installNutritionRoute();installNutritionEntries();installFirstPlanDirect();
 document.addEventListener('DOMContentLoaded',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()},{once:true});
 window.addEventListener('pageshow',()=>{bridgeAppGlobals();installNutritionRoute();installNutritionEntries();installFirstPlanDirect()});
 })();
