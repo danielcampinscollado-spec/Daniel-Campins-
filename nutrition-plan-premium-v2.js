@@ -20,21 +20,22 @@ function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 let mealAuthorityPromise=null;
 function ensureMealAuthority(){
-  if(typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
+  if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const existing=[...document.scripts].find(s=>(s.src||'').includes('/nutrition-meal-setup-v1.js'));
-    if(existing){
-      if(typeof window.dccMealSetupCount==='function')return resolve(true);
-      existing.addEventListener('load',()=>resolve(true),{once:true});
-      existing.addEventListener('error',()=>resolve(false),{once:true});
-      setTimeout(()=>resolve(typeof window.dccMealSetupCount==='function'),1200);
+    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v8';
+    const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
+    if(exact){
+      if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
+      exact.addEventListener('load',()=>resolve(typeof window.dccNutritionMealSetupStart==='function'),{once:true});
+      exact.addEventListener('error',()=>resolve(false),{once:true});
+      setTimeout(()=>resolve(typeof window.dccNutritionMealSetupStart==='function'),1200);
       return;
     }
     const s=document.createElement('script');
-    s.src='./nutrition-meal-setup-v1.js?v=20260917-meal-authority-v5';
+    s.src='./'+wanted;
     s.async=false;
-    s.onload=()=>resolve(true);
+    s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');
     s.onerror=()=>{mealAuthorityPromise=null;resolve(false)};
     (document.head||document.documentElement).appendChild(s);
   });
@@ -54,9 +55,9 @@ function menu(id){window.__dccDietEditing=false;const p=shell(id);if(!p)return;p
 function editor(id){window.__dccDietEditing=true;window.__dccDietOpenMeal=null;const p=shell(id);if(!p)return;const top=document.createElement('div');top.className='dcc-n2-editorbar';top.innerHTML=`<div class="dcc-n2-backrow" style="margin:0"><button class="dcc-n2-back" onclick="dccNutritionV2Home('${id}')">←</button><div><h2>Editar plan alimenticio</h2><p>Modifica comidas, opciones y cantidades.</p></div></div>`;p.prepend(top)}
 function historyView(id,i){window.__dccDietEditing=false;const p=shell(id);if(!p)return;const x=history(id)[i];if(!x)return overview(id);const t=x.plan?.training?.meals?.length||0,r=x.plan?.rest?.meals?.length||0;p.innerHTML=`<div class="dcc-n2"><div class="dcc-n2-backrow"><button class="dcc-n2-back" onclick="dccNutritionV2Home('${id}')">←</button><div><h2>${esc(x.label||'Plan anterior')}</h2><p>Archivado ${fmt(x.archivedAt)}</p></div></div><section class="dcc-n2-card"><div class="dcc-n2-plan"><span class="dcc-n2-ico">↺</span><div><b>Plan archivado</b><span>Esta versión no modifica el plan actual.</span></div></div><div class="dcc-n2-meta"><div><small>Entrenamiento</small><b>${t} comidas</b></div><div><small>Descanso</small><b>${r} comidas</b></div></div></section><button class="dcc-n2-btn primary" onclick="dccNutritionV2Restore('${id}',${i})"><span class="i">↺</span><span>Restaurar este plan<small>El plan actual se archivará antes de restaurarlo</small></span><span class="dcc-n2-arrow">›</span></button></div>`}
 window.dccNutritionV2Home=overview;
-window.dccNutritionV2New=async id=>{await ensureMealAuthority();return hasPlan(id)?menu(id):window.dccNutritionV2Blank(id)};
+window.dccNutritionV2New=async id=>{const ready=await ensureMealAuthority();if(hasPlan(id))return menu(id);if(ready&&typeof window.dccNutritionMealSetupStart==='function')return window.dccNutritionMealSetupStart(id);return window.dccNutritionV2Blank(id)};
 window.dccNutritionV2Edit=editor;window.dccNutritionV2History=historyView;
-window.dccNutritionV2Blank=async id=>{const next={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};try{await transition(id,next,hasPlan(id)?'Plan anterior · antes de crear desde cero':null);editor(id)}catch(e){nutritionError(e)}};
+window.dccNutritionV2Blank=async id=>{if(!hasPlan(id)){const ready=await ensureMealAuthority();if(ready&&typeof window.dccNutritionMealSetupStart==='function')return window.dccNutritionMealSetupStart(id)}const next={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};try{await transition(id,next,hasPlan(id)?'Plan anterior · antes de crear desde cero':null);editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Renew=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · renovación');editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Duplicate=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · antes de duplicar');editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Restore=async(id,i)=>{const x=history(id)[i];if(!x)return;try{await transition(id,clone(x.plan),hasPlan(id)?'Plan anterior · antes de restaurar':null);if(typeof window.toast==='function')window.toast('Plan restaurado');overview(id)}catch(e){nutritionError(e)}};
