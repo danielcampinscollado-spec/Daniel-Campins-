@@ -1,7 +1,7 @@
 /* DCC — autoridad visual móvil del entrenador, sincronizada con el tema global. */
 (function(){
 'use strict';
-const BUILD='20260916-coach-nav-v36-stable-dark-clients';
+const BUILD='20260917-coach-nav-v37-theme-stable';
 if(window.__dccBottomNavLightPremium===BUILD)return;
 window.__dccBottomNavLightPremium=BUILD;
 const STYLE_ID='dcc-bottom-nav-light-premium-v1';
@@ -14,7 +14,7 @@ function installStyles(){
 .dcc-p9-caret::before{content:''!important;display:block!important;width:10px!important;height:10px!important;border-right:2.5px solid #b77b13!important;border-bottom:2.5px solid #b77b13!important;transform:rotate(45deg)!important;transition:transform .16s ease!important}
 .dcc-p9-accordion:not(.closed) .dcc-p9-caret::before{transform:rotate(225deg)!important}
 
-/* Modo black: Clientes debe conservar superficies oscuras. */
+/* Modo black: Clientes conserva superficies oscuras. */
 html:not(.dcc-theme-light-premium) body #coach #coach-main.dcc-premium-clients,
 html:not(.dcc-theme-light-premium) body #coach #coach-main.dcc-final-clients{background:#080a0e!important;color:#f4f1e9!important}
 html:not(.dcc-theme-light-premium) body #coach #coach-main .dcc-cl-search,
@@ -60,6 +60,7 @@ function clearThemeInline(el){
 }
 
 function stabilize(){
+ installStyles();
  if(!matchMedia('(max-width:900px)').matches)return;
  const side=document.querySelector('#coach > .side'),nav=document.getElementById('coach-nav');
  if(!side||!nav)return;
@@ -72,15 +73,12 @@ function stabilize(){
  });
 }
 
-let queued=0;
-function stabilizeSoon(){
- clearTimeout(queued);
- queued=setTimeout(stabilize,0);
-}
 installStyles();
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',stabilizeSoon,{once:true});else stabilizeSoon();
-document.addEventListener('dcc:coach-screen',stabilizeSoon);
-document.addEventListener('dcc:feature-ready',stabilizeSoon);
-document.addEventListener('dcc:profile-critical-ready',stabilizeSoon);
-window.addEventListener('pageshow',stabilizeSoon);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',stabilize,{once:true});else stabilize();
+/* Sin temporizadores ni repintados dobles: se corrige en el mismo ciclo del cambio. */
+document.addEventListener('dcc:coach-screen',stabilize);
+document.addEventListener('dcc:feature-ready',stabilize);
+document.addEventListener('dcc:profile-critical-ready',stabilize);
+window.addEventListener('dcc:themechange',stabilize);
+window.addEventListener('pageshow',stabilize);
 })();
