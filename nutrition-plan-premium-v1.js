@@ -1,14 +1,16 @@
 /* DCC — ajuste visual de nutrición/gestión de cliente. Sin cargar módulos de aplicación. */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-visual-only-audit-v2-fixed-header';
+const BUILD='20260917-nutrition-visual-only-audit-v3-compact-header';
 if(window.__dccNutritionVisualOnly===BUILD)return;
 window.__dccNutritionVisualOnly=BUILD;
 const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
 function installCss(){
   const previous=document.getElementById(STYLE_ID);if(previous)previous.remove();
   const style=document.createElement('style');style.id=STYLE_ID;style.textContent=`
-html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilebar{margin-top:30px!important;margin-bottom:12px!important}
+html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-back{margin-bottom:0!important}
+html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-profilebar{margin:8px 2px 6px!important}
+html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-ca-tabs{margin:8px 0 10px!important}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan{grid-template-columns:minmax(0,1fr)!important;gap:0!important}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-n2-card .dcc-n2-plan>.dcc-n2-ico{display:none!important}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-light-routine-history-fix{background:linear-gradient(145deg,#fffefa 0%,#f8f0e3 100%)!important;color:#17191d!important;border:1px solid rgba(183,123,19,.27)!important;box-shadow:0 8px 20px rgba(78,58,28,.06),inset 0 1px 0 rgba(255,255,255,.96)!important}
