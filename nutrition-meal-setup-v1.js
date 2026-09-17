@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260917-nutrition-meal-setup-v10-rpc-authority';
+  const BUILD='20260917-nutrition-meal-setup-v11-real-globals';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
@@ -10,6 +10,16 @@
   let chosenCount=0,selected=[],currentId=null,currentType='training';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clone=v=>JSON.parse(JSON.stringify(v??null));
+  const getData=()=>window.data||(typeof data!=='undefined'?data:null);
+  const getSupabase=()=>window.supabaseClient||(typeof supabaseClient!=='undefined'?supabaseClient:null);
+  function bridgeGlobals(){
+    const appData=getData();
+    const db=getSupabase();
+    if(appData&&!window.data)window.data=appData;
+    if(db&&!window.supabaseClient)window.supabaseClient=db;
+    return{appData:window.data||appData,db:window.supabaseClient||db};
+  }
+  bridgeGlobals();
 
   function injectCss(){
     if(document.getElementById('dcc-nutrition-meal-setup-v9-css'))return;
@@ -55,22 +65,24 @@
   function pane(){const w=document.querySelector('#coach-main .dcc-ca-wrap');return w?w.lastElementChild:null}
   function meal(name){return{name,options:[{name:'Opción 1',foods:[]}]}}
   function normalizeMealName(name){const n=String(name||'').trim().toLowerCase().replace(/[-–—]/g,' ').replace(/\s+/g,' ');if(n==='media mañana')return'merienda mañana';if(n==='media tarde')return'merienda tarde';return n}
-  function remainingMeals(id,type){const current=window.data?.diets?.[id]?.[type]?.meals||[],used=new Set(current.map(x=>normalizeMealName(x?.name)));return MEALS.filter(name=>!used.has(normalizeMealName(name)))}
+  function remainingMeals(id,type){bridgeGlobals();const current=window.data?.diets?.[id]?.[type]?.meals||[],used=new Set(current.map(x=>normalizeMealName(x?.name)));return MEALS.filter(name=>!used.has(normalizeMealName(name)))}
   function progress(step){return `<div class="dcc-meal-step-label">Paso ${step} de 3</div><div class="dcc-meal-progress"><span class="on"></span><span class="${step>=2?'on':''}"></span><span class="${step>=3?'on':''}"></span></div>`}
 
   async function persistBoth(id,plan){
-    if(!window.supabaseClient)throw new Error('Sin conexión con Supabase');
+    const{db}=bridgeGlobals();
+    if(!db)throw new Error('Sin conexión con Supabase');
     const serverPlan={
       training:clone(plan?.training)||{calories:'',protein:'',meals:[]},
       rest:clone(plan?.rest)||{calories:'',protein:'',meals:[]}
     };
-    const{data:ok,error}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:serverPlan.training,p_rest:serverPlan.rest});
+    const{data:ok,error}=await db.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:serverPlan.training,p_rest:serverPlan.rest});
     if(error)throw error;
     if(ok!==true)throw new Error('El servidor no confirmó el guardado de la dieta');
     return serverPlan;
   }
 
   async function persistType(id,type,day){
+    bridgeGlobals();
     const current=clone(window.data?.diets?.[id])||{};
     const next={
       training:clone(current.training)||{calories:'',protein:'',meals:[]},
@@ -81,6 +93,7 @@
   }
 
   function renderStep1(id){
+    bridgeGlobals();
     currentId=id;chosenCount=0;selected=[];injectCss();const p=pane();if(!p)return false;
     p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Configura las comidas</h2><p>¿Cuántas comidas quieres que tenga el plan cada día?</p><div class="dcc-meal-counts">${[1,2,3,4,5,6,7,8].map(n=>`<button type="button" class="dcc-meal-count" onclick="dccMealSetupCount(${n})">${n}</button>`).join('')}</div></div><div class="dcc-meal-hint">Después podrás elegir cuáles son y colocarlas en el orden exacto en el que las verá el cliente.</div></div>`;
     return true;
@@ -97,6 +110,7 @@
   }
 
   function renderAddMealPicker(id,type){
+    bridgeGlobals();
     currentId=id;currentType=type;injectCss();const p=pane();if(!p)return false;const available=remainingMeals(id,type);
     p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Añadir un momento de comida</h2><p>Elige el tipo de comida. No tendrás que escribir el nombre manualmente.</p><div class="dcc-meal-options">${available.length?available.map(name=>`<button type="button" class="dcc-meal-option" onclick="dccMealAddPreset('${name.replace(/'/g,"\\'")}')"><span class="tick">＋</span><span><b>${esc(name)}</b><small>Se añadirá al final de este día</small></span><span>›</span></button>`).join(''):'<div class="dcc-meal-hint">Ya están añadidos todos los tipos de comida disponibles.</div>'}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Volver</button></div>`;
     return true;
@@ -112,6 +126,7 @@
   window.dccMealSetupMove=function(index,delta){const to=index+delta;if(to<0||to>=selected.length)return;const next=[...selected],[item]=next.splice(index,1);next.splice(to,0,item);selected=next;renderStep3()};
 
   window.dccMealSetupCreate=async function(){
+    bridgeGlobals();
     if(!currentId||selected.length!==chosenCount)return;
     const id=currentId,names=[...selected];
     const make=()=>names.map(meal);
@@ -132,6 +147,7 @@
   };
 
   window.dccMealAddPreset=async function(name){
+    bridgeGlobals();
     const id=currentId,type=currentType,current=window.data?.diets?.[id]?.[type];
     if(!current||!MEALS.includes(name))return;
     const nextDay=clone(current)||{calories:'',protein:'',meals:[]};
