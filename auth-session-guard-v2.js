@@ -1,7 +1,7 @@
 /* DCC — bloqueo de sesión y entrada autenticada v2 */
 (function(){
   'use strict';
-  const BUILD='20260912-auth-session-guard-v2';
+  const BUILD='20260918-auth-session-guard-v3-isolation';
   if(window.__dccAuthSessionGuard===BUILD)return;
   window.__dccAuthSessionGuard=BUILD;
 
@@ -38,6 +38,7 @@
   }
 
   function showLogin(message){
+    try{if(typeof window.teardownMessageRealtime==='function')window.teardownMessageRealtime()}catch(_){}
     clearAuthoritativeState(true);
     try{currentClientId=null}catch(_){}
     try{window.currentClientId=null}catch(_){}
@@ -88,7 +89,7 @@
 
       /* El servidor manda. Nunca pintar el panel del entrenador con una
          instantánea antigua del navegador mientras llega Supabase. */
-      clearAuthoritativeState(app==='coach');
+      clearAuthoritativeState(true);
       return current.apply(this,arguments);
     };
 
