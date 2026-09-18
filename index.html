@@ -12897,7 +12897,16 @@ if(screen==="messages"){
 
             const isUnread =
               last &&
-              last[0] !== "Daniel";
+              !(
+                typeof window.dccIsCoachMessage === "function"
+                  ? window.dccIsCoachMessage(last)
+                  : String(last[0] || "").trim().toLowerCase() ===
+                    String(
+                      typeof window.dccCoachName === "function"
+                        ? window.dccCoachName()
+                        : "Entrenador"
+                    ).trim().toLowerCase()
+              );
 
             const lastTime =
               last && last[2]
