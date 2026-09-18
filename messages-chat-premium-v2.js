@@ -44,6 +44,7 @@
     return d&&Number.isFinite(d.getTime())?d:null;
   }
   function isCoach(m){
+    if(typeof window.dccIsCoachMessage==='function')return window.dccIsCoachMessage(m);
     return /daniel|coach|trainer|entrenador|admin/i.test(messageSender(m));
   }
   function thread(id){
@@ -136,20 +137,20 @@
   async function syncMessages(id=null){
     const client=db();if(!client)return false;
     try{
-      let query=client.from('client_messages').select('client_id,sender,message,created_at');
+      let query=client.from('client_messages').select('client_id,sender,message,created_at,sender_role,sender_user_id');
       if(id)query=query.eq('client_id',id);
       const {data:rows,error}=await query.order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData();
       d.messages=d.messages||{};
       if(id){
-        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null]);
+        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.sender_user_id||null]);
       }else{
         const next={};
         (d.clients||[]).forEach(c=>next[c.id]=[]);
         (rows||[]).forEach(r=>{
           if(!next[r.client_id])next[r.client_id]=[];
-          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null]);
+          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.sender_user_id||null]);
         });
         d.messages=next;
       }
@@ -193,7 +194,7 @@
     const client=db();if(!client){toastSafe('No hay conexión con el servidor');return}
     const button=document.getElementById('dccCoachSendV2Button');if(button)button.disabled=true;if(input)input.disabled=true;
     try{
-      const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
+      const {error}=await client.from('client_messages').insert({client_id:id,sender:(typeof window.dccCoachName==='function'?window.dccCoachName():'Entrenador'),sender_role:'coach',sender_user_id:(typeof window.dccCoachUserId==='function'?window.dccCoachUserId():null),message:text});
       if(error)throw error;
       if(input)input.value='';
       await syncMessages(id);
