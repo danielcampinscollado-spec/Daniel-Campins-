@@ -16808,5 +16808,22 @@ async function sendClientCheckin(){
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 <script src="./training-superset-v1.js?v=20260918-8"></script>
 
+
+<!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
+<script>
+(function(){
+  function removeVercelPreviewUi(){
+    document.querySelectorAll('vercel-live-feedback').forEach(function(el){ el.remove(); });
+  }
+  removeVercelPreviewUi();
+  var root=document.documentElement;
+  if(!root)return;
+  var observer=new MutationObserver(function(){
+    removeVercelPreviewUi();
+  });
+  observer.observe(root,{childList:true,subtree:true});
+  window.addEventListener('load',removeVercelPreviewUi,{once:true});
+})();
+</script>
 </body>
 </html>
