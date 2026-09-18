@@ -21,11 +21,14 @@
   function dayRef(id,di){return routineDays(id)?.[Number(di)]||null;}
   function library(){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];}
   function save(){try{if(typeof window.saveData==='function')window.saveData();else if(typeof saveData==='function')saveData();}catch(_){}}
+  function ensureRoutineBackup(id){
+    if(window.__dccRoutineUnsavedBackupSet)return;
+    window.__dccRoutineUnsavedBackup=JSON.stringify(window.data?.routines?.[id]??null);
+    window.__dccRoutineUnsavedBackupSet=true;
+    window.__dccRoutineUnsavedClient=String(id??window.selectedClient??'');
+  }
   function markRoutineDirty(id){
-    if(!window.__dccRoutineUnsavedBackupSet){
-      window.__dccRoutineUnsavedBackup=JSON.stringify(window.data?.routines?.[id]??null);
-      window.__dccRoutineUnsavedBackupSet=true;
-    }
+    ensureRoutineBackup(id);
     window.__dccRoutineUnsavedClient=String(id??window.selectedClient??'');
     window.__dccRoutineDraftDirty=true;
   }
@@ -297,6 +300,7 @@
       if(selected.length<2||selected.length>4){notify('La superserie necesita entre 2 y 4 ejercicios');return false;}
       if(!Array.isArray(day.exercises))day.exercises=[];
       if(hasDuplicate(day,selected)){notify('Uno de esos ejercicios ya está añadido a la rutina');return false;}
+      ensureRoutineBackup(id);
       const supersetId='superset-'+Date.now();
       selected.forEach((ex,index)=>day.exercises.push({
         libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'3',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
@@ -315,6 +319,7 @@
       if(selected.length!==1){notify('REST-pause necesita 1 ejercicio');return false;}
       if(!Array.isArray(day.exercises))day.exercises=[];
       if(hasDuplicate(day,selected)){notify('Ese ejercicio ya está añadido a la rutina');return false;}
+      ensureRoutineBackup(id);
       const ex=selected[0];
       const finalRest=Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90);
       day.exercises.push({
@@ -360,11 +365,13 @@
   function updateSuperset(id,di,supersetId,keyName,value){
     const day=dayRef(id,di);if(!day)return;
     const n=keyName==='rounds'?Math.max(1,parseInt(value)||1):Math.max(0,parseInt(value)||0);
-    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});markRoutineDirty(id);save();
+    markRoutineDirty(id);
+    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save();
   }
 
   function updateRestPause(id,di,exerciseIndex,keyName,value){
     const day=dayRef(id,di);const ex=day?.exercises?.[exerciseIndex];if(!ex)return;
+    markRoutineDirty(id);
     if(keyName==='reps'){
       const reps=String(value||'').trim()||'12/10/8/6';const blocks=reps.split(/[\/\-–,\s]+/).filter(Boolean).length||4;
       ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=String(blocks);
@@ -372,7 +379,7 @@
       const n=Math.max(1,parseInt(value)||1);ex.restPauseSeconds=n;ex.restBetweenSets=n;
     }else{
       const n=Math.max(0,parseInt(value)||0);ex.restPauseFinalRest=n;ex.restBetweenExercises=n;
-    }markRoutineDirty(id);save();
+    }save();
   }
 
   function decorateConfiguration(id,di){
@@ -450,6 +457,7 @@
       const day=dayRef(id,di);if(!day)return;
       const current=mode(id,di);
       if(current==='normal'){
+        ensureRoutineBackup(id);
         if(!Array.isArray(day.exercises))day.exercises=[];
         const index=day.exercises.findIndex(ex=>String(ex?.libraryId||ex?.id||'')===String(exerciseId));
         if(index>=0){
@@ -463,7 +471,8 @@
         }
         day.trainingSetupStarted=true;
         day.selectedExerciseIds=[];
-        markRoutineDirty(id);
+        window.__dccRoutineDraftDirty=true;
+        window.__dccRoutineUnsavedClient=String(id);
         save();
         window.openTrainingExercises?.(id,di,true);
         return;
@@ -522,6 +531,7 @@
   if(nativeAddManualTrainingExercise){
     window.addManualTrainingExercise=function(id,di){
       const before=dayRef(id,di)?.exercises?.length||0;
+      ensureRoutineBackup(id);
       const result=nativeAddManualTrainingExercise.apply(this,arguments);
       const after=dayRef(id,di)?.exercises?.length||0;
       if(after!==before)markRoutineDirty(id);
@@ -533,6 +543,7 @@
   if(nativeRemoveTrainingExercise){
     window.removeTrainingExercise=function(id,di){
       const before=dayRef(id,di)?.exercises?.length||0;
+      ensureRoutineBackup(id);
       const result=nativeRemoveTrainingExercise.apply(this,arguments);
       const after=dayRef(id,di)?.exercises?.length||0;
       if(after!==before)markRoutineDirty(id);
