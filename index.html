@@ -14531,6 +14531,18 @@ function openTrainingDay(id,dayIndex){
   const main=document.getElementById("coach-main");
 
   if(!main)return;
+
+  if(!Array.isArray(day.muscleGroups))day.muscleGroups=[];
+  if(!day.muscleGroups.length && Array.isArray(day.exercises) && day.exercises.length){
+    day.muscleGroups=[...new Set(day.exercises.map(ex=>String(ex?.muscle||ex?.muscleGroup||ex?.targetMuscle||'').trim()).filter(Boolean))].slice(0,3);
+    if(day.muscleGroups.length)day.muscle=day.muscleGroups.join(" · ");
+  }
+  if(!day.trainingSetupStep && Array.isArray(day.exercises) && day.exercises.length){
+    day.trainingSetupStep="exerciseConfiguration";
+    day.trainingSetupStarted=true;
+    saveData();
+  }
+
   /*
    * Si el día tiene una gestión empezada,
    * retomamos exactamente el punto donde se quedó.
@@ -14543,17 +14555,6 @@ function openTrainingDay(id,dayIndex){
   if(day.trainingSetupStep==="exerciseConfiguration"){
     renderTrainingExerciseConfiguration(id,dayIndex);
     return;
-  }
-
-  if(!Array.isArray(day.muscleGroups)){
-    day.muscleGroups=[];
-  }
-  if(!day.muscleGroups.length && Array.isArray(day.exercises) && day.exercises.length){
-    day.muscleGroups=[...new Set(day.exercises.map(ex=>String(ex?.muscle||ex?.muscleGroup||ex?.targetMuscle||'').trim()).filter(Boolean))].slice(0,3);
-    if(day.muscleGroups.length){
-      day.muscle=day.muscleGroups.join(" · ");
-      saveData();
-    }
   }
 
   const muscleOptions=[
