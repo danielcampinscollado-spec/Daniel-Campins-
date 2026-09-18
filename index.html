@@ -5671,7 +5671,8 @@ async function openApp(app){
     return;
   }
 
-  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block";
+  const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
+  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
   if(alreadyOpen){
     return true;
   }
