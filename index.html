@@ -5092,7 +5092,9 @@ async function loadMessagesFromSupabase(){
       nextMessages[row.client_id].push([
         row.sender || "",
         row.message || "",
-        row.created_at || null
+        row.created_at || null,
+        row.sender_role || null,
+        row.sender_user_id || null
       ]);
 
     });
