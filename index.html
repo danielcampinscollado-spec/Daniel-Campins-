@@ -10399,32 +10399,18 @@ window.activeWorkout=null;
 
 
 async function sendClientMessage(){
-
   const box=document.getElementById("client-message");
-  const text=box?.value.trim();
-
-  if(!text)return;
-
-  const sender=client(currentClientId)?.name || "Cliente";
-
-  const { error } = await supabaseClient
-    .from("client_messages")
-    .insert({
-      client_id:currentClientId,
-      sender:sender,
-      message:text
+  const text=box?.value.trim();if(!text)return;
+  const sender=client(currentClientId)?.name||"Cliente";
+  try{
+    const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
+    if(sessionError)throw sessionError;
+    const {error}=await supabaseClient.from("client_messages").insert({
+      client_id:currentClientId,sender:sender,message:text,sender_role:"client",sender_user_id:sessionData?.session?.user?.id||null
     });
-
-  if(error){
-    console.error("Error enviando mensaje del cliente:",error);
-    toast("No se pudo enviar el mensaje");
-    return;
-  }
-
-  await loadMessagesFromSupabase();
-
-  showClient("messages");
-  toast("Mensaje enviado");
+    if(error)throw error;
+    await loadMessagesFromSupabase();showClient("messages");toast("Mensaje enviado");
+  }catch(error){console.error("Error enviando mensaje del cliente:",error);toast("No se pudo enviar el mensaje")}
 }
 
 function showCoach(screen){
@@ -15898,30 +15884,18 @@ ${msgs.length?msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><div>${esc(m[1])
 `);
 }
 async function sendCoachMessage(id){
-
   const box=document.getElementById("coach-message");
-  const text=box?.value.trim();
-
-  if(!text)return;
-
-  const { error } = await supabaseClient
-    .from("client_messages")
-    .insert({
-      client_id:id,
-      sender:"Daniel",
-      message:text
+  const text=box?.value.trim();if(!text)return;
+  try{
+    const {data:sessionData,error:sessionError}=await supabaseClient.auth.getSession();
+    if(sessionError)throw sessionError;
+    const sender=typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador";
+    const {error}=await supabaseClient.from("client_messages").insert({
+      client_id:id,sender:sender,message:text,sender_role:"coach",sender_user_id:sessionData?.session?.user?.id||null
     });
-
-  if(error){
-    console.error("Error enviando mensaje del entrenador:",error);
-    toast("No se pudo enviar el mensaje");
-    return;
-  }
-
-  await loadMessagesFromSupabase();
-
-  closeModal();
-  toast("Mensaje enviado");
+    if(error)throw error;
+    await loadMessagesFromSupabase();closeModal();toast("Mensaje enviado");
+  }catch(error){console.error("Error enviando mensaje del entrenador:",error);toast("No se pudo enviar el mensaje")}
 }
 
 function openModal(html){
