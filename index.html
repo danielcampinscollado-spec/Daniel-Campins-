@@ -15549,24 +15549,25 @@ if(!main)return;
           ← Volver
         </button>
 
-        <div
-          class="muted"
-          style="
-            flex:0 1 360px;
-            padding:9px 12px;
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:14px;
-            background:rgba(255,255,255,.025);
-            font-size:12px;
-            line-height:1.35;
-          "
-        >
-          <span style="
-            font-size:18px;
-            margin-right:6px;
-          ">ⓘ</span>
-          Define las series y repeticiones de cada ejercicio.
-          Los tiempos de descanso se configuran al final.
+        <div style="
+          flex:1;
+          min-width:0;
+          text-align:right;
+        ">
+          <div style="
+            font-size:16px;
+            font-weight:900;
+            line-height:1.1;
+          ">
+            Series y repeticiones
+          </div>
+          <div class="muted" style="
+            margin-top:3px;
+            font-size:10px;
+            line-height:1.3;
+          ">
+            Configura cada ejercicio y los descansos.
+          </div>
         </div>
 
       </div>
@@ -15623,19 +15624,19 @@ if(!main)return;
                 type="button"
                 onclick="removeTrainingExercise('${id}',${dayIndex},${index})"
                 style="
-                  width:42px;
-                  height:42px;
-                  min-width:42px;
-                  border-radius:11px;
-                  border:1px solid rgba(255,255,255,.12);
+                  min-height:32px;
+                  padding:0 9px;
+                  border-radius:9px;
+                  border:1px solid rgba(183,123,19,.22);
                   background:transparent;
-                  color:#e7e9ed;
-                  font-size:19px;
+                  color:#8c5a08;
+                  font-size:10px;
+                  font-weight:800;
                   cursor:pointer;
                 "
                 aria-label="Eliminar ejercicio"
               >
-                🗑
+                Eliminar
               </button>
 
             </div>
@@ -15713,7 +15714,7 @@ if(!main)return;
               <input
                 type="url"
                 inputmode="url"
-                placeholder="🔗  Pega aquí el enlace del vídeo (opcional)"
+                placeholder="Enlace del vídeo (opcional)"
                 value="${esc(String(ex.videoUrl || ""))}"
                 onchange="
                   data.routines['${id}'][${dayIndex}].exercises[${index}].videoUrl=this.value.trim();
@@ -15750,7 +15751,7 @@ if(!main)return;
                   white-space:nowrap;
                 "
               >
-                ▶ Ver vídeo
+                Ver vídeo
               </button>
 
             </div>
@@ -15771,25 +15772,11 @@ if(!main)return;
     ">
 
       <div style="
-        display:flex;
-        align-items:center;
-        gap:8px;
         margin-bottom:3px;
+        font-size:13px;
+        font-weight:850;
       ">
-
-        <div style="
-          font-size:21px;
-        ">
-          ◷
-        </div>
-
-        <div style="
-          font-size:15px;
-          font-weight:800;
-        ">
-          Tiempos de descanso (globales)
-        </div>
-
+        Tiempos de descanso (globales)
       </div>
 
 
@@ -15894,7 +15881,7 @@ if(!main)return;
         font-weight:900;
       "
     >
-      💾 Guardar rutina
+      Guardar rutina
     </button>
 
   `;
@@ -16629,7 +16616,7 @@ async function sendClientCheckin(){
 <script src="./coach-client-plan-status-v1.js?v=20260918-training-center16"></script>
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
-<script src="./training-superset-v1.js?v=20260918-4"></script>
+<script src="./training-superset-v1.js?v=20260918-5"></script>
 
 </body>
 </html>
