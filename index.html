@@ -4457,7 +4457,7 @@ body{
     </header>
 
     <div class="choices dcc-access-grid">
-      <button class="choice choice-client dcc-access-card" type="button" onclick="openApp('client')">
+      <button class="choice choice-client dcc-access-card" type="button" onclick="window.dccChooseAccessRole?.('client')">
         <span class="dcc-access-number">01</span>
         <span class="dcc-access-copy">
           <b>Acceso cliente</b>
@@ -4466,7 +4466,7 @@ body{
         <span class="dcc-access-arrow" aria-hidden="true">→</span>
       </button>
 
-      <button class="choice choice-admin dcc-access-card" type="button" onclick="openApp('coach')">
+      <button class="choice choice-admin dcc-access-card" type="button" onclick="window.dccChooseAccessRole?.('coach')">
         <span class="dcc-access-number">02</span>
         <span class="dcc-access-copy">
           <b>Acceso entrenador</b>
