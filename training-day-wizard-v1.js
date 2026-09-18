@@ -13,8 +13,8 @@
   function save(){try{window.saveData?.()}catch(e){console.error(e)}window.dccMarkTrainingDraftDirty?.()}
   function loadPremiumMuscles(){
     if(window.__dccMusclePremiumLight)return;
-    if([...document.scripts].some(s=>String(s.src||'').includes('/training-muscle-premium-light-v1.js')))return;
-    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260918-perf17';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
+    if(document.querySelector('script[data-dcc-muscle-premium]'))return;
+    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260918-center16';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
   }
 
   function css(){if(document.getElementById('dcc-training-day-wizard-css'))return;const s=document.createElement('style');s.id='dcc-training-day-wizard-css';s.textContent=`
@@ -65,6 +65,6 @@
   window.dccTrainingWizardDay=i=>{const ds=days();i=Math.max(0,Math.min(Number(i)||0,ds.length-1));const y=window.scrollY||0;state.active=i;window.__dccTrainingOpen=i;try{window.dccClientAdmin(id(),'training')}catch(_){showSelectedDay(ds)}requestAnimationFrame(()=>window.scrollTo({top:y,left:0,behavior:'auto'}))};
 
   function schedule(){if(state.raf)return;state.raf=requestAnimationFrame(()=>{state.raf=0;apply()})}
-  function start(){loadPremiumMuscles();const root=document.getElementById('coach-main');if(root)new MutationObserver(()=>{if(window.__dccTrainingEdit||root.querySelector('.dcc-tr-days,.dcc-tdw'))schedule()}).observe(root,{childList:true,subtree:true});schedule()}
+  function start(){loadPremiumMuscles();const root=document.getElementById('coach-main');if(root)new MutationObserver(schedule).observe(root,{childList:true,subtree:true});schedule()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
