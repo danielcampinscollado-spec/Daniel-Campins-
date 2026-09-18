@@ -15608,17 +15608,21 @@ async function saveConfiguredTraining(id,dayIndex){
     ex.restBetweenExercises=restBetweenExercisesGlobal;
   });
 
+  const previousSetupStep=day.trainingSetupStep;
+  const previousSetupStarted=day.trainingSetupStarted;
+
   day.trainingSetupStep="complete";
-day.trainingSetupStarted=false;
+  day.trainingSetupStarted=false;
 
-saveData();
-
-const ok=await saveRoutineToSupabase(id);
+  const ok=await saveRoutineToSupabase(id);
   if(!ok){
-    toast("La rutina se guardó localmente, pero no se pudo sincronizar");
+    day.trainingSetupStep=previousSetupStep;
+    day.trainingSetupStarted=previousSetupStarted;
+    toast("No se pudo sincronizar la rutina. Revisa la conexión e inténtalo de nuevo");
     return;
   }
 
+  saveData();
   toast("Rutina guardada correctamente");
 
   showCoach("routines");
