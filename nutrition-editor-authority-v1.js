@@ -1,7 +1,7 @@
 /* DCC — autoridad server-first para mutaciones del editor de alimentación */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-editor-authority-v12-keep-meal-context';
+const BUILD='20260918-nutrition-editor-authority-v13-empty-seed';
 if(window.__dccNutritionEditorAuthority===BUILD)return;
 window.__dccNutritionEditorAuthority=BUILD;
 
@@ -15,7 +15,7 @@ function client(id){bridgeAppGlobals();return(window.data?.clients||[]).find(x=>
 function avoidText(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
 function normalizeOptions(m){if(Array.isArray(m?.options)&&m.options.length)return m.options;if(Array.isArray(m?.foods))return[{name:'Opción 1',foods:m.foods}];return[{name:'Opción 1',foods:[]}]}
 function writeOptions(m,o){m.options=o;delete m.foods}
-function savedDay(day){return!!(day&&typeof day==='object'&&(day.updated_at||(Array.isArray(day.meals)&&day.meals.length>0)))}
+function savedDay(day){return!!(day&&typeof day==='object'&&Array.isArray(day.meals)&&day.meals.length>0)}
 function hasInitializedPlan(id){bridgeAppGlobals();const p=window.data?.diets?.[id];return!!(p&&typeof p==='object'&&(p.__dccPlanInitialized===true||savedDay(p.training)||savedDay(p.rest)))}
 function ensureFirstPlanSetup(){if(typeof window.dccNutritionMealSetupStart==='function')return Promise.resolve(true);if(firstPlanLoader)return firstPlanLoader;firstPlanLoader=new Promise(resolve=>{const s=document.createElement('script');s.src='./nutrition-meal-setup-v1.js?v=20260917-meal-authority-v11-real-globals';s.async=false;s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');s.onerror=()=>{firstPlanLoader=null;resolve(false)};(document.head||document.documentElement).appendChild(s)});return firstPlanLoader}
 function ensureFoodLibrary(){if(window.DCCFoodLibrary?.foods?.length)return Promise.resolve(true);if(foodLibraryLoader)return foodLibraryLoader;foodLibraryLoader=new Promise(resolve=>{const s=document.createElement('script');s.src='./nutrition-food-library-v1.js?v=20260917-food-library-v1';s.async=false;s.onload=()=>resolve(!!window.DCCFoodLibrary?.foods?.length);s.onerror=()=>{foodLibraryLoader=null;resolve(false)};(document.head||document.documentElement).appendChild(s)});return foodLibraryLoader}
