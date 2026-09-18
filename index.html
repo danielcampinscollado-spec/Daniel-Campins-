@@ -15921,6 +15921,28 @@ async function saveConfiguredTraining(id,dayIndex){
     Math.max(0,parseInt(day.restBetweenExercisesGlobal)||0);
 
   day.exercises.forEach(ex=>{
+    if(ex.supersetId){
+      const specialRest = ex.supersetRest===null || ex.supersetRest===undefined
+        ? restBetweenSetsGlobal
+        : Math.max(0,parseInt(ex.supersetRest)||0);
+      ex.supersetRest=specialRest;
+      ex.restBetweenSets=0;
+      ex.restBetweenExercises=specialRest;
+      return;
+    }
+
+    if(ex.restPause){
+      const shortRest=Math.max(1,parseInt(ex.restPauseSeconds)||7);
+      const finalRest=ex.restPauseFinalRest===null || ex.restPauseFinalRest===undefined
+        ? restBetweenExercisesGlobal
+        : Math.max(0,parseInt(ex.restPauseFinalRest)||0);
+      ex.restPauseSeconds=shortRest;
+      ex.restPauseFinalRest=finalRest;
+      ex.restBetweenSets=shortRest;
+      ex.restBetweenExercises=finalRest;
+      return;
+    }
+
     ex.restBetweenSets=restBetweenSetsGlobal;
     ex.restBetweenExercises=restBetweenExercisesGlobal;
   });
@@ -16607,7 +16629,7 @@ async function sendClientCheckin(){
 <script src="./coach-client-plan-status-v1.js?v=20260918-training-center16"></script>
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
-<script src="./training-superset-v1.js?v=20260918-2"></script>
+<script src="./training-superset-v1.js?v=20260918-3"></script>
 
 </body>
 </html>
