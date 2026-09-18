@@ -3,14 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f5efe4">
 <title>Daniel Campins</title>
 <script id="dcc-theme-prepaint-v1">
 (function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
 </script>
 <style id="dcc-login-prepaint-v1">
 /* Evita el destello oscuro antes de que cargue la portada LIGHT */
-html,body{margin:0;background:#f5efe4!important}
+html{background:#f5efe4!important;color-scheme:light!important}
+body{margin:0;background:#f5efe4!important}
 #login{min-height:100vh;min-height:100dvh;background:#f5efe4!important}
+#login>*{visibility:hidden!important}
 #client,#coach{display:none}
 </style>
 <style id="dcc-nav-prepaint-v1">
@@ -16555,6 +16559,7 @@ async function sendClientCheckin(){
    DCC — PORTADA LIGHT · 2026-09-18
    Aislada de las zonas cliente/entrenador
    ========================================================= */
+#login.dcc-login-light>*{visibility:visible!important}
 #login.dcc-login-light{
   min-height:100vh!important;
   min-height:100dvh!important;
