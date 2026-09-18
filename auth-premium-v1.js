@@ -21,26 +21,26 @@
   function installStyles(){
     if(document.getElementById('dcc-secure-auth-css'))return;
     const style=document.createElement('style');style.id='dcc-secure-auth-css';style.textContent=`
-      #${ROOT_ID}{margin:18px 0 0;padding:18px;border:1px solid #e2cfaa;border-radius:19px;background:#fffdf9;box-shadow:0 8px 24px rgba(74,53,20,.055),inset 0 1px 0 #fff;color:#17191d}
-      #${ROOT_ID} .dcc-auth-kicker{color:#a57624;font-size:9px;font-weight:900;letter-spacing:1.7px;text-transform:uppercase}
-      #${ROOT_ID} h3{margin:7px 0 5px;color:#17191d;font-size:18px;line-height:1.2;letter-spacing:-.35px}
-      #${ROOT_ID} p{margin:0 0 13px;color:#777b83;font-size:11px;line-height:1.5}
-      #${ROOT_ID} .dcc-google-auth{width:100%;height:46px;margin:5px 0 13px;border:1px solid #d9ae58;border-radius:13px;background:linear-gradient(135deg,#f5d77d,#e3b447);color:#17130b;font-weight:900;font-size:12px;box-shadow:0 6px 16px rgba(181,138,59,.10)}
-      #${ROOT_ID} .dcc-auth-divider{display:flex;align-items:center;gap:10px;margin:2px 0 12px;color:#96989d;font-size:9px;text-transform:uppercase;letter-spacing:1px}
-      #${ROOT_ID} .dcc-auth-divider:before,#${ROOT_ID} .dcc-auth-divider:after{content:"";height:1px;flex:1;background:#ece5d8}
+      #${ROOT_ID}{margin:20px 0 18px;padding:18px;border:1px solid rgba(181,138,59,.32);border-radius:18px;background:#fffdf9;box-shadow:0 8px 24px rgba(72,52,20,.055)}
+      #${ROOT_ID} .dcc-auth-kicker{color:#a57624;font-size:9px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}
+      #${ROOT_ID} h3{margin:7px 0 5px;color:#17191d;font-size:17px;letter-spacing:-.3px}
+      #${ROOT_ID} p{margin:0 0 12px;color:#777b83;font-size:10px;line-height:1.5}
+      #${ROOT_ID} .dcc-google-auth{width:100%;height:46px;margin:5px 0 12px;border:1px solid #d7aa52;border-radius:12px;background:linear-gradient(135deg,#f2d27a,#dcae4b);color:#17130b;font-weight:900;font-size:12px;box-shadow:none}
+      #${ROOT_ID} .dcc-auth-divider{display:flex;align-items:center;gap:10px;margin:2px 0 12px;color:#98938a;font-size:9px;text-transform:uppercase;letter-spacing:1px}
+      #${ROOT_ID} .dcc-auth-divider:before,#${ROOT_ID} .dcc-auth-divider:after{content:"";height:1px;flex:1;background:#e8dfcf}
       #${ROOT_ID} .dcc-auth-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
-      #${ROOT_ID} input{height:46px;margin:0;padding:0 12px;border:1px solid #ddd6c9;border-radius:13px;background:#fff;color:#17191d;-webkit-text-fill-color:#17191d;font-size:13px;box-shadow:none;outline:none}
-      #${ROOT_ID} input::placeholder{color:#a3a5a9;-webkit-text-fill-color:#a3a5a9}
-      #${ROOT_ID} input:focus{border-color:#c99b46;box-shadow:0 0 0 3px rgba(181,138,59,.10)}
-      #${ROOT_ID} .dcc-email-send{height:46px;padding:0 15px;border:1px solid #d9ae58;border-radius:13px;background:linear-gradient(135deg,#f5d77d,#e3b447);color:#17130b;font-weight:900;font-size:11px;white-space:nowrap}
+      #${ROOT_ID} input{height:46px;margin:0;padding:0 12px;border:1px solid #ddd3c2;border-radius:12px;background:#fff;color:#17191d;-webkit-text-fill-color:#17191d;font-size:13px;box-shadow:none}
+      #${ROOT_ID} input::placeholder{color:#aaa59c;-webkit-text-fill-color:#aaa59c}
+      #${ROOT_ID} input:focus{outline:none;border-color:#b58a3b;box-shadow:0 0 0 3px rgba(181,138,59,.10)}
+      #${ROOT_ID} .dcc-email-send{height:46px;padding:0 15px;border:1px solid #d7aa52;border-radius:12px;background:linear-gradient(135deg,#f2d27a,#dcae4b);color:#17130b;font-weight:900;font-size:11px;white-space:nowrap}
       #${ROOT_ID} button:disabled{opacity:.55;cursor:default}
-      #${STATUS_ID}{min-height:16px;margin-top:9px!important;color:#7d8188!important}
-      #${STATUS_ID}[data-type="ok"]{color:#347a59!important}
-      #${STATUS_ID}[data-type="error"]{color:#b44343!important}
-      #${ROOT_ID} .dcc-auth-pending{margin-top:10px;padding:10px;border:1px solid #ead8b6;border-radius:12px;background:#fbf4e7;color:#4e4b45;font-size:10px;line-height:1.45}
-      .dcc-secure-session-badge{position:fixed;right:14px;top:14px;z-index:65000;padding:7px 10px;border:1px solid #ddc38f;border-radius:999px;background:rgba(255,253,249,.96);color:#9d701f;font-size:9px;font-weight:850;letter-spacing:.7px;box-shadow:0 5px 18px rgba(74,53,20,.08);pointer-events:none}
+      #${STATUS_ID}{min-height:16px;margin-top:9px!important;color:#777b83!important}
+      #${STATUS_ID}[data-type="ok"]{color:#39775a!important}
+      #${STATUS_ID}[data-type="error"]{color:#b33b42!important}
+      #${ROOT_ID} .dcc-auth-pending{margin-top:10px;padding:10px;border:1px solid rgba(181,138,59,.24);border-radius:12px;background:#fbf6ec;color:#5f5b54;font-size:10px;line-height:1.45}
+      .dcc-secure-session-badge{position:fixed;right:14px;top:14px;z-index:65000;padding:7px 10px;border:1px solid rgba(181,138,59,.35);border-radius:999px;background:rgba(255,253,248,.94);color:#9d701f;font-size:9px;font-weight:850;letter-spacing:.7px;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);pointer-events:none}
       @media(max-width:620px){
-        #${ROOT_ID}{padding:16px;margin-top:16px;border-radius:17px}
+        #${ROOT_ID}{margin:18px 0 16px;padding:15px;border-radius:16px}
         #${ROOT_ID} .dcc-auth-row{grid-template-columns:1fr}
         #${ROOT_ID} .dcc-email-send{width:100%}
       }
