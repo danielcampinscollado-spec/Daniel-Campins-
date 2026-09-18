@@ -7,6 +7,12 @@
 <script id="dcc-theme-prepaint-v1">
 (function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
 </script>
+<style id="dcc-login-prepaint-v1">
+/* Evita el destello oscuro antes de que cargue la portada LIGHT */
+html,body{margin:0;background:#f5efe4!important}
+#login{min-height:100vh;min-height:100dvh;background:#f5efe4!important}
+#client,#coach{display:none}
+</style>
 <style id="dcc-nav-prepaint-v1">
 html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
 #client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
