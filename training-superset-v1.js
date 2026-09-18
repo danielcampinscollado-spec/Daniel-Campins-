@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v4';
+  const BUILD='20260918-training-methods-v5';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -99,15 +99,21 @@
       .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
-      #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 7px;padding:4px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
-      #coach-main .dcc-method-config{margin:8px 0;padding:11px;border:1px solid rgba(217,170,74,.40);border-radius:14px;background:rgba(217,170,74,.055);color:#17191d}
+      #coach-main.dcc-config-active{padding-bottom:92px!important}
+      #coach-main .dcc-exercise-card{padding:9px!important;border-radius:13px!important}
+      #coach-main .dcc-exercise-card input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
+      #coach-main .dcc-exercise-card [data-dcc-delete]{width:auto!important;height:32px!important;min-width:0!important;padding:0 9px!important;border-radius:9px!important;border:1px solid rgba(183,123,19,.22)!important;color:#8c5a08!important;font-size:10px!important;font-weight:800!important;background:transparent!important}
+      #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
+      #coach-main .dcc-config-save{position:sticky!important;bottom:calc(76px + env(safe-area-inset-bottom));z-index:12;width:100%!important;min-height:44px!important;margin-top:10px!important;border-radius:12px!important;font-size:13px!important;box-shadow:0 7px 20px rgba(61,42,12,.10)!important}
+      #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
+      #coach-main .dcc-method-config{margin:6px 0;padding:9px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}
       #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
       #coach-main .dcc-method-config-head b{font-size:13px}.dcc-method-config-head span{font-size:9px;color:#9a650c;font-weight:850}
       #coach-main .dcc-method-names{margin-top:5px;color:#6f747c;font-size:10px;line-height:1.35}
       #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
       #coach-main .dcc-method-fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
-      #coach-main .dcc-method-fields input{width:100%;min-height:38px;margin-top:4px;box-sizing:border-box;font-size:12px}
+      #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
       #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
       #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:10px!important}
       #coach-main .dcc-rest-global-top .dcc-method-global-note{margin-top:7px;color:#8d6a26;font-size:9px;line-height:1.35}
@@ -187,7 +193,7 @@
         <b><strong>${total}</strong> ${total===1?'ejercicio añadido':'ejercicios añadidos'}</b>
         Normal, superserie y REST-pause pueden combinarse.
       </div>
-      <button type="button" data-picker-save>Guardar rutina →</button>
+      <button type="button" data-picker-save>Seleccionar series y repeticiones</button>
     `;
     bar.querySelector('[data-picker-save]')?.addEventListener('click',()=>window.continueTrainingExerciseSelection?.(ctx.id,ctx.di));
     document.body.appendChild(bar);
@@ -217,7 +223,13 @@
 
     wrap.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
       const next=btn.dataset.mode;
+      const current=mode(ctx.id,ctx.di);
       rememberCurrentDraft(ctx.id,ctx.di,day);
+      if((current==='superset'||current==='restpause')&&day.selectedExerciseIds?.length){
+        const selectedCount=day.selectedExerciseIds.length;
+        const valid=current==='superset'?(selectedCount>=2&&selectedCount<=4):selectedCount===1;
+        if(valid&&!commitSpecialDraft(ctx.id,ctx.di,day,current,false))return;
+      }
       setMode(ctx.id,ctx.di,next);
       restoreModeDraft(ctx.id,ctx.di,day,next);
       save();
@@ -237,43 +249,54 @@
     return selected.find(ex=>existingIds.has(String(ex.id)))||null;
   }
 
-  function finishSpecialSelection(id,di,day,message){
-    const current=mode(id,di);
-    day.trainingSetupStarted=true;
-    day.selectedExerciseIds=[];
-    if(current==='superset'||current==='restpause')draftSelections(id,di)[current]=[];
-    save();
-    notify(message);
-    window.openTrainingExercises?.(id,di,true);
+  function commitSpecialDraft(id,di,day,current,showSuccess=false){
+    const selected=selectedLibraryExercises(day);
+    if(current==='superset'){
+      if(!selected.length)return true;
+      if(selected.length<2||selected.length>4){notify('La superserie necesita entre 2 y 4 ejercicios');return false;}
+      if(!Array.isArray(day.exercises))day.exercises=[];
+      if(hasDuplicate(day,selected)){notify('Uno de esos ejercicios ya está añadido a la rutina');return false;}
+      const supersetId='superset-'+Date.now();
+      selected.forEach((ex,index)=>day.exercises.push({
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'3',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
+        supersetId,supersetOrder:index+1,supersetSize:selected.length,supersetRounds:3,supersetRest:null
+      }));
+      day.selectedExerciseIds=[];
+      draftSelections(id,di).superset=[];
+      day.trainingSetupStarted=true;
+      save();
+      if(showSuccess)notify('Superserie añadida');
+      return true;
+    }
+    if(current==='restpause'){
+      if(!selected.length)return true;
+      if(selected.length!==1){notify('REST-pause necesita 1 ejercicio');return false;}
+      if(!Array.isArray(day.exercises))day.exercises=[];
+      if(hasDuplicate(day,selected)){notify('Ese ejercicio ya está añadido a la rutina');return false;}
+      const ex=selected[0];
+      const finalRest=Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90);
+      day.exercises.push({
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'4',reps:'12/10/8/6',restBetweenSets:7,restBetweenExercises:finalRest,videoUrl:'',
+        restPause:true,restPauseReps:'12/10/8/6',restPauseBlocks:4,restPauseSeconds:7,restPauseFinalRest:finalRest
+      });
+      day.selectedExerciseIds=[];
+      draftSelections(id,di).restpause=[];
+      day.trainingSetupStarted=true;
+      save();
+      if(showSuccess)notify('REST-pause añadido');
+      return true;
+    }
+    return true;
   }
 
   function createSuperset(id,di){
     const day=dayRef(id,di);if(!day)return;
-    const selected=selectedLibraryExercises(day);
-    if(selected.length<2||selected.length>4){notify('Selecciona de 2 a 4 ejercicios para la superserie');return;}
-    if(!Array.isArray(day.exercises))day.exercises=[];
-    if(hasDuplicate(day,selected)){notify('Uno de esos ejercicios ya está añadido');return;}
-    const supersetId='superset-'+Date.now();
-    selected.forEach((ex,index)=>day.exercises.push({
-      libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'3',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
-      supersetId,supersetOrder:index+1,supersetSize:selected.length,supersetRounds:3,supersetRest:null
-    }));
-    finishSpecialSelection(id,di,day,'Superserie añadida · puedes seguir añadiendo ejercicios');
+    if(commitSpecialDraft(id,di,day,'superset',true))window.openTrainingExercises?.(id,di,true);
   }
 
   function createRestPause(id,di){
     const day=dayRef(id,di);if(!day)return;
-    const selected=selectedLibraryExercises(day);
-    if(selected.length!==1){notify('Selecciona 1 ejercicio para REST-pause');return;}
-    if(!Array.isArray(day.exercises))day.exercises=[];
-    if(hasDuplicate(day,selected)){notify('Ese ejercicio ya está añadido');return;}
-    const ex=selected[0];
-    const finalRest=Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90);
-    day.exercises.push({
-      libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'4',reps:'12/10/8/6',restBetweenSets:7,restBetweenExercises:finalRest,videoUrl:'',
-      restPause:true,restPauseReps:'12/10/8/6',restPauseBlocks:4,restPauseSeconds:7,restPauseFinalRest:finalRest
-    });
-    finishSpecialSelection(id,di,day,'REST-pause añadido · puedes seguir añadiendo ejercicios');
+    if(commitSpecialDraft(id,di,day,'restpause',true))window.openTrainingExercises?.(id,di,true);
   }
 
   function methodGroups(day){
@@ -312,6 +335,7 @@
   function decorateConfiguration(id,di){
     installStyle();
     const day=dayRef(id,di),root=document.getElementById('coach-main');if(!day||!root)return;
+    root.classList.add('dcc-config-active');
     root.querySelectorAll('.dcc-method-config,.dcc-method-badge').forEach(el=>el.remove());
     const cards=[...root.querySelectorAll('.card')];
     const globalRestCard=cards.find(card=>/Tiempos de descanso \(globales\)/i.test(card.textContent||''));
@@ -322,6 +346,20 @@
     }
     const groups=methodGroups(day);
     const currentCards=()=>[...root.querySelectorAll('.card')].filter(c=>c!==globalRestCard);
+
+    day.exercises.forEach(ex=>{
+      const card=currentCards().find(c=>(c.textContent||'').includes(ex.name||'')&&c.querySelector('input'));
+      if(!card)return;
+      card.classList.add('dcc-exercise-card');
+      const deleteBtn=[...card.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('removeTrainingExercise'));
+      if(deleteBtn){deleteBtn.textContent='Eliminar';deleteBtn.dataset.dccDelete='1';}
+      const videoBtn=[...card.querySelectorAll('button')].find(btn=>(btn.textContent||'').includes('Ver vídeo'));
+      if(videoBtn){videoBtn.textContent='Ver vídeo';videoBtn.dataset.dccVideo='1';}
+      const urlInput=card.querySelector('input[type="url"]');
+      if(urlInput)urlInput.placeholder='Enlace del vídeo (opcional)';
+    });
+    const saveButton=[...root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('saveConfiguredTraining'));
+    if(saveButton){saveButton.textContent='Guardar rutina';saveButton.classList.add('dcc-config-save');}
 
     groups.supersets.forEach(group=>{
       const groupCards=group.items.map(ex=>currentCards().find(card=>(card.textContent||'').includes(ex.name||'')&&card.querySelector('input'))).filter(Boolean);
@@ -400,8 +438,12 @@
   if(nativeContinueSelection){
     window.continueTrainingExerciseSelection=function(id,di){
       const current=mode(id,di);const day=dayRef(id,di);
-      if(current==='superset'&&day?.selectedExerciseIds?.length){notify('Añade la superserie seleccionada antes de guardar la rutina');return;}
-      if(current==='restpause'&&day?.selectedExerciseIds?.length){notify('Añade el REST-pause seleccionado antes de guardar la rutina');return;}
+      if(!day)return;
+      if(current==='normal'&&absorbNormalSelection(day))save();
+      if((current==='superset'||current==='restpause')&&day.selectedExerciseIds?.length){
+        if(!commitSpecialDraft(id,di,day,current,false))return;
+      }
+      if(!Array.isArray(day.exercises)||!day.exercises.length){notify('Añade al menos un ejercicio');return;}
       removePickerSavebar();
       return nativeContinueSelection.apply(this,arguments);
     };
