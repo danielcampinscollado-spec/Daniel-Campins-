@@ -14183,14 +14183,16 @@ async function addTrainingDay(id){
 
   days.push(newDay);
 
-  saveData();
-
   const ok = await saveRoutineToSupabase(id);
 
   if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
+    const index=days.indexOf(newDay);
+    if(index>=0)days.splice(index,1);
+    toast("No se pudo añadir el día de entrenamiento");
+    return;
   }
 
+  saveData();
   showCoach("routines");
 }
 function openTrainingDay(id,dayIndex){
@@ -14583,17 +14585,18 @@ async function saveTrainingMuscleGroups(id,dayIndex){
     return;
   }
 
+  const previousMuscle=day.muscle;
   day.muscle=day.muscleGroups.join(" · ");
-
-  saveData();
 
   const ok=await saveRoutineToSupabase(id);
 
   if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
+    day.muscle=previousMuscle;
+    toast("No se pudieron guardar los grupos musculares");
     return;
   }
 
+  saveData();
   toast("Grupos musculares guardados");
 
   showCoach("routines");
@@ -14603,6 +14606,8 @@ async function createRoutineDays(id,count){
   if(!data.routines){
     data.routines = {};
   }
+
+  const previousRoutine=JSON.parse(JSON.stringify(data.routines[id]??null));
 
   data.routines[id] = Array.from(
     {length:count},
@@ -14614,14 +14619,16 @@ async function createRoutineDays(id,count){
     })
   );
 
-  saveData();
-
   const ok = await saveRoutineToSupabase(id);
 
   if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
+    if(previousRoutine===null)delete data.routines[id];
+    else data.routines[id]=previousRoutine;
+    toast("No se pudo crear la estructura de la rutina");
+    return;
   }
 
+  saveData();
   showCoach("routines");
 }
 async function openTrainingExercises(id,dayIndex,preserveScroll=false){
