@@ -29,7 +29,7 @@ function ensureLayoutCss(){
   `;(document.head||document.documentElement).appendChild(s)
 }
 
-async function readRow(id){const database=db();if(!database)throw new Error('Supabase no disponible');const r=await database.from('clients').select('id,checkin_frequency,photo_frequency,next_diet_review,next_routine_review,followup_configured_at,coach_notes').eq('id',id).maybeSingle();if(r.error)throw r.error;return r.data}
+async function readRow(id){const database=db();if(!database)throw new Error('Supabase no disponible');const r=await database.rpc('dcc_get_coach_followup',{p_client_id:id});if(r.error)throw r.error;return r.data||null}
 async function saveConfigRpc(id,cf,pf,diet,routine){const database=db();if(!database)throw new Error('Supabase no disponible');const r=await database.rpc('dcc_save_coach_followup',{p_client_id:id,p_checkin:cf,p_photo:pf,p_diet:diet||null,p_routine:routine||null});if(r.error)throw r.error;if(!r.data)throw new Error('No se actualizó el seguimiento');return r.data}
 async function saveNotesRpc(id,notes){const database=db();if(!database)throw new Error('Supabase no disponible');const r=await database.rpc('dcc_save_coach_notes',{p_client_id:id,p_notes:cleanNotes(notes)});if(r.error)throw r.error;if(!r.data)throw new Error('No se actualizaron las notas');return r.data}
 
