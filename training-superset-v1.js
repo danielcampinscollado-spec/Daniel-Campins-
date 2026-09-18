@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v7';
+  const BUILD='20260918-training-methods-v8';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -156,6 +156,9 @@
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
       #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
       #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
+      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:9px;margin-top:10px}
+      #coach-main .dcc-method-video input{min-width:0;height:42px;border:1px solid rgba(183,123,19,.24);border-radius:12px;background:#fffdf9;padding:0 12px;font:inherit;color:#171717}
+      #coach-main .dcc-method-video button{width:38px;height:38px;align-self:center;border:1px solid rgba(190,48,55,.48);border-radius:9px;background:rgba(190,48,55,.035);color:#c9343d;font-size:12px;font-weight:900}
       #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
       #coach-main .dcc-rest-global-top label{font-size:11px!important}
       #coach-main .dcc-rest-global-top input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
@@ -321,10 +324,9 @@
       if(hasDuplicate(day,selected)){notify('Ese ejercicio ya está añadido a la rutina');return false;}
       ensureRoutineBackup(id);
       const ex=selected[0];
-      const finalRest=Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90);
       day.exercises.push({
-        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:7,restBetweenExercises:finalRest,videoUrl:'',
-        restPause:true,restPauseReps:'',restPauseBlocks:0,restPauseSeconds:7,restPauseFinalRest:finalRest
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
+        restPause:true,restPauseReps:'',restPauseBlocks:0,restPauseSeconds:null,restPauseFinalRest:null
       });
       day.selectedExerciseIds=[];
       draftSelections(id,di).restpause=[];
@@ -351,13 +353,12 @@
     const supersetIds=[...new Set((day?.exercises||[]).map(ex=>ex?.supersetId).filter(Boolean))];
     const supersets=supersetIds.map((id,index)=>{
       const items=(day.exercises||[]).filter(ex=>ex.supersetId===id);
-      const fallback=Math.max(0,parseInt(day.restBetweenSetsGlobal)||0);
-      const rounds=String(items[0]?.supersetRounds??items[0]?.sets??'').trim();return {id,index:index+1,items,rounds,rest:items[0]?.supersetRest==null?fallback:Math.max(0,parseInt(items[0].supersetRest)||0)};
+      const rounds=String(items[0]?.supersetRounds??items[0]?.sets??'').trim();const rest=items[0]?.supersetRest==null?'':String(items[0].supersetRest).trim();return {id,index:index+1,items,rounds,rest};
     });
     const restPauses=(day?.exercises||[]).map((ex,index)=>({ex,index})).filter(x=>x.ex?.restPause).map((x,index)=>{
       const reps=String(x.ex.restPauseReps||x.ex.reps||'').trim();
       const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
-      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:Math.max(1,parseInt(x.ex.restPauseSeconds)||7),finalRest:x.ex.restPauseFinalRest==null?Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90):Math.max(0,parseInt(x.ex.restPauseFinalRest)||0)};
+      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:x.ex.restPauseSeconds==null?'':String(x.ex.restPauseSeconds),finalRest:x.ex.restPauseFinalRest==null?'':String(x.ex.restPauseFinalRest)};
     });
     return {supersets,restPauses};
   }
@@ -376,9 +377,9 @@
       const reps=String(value||'').trim();const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
       ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=blocks?String(blocks):'';
     }else if(keyName==='seconds'){
-      const n=Math.max(1,parseInt(value)||1);ex.restPauseSeconds=n;ex.restBetweenSets=n;
+      const raw=String(value??'').trim(),n=raw?Math.max(1,parseInt(raw)||1):null;ex.restPauseSeconds=n;ex.restBetweenSets=n??0;
     }else{
-      const n=Math.max(0,parseInt(value)||0);ex.restPauseFinalRest=n;ex.restBetweenExercises=n;
+      const raw=String(value??'').trim(),n=raw?Math.max(0,parseInt(raw)||0):null;ex.restPauseFinalRest=n;ex.restBetweenExercises=n??0;
     }save();
   }
 
@@ -394,7 +395,7 @@
       if(normalized)save();
     }
     root.classList.add('dcc-config-active');
-    root.querySelectorAll('.dcc-method-config,.dcc-method-badge').forEach(el=>el.remove());
+    root.querySelectorAll('.dcc-method-config,.dcc-method-badge').forEach(el=>el.remove());root.querySelectorAll('.dcc-exercise-card').forEach(el=>el.style.display='');
     const cards=[...root.querySelectorAll('.card')];
     const globalRestCard=cards.find(card=>/Tiempos de descanso \(globales\)/i.test(card.textContent||''));
     const exerciseContainer=globalRestCard?.previousElementSibling;
@@ -427,12 +428,17 @@
     groups.supersets.forEach(group=>{
       const groupCards=group.items.map(ex=>currentCards().find(card=>(card.textContent||'').includes(ex.name||'')&&card.querySelector('input'))).filter(Boolean);
       groupCards.forEach((card,i)=>{const badge=document.createElement('div');badge.className='dcc-method-badge';badge.textContent='Superserie · '+(i+1)+'/'+group.items.length;card.insertBefore(badge,card.firstChild);});
+      groupCards.forEach(card=>{
+        const labels=[...card.querySelectorAll('label')];
+        const seriesLabel=labels.find(label=>/^Series$/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
+        if(seriesLabel)seriesLabel.style.display='none';
+      });
       const first=groupCards[0];if(!first)return;
       const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
         <div class="dcc-method-config-head"><b>Superserie · ${group.items.length} ejercicios</b><span>sin descanso entre ellos</span></div>
         <div class="dcc-method-names">${group.items.map(ex=>esc(ex.name||'Ejercicio')).join(' → ')}</div>
-        <div class="dcc-method-fields"><label>Vueltas<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras la vuelta<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}"></label></div>
-        <div class="dcc-method-note">Los ejercicios se realizan seguidos. Al terminar la vuelta comienza este descanso.</div>`;
+        <div class="dcc-method-fields"><label>Series de superserie<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras cada serie<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}" placeholder="Ej. 90"></label></div>
+        <div class="dcc-method-note">Ejemplo: 3 series. En cada serie haces todos los ejercicios seguidos, sin descanso entre ellos; después descansas el tiempo indicado.</div>`;
       first.parentNode.insertBefore(box,first);
       box.querySelector('[data-rounds]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rounds',e.target.value));
       box.querySelector('[data-rest]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rest',e.target.value));
@@ -440,19 +446,22 @@
 
     groups.restPauses.forEach(group=>{
       const card=currentCards().find(c=>(c.textContent||'').includes(group.ex.name||'')&&c.querySelector('input'));if(!card)return;
-      const badge=document.createElement('div');badge.className='dcc-method-badge';badge.textContent='REST-pause';card.insertBefore(badge,card.firstChild);
-      const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
+      const box=document.createElement('div');box.className='dcc-method-config dcc-restpause-single';box.innerHTML=`
         <div class="dcc-method-config-head"><b>REST-pause</b><span>${esc(group.ex.name||'Ejercicio')}</span></div>
         <div class="dcc-method-fields three">
           <label>Repeticiones<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="Ej. 12/10/8/6"></label>
-          <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}"></label>
-          <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}"></label>
+          <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="Ej. 7"></label>
+          <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="Ej. 90"></label>
         </div>
-        <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Puedes cambiar tanto las repeticiones como los dos descansos.</div>`;
+        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-delete-rest>[x]</button></div>
+        <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
       card.parentNode.insertBefore(box,card);
-      box.querySelector('[data-reps]')?.addEventListener('change',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
+      card.style.display='none';
+      box.querySelector('[data-reps]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
+      box.querySelector('[data-video]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.videoUrl=e.target.value;save();});
+      box.querySelector('[data-delete-rest]')?.addEventListener('click',()=>window.removeTrainingExercise?.(id,di,group.exerciseIndex));
     });
   }
 
