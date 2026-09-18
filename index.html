@@ -13449,7 +13449,7 @@ function saveDietToSupabase(id,type,diet){
 }
 
 
-function addMeal(id,type){
+async function addMeal(id,type){
 
   const name=prompt("Nombre de la comida:");
 
@@ -13460,35 +13460,42 @@ function addMeal(id,type){
   }
 
   if(!data.diets[id][type]){
-
     data.diets[id][type]={
       calories:"",
       protein:"",
       meals:[]
     };
-
   }
 
   if(!data.diets[id][type].meals){
     data.diets[id][type].meals=[];
   }
 
-  data.diets[id][type].meals.push({
-
+  const diet=data.diets[id][type];
+  const meal={
     name:name,
-
     options:[{
       name:"Opción 1",
       foods:[]
     }]
+  };
 
-  });
+  diet.meals.push(meal);
+
+  const {error}=await saveDietToSupabase(id,type,diet);
+
+  if(error){
+    console.error("Error guardando comida:",error);
+    const index=diet.meals.indexOf(meal);
+    if(index>=0)diet.meals.splice(index,1);
+    toast("No se pudo guardar la comida");
+    return;
+  }
 
   saveData();
-
   window.coachDietType=type;
-
   showCoach("diets");
+  toast("Comida añadida");
 
 }
 
