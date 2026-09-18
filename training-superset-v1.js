@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v6';
+  const BUILD='20260918-training-methods-v7';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -303,8 +303,8 @@
       ensureRoutineBackup(id);
       const supersetId='superset-'+Date.now();
       selected.forEach((ex,index)=>day.exercises.push({
-        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'3',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
-        supersetId,supersetOrder:index+1,supersetSize:selected.length,supersetRounds:3,supersetRest:null
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
+        supersetId,supersetOrder:index+1,supersetSize:selected.length,supersetRounds:'',supersetRest:null
       }));
       day.selectedExerciseIds=[];
       draftSelections(id,di).superset=[];
@@ -323,8 +323,8 @@
       const ex=selected[0];
       const finalRest=Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90);
       day.exercises.push({
-        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'4',reps:'12/10/8/6',restBetweenSets:7,restBetweenExercises:finalRest,videoUrl:'',
-        restPause:true,restPauseReps:'12/10/8/6',restPauseBlocks:4,restPauseSeconds:7,restPauseFinalRest:finalRest
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:7,restBetweenExercises:finalRest,videoUrl:'',
+        restPause:true,restPauseReps:'',restPauseBlocks:0,restPauseSeconds:7,restPauseFinalRest:finalRest
       });
       day.selectedExerciseIds=[];
       draftSelections(id,di).restpause=[];
@@ -352,11 +352,11 @@
     const supersets=supersetIds.map((id,index)=>{
       const items=(day.exercises||[]).filter(ex=>ex.supersetId===id);
       const fallback=Math.max(0,parseInt(day.restBetweenSetsGlobal)||0);
-      return {id,index:index+1,items,rounds:Math.max(1,parseInt(items[0]?.supersetRounds)||parseInt(items[0]?.sets)||3),rest:items[0]?.supersetRest==null?fallback:Math.max(0,parseInt(items[0].supersetRest)||0)};
+      const rounds=String(items[0]?.supersetRounds??items[0]?.sets??'').trim();return {id,index:index+1,items,rounds,rest:items[0]?.supersetRest==null?fallback:Math.max(0,parseInt(items[0].supersetRest)||0)};
     });
     const restPauses=(day?.exercises||[]).map((ex,index)=>({ex,index})).filter(x=>x.ex?.restPause).map((x,index)=>{
-      const reps=String(x.ex.restPauseReps||x.ex.reps||'12/10/8/6');
-      const blocks=reps.split(/[\/\-–,\s]+/).filter(Boolean).length||4;
+      const reps=String(x.ex.restPauseReps||x.ex.reps||'').trim();
+      const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
       return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:Math.max(1,parseInt(x.ex.restPauseSeconds)||7),finalRest:x.ex.restPauseFinalRest==null?Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90):Math.max(0,parseInt(x.ex.restPauseFinalRest)||0)};
     });
     return {supersets,restPauses};
@@ -364,17 +364,17 @@
 
   function updateSuperset(id,di,supersetId,keyName,value){
     const day=dayRef(id,di);if(!day)return;
-    const n=keyName==='rounds'?Math.max(1,parseInt(value)||1):Math.max(0,parseInt(value)||0);
+    const raw=String(value??'').trim(),n=keyName==='rounds'?(raw?Math.max(1,parseInt(raw)||1):''):Math.max(0,parseInt(raw)||0);
     markRoutineDirty(id);
-    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save();
+    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=n===''?'':String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save();
   }
 
   function updateRestPause(id,di,exerciseIndex,keyName,value){
     const day=dayRef(id,di);const ex=day?.exercises?.[exerciseIndex];if(!ex)return;
     markRoutineDirty(id);
     if(keyName==='reps'){
-      const reps=String(value||'').trim()||'12/10/8/6';const blocks=reps.split(/[\/\-–,\s]+/).filter(Boolean).length||4;
-      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=String(blocks);
+      const reps=String(value||'').trim();const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
+      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=blocks?String(blocks):'';
     }else if(keyName==='seconds'){
       const n=Math.max(1,parseInt(value)||1);ex.restPauseSeconds=n;ex.restBetweenSets=n;
     }else{
@@ -385,6 +385,14 @@
   function decorateConfiguration(id,di){
     installStyle();
     const day=dayRef(id,di),root=document.getElementById('coach-main');if(!day||!root)return;
+    if(day.trainingSetupStep!=='complete'){
+      let normalized=false;
+      (day.exercises||[]).forEach(ex=>{
+        if(ex?.supersetId&&String(ex.reps||'').trim()===''&&String(ex.sets||'')==='3'&&String(ex.supersetRounds||'')==='3'){ex.sets='';ex.supersetRounds='';normalized=true;}
+        if(ex?.restPause&&String(ex.sets||'')==='4'&&String(ex.reps||'')==='12/10/8/6'&&String(ex.restPauseReps||'')==='12/10/8/6'){ex.sets='';ex.reps='';ex.restPauseReps='';ex.restPauseBlocks=0;normalized=true;}
+      });
+      if(normalized)save();
+    }
     root.classList.add('dcc-config-active');
     root.querySelectorAll('.dcc-method-config,.dcc-method-badge').forEach(el=>el.remove());
     const cards=[...root.querySelectorAll('.card')];
@@ -423,7 +431,7 @@
       const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
         <div class="dcc-method-config-head"><b>Superserie · ${group.items.length} ejercicios</b><span>sin descanso entre ellos</span></div>
         <div class="dcc-method-names">${group.items.map(ex=>esc(ex.name||'Ejercicio')).join(' → ')}</div>
-        <div class="dcc-method-fields"><label>Vueltas<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}"></label><label>Descanso tras la vuelta<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}"></label></div>
+        <div class="dcc-method-fields"><label>Vueltas<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras la vuelta<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}"></label></div>
         <div class="dcc-method-note">Los ejercicios se realizan seguidos. Al terminar la vuelta comienza este descanso.</div>`;
       first.parentNode.insertBefore(box,first);
       box.querySelector('[data-rounds]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rounds',e.target.value));
@@ -436,7 +444,7 @@
       const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
         <div class="dcc-method-config-head"><b>REST-pause</b><span>${esc(group.ex.name||'Ejercicio')}</span></div>
         <div class="dcc-method-fields three">
-          <label>Repeticiones<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="12/10/8/6"></label>
+          <label>Repeticiones<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="Ej. 12/10/8/6"></label>
           <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}"></label>
           <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}"></label>
         </div>
@@ -508,7 +516,7 @@
   }
 
   const nativeRenderConfiguration=typeof window.renderTrainingExerciseConfiguration==='function'?window.renderTrainingExerciseConfiguration:null;
-  if(nativeRenderConfiguration){window.renderTrainingExerciseConfiguration=function(id,di){removePickerSavebar();const result=nativeRenderConfiguration.apply(this,arguments);requestAnimationFrame(()=>decorateConfiguration(id,di));return result;};}
+  if(nativeRenderConfiguration){window.renderTrainingExerciseConfiguration=function(id,di){removePickerSavebar();const result=nativeRenderConfiguration.apply(this,arguments);requestAnimationFrame(()=>{decorateConfiguration(id,di);window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;const root=document.getElementById('coach-main');if(root)root.scrollTop=0;});return result;};}
 
   const nativeBackFromTrainingExercises=typeof window.backFromTrainingExercises==='function'?window.backFromTrainingExercises:null;
   if(nativeBackFromTrainingExercises){
