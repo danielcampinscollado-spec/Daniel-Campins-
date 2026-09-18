@@ -40,7 +40,7 @@ function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260917-meal-authority-v10-rpc';
+    const wanted='nutrition-meal-setup-v1.js?v=20260918-meal-authority-v20-count-order';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
@@ -63,7 +63,7 @@ function ensureEditorAuthority(){
   if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return Promise.resolve(true);
   if(editorAuthorityPromise)return editorAuthorityPromise;
   editorAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-editor-authority-v1.js?v=20260917-server-first-v1';
+    const wanted='nutrition-editor-authority-v1.js?v=20260918-server-first-v13-empty-seed';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return resolve(true);
