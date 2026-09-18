@@ -1,7 +1,7 @@
 /* DCC — selector de días y navegación paso a paso para rutinas */
 (function(){
   'use strict';
-  const BUILD='20260917-training-day-wizard-v10-anatomy-selector';
+  const BUILD='20260918-training-day-wizard-v11-anatomy-visual-fix';
   if(window.__dccTrainingDayWizardV2===BUILD)return;
   window.__dccTrainingDayWizardV2=BUILD;
 
@@ -14,7 +14,7 @@
   function loadPremiumMuscles(){
     if(window.__dccMusclePremiumLight)return;
     if(document.querySelector('script[data-dcc-muscle-premium]'))return;
-    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260917-2';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
+    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260918-3';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
   }
 
   function css(){if(document.getElementById('dcc-training-day-wizard-css'))return;const s=document.createElement('style');s.id='dcc-training-day-wizard-css';s.textContent=`
