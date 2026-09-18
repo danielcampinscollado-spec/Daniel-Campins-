@@ -8761,7 +8761,7 @@ html=`
     <p class="muted">Área cliente</p>
     <h1>Check-in semanal</h1>
     <p class="muted">
-      Cuéntale a Daniel cómo ha ido tu semana.
+      Cuéntale a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cómo ha ido tu semana.
     </p>
   </div>
 
@@ -8956,7 +8956,7 @@ html=`
       margin:6px 0 12px;
       font-size:14px;
     ">
-      Cuéntale a Daniel cualquier cosa importante de esta semana.
+      Cuéntale a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cualquier cosa importante de esta semana.
     </p>
 
     <textarea
@@ -8980,7 +8980,7 @@ html=`
     "
     onclick="sendClientCheckin()">
 
-    ➤ Enviar check-in a Daniel
+    ➤ Enviar check-in a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")}
 
   </button>
 
@@ -8989,7 +8989,7 @@ html=`
     margin:10px 0 0;
     font-size:12px;
   ">
-    Tu check-in será visible para Daniel cuando lo envíes.
+    Tu check-in será visible para ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cuando lo envíes.
   </p>
 
 </div>
@@ -9035,7 +9035,7 @@ if(screen==="messages"){
         font-weight:750;
         letter-spacing:-1px;
       ">
-        Habla con Daniel
+        Habla con ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")}
       </h1>
 
       <p style="
@@ -9058,7 +9058,7 @@ if(screen==="messages"){
         msgs.length
         ? msgs.map(m=>{
 
-            const isDaniel = m[0] === "Daniel";
+            const isDaniel = typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(m):m[0]==="Daniel";
 
             return `
 
@@ -9183,7 +9183,7 @@ if(screen==="messages"){
               color:#858b95;
               font-size:14px;
             ">
-              Escribe a Daniel para comenzar la conversación.
+              Escribe a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} para comenzar la conversación.
             </div>
 
           </div>
