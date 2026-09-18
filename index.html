@@ -6269,7 +6269,7 @@ const notificationState =
 
   const unreadMessages =
     lastMessage &&
-    (typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(lastMessage):lastMessage[0]==="Daniel") &&
+    (typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(lastMessage):String(lastMessage?.[0]||"").trim().toLowerCase()===String(typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador").trim().toLowerCase()) &&
     (
       !messageSeenAt ||
       (
@@ -9001,13 +9001,13 @@ if(screen==="messages"){
         msgs.length
         ? msgs.map(m=>{
 
-            const isDaniel = typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(m):m[0]==="Daniel";
+            const isCoachMessage = typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(m):String(m?.[0]||"").trim().toLowerCase()===String(typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador").trim().toLowerCase();
 
             return `
 
             <div style="
               display:flex;
-              justify-content:${isDaniel ? "flex-start" : "flex-end"};
+              justify-content:${isCoachMessage ? "flex-start" : "flex-end"};
             ">
 
               <div style="
@@ -9015,7 +9015,7 @@ if(screen==="messages"){
                 align-items:flex-end;
                 gap:9px;
                 max-width:88%;
-                flex-direction:${isDaniel ? "row" : "row-reverse"};
+                flex-direction:${isCoachMessage ? "row" : "row-reverse"};
               ">
 
                 <div style="
@@ -10383,7 +10383,7 @@ if(screen==="dashboard"){
 
     const last = msgs[msgs.length - 1];
 
-    return last && !(typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(last):last[0]==="Daniel");
+    return last && !(typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(last):String(last?.[0]||"").trim().toLowerCase()===String(typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador").trim().toLowerCase());
 
   });
 
