@@ -15157,8 +15157,13 @@ function continueTrainingExerciseSelection(id,dayIndex){
     Number(ret.dayIndex)===Number(dayIndex)
   ){
     delete window.__dccExercisePickerReturnClientAdmin;
-    window.__dccTrainingEdit=false;
-    window.__dccTrainingOpen=null;
+    window.__dccTrainingEdit=true;
+    window.__dccTrainingOpen=Number(dayIndex);
+
+    if(typeof window.dccClientAdmin==="function"){
+      window.dccClientAdmin(id,"training");
+      return;
+    }
   }
 
   renderTrainingExerciseConfiguration(id,dayIndex);
