@@ -156,9 +156,9 @@
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
       #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
       #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
-      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:9px;margin-top:10px}
+      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 82px 38px;gap:7px;margin-top:10px}
       #coach-main .dcc-method-video input{min-width:0;height:42px;border:1px solid rgba(183,123,19,.24);border-radius:12px;background:#fffdf9;padding:0 12px;font:inherit;color:#171717}
-      #coach-main .dcc-method-video button{width:38px;height:38px;align-self:center;border:1px solid rgba(190,48,55,.48);border-radius:9px;background:rgba(190,48,55,.035);color:#c9343d;font-size:12px;font-weight:900}
+      #coach-main .dcc-method-video button{height:38px;align-self:center;border:1px solid #d9aa4a;border-radius:9px;background:transparent;color:#a06d12;font-size:10px;font-weight:850}#coach-main .dcc-method-video [data-delete-rest]{width:38px;border-color:rgba(190,48,55,.48);background:rgba(190,48,55,.035);color:#c9343d;font-size:12px;font-weight:900}
       #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
       #coach-main .dcc-rest-global-top label{font-size:11px!important}
       #coach-main .dcc-rest-global-top input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
@@ -391,6 +391,7 @@
       (day.exercises||[]).forEach(ex=>{
         if(ex?.supersetId&&String(ex.reps||'').trim()===''&&String(ex.sets||'')==='3'&&String(ex.supersetRounds||'')==='3'){ex.sets='';ex.supersetRounds='';normalized=true;}
         if(ex?.restPause&&String(ex.sets||'')==='4'&&String(ex.reps||'')==='12/10/8/6'&&String(ex.restPauseReps||'')==='12/10/8/6'){ex.sets='';ex.reps='';ex.restPauseReps='';ex.restPauseBlocks=0;normalized=true;}
+        if(ex?.restPause&&!String(ex.restPauseReps||ex.reps||'').trim()&&Number(ex.restPauseSeconds)===7&&Number(ex.restPauseFinalRest)===90){ex.restPauseSeconds=null;ex.restPauseFinalRest=null;ex.restBetweenSets=0;ex.restBetweenExercises=0;normalized=true;}
       });
       if(normalized)save();
     }
@@ -431,7 +432,7 @@
       groupCards.forEach(card=>{
         const labels=[...card.querySelectorAll('label')];
         const seriesLabel=labels.find(label=>/^Series$/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
-        if(seriesLabel)seriesLabel.style.display='none';
+        if(seriesLabel){seriesLabel.style.display='none';const fields=seriesLabel.parentElement;if(fields)fields.style.gridTemplateColumns='1fr';}
       });
       const first=groupCards[0];if(!first)return;
       const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
@@ -453,7 +454,7 @@
           <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="Ej. 7"></label>
           <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="Ej. 90"></label>
         </div>
-        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-delete-rest>[x]</button></div>
+        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest>[x]</button></div>
         <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
       card.parentNode.insertBefore(box,card);
       card.style.display='none';
@@ -461,6 +462,7 @@
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
       box.querySelector('[data-video]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.videoUrl=e.target.value;save();});
+      box.querySelector('[data-open-video]')?.addEventListener('click',()=>{const url=String(group.ex.videoUrl||'').trim();if(url)window.open(url,'_blank','noopener');else notify('Añade primero el enlace del vídeo');});
       box.querySelector('[data-delete-rest]')?.addEventListener('click',()=>window.removeTrainingExercise?.(id,di,group.exerciseIndex));
     });
   }
