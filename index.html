@@ -15017,7 +15017,7 @@ if(!main)return;
 
         <button
           class="ghost"
-          onclick="openTrainingDay('${id}',${dayIndex})"
+          onclick="backFromTrainingExercises('${id}',${dayIndex})"
           style="
             padding:7px 10px;
             border-radius:10px;
@@ -15320,6 +15320,27 @@ if(!preserveScroll){
 }
 
 
+function backFromTrainingExercises(id,dayIndex){
+  const ret=window.__dccExercisePickerReturnClientAdmin;
+  if(
+    ret &&
+    String(ret.id)===String(id) &&
+    Number(ret.dayIndex)===Number(dayIndex)
+  ){
+    delete window.__dccExercisePickerReturnClientAdmin;
+    window.__dccTrainingEdit=true;
+    window.__dccTrainingOpen=Number(dayIndex);
+
+    if(typeof window.dccClientAdmin==="function"){
+      window.dccClientAdmin(id,"training");
+      return;
+    }
+  }
+
+  openTrainingDay(id,dayIndex);
+}
+
+
 function toggleTrainingExercise(id,dayIndex,exerciseId){
 
   const day=data.routines[id]?.[dayIndex];
@@ -15456,6 +15477,23 @@ function continueTrainingExerciseSelection(id,dayIndex){
   day.selectedExerciseIds=[];
 
   saveData();
+
+  const ret=window.__dccExercisePickerReturnClientAdmin;
+
+  if(
+    ret &&
+    String(ret.id)===String(id) &&
+    Number(ret.dayIndex)===Number(dayIndex)
+  ){
+    delete window.__dccExercisePickerReturnClientAdmin;
+    window.__dccTrainingEdit=true;
+    window.__dccTrainingOpen=Number(dayIndex);
+
+    if(typeof window.dccClientAdmin==="function"){
+      window.dccClientAdmin(id,"training");
+      return;
+    }
+  }
 
   renderTrainingExerciseConfiguration(id,dayIndex);
 }
