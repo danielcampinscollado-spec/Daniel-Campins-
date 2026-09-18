@@ -1064,6 +1064,433 @@
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
       "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp"
+    },
+    {
+      "id": "press-declinado-barra",
+      "nombre": "Press declinado con barra",
+      "grupo": "Pectoral",
+      "equipo": "Barra y banco declinado",
+      "patron": "empuje_horizontal"
+    },
+    {
+      "id": "press-declinado-mancuernas",
+      "nombre": "Press declinado con mancuernas",
+      "grupo": "Pectoral",
+      "equipo": "Mancuernas y banco declinado",
+      "patron": "empuje_horizontal"
+    },
+    {
+      "id": "aperturas-mancuernas-plano",
+      "nombre": "Aperturas con mancuernas en banco plano",
+      "grupo": "Pectoral",
+      "equipo": "Mancuernas y banco",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "aperturas-inclinadas-mancuernas",
+      "nombre": "Aperturas con mancuernas en banco inclinado",
+      "grupo": "Pectoral",
+      "equipo": "Mancuernas y banco inclinado",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "fondos-paralelas-pectoral",
+      "nombre": "Fondos en paralelas para pectoral",
+      "grupo": "Pectoral",
+      "equipo": "Paralelas",
+      "patron": "empuje_horizontal"
+    },
+    {
+      "id": "pullover-mancuerna",
+      "nombre": "Pullover con mancuerna",
+      "grupo": "Pectoral",
+      "equipo": "Mancuerna y banco",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "dominadas-pronas",
+      "nombre": "Dominadas con agarre prono",
+      "grupo": "Espalda",
+      "equipo": "Barra de dominadas",
+      "patron": "traccion_vertical"
+    },
+    {
+      "id": "dominadas-neutras",
+      "nombre": "Dominadas con agarre neutro",
+      "grupo": "Espalda",
+      "equipo": "Barra de dominadas",
+      "patron": "traccion_vertical"
+    },
+    {
+      "id": "dominadas-supinas",
+      "nombre": "Dominadas con agarre supino",
+      "grupo": "Espalda",
+      "equipo": "Barra de dominadas",
+      "patron": "traccion_vertical"
+    },
+    {
+      "id": "remo-barra-agarre-supino",
+      "nombre": "Remo con barra con agarre supino",
+      "grupo": "Espalda",
+      "equipo": "Barra",
+      "patron": "traccion_horizontal"
+    },
+    {
+      "id": "remo-mancuernas-banco-inclinado",
+      "nombre": "Remo con mancuernas en banco inclinado",
+      "grupo": "Espalda",
+      "equipo": "Mancuernas y banco inclinado",
+      "patron": "traccion_horizontal"
+    },
+    {
+      "id": "remo-barra-t",
+      "nombre": "Remo con barra T",
+      "grupo": "Espalda",
+      "equipo": "Barra T",
+      "patron": "traccion_horizontal"
+    },
+    {
+      "id": "jalon-brazos-rectos-polea",
+      "nombre": "Jalón con brazos rectos en polea",
+      "grupo": "Espalda",
+      "equipo": "Polea",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "press-arnold",
+      "nombre": "Press Arnold con mancuernas",
+      "grupo": "Hombros",
+      "equipo": "Mancuernas",
+      "patron": "empuje_vertical"
+    },
+    {
+      "id": "press-militar-mancuernas-pie",
+      "nombre": "Press militar con mancuernas de pie",
+      "grupo": "Hombros",
+      "equipo": "Mancuernas",
+      "patron": "empuje_vertical"
+    },
+    {
+      "id": "elevaciones-frontales-mancuernas",
+      "nombre": "Elevaciones frontales con mancuernas",
+      "grupo": "Hombros",
+      "equipo": "Mancuernas",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "elevacion-frontal-disco",
+      "nombre": "Elevación frontal con disco",
+      "grupo": "Hombros",
+      "equipo": "Disco",
+      "patron": "aislamiento"
+    },
+    {
+      "id": "remo-menton-barra",
+      "nombre": "Remo al mentón con barra",
+      "grupo": "Hombros",
+      "equipo": "Barra",
+      "patron": "traccion_horizontal"
+    },
+    {
+      "id": "curl-concentracion-mancuerna",
+      "nombre": "Curl de concentración con mancuerna",
+      "grupo": "Bíceps",
+      "equipo": "Mancuerna",
+      "patron": "flexion_codo"
+    },
+    {
+      "id": "curl-spider-mancuernas",
+      "nombre": "Curl spider con mancuernas",
+      "grupo": "Bíceps",
+      "equipo": "Mancuernas y banco inclinado",
+      "patron": "flexion_codo"
+    },
+    {
+      "id": "curl-martillo-cruzado",
+      "nombre": "Curl martillo cruzado",
+      "grupo": "Bíceps",
+      "equipo": "Mancuernas",
+      "patron": "flexion_codo"
+    },
+    {
+      "id": "curl-predicador-unilateral-mancuerna",
+      "nombre": "Curl predicador unilateral con mancuerna",
+      "grupo": "Bíceps",
+      "equipo": "Mancuerna y banco predicador",
+      "patron": "flexion_codo"
+    },
+    {
+      "id": "fondos-paralelas-triceps",
+      "nombre": "Fondos en paralelas para tríceps",
+      "grupo": "Tríceps",
+      "equipo": "Paralelas",
+      "patron": "empuje_vertical"
+    },
+    {
+      "id": "press-frances-barra-ez",
+      "nombre": "Press francés con barra EZ",
+      "grupo": "Tríceps",
+      "equipo": "Barra EZ",
+      "patron": "extension_codo"
+    },
+    {
+      "id": "press-frances-mancuerna",
+      "nombre": "Press francés con mancuerna",
+      "grupo": "Tríceps",
+      "equipo": "Mancuerna",
+      "patron": "extension_codo"
+    },
+    {
+      "id": "patada-triceps-mancuerna",
+      "nombre": "Patada de tríceps con mancuerna",
+      "grupo": "Tríceps",
+      "equipo": "Mancuerna",
+      "patron": "extension_codo"
+    },
+    {
+      "id": "patada-triceps-polea",
+      "nombre": "Patada de tríceps en polea",
+      "grupo": "Tríceps",
+      "equipo": "Polea",
+      "patron": "extension_codo"
+    },
+    {
+      "id": "sentadilla-frontal-barra",
+      "nombre": "Sentadilla frontal con barra",
+      "grupo": "Cuádriceps",
+      "equipo": "Barra",
+      "patron": "sentadilla"
+    },
+    {
+      "id": "sentadilla-goblet",
+      "nombre": "Sentadilla goblet con mancuerna",
+      "grupo": "Cuádriceps",
+      "equipo": "Mancuerna",
+      "patron": "sentadilla"
+    },
+    {
+      "id": "zancadas-caminando-mancuernas",
+      "nombre": "Zancadas caminando con mancuernas",
+      "grupo": "Cuádriceps",
+      "equipo": "Mancuernas",
+      "patron": "sentadilla"
+    },
+    {
+      "id": "zancada-atras-mancuernas",
+      "nombre": "Zancada hacia atrás con mancuernas",
+      "grupo": "Cuádriceps",
+      "equipo": "Mancuernas",
+      "patron": "sentadilla"
+    },
+    {
+      "id": "step-up-mancuernas",
+      "nombre": "Step-up al banco con mancuernas",
+      "grupo": "Cuádriceps",
+      "equipo": "Mancuernas y banco",
+      "patron": "sentadilla"
+    },
+    {
+      "id": "peso-muerto-piernas-rigidas",
+      "nombre": "Peso muerto con piernas rígidas",
+      "grupo": "Femoral",
+      "equipo": "Barra",
+      "patron": "bisagra_cadera"
+    },
+    {
+      "id": "buenos-dias-barra",
+      "nombre": "Buenos días con barra",
+      "grupo": "Femoral",
+      "equipo": "Barra",
+      "patron": "bisagra_cadera"
+    },
+    {
+      "id": "curl-nordico",
+      "nombre": "Curl nórdico",
+      "grupo": "Femoral",
+      "equipo": "Peso corporal",
+      "patron": "flexion_rodilla"
+    },
+    {
+      "id": "peso-muerto-rumano-unilateral-mancuerna",
+      "nombre": "Peso muerto rumano unilateral con mancuerna",
+      "grupo": "Femoral",
+      "equipo": "Mancuerna",
+      "patron": "bisagra_cadera"
+    },
+    {
+      "id": "puente-gluteo-barra",
+      "nombre": "Puente de glúteos con barra",
+      "grupo": "Glúteos",
+      "equipo": "Barra",
+      "patron": "extension_cadera"
+    },
+    {
+      "id": "puente-gluteo-mancuerna",
+      "nombre": "Puente de glúteos con mancuerna",
+      "grupo": "Glúteos",
+      "equipo": "Mancuerna",
+      "patron": "extension_cadera"
+    },
+    {
+      "id": "abduccion-banda",
+      "nombre": "Abducción de cadera con banda",
+      "grupo": "Glúteos",
+      "equipo": "Banda elástica",
+      "patron": "abduccion_cadera"
+    },
+    {
+      "id": "hip-thrust-mancuerna",
+      "nombre": "Hip thrust con mancuerna",
+      "grupo": "Glúteos",
+      "equipo": "Mancuerna y banco",
+      "patron": "extension_cadera"
+    },
+    {
+      "id": "sentadilla-sumo-mancuerna",
+      "nombre": "Sentadilla sumo con mancuerna",
+      "grupo": "Aductores",
+      "equipo": "Mancuerna",
+      "patron": "aduccion_cadera"
+    },
+    {
+      "id": "sentadilla-sumo-barra",
+      "nombre": "Sentadilla sumo con barra",
+      "grupo": "Aductores",
+      "equipo": "Barra",
+      "patron": "aduccion_cadera"
+    },
+    {
+      "id": "zancada-lateral-mancuernas",
+      "nombre": "Zancada lateral con mancuernas",
+      "grupo": "Aductores",
+      "equipo": "Mancuernas",
+      "patron": "aduccion_cadera"
+    },
+    {
+      "id": "gemelos-pie-mancuernas",
+      "nombre": "Elevación de gemelos de pie con mancuernas",
+      "grupo": "Gemelos",
+      "equipo": "Mancuernas",
+      "patron": "flexion_plantar"
+    },
+    {
+      "id": "gemelos-pie-barra",
+      "nombre": "Elevación de gemelos de pie con barra",
+      "grupo": "Gemelos",
+      "equipo": "Barra",
+      "patron": "flexion_plantar"
+    },
+    {
+      "id": "gemelos-unilateral-escalon",
+      "nombre": "Elevación de gemelo unilateral en escalón",
+      "grupo": "Gemelos",
+      "equipo": "Peso corporal",
+      "patron": "flexion_plantar"
+    },
+    {
+      "id": "encogimientos-polea",
+      "nombre": "Encogimientos de trapecio en polea",
+      "grupo": "Trapecio",
+      "equipo": "Polea",
+      "patron": "elevacion_escapular"
+    },
+    {
+      "id": "paseo-granjero-mancuernas",
+      "nombre": "Paseo del granjero con mancuernas",
+      "grupo": "Trapecio",
+      "equipo": "Mancuernas",
+      "patron": "elevacion_escapular"
+    },
+    {
+      "id": "curl-muneca-barra",
+      "nombre": "Curl de muñeca con barra",
+      "grupo": "Antebrazos",
+      "equipo": "Barra",
+      "patron": "flexion_muneca"
+    },
+    {
+      "id": "extension-muneca-barra",
+      "nombre": "Extensión de muñeca con barra",
+      "grupo": "Antebrazos",
+      "equipo": "Barra",
+      "patron": "flexion_muneca"
+    },
+    {
+      "id": "curl-inverso-barra-recta",
+      "nombre": "Curl inverso con barra recta",
+      "grupo": "Antebrazos",
+      "equipo": "Barra",
+      "patron": "flexion_codo"
+    },
+    {
+      "id": "peso-muerto-convencional-barra",
+      "nombre": "Peso muerto convencional con barra",
+      "grupo": "Lumbar",
+      "equipo": "Barra",
+      "patron": "extension_tronco"
+    },
+    {
+      "id": "superman-suelo",
+      "nombre": "Superman en el suelo",
+      "grupo": "Lumbar",
+      "equipo": "Peso corporal",
+      "patron": "extension_columna"
+    },
+    {
+      "id": "crunch-suelo",
+      "nombre": "Crunch abdominal en el suelo",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "flexion_tronco"
+    },
+    {
+      "id": "crunch-inverso",
+      "nombre": "Crunch inverso",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "flexion_cadera"
+    },
+    {
+      "id": "sit-up",
+      "nombre": "Sit-up abdominal",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "flexion_tronco"
+    },
+    {
+      "id": "dead-bug",
+      "nombre": "Dead bug",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "estabilidad"
+    },
+    {
+      "id": "bird-dog",
+      "nombre": "Bird dog",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "estabilidad"
+    },
+    {
+      "id": "plancha-lateral",
+      "nombre": "Plancha lateral",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "estabilidad"
+    },
+    {
+      "id": "russian-twist",
+      "nombre": "Russian twist",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "rotacion_tronco"
+    },
+    {
+      "id": "mountain-climbers",
+      "nombre": "Mountain climbers",
+      "grupo": "Core",
+      "equipo": "Peso corporal",
+      "patron": "estabilidad"
     }
   ]
 }
