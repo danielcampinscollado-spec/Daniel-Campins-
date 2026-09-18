@@ -6,7 +6,7 @@
     "Ejercicios reconocibles y habituales en gimnasios comerciales",
     "Cobertura de máquinas, poleas, barras, mancuernas, multipower y peso corporal",
     "Sin duplicados funcionales evidentes",
-    "Selector del entrenador sin ilustraciones de ejercicios"
+    "Selector del entrenador centrado en nombres de ejercicios, sin ilustraciones"
   ],
   "grupos": {
     "Pectoral": 24,
