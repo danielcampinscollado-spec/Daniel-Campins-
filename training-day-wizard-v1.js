@@ -14,7 +14,7 @@
   function loadPremiumMuscles(){
     if(window.__dccMusclePremiumLight)return;
     if(document.querySelector('script[data-dcc-muscle-premium]'))return;
-    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260918-4';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
+    const s=document.createElement('script');s.src='./training-muscle-premium-light-v1.js?v=20260918-5';s.async=true;s.dataset.dccMusclePremium='1';(document.head||document.documentElement).appendChild(s);
   }
 
   function css(){if(document.getElementById('dcc-training-day-wizard-css'))return;const s=document.createElement('style');s.id='dcc-training-day-wizard-css';s.textContent=`
