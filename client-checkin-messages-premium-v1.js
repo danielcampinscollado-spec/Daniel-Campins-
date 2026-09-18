@@ -291,6 +291,9 @@
     if(document.hidden)stopMessagePolling();
     else if(window.__dccClientPremiumScreen==='messages')startMessagePolling();
   });
+  document.addEventListener('dcc:coach-profile-ready',()=>{
+    if(window.__dccClientPremiumScreen==='messages')requestAnimationFrame(()=>renderClientMessages());
+  });
 
   function installShowClient(){
     const base=window.showClient;if(typeof base!=='function'||base.__dccClientCheckinMessagesV1)return;
