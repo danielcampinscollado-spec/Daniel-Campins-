@@ -13291,6 +13291,15 @@ openModal(`
 <label>Nombre</label>
 <input id="new-name" placeholder="Nombre y apellidos">
 
+<label>Correo de acceso</label>
+<input id="new-access-email" type="email" autocomplete="email" placeholder="cliente@correo.com">
+
+<label>Edad</label>
+<input id="new-age" inputmode="numeric" placeholder="Ej. 35">
+
+<label>Altura (cm)</label>
+<input id="new-height" inputmode="decimal" placeholder="Ej. 178">
+
 <label>Peso actual</label>
 <input id="new-weight" placeholder="Ej. 75,5">
 
@@ -13300,23 +13309,35 @@ openModal(`
 <label>Objetivo</label>
 <input id="new-goal" placeholder="Ej. Pérdida de grasa">
 
+<label>Alimentos a evitar</label>
+<textarea id="new-foods-to-avoid" placeholder="Opcional"></textarea>
+
 <button class="btn" style="margin-top:18px" onclick="createClient()">Crear cliente</button>
 `);
 }
 
 async function createClient(){
   const name=document.getElementById("new-name")?.value.trim()||"";
+  const accessEmail=document.getElementById("new-access-email")?.value.trim().toLowerCase()||"";
+  const ageText=document.getElementById("new-age")?.value.trim()||"";
+  const heightText=document.getElementById("new-height")?.value.trim()||"";
   const weightText=document.getElementById("new-weight")?.value.trim()||"";
   const bodyFatText=document.getElementById("new-body-fat")?.value.trim()||"";
   const goal=document.getElementById("new-goal")?.value.trim()||"";
-  if(!name||!weightText||!bodyFatText||!goal){toast("Completa todos los campos");return}
+  const foodsToAvoid=document.getElementById("new-foods-to-avoid")?.value.trim()||"";
+  if(!name||!accessEmail||!ageText||!heightText||!weightText||!bodyFatText||!goal){toast("Completa todos los campos obligatorios");return}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(accessEmail)){toast("Introduce un correo válido");return}
+  const age=Number(ageText);
+  const height=Number(heightText.replace(",","."));
   const weight=Number(weightText.replace(",","."));
   const bodyFat=Number(bodyFatText.replace(",","."));
+  if(!Number.isInteger(age)||age<10||age>100){toast("Introduce una edad válida");return}
+  if(!Number.isFinite(height)||height<100||height>250){toast("Introduce una altura válida");return}
   if(!Number.isFinite(weight)||weight<=0||weight>=500){toast("Introduce un peso válido");return}
   if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){toast("Introduce un % de grasa válido");return}
   const id="client_"+Date.now();
   try{
-    const {data:ok,error}=await supabaseClient.rpc("dcc_create_client",{p_id:id,p_name:name,p_goal:goal,p_weight:weight,p_body_fat:bodyFat});
+    const {data:ok,error}=await supabaseClient.rpc("dcc_create_client",{p_id:id,p_name:name,p_goal:goal,p_weight:weight,p_initial_body_fat:bodyFat,p_age:age,p_height_cm:height,p_foods_to_avoid:foodsToAvoid,p_access_email:accessEmail});
     if(error)throw error;
     if(ok!==true)throw new Error("El servidor no confirmó la creación");
     await Promise.allSettled([loadClientsFromSupabase(),loadWeightsFromSupabase(),loadCheckinsFromSupabase(),loadRoutinesFromSupabase(),loadDietsFromSupabase()]);
