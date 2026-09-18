@@ -9027,17 +9027,17 @@ if(screen==="messages"){
                   align-items:center;
                   justify-content:center;
                   border:1px solid ${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(217,170,74,.55)"
                     : "rgba(255,255,255,.15)"
                   };
                   background:${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(217,170,74,.07)"
                     : "rgba(255,255,255,.06)"
                   };
                   color:${
-                    isDaniel
+                    isCoachMessage
                     ? "#d9aa4a"
                     : "#d8dbe0"
                   };
@@ -9045,8 +9045,8 @@ if(screen==="messages"){
                   font-weight:800;
                 ">
                   ${
-                    isDaniel
-                    ? "D"
+                    isCoachMessage
+                    ? esc((typeof window.dccCoachName==="function"?window.dccCoachName():"E").charAt(0).toUpperCase())
                     : esc((m[0]||"C").charAt(0).toUpperCase())
                   }
                 </div>
@@ -9055,17 +9055,17 @@ if(screen==="messages"){
                   min-width:0;
                   padding:13px 16px;
                   border-radius:${
-                    isDaniel
+                    isCoachMessage
                     ? "18px 18px 18px 5px"
                     : "18px 18px 5px 18px"
                   };
                   background:${
-                    isDaniel
+                    isCoachMessage
                     ? "#11151c"
                     : "rgba(217,170,74,.08)"
                   };
                   border:1px solid ${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(255,255,255,.09)"
                     : "rgba(217,170,74,.24)"
                   };
@@ -9075,7 +9075,7 @@ if(screen==="messages"){
                     display:block;
                     margin-bottom:5px;
                     color:${
-                      isDaniel
+                      isCoachMessage
                       ? "#f5f5f2"
                       : "#d9aa4a"
                     };
