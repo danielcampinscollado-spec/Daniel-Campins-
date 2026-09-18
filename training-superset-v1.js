@@ -158,13 +158,15 @@
     const supersets=supersetIds.map((id,index)=>{
       const items=(day.exercises||[]).filter(ex=>ex.supersetId===id);
       const fallback=Math.max(0,parseInt(day.restBetweenSetsGlobal)||0);
-      return {id,index:index+1,items,rounds:Math.max(1,parseInt(items[0]?.supersetRounds)||parseInt(items[0]?.sets)||3),rest:items[0]?.supersetRest==null?fallback:Math.max(0,parseInt(items[0].supersetRest)||0)n,   });
+      return {id,index:index+1,items,rounds:Math.max(1,parseInt(items[0]?.supersetRounds)||parseInt(items[0]?.sets)||3),rest:items[0]?.supersetRest==null?fallback:Math.max(0,parseInt(items[0].supersetRest)||0)};
+    });
     const restPauses=(day?.exercises||[]).map((ex,index)=>({ex,index})).filter(x=>x.ex?.restPause).map((x,index)=>{
       const reps=String(x.ex.restPauseReps||x.ex.reps||'12/10/8/6');
       const blocks=reps.split(/[\/\-–,\s]+/).filter(Boolean).length||4;
-      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:Math.max(1,parseInt(x.ex.restPauseSeconds)||7),finalRest:x.ex.restPauseFinalRest==null?Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90):Math.max(0,parseInt(x.ex.restPauseFinalRest)||0)n;
+      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:Math.max(1,parseInt(x.ex.restPauseSeconds)||7),finalRest:x.ex.restPauseFinalRest==null?Math.max(0,parseInt(day.restBetweenExercisesGlobal)||90):Math.max(0,parseInt(x.ex.restPauseFinalRest)||0)};
     });
-    return {supersets,restPausesn, }
+    return {supersets,restPauses};
+  }
 
   function updateSuperset(id,di,supersetId,keyName,value){
     const day=dayRef(id,di);if(!day)return;
@@ -176,8 +178,7 @@
     const day=dayRef(id,di);const ex=day?.exercises?.[exerciseIndex];if(!ex)return;
     if(keyName==='reps'){
       const reps=String(value||'').trim()||'12/10/8/6';const blocks=reps.split(/[\/\-–,\s]+/).filter(Boolean).length||4;
-      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBl);
-    fis=blocks;ex.sets=String(blocks);
+      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=String(blocks);
     }else if(keyName==='seconds'){
       const n=Math.max(1,parseInt(value)||1);ex.restPauseSeconds=n;ex.restBetweenSets=n;
     }else{
@@ -260,12 +261,14 @@
   function supersetWorkoutContext(){
     const workout=window.activeWorkout;if(!workout)return null;
     const ex=workout.exercises?.[Number(workout.currentExercise)||0];if(!ex?.supersetId)return null;
-    if(!workout.supersetRoundById)workout.supersetRoundById={n,   const groupIndices=(workout.exercises||[]).map((item,index)=>item?.supersetId===ex.supersetId?index:-1).filter(index=>index>=0).sort((a,b)=>(parseInt(workout.exercises[a]?.supersetOrder)||a)-(parseInt(workout.exercises[b]?.supersetOrder)||b));
+    if(!workout.supersetRoundById)workout.supersetRoundById={};
+    const groupIndices=(workout.exercises||[]).map((item,index)=>item?.supersetId===ex.supersetId?index:-1).filter(index=>index>=0).sort((a,b)=>(parseInt(workout.exercises[a]?.supersetOrder)||a)-(parseInt(workout.exercises[b]?.supersetOrder)||b));
     const position=Math.max(0,groupIndices.indexOf(workout.currentExercise));
     const rounds=Math.max(1,parseInt(ex.supersetRounds)||parseInt(ex.sets)||1);
     const round=Math.max(1,parseInt(workout.supersetRoundById[ex.supersetId])||1);
     const rest=Math.max(0,parseInt(ex.supersetRest)||parseInt(workout.exercises[groupIndices[0]]?.supersetRest)||0);
-    return {workout,ex,groupIndices,position,rounds,round,restn, }
+    return {workout,ex,groupIndices,position,rounds,round,rest};
+  }
 
   function restPauseWorkoutContext(){
     const workout=window.activeWorkout;if(!workout)return null;
@@ -275,7 +278,8 @@
     const blocks=Math.max(2,targets.length||parseInt(ex.restPauseBlocks)||4);
     const seconds=Math.max(1,parseInt(ex.restPauseSeconds)||7);
     const finalRest=Math.max(0,parseInt(ex.restPauseFinalRest)||parseInt(ex.restBetweenExercises)||0);
-    return {workout,ex,reps,targets,blocks,seconds,finalRestn, }
+    return {workout,ex,reps,targets,blocks,seconds,finalRest};
+  }
 
   function decorateWorkoutSession(){
     const root=document.getElementById('client-main');if(!root)return;
@@ -287,7 +291,7 @@
     else{
       const completed=Array.isArray(restPause.workout.sets)?restPause.workout.sets.length:0;
       const target=restPause.targets[Math.min(completed,restPause.targets.length-1)]||'';
-      banner.innerHTML='<b>REST-PAUSE · '+restPause.reps+' REP</b><span>Bl)que '+Math.min(completed+1,restPause.blocks)+' de '+restPause.blocks+(target?' · objetivo '+target+' rep':'')+' · '+restPause.seconds+' s entre bloques · '+restPause.finalRest+' s al terminar</span>';
+      banner.innerHTML='<b>REST-PAUSE · '+restPause.reps+' REP</b><span>Bloque '+Math.min(completed+1,restPause.blocks)+' de '+restPause.blocks+(target?' · objetivo '+target+' rep':'')+' · '+restPause.seconds+' s entre bloques · '+restPause.finalRest+' s al terminar</span>';
     }
     top.parentNode.insertBefore(banner,top);
   }
@@ -302,8 +306,7 @@
         let result;try{result=nativeRenderWorkoutSession.apply(this,arguments);}finally{ex.sets=originalSets;ex.restBetweenSets=originalRestSets;ex.restBetweenExercises=originalRestExercises;}
         requestAnimationFrame(decorateWorkoutSession);return result;
       }
-      if(restPause){restPause.ex.sets=String(restPause.bl);
-    fis);restPause.ex.reps=restPause.reps;restPause.ex.restBetweenSets=restPause.seconds;restPause.ex.restBetweenExercises=restPause.finalRest;}
+      if(restPause){restPause.ex.sets=String(restPause.blocks);restPause.ex.reps=restPause.reps;restPause.ex.restBetweenSets=restPause.seconds;restPause.ex.restBetweenExercises=restPause.finalRest;}
       const result=nativeRenderWorkoutSession.apply(this,arguments);requestAnimationFrame(decorateWorkoutSession);return result;
     };
   }
@@ -344,7 +347,8 @@
       if(workout.currentExercise>=workout.exercises.length){window.finishWorkout?.();return;}
       if(ctx.rest>0){workout.restUntil=Date.now()+(ctx.rest*1000);workout.restMode='exercise';window.renderWorkoutSession?.();window.startRestTimer?.();notify('Superserie completada · Descanso '+ctx.rest+' s');return;}
       workout.restUntil=null;workout.restMode=null;window.renderWorkoutSession?.();notify('Superserie completada');
-    n, }
+    };
+  }
 
   installStyle();requestAnimationFrame(decoratePicker);
 })();
