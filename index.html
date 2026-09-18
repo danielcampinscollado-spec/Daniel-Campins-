@@ -14548,6 +14548,13 @@ function openTrainingDay(id,dayIndex){
   if(!Array.isArray(day.muscleGroups)){
     day.muscleGroups=[];
   }
+  if(!day.muscleGroups.length && Array.isArray(day.exercises) && day.exercises.length){
+    day.muscleGroups=[...new Set(day.exercises.map(ex=>String(ex?.muscle||ex?.muscleGroup||ex?.targetMuscle||'').trim()).filter(Boolean))].slice(0,3);
+    if(day.muscleGroups.length){
+      day.muscle=day.muscleGroups.join(" · ");
+      saveData();
+    }
+  }
 
   const muscleOptions=[
     "Pectoral",
@@ -14587,25 +14594,6 @@ function openTrainingDay(id,dayIndex){
         align-items:center;
         gap:9px;
       ">
-
-        <div style="
-          width:34px;
-          height:34px;
-          min-width:34px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          border-radius:10px;
-          background:linear-gradient(
-            145deg,
-            rgba(217,170,74,.18),
-            rgba(217,170,74,.06)
-          );
-          border:1px solid rgba(217,170,74,.35);
-          font-size:17px;
-        ">
-          🔨
-        </div>
 
         <div>
 
@@ -15893,6 +15881,16 @@ async function saveConfiguredTraining(id,dayIndex){
 
   if(!Array.isArray(day.exercises) || !day.exercises.length){
     toast("No hay ejercicios en esta rutina");
+    return;
+  }
+
+  const incompleteExercise=day.exercises.find(ex=>{
+    const sets=String(ex?.sets??ex?.series??'').trim();
+    const reps=String(ex?.reps??ex?.repetitions??ex?.repeticiones??'').trim();
+    return !sets || !reps;
+  });
+  if(incompleteExercise){
+    toast("Completa las series y repeticiones de todos los ejercicios");
     return;
   }
 
