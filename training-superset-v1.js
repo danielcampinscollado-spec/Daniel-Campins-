@@ -101,7 +101,14 @@
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
       #coach-main.dcc-config-active{padding-bottom:92px!important}
       #coach-main .dcc-exercise-card{padding:9px!important;border-radius:13px!important}
+      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-bottom:6px!important}
+      #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
+      #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(2){gap:8px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:11px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 92px!important;gap:7px!important;margin-top:7px!important}
       #coach-main .dcc-exercise-card input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
+      #coach-main .dcc-exercise-card input[type="url"]{min-height:36px!important;font-size:11px!important}
       #coach-main .dcc-exercise-card [data-dcc-delete]{width:auto!important;height:32px!important;min-width:0!important;padding:0 9px!important;border-radius:9px!important;border:1px solid rgba(183,123,19,.22)!important;color:#8c5a08!important;font-size:10px!important;font-weight:800!important;background:transparent!important}
       #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
       #coach-main .dcc-config-save{position:sticky!important;bottom:calc(76px + env(safe-area-inset-bottom));z-index:12;width:100%!important;min-height:44px!important;margin-top:10px!important;border-radius:12px!important;font-size:13px!important;box-shadow:0 7px 20px rgba(61,42,12,.10)!important}
@@ -115,7 +122,10 @@
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
       #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
       #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
-      #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:10px!important}
+      #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
+      #coach-main .dcc-rest-global-top label{font-size:11px!important}
+      #coach-main .dcc-rest-global-top input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
+      #coach-main .dcc-rest-global-top .muted{font-size:10px!important}
       #coach-main .dcc-rest-global-top .dcc-method-global-note{margin-top:7px;color:#8d6a26;font-size:9px;line-height:1.35}
       #client-main .dcc-method-session{margin:0 0 10px;padding:10px 12px;border:1px solid rgba(217,170,74,.45);border-radius:14px;background:rgba(217,170,74,.08)}
       #client-main .dcc-method-session b{display:block;color:#d9aa4a;font-size:11px;letter-spacing:.04em}
