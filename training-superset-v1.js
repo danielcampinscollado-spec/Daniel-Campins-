@@ -40,6 +40,20 @@
   function existingExercise(day,exerciseId){
     return (day?.exercises||[]).find(ex=>String(ex?.libraryId||ex?.id||'')===String(exerciseId))||null;
   }
+  function absorbNormalSelection(day){
+    if(!Array.isArray(day?.selectedExerciseIds)||!day.selectedExerciseIds.length)return false;
+    if(!Array.isArray(day.exercises))day.exercises=[];
+    let changed=false;
+    day.selectedExerciseIds.forEach(exerciseId=>{
+      if(existingExercise(day,exerciseId))return;
+      const ex=library().find(item=>String(item?.id)===String(exerciseId));
+      if(!ex)return;
+      day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:''});
+      changed=true;
+    });
+    day.selectedExerciseIds=[];
+    return changed;
+  }
   function exerciseKind(ex){
     if(!ex)return '';
     if(ex.supersetId)return 'superserie';
@@ -184,6 +198,8 @@
     const ctx=parsePickerContext();
     if(!ctx)return;
     const day=dayRef(ctx.id,ctx.di);if(!day)return;
+
+    if(mode(ctx.id,ctx.di)==='normal'&&absorbNormalSelection(day))save();
 
     ctx.root.querySelector('.dcc-mode-wrap')?.remove();
     const wrap=document.createElement('div');wrap.className='dcc-mode-wrap';wrap.innerHTML=renderModeBar(ctx.id,ctx.di,day);
