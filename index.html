@@ -15999,7 +15999,9 @@ async function sendClientCheckin(){
 #login.dcc-login-light{
   min-height:100vh!important;
   min-height:100dvh!important;
-  display:flex!important;
+  /* No usar !important aquí: openApp() necesita poder ocultar #login
+     mediante style.display='none' al entrar en cliente/entrenador. */
+  display:flex;
   align-items:center!important;
   justify-content:center!important;
   padding:28px 20px!important;
