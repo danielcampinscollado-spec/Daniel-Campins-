@@ -4,11 +4,12 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v3';
+  const BUILD='20260918-training-methods-v4';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
   const pickerMode={};
+  const pickerDraftSelections={};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const notify=message=>{try{if(typeof window.toast==='function')window.toast(message);else if(typeof toast==='function')toast(message);}catch(_){}};
 
@@ -23,6 +24,28 @@
   function key(id,di){return String(id)+'|'+String(di);}
   function mode(id,di){return pickerMode[key(id,di)]||'normal';}
   function setMode(id,di,value){pickerMode[key(id,di)]=value;}
+  function draftSelections(id,di){
+    const k=key(id,di);
+    if(!pickerDraftSelections[k])pickerDraftSelections[k]={superset:[],restpause:[]};
+    return pickerDraftSelections[k];
+  }
+  function rememberCurrentDraft(id,di,day){
+    const current=mode(id,di);
+    if(current!=='superset'&&current!=='restpause')return;
+    draftSelections(id,di)[current]=Array.isArray(day?.selectedExerciseIds)?[...day.selectedExerciseIds]:[];
+  }
+  function restoreModeDraft(id,di,day,nextMode){
+    day.selectedExerciseIds=nextMode==='normal'?[]:[...(draftSelections(id,di)[nextMode]||[])];
+  }
+  function existingExercise(day,exerciseId){
+    return (day?.exercises||[]).find(ex=>String(ex?.libraryId||ex?.id||'')===String(exerciseId))||null;
+  }
+  function exerciseKind(ex){
+    if(!ex)return '';
+    if(ex.supersetId)return 'superserie';
+    if(ex.restPause)return 'REST-pause';
+    return 'ejercicio normal';
+  }
 
   function selectedLibraryExercises(day){
     const lib=library();
@@ -45,7 +68,8 @@
     const style=document.createElement('style');
     style.id='dcc-training-methods-style';
     style.textContent=`
-      #coach-main .dcc-mode-wrap{margin:2px 0 10px}
+      #coach-main.dcc-picker-active{padding-bottom:104px!important}
+      #coach-main .dcc-mode-wrap{margin:2px 0 8px}
       #coach-main .dcc-mode-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
       #coach-main .dcc-mode-tab{min-height:42px;padding:7px 5px;border:1px solid rgba(183,123,19,.18);border-radius:11px;background:#fffdf9;color:#5f6670;font-size:10px;font-weight:850;line-height:1.15}
       #coach-main .dcc-mode-tab.is-active{border-color:#d9aa4a;background:rgba(217,170,74,.14);color:#8c5a08}
@@ -53,6 +77,14 @@
       #coach-main .dcc-mode-hint b{color:#8c5a08}
       #coach-main .dcc-mode-add{flex:0 0 auto;min-height:34px;padding:7px 10px;border:1px solid #d9aa4a;border-radius:9px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:10px;font-weight:900}
       #coach-main .dcc-mode-add:disabled{border-color:#ddd4c5;background:#eee8dc;color:#999184}
+      #coach-main .dcc-picker-manual-top{width:100%!important;margin:0 0 9px!important;min-height:46px!important;border-radius:12px!important;font-size:12px!important}
+      #coach-main .dcc-existing-label{display:block;margin-top:3px;color:#9a650c;font-size:9px;font-weight:750;line-height:1.2}
+      #coach-main .dcc-native-continue-hidden{display:none!important}
+      .dcc-picker-savebar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom));z-index:9996;width:min(720px,calc(100% - 24px));box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid rgba(217,170,74,.48);border-radius:16px;background:rgba(255,253,249,.97);box-shadow:0 8px 26px rgba(61,42,12,.14);backdrop-filter:blur(12px)}
+      .dcc-picker-savebar-count{min-width:0;color:#6f747c;font-size:10px;line-height:1.25}
+      .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
+      .dcc-picker-savebar-count strong{color:#a66b08}
+      .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
       #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 7px;padding:4px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
       #coach-main .dcc-method-config{margin:8px 0;padding:11px;border:1px solid rgba(217,170,74,.40);border-radius:14px;background:rgba(217,170,74,.055);color:#17191d}
       #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -80,10 +112,10 @@
     const special=current==='superset'||current==='restpause';
     const ready=current==='superset'?(count>=2&&count<=4):current==='restpause'?count===1:false;
     const hint=current==='superset'
-      ? 'Selecciona <b>2–4 ejercicios</b>. Se harán seguidos y configurarás vueltas y descanso al final.'
+      ? 'Selecciona <b>2–4 ejercicios</b> para la superserie. Lo que ya hayas añadido a la rutina se conserva.'
       : current==='restpause'
-        ? 'Selecciona <b>1 ejercicio</b>. Las repeticiones por bloque y pausas se configuran al final.'
-        : 'Selecciona los <b>ejercicios individuales</b> que quieras añadir al día.';
+        ? 'Selecciona <b>1 ejercicio</b> para REST-pause. Lo que ya hayas añadido a la rutina se conserva.'
+        : 'Añade ejercicios normales. Para crear una <b>superserie</b> o un <b>REST-pause</b>, pulsa arriba; lo ya añadido no se pierde.';
     return `
       <div class="dcc-mode-tabs">
         <button type="button" class="dcc-mode-tab ${current==='normal'?'is-active':''}" data-mode="normal">Ejercicio<br>individual</button>
@@ -96,21 +128,92 @@
       </div>`;
   }
 
+  function removePickerSavebar(){
+    document.querySelector('.dcc-picker-savebar')?.remove();
+    document.getElementById('coach-main')?.classList.remove('dcc-picker-active');
+  }
+
+  function decorateExistingRows(ctx,day){
+    const current=mode(ctx.id,ctx.di);
+    [...ctx.root.querySelectorAll('button')].forEach(row=>{
+      const onclick=row.getAttribute('onclick')||'';
+      const match=onclick.match(/toggleTrainingExercise\(\s*'[^']+'\s*,\s*\d+\s*,\s*'([^']+)'/);
+      if(!match)return;
+      const exerciseId=match[1].replace(/\\'/g,"'");
+      const existing=existingExercise(day,exerciseId);
+      if(!existing)return;
+      const textBlock=row.firstElementChild;
+      if(textBlock&&!textBlock.querySelector('.dcc-existing-label')){
+        const label=document.createElement('span');
+        label.className='dcc-existing-label';
+        label.textContent='Ya añadido · '+exerciseKind(existing);
+        textBlock.appendChild(label);
+      }
+      const marker=row.lastElementChild;
+      if(marker){
+        marker.textContent='✓';
+        marker.style.background='#d9aa4a';
+        marker.style.borderColor='#d9aa4a';
+        marker.style.color='#111';
+      }
+      row.style.borderColor='rgba(217,170,74,.48)';
+      row.style.background='rgba(217,170,74,.07)';
+      if(current!=='normal')row.setAttribute('aria-label','Ejercicio ya añadido a la rutina');
+    });
+  }
+
+  function renderPickerSavebar(ctx,day){
+    document.querySelector('.dcc-picker-savebar')?.remove();
+    ctx.root.classList.add('dcc-picker-active');
+    const total=(day.exercises||[]).length;
+    const bar=document.createElement('div');
+    bar.className='dcc-picker-savebar';
+    bar.innerHTML=`
+      <div class="dcc-picker-savebar-count">
+        <b><strong>${total}</strong> ${total===1?'ejercicio añadido':'ejercicios añadidos'}</b>
+        Normal, superserie y REST-pause pueden combinarse.
+      </div>
+      <button type="button" data-picker-save>Guardar rutina →</button>
+    `;
+    bar.querySelector('[data-picker-save]')?.addEventListener('click',()=>window.continueTrainingExerciseSelection?.(ctx.id,ctx.di));
+    document.body.appendChild(bar);
+  }
+
   function decoratePicker(){
     installStyle();
     const ctx=parsePickerContext();
     if(!ctx)return;
     const day=dayRef(ctx.id,ctx.di);if(!day)return;
+
     ctx.root.querySelector('.dcc-mode-wrap')?.remove();
     const wrap=document.createElement('div');wrap.className='dcc-mode-wrap';wrap.innerHTML=renderModeBar(ctx.id,ctx.di,day);
     const top=ctx.root.querySelector('.top');
     if(top&&top.nextSibling)top.parentNode.insertBefore(wrap,top.nextSibling);else ctx.root.insertBefore(wrap,ctx.root.firstChild);
+
+    ctx.button.classList.add('dcc-picker-manual-top');
+    wrap.parentNode.insertBefore(ctx.button,wrap.nextSibling);
+
+    const summaryCard=[...ctx.root.querySelectorAll('.card')].find(card=>/ejercicios disponibles/i.test(card.textContent||'')&&/seleccionados/i.test(card.textContent||''));
+    summaryCard?.remove();
+
+    const nativeContinue=[...ctx.root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('continueTrainingExerciseSelection'));
+    nativeContinue?.classList.add('dcc-native-continue-hidden');
+
     wrap.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
-      day.selectedExerciseIds=[];setMode(ctx.id,ctx.di,btn.dataset.mode);save();window.openTrainingExercises?.(ctx.id,ctx.di,true);
+      const next=btn.dataset.mode;
+      rememberCurrentDraft(ctx.id,ctx.di,day);
+      setMode(ctx.id,ctx.di,next);
+      restoreModeDraft(ctx.id,ctx.di,day,next);
+      save();
+      window.openTrainingExercises?.(ctx.id,ctx.di,true);
     }));
+
     wrap.querySelector('[data-add-special]')?.addEventListener('click',()=>{
       if(mode(ctx.id,ctx.di)==='superset')createSuperset(ctx.id,ctx.di);else createRestPause(ctx.id,ctx.di);
     });
+
+    decorateExistingRows(ctx,day);
+    renderPickerSavebar(ctx,day);
   }
 
   function hasDuplicate(day,selected){
@@ -119,8 +222,12 @@
   }
 
   function finishSpecialSelection(id,di,day,message){
-    day.trainingSetupStarted=true;day.selectedExerciseIds=[];save();notify(message);
-    setMode(id,di,'normal');
+    const current=mode(id,di);
+    day.trainingSetupStarted=true;
+    day.selectedExerciseIds=[];
+    if(current==='superset'||current==='restpause')draftSelections(id,di)[current]=[];
+    save();
+    notify(message);
     window.openTrainingExercises?.(id,di,true);
   }
 
@@ -238,10 +345,38 @@
   const nativeToggleTrainingExercise=typeof window.toggleTrainingExercise==='function'?window.toggleTrainingExercise:null;
   if(nativeToggleTrainingExercise){
     window.toggleTrainingExercise=function(id,di,exerciseId){
-      const day=dayRef(id,di);const current=mode(id,di);const selected=Array.isArray(day?.selectedExerciseIds)?day.selectedExerciseIds:[];const already=selected.includes(exerciseId);
+      const day=dayRef(id,di);if(!day)return;
+      const current=mode(id,di);
+      if(current==='normal'){
+        if(!Array.isArray(day.exercises))day.exercises=[];
+        const index=day.exercises.findIndex(ex=>String(ex?.libraryId||ex?.id||'')===String(exerciseId));
+        if(index>=0){
+          const existing=day.exercises[index];
+          if(existing.supersetId||existing.restPause){notify('Ese ejercicio ya está añadido como '+exerciseKind(existing));return;}
+          day.exercises.splice(index,1);
+        }else{
+          const ex=library().find(item=>String(item?.id)===String(exerciseId));
+          if(!ex)return;
+          day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:''});
+        }
+        day.trainingSetupStarted=true;
+        day.selectedExerciseIds=[];
+        save();
+        window.openTrainingExercises?.(id,di,true);
+        return;
+      }
+
+      const existing=existingExercise(day,exerciseId);
+      if(existing){notify('Ese ejercicio ya está añadido como '+exerciseKind(existing));return;}
+
+      const selected=Array.isArray(day.selectedExerciseIds)?day.selectedExerciseIds:[];
+      const already=selected.includes(exerciseId);
       if(!already&&current==='superset'&&selected.length>=4){notify('La superserie admite hasta 4 ejercicios');return;}
       if(!already&&current==='restpause'&&selected.length>=1){notify('REST-pause utiliza 1 ejercicio');return;}
-      const result=nativeToggleTrainingExercise.apply(this,arguments);requestAnimationFrame(decoratePicker);return result;
+      const result=nativeToggleTrainingExercise.apply(this,arguments);
+      rememberCurrentDraft(id,di,day);
+      requestAnimationFrame(decoratePicker);
+      return result;
     };
   }
 
@@ -249,14 +384,20 @@
   if(nativeContinueSelection){
     window.continueTrainingExerciseSelection=function(id,di){
       const current=mode(id,di);const day=dayRef(id,di);
-      if(current==='superset'&&day?.selectedExerciseIds?.length){notify('Pulsa “Añadir Superserie” antes de continuar');return;}
-      if(current==='restpause'&&day?.selectedExerciseIds?.length){notify('Pulsa “Añadir REST-pause” antes de continuar');return;}
+      if(current==='superset'&&day?.selectedExerciseIds?.length){notify('Añade la superserie seleccionada antes de guardar la rutina');return;}
+      if(current==='restpause'&&day?.selectedExerciseIds?.length){notify('Añade el REST-pause seleccionado antes de guardar la rutina');return;}
+      removePickerSavebar();
       return nativeContinueSelection.apply(this,arguments);
     };
   }
 
   const nativeRenderConfiguration=typeof window.renderTrainingExerciseConfiguration==='function'?window.renderTrainingExerciseConfiguration:null;
-  if(nativeRenderConfiguration){window.renderTrainingExerciseConfiguration=function(id,di){const result=nativeRenderConfiguration.apply(this,arguments);requestAnimationFrame(()=>decorateConfiguration(id,di));return result;};}
+  if(nativeRenderConfiguration){window.renderTrainingExerciseConfiguration=function(id,di){removePickerSavebar();const result=nativeRenderConfiguration.apply(this,arguments);requestAnimationFrame(()=>decorateConfiguration(id,di));return result;};}
+
+  const nativeBackFromTrainingExercises=typeof window.backFromTrainingExercises==='function'?window.backFromTrainingExercises:null;
+  if(nativeBackFromTrainingExercises){
+    window.backFromTrainingExercises=function(){removePickerSavebar();return nativeBackFromTrainingExercises.apply(this,arguments);};
+  }
 
   function supersetWorkoutContext(){
     const workout=window.activeWorkout;if(!workout)return null;
