@@ -5756,6 +5756,7 @@ function logout(){
   currentApp="";window.currentApp="";
   currentScreen="";window.currentScreen="";
   currentClientId=null;window.currentClientId=null;
+  window.__dccCoachChatV2=null;window.openCoachMessageClientId=null;
   try{localStorage.setItem(KEY,JSON.stringify(createNeutralData()))}catch(_){}
   document.getElementById("login").style.display="flex";
   document.getElementById("client").style.display="none";
