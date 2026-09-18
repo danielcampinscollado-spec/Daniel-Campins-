@@ -15894,6 +15894,16 @@ async function saveConfiguredTraining(id,dayIndex){
     toast("Completa las series y repeticiones de todos los ejercicios");
     return;
   }
+  const incompleteRestPause=day.exercises.find(ex=>ex?.restPause&&(ex.restPauseSeconds===null||ex.restPauseSeconds===undefined||ex.restPauseFinalRest===null||ex.restPauseFinalRest===undefined));
+  if(incompleteRestPause){
+    toast("Completa las pausas del REST-pause");
+    return;
+  }
+  const incompleteSuperset=day.exercises.find(ex=>ex?.supersetId&&(ex.supersetRest===null||ex.supersetRest===undefined));
+  if(incompleteSuperset){
+    toast("Completa el descanso de la superserie");
+    return;
+  }
 
   const restBetweenSetsGlobal =
     Math.max(0,parseInt(day.restBetweenSetsGlobal)||0);
@@ -15903,9 +15913,7 @@ async function saveConfiguredTraining(id,dayIndex){
 
   day.exercises.forEach(ex=>{
     if(ex.supersetId){
-      const specialRest = ex.supersetRest===null || ex.supersetRest===undefined
-        ? restBetweenSetsGlobal
-        : Math.max(0,parseInt(ex.supersetRest)||0);
+      const specialRest = Math.max(0,parseInt(ex.supersetRest)||0);
       ex.supersetRest=specialRest;
       ex.restBetweenSets=0;
       ex.restBetweenExercises=specialRest;
@@ -15913,10 +15921,8 @@ async function saveConfiguredTraining(id,dayIndex){
     }
 
     if(ex.restPause){
-      const shortRest=Math.max(1,parseInt(ex.restPauseSeconds)||7);
-      const finalRest=ex.restPauseFinalRest===null || ex.restPauseFinalRest===undefined
-        ? restBetweenExercisesGlobal
-        : Math.max(0,parseInt(ex.restPauseFinalRest)||0);
+      const shortRest=Math.max(1,parseInt(ex.restPauseSeconds)||1);
+      const finalRest=Math.max(0,parseInt(ex.restPauseFinalRest)||0);
       ex.restPauseSeconds=shortRest;
       ex.restPauseFinalRest=finalRest;
       ex.restBetweenSets=shortRest;
@@ -16610,7 +16616,7 @@ async function sendClientCheckin(){
 <script src="./coach-client-plan-status-v1.js?v=20260918-training-center16"></script>
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
-<script src="./training-superset-v1.js?v=20260918-7"></script>
+<script src="./training-superset-v1.js?v=20260918-8"></script>
 
 </body>
 </html>
