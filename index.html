@@ -15651,7 +15651,6 @@ function removeTrainingExercise(id,dayIndex,index){
 }
 async function addExercise(id,dayIndex){
 
-
   const day=data.routines[id]?.[dayIndex];
 
   if(!day){
@@ -15659,85 +15658,79 @@ async function addExercise(id,dayIndex){
     return;
   }
 
-const name=prompt("Nombre del ejercicio:");
-if(!name) return;
+  const name=prompt("Nombre del ejercicio:");
+  if(!name) return;
 
-const sets=prompt("Series:");
-if(!sets) return;
+  const sets=prompt("Series:");
+  if(!sets) return;
 
-const reps=prompt("Repeticiones:");
-if(!reps) return;
+  const reps=prompt("Repeticiones:");
+  if(!reps) return;
 
-const restBetweenSets=prompt(
-  "Descanso entre series (segundos):",
-  "0"
-);
+  const restBetweenSets=prompt("Descanso entre series (segundos):","0");
+  if(restBetweenSets===null) return;
 
-if(restBetweenSets===null) return;
+  const restBetweenExercises=prompt("Descanso después del ejercicio (segundos):","0");
+  if(restBetweenExercises===null) return;
 
-const restBetweenExercises=prompt(
-  "Descanso después del ejercicio (segundos):",
-  "0"
-);
+  const video=prompt("Enlace al vídeo del ejercicio (opcional):");
+  if(video===null) return;
 
-if(restBetweenExercises===null) return;
+  if(!Array.isArray(day.exercises))day.exercises=[];
 
-const video=prompt(
-  "Enlace al vídeo del ejercicio (opcional):"
-);
+  const exercise={
+    name:name.trim(),
+    sets:sets.trim(),
+    reps:reps.trim(),
+    restBetweenSets:Math.max(0,parseInt(restBetweenSets)||0),
+    restBetweenExercises:Math.max(0,parseInt(restBetweenExercises)||0),
+    videoUrl:video.trim()
+  };
 
-day.exercises.push({
-  name:name.trim(),
-  sets:sets.trim(),
-  reps:reps.trim(),
-  restBetweenSets:
-    Math.max(0,parseInt(restBetweenSets)||0),
-  restBetweenExercises:
-    Math.max(0,parseInt(restBetweenExercises)||0),
-  videoUrl:video.trim()
-});
-  /* Guardado local */
-  saveData();
+  day.exercises.push(exercise);
 
-  /* Guardado en Supabase */
-  const { error } = await supabaseClient
-    .from("client_routines")
-    .upsert({
-      client_id:id,
-      routine:data.routines[id]
-    });
-
-  if(error){
-    console.error("Error guardando rutina en Supabase:",error);
-    toast("Guardado local, pero no en Supabase");
+  const ok=await saveRoutineToSupabase(id);
+  if(!ok){
+    const index=day.exercises.indexOf(exercise);
+    if(index>=0)day.exercises.splice(index,1);
+    toast("No se pudo guardar el ejercicio");
     return;
   }
 
+  saveData();
   showCoach("routines");
   toast("Ejercicio guardado");
 }
+
 async function removeExercise(id,dayIndex,exerciseIndex){
 
   const day=data.routines[id]?.[dayIndex];
 
-  if(!day) return;
+  if(!day || !Array.isArray(day.exercises)) return;
+
+  const removed=day.exercises[exerciseIndex];
+  if(!removed)return;
 
   day.exercises.splice(exerciseIndex,1);
 
-  saveData();
-
   const ok=await saveRoutineToSupabase(id);
 
-  if(ok){
-    toast("Ejercicio eliminado");
+  if(!ok){
+    day.exercises.splice(exerciseIndex,0,removed);
+    toast("No se pudo eliminar el ejercicio");
+    return;
   }
 
+  saveData();
+  toast("Ejercicio eliminado");
   showCoach("routines");
 }
 
 async function removeTrainingDay(id,dayIndex){
 
-  if(!data.routines[id]) return;
+  if(!Array.isArray(data.routines?.[id])) return;
+
+  const previous=JSON.parse(JSON.stringify(data.routines[id]));
 
   data.routines[id].splice(dayIndex,1);
 
@@ -15745,14 +15738,16 @@ async function removeTrainingDay(id,dayIndex){
     day.day=i+1;
   });
 
-  saveData();
-
   const ok=await saveRoutineToSupabase(id);
 
-  if(ok){
-    toast("Día de entrenamiento eliminado");
+  if(!ok){
+    data.routines[id]=previous;
+    toast("No se pudo eliminar el día de entrenamiento");
+    return;
   }
 
+  saveData();
+  toast("Día de entrenamiento eliminado");
   showCoach("routines");
 }
 
