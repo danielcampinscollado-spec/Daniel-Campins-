@@ -1,7 +1,7 @@
 /* DCC — Flujo premium de alimentación V2 (aislado de gestión de clientes) */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-plan-v2-fresh-server-v1';
+const BUILD='20260918-nutrition-plan-v2-empty-seed-v2';
 if(window.__dccNutritionPlanPremiumV2===BUILD)return;
 window.__dccNutritionPlanPremiumV2=BUILD;
 const G='#e0ad4c',G2='#f4cf69';
@@ -17,7 +17,7 @@ function pane(){const w=document.querySelector('#coach-main .dcc-ca-wrap');retur
 function client(id){return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoid(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
 function plan(id){return window.data?.diets?.[id]||null}
-function dayHasSavedPlan(day){return !!(day&&typeof day==='object'&&(day.updated_at||(Array.isArray(day.meals)&&day.meals.length>0)))}
+function dayHasSavedPlan(day){return !!(day&&typeof day==='object'&&Array.isArray(day.meals)&&day.meals.length>0)}
 function hasPlan(id){const diets=window.data?.diets;if(!diets||!Object.prototype.hasOwnProperty.call(diets,id))return false;const p=diets[id];return !!(p&&typeof p==='object'&&(p.__dccPlanInitialized===true||dayHasSavedPlan(p.training)||dayHasSavedPlan(p.rest)))}
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 async function refreshPlan(id){
