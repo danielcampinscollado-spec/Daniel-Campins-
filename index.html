@@ -5069,7 +5069,7 @@ async function loadMessagesFromSupabase(){
 
     const { data:messages,error } = await supabaseClient
       .from("client_messages")
-      .select("client_id,sender,message,created_at")
+      .select("client_id,sender,message,created_at,sender_role,sender_user_id")
       .order("created_at",{ascending:true});
 
     if(error){
@@ -6326,7 +6326,7 @@ const notificationState =
 
   const unreadMessages =
     lastMessage &&
-    lastMessage[0] === "Daniel" &&
+    (typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(lastMessage):lastMessage[0]==="Daniel") &&
     (
       !messageSeenAt ||
       (
@@ -10454,7 +10454,7 @@ if(screen==="dashboard"){
 
     const last = msgs[msgs.length - 1];
 
-    return last && last[0] !== "Daniel";
+    return last && !(typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(last):last[0]==="Daniel");
 
   });
 
