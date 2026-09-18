@@ -4944,6 +4944,12 @@ function resetWeeklyCheckinIfNeeded(){
 
   saveData();
 }
+function createNeutralData(){
+  return {
+    clients:[],diets:{},routines:{},previousRoutines:{},routineUpdatedAt:{},weights:{},workoutHistory:{},
+    bodyFatHistory:{},checkins:{},messages:{},notificationState:{},completedTrainingDays:{}
+  };
+}
 function loadData(){
   try{
     const saved=localStorage.getItem(KEY);
@@ -4951,7 +4957,7 @@ function loadData(){
     if(saved){
       const parsed=JSON.parse(saved);
 
-      const result=JSON.parse(JSON.stringify(defaultData));
+      const result=createNeutralData();
 
       if(parsed.clients) result.clients=parsed.clients;
       if(parsed.weights) result.weights=parsed.weights;
@@ -4985,7 +4991,7 @@ if(parsed.completedTrainingDays){
     console.error("Error cargando datos:",e);
   }
 
-  return JSON.parse(JSON.stringify(defaultData));
+  return createNeutralData();
 }
 async function loadDietsFromSupabase(){
 
@@ -5925,10 +5931,22 @@ showClient("home");
   }
 
 }
+function teardownMessageRealtime(){
+  const channel=window.clientMessagesRealtimeChannel;
+  if(!channel)return;
+  window.clientMessagesRealtimeChannel=null;
+  try{Promise.resolve(supabaseClient.removeChannel(channel)).catch(error=>console.warn("DCC realtime cleanup:",error))}catch(error){console.warn("DCC realtime cleanup:",error)}
+}
 function logout(){
-document.getElementById("login").style.display="flex";
-document.getElementById("client").style.display="none";
-document.getElementById("coach").style.display="none";
+  teardownMessageRealtime();
+  data=createNeutralData();
+  currentApp="";window.currentApp="";
+  currentScreen="";window.currentScreen="";
+  currentClientId=null;window.currentClientId=null;
+  try{localStorage.setItem(KEY,JSON.stringify(createNeutralData()))}catch(_){}
+  document.getElementById("login").style.display="flex";
+  document.getElementById("client").style.display="none";
+  document.getElementById("coach").style.display="none";
 }
 
 function navButton(icon,text,fn){
