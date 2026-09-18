@@ -13680,59 +13680,51 @@ async function removeFood(id,type,mi,fi,oi=0){
 
 }
 
-function startNewRoutine(id){
+async function startNewRoutine(id){
 
   if(!id)return;
 
   if(!data.previousRoutines){
-
     data.previousRoutines={};
-
   }
 
   const currentRoutine =
-
     Array.isArray(data.routines?.[id])
-
       ? data.routines[id]
-
       : [];
 
   if(!currentRoutine.length){
-
     toast("No hay una rutina actual para guardar");
-
     return;
-
   }
 
-  data.previousRoutines[id]={
-
-    routine:JSON.parse(JSON.stringify(currentRoutine)),
-
-    savedAt:new Date().toISOString()
-
-  };
+  const previousRoutine=JSON.parse(JSON.stringify(currentRoutine));
+  const previousArchive=data.previousRoutines[id];
 
   data.routines[id]=[];
 
-  saveData();
+  const ok=await saveRoutineToSupabase(id);
 
-  saveRoutineToSupabase(id).then(ok=>{
-
-    if(!ok){
-
-      toast("Nueva rutina creada localmente, pero no se pudo sincronizar");
-
+  if(!ok){
+    data.routines[id]=previousRoutine;
+    if(previousArchive===undefined){
+      delete data.previousRoutines[id];
     }else{
-
-      toast("Nueva rutina creada");
-
+      data.previousRoutines[id]=previousArchive;
     }
-
+    toast("No se pudo crear la nueva rutina");
     showCoach("routines");
+    return;
+  }
 
-  });
+  data.previousRoutines[id]={
+    routine:previousRoutine,
+    savedAt:new Date().toISOString()
+  };
+
+  saveData();
+  toast("Nueva rutina creada");
+  showCoach("routines");
 
 }
 
