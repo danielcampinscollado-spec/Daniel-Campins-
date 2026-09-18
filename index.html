@@ -5439,75 +5439,15 @@ function client(id){
 return data.clients.find(c=>c.id===id);
 }
 async function deleteClient(id){
-
-  const c = client(id);
-
-  if(!c){
-    toast("No se encontró el cliente");
-    return;
-  }
-
-  const confirmed = confirm(
-    "¿Seguro que quieres eliminar a " +
-    c.name +
-    "?\n\nSe eliminarán también sus datos asociados."
-  );
-
-  if(!confirmed) return;
-
+  const c=client(id);if(!c){toast("No se encontró el cliente");return}
+  if(!confirm("¿Seguro que quieres eliminar a "+c.name+"?\n\nSe eliminarán también sus datos asociados."))return;
   try{
-
-    const { error:clientError } = await supabaseClient
-      .from("clients")
-      .delete()
-      .eq("id",id);
-
-    if(clientError){
-
-      console.error(
-        "Error eliminando cliente:",
-        clientError
-      );
-
-      toast("No se pudo eliminar el cliente");
-      return;
-    }
-
-    data.clients =
-      data.clients.filter(c => c.id !== id);
-
-    if(data.weights) delete data.weights[id];
-    if(data.checkins) delete data.checkins[id];
-    if(data.messages) delete data.messages[id];
-    if(data.routines) delete data.routines[id];
-    if(data.diets) delete data.diets[id];
-    if(data.workoutHistory) delete data.workoutHistory[id];
-    if(data.completedTrainingDays){
-      delete data.completedTrainingDays[id];
-    }
-
-    saveData();
-
-    currentClientId = null;
-
-    closeModal();
-
-    showCoach("clients");
-
-    toast("Cliente eliminado correctamente");
-
-  }catch(e){
-
-    console.error(
-      "Error eliminando cliente:",
-      e
-    );
-
-    toast("No se pudo eliminar el cliente");
-
-  }
-
+    const {data:ok,error}=await supabaseClient.rpc("dcc_delete_client",{p_client_id:String(id)});
+    if(error)throw error;if(ok!==true)throw new Error("El servidor no confirmó la eliminación");
+    await loadClientsFromSupabase();currentClientId=null;closeModal();showCoach("clients");toast("Cliente eliminado correctamente");
+  }catch(error){console.error("Error eliminando cliente:",error);toast("No se pudo eliminar el cliente")}
 }
+
 function getClientManagementStatus(id){
 
   const diet = data.diets?.[id];
@@ -15803,72 +15743,13 @@ openModal(`
 }
 
 async function markReviewed(id){
-
-  const c = client(id);
-
-  if(!c){
-    toast("No se encontró el cliente");
-    return;
-  }
-
-  const reviewedAt = new Date().toISOString();
-
-  const { error:checkinError } = await supabaseClient
-    .from("client_checkins")
-    .update({
-      reviewed:true,
-      updated_at:reviewedAt
-    })
-    .eq("client_id",id);
-
-  if(checkinError){
-
-    console.error(
-      "Error guardando revisión del check-in:",
-      checkinError
-    );
-
-    toast("No se pudo guardar la revisión");
-
-    return;
-  }
-
-  const { error:clientError } = await supabaseClient
-    .from("clients")
-    .update({
-      status:"Revisado"
-    })
-    .eq("id",id);
-
-  if(clientError){
-    console.error(
-      "Check-in revisado, pero no se pudo actualizar el estado del cliente:",
-      clientError
-    );
-  }
-
-  if(!data.checkins[id]){
-    data.checkins[id]={
-      weight:money(c.weight)+" kg",
-      diet:"",
-      training:"",
-      comment:"",
-      reviewed:false
-    };
-  }
-
-  data.checkins[id].reviewed=true;
-  data.checkins[id].status="Revisado";
-
-  c.status="Revisado";
-
-  saveData();
-
-  closeModal();
-
-  showCoach("dashboard");
-
-  toast("Check-in marcado como revisado");
+  const c=client(id);if(!c){toast("No se encontró el cliente");return}
+  try{
+    const {data:ok,error}=await supabaseClient.rpc("dcc_review_checkin",{p_client_id:String(id)});
+    if(error)throw error;if(ok!==true)throw new Error("El servidor no confirmó la revisión");
+    await Promise.allSettled([loadCheckinsFromSupabase(),loadClientsFromSupabase()]);
+    closeModal();showCoach("dashboard");toast("Check-in marcado como revisado");
+  }catch(error){console.error("Error guardando revisión del check-in:",error);toast("No se pudo guardar la revisión")}
 }
 
 function openMessages(id){
