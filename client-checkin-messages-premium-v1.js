@@ -192,25 +192,26 @@
     const now=new Date().toISOString();
     x.weight=(kg(c.weight)!=null?comma(c.weight):String(c.weight||''))+' kg';x.reviewed=false;x.status='Nuevo check-in';x.sentAt=now;c.status='Pendiente';
     try{
-      const {error}=await db.from('client_checkins').upsert({client_id:id,weight:x.weight,diet:x.diet,training:x.training,energy:x.energy,comment:x.comment||'',body_fat:x.bodyFat!==undefined&&x.bodyFat!==null&&x.bodyFat!==''?Number(x.bodyFat):null,sent_at:now,reviewed:false,updated_at:now},{onConflict:'client_id'});
-      if(error)throw error;
-      const {error:clientError}=await db.from('clients').update({status:'Pendiente'}).eq('id',id);
-      if(clientError)console.warn('DCC estado cliente:',clientError);
-      persistLocal();toastSafe('Check-in enviado a tu entrenador');renderClientCheckin(false);
+      const bodyFat=x.bodyFat!==undefined&&x.bodyFat!==null&&x.bodyFat!==''?Number(x.bodyFat):null;
+      const {data:ok,error}=await db.rpc('dcc_submit_checkin',{p_client_id:String(id),p_weight:x.weight,p_diet:x.diet,p_training:x.training,p_energy:x.energy,p_comment:x.comment||'',p_body_fat:bodyFat,p_sent_at:now});
+      if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó el check-in');
+      await syncCheckinsExtended();toastSafe('Check-in enviado a '+coachName());renderClientCheckin(false);
     }catch(e){console.error('DCC envío check-in:',e);toastSafe('No se pudo enviar el check-in');if(btn)btn.disabled=false}
   };
 
   function msgText(m){return String(Array.isArray(m)?(m[1]??''):(m?.text??m?.message??m?.body??m?.content??'')).trim()}
   function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
   function msgDate(m){const v=Array.isArray(m)?m[2]:(m?.created_at??m?.createdAt??m?.date??m?.time??m?.timestamp);const d=v?new Date(v):null;return d&&Number.isFinite(d.getTime())?d:null}
-  function msgIsCoach(m){return /daniel|coach|trainer|entrenador|admin/i.test(msgSender(m))||(m&&!Array.isArray(m)&&(m.isCoach===true||m.mine===false&&/coach/i.test(String(m.role||''))))}
+  function coachName(){return String(typeof window.dccCoachName==='function'?window.dccCoachName():'Tu entrenador').trim()||'Tu entrenador'}
+  function coachInitials(){return coachName().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'E'}
+  function msgIsCoach(m){if(typeof window.dccIsCoachMessage==='function')return window.dccIsCoachMessage(m);return /coach|trainer|entrenador|admin/i.test(msgSender(m))||(m&&!Array.isArray(m)&&(m.isCoach===true||m.mine===false&&/coach/i.test(String(m.role||''))))}
   function thread(id){const a=appData().messages?.[id];return Array.isArray(a)?a.filter(m=>msgText(m)).slice().sort((x,y)=>(msgDate(x)?.getTime()||0)-(msgDate(y)?.getTime()||0)):[]}
   function timeFmt(d){return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):''}
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
   function messageBubble(m){
     const coach=msgIsCoach(m);const d=msgDate(m);
-    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓✓</span>'}</div></div></div>`;
+    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?`<div class="dcc-cm-mini">${esc(coachInitials())}</div>`:''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓✓</span>'}</div></div></div>`;
   }
   function messagesHtml(id){
     const t=thread(id);if(!t.length)return'<div class="dcc-cm-empty">Todavía no hay mensajes. Puedes escribirle a tu entrenador abajo.</div>';
@@ -223,10 +224,10 @@
   async function syncMessages(){
     const db=database();if(!db)return false;
     try{
-      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at').order('created_at',{ascending:true});
+      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role,sender_user_id').order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData(),next={};(d.clients||[]).forEach(c=>next[c.id]=[]);
-      (rows||[]).forEach(r=>{if(!next[r.client_id])next[r.client_id]=[];next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null])});
+      (rows||[]).forEach(r=>{if(!next[r.client_id])next[r.client_id]=[];next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.sender_user_id||null])});
       d.messages=next;persistLocal();return true;
     }catch(e){console.error('DCC sync mensajes:',e);return false}
   }
@@ -234,7 +235,7 @@
   function renderClientMessages(){
     injectCss();const main=document.getElementById('client-main');const id=activeClientId();if(!main||!id)return;
     main.className='dcc-client-messages-v1';
-    main.innerHTML=`<div class="dcc-cm"><div class="dcc-cm-kicker">MENSAJES</div><header class="dcc-cm-person"><div class="dcc-cm-avatar">DC</div><div><h1>Daniel</h1><div class="dcc-cm-role"><span class="dcc-cm-dot"></span>Tu entrenador</div></div></header><div class="dcc-cm-stream" id="dccClientMessageStream">${messagesHtml(id)}</div></div><div class="dcc-cm-composer"><textarea id="dccClientMessageInput" class="dcc-cm-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccClientSendPremium()}"></textarea><button id="dccClientMessageSend" type="button" class="dcc-cm-send" onclick="dccClientSendPremium()" aria-label="Enviar">➤</button></div>`;
+    main.innerHTML=`<div class="dcc-cm"><div class="dcc-cm-kicker">MENSAJES</div><header class="dcc-cm-person"><div class="dcc-cm-avatar">${esc(coachInitials())}</div><div><h1>${esc(coachName())}</h1><div class="dcc-cm-role"><span class="dcc-cm-dot"></span>Tu entrenador</div></div></header><div class="dcc-cm-stream" id="dccClientMessageStream">${messagesHtml(id)}</div></div><div class="dcc-cm-composer"><textarea id="dccClientMessageInput" class="dcc-cm-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccClientSendPremium()}"></textarea><button id="dccClientMessageSend" type="button" class="dcc-cm-send" onclick="dccClientSendPremium()" aria-label="Enviar">➤</button></div>`;
     requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
     syncMessages().then(ok=>{if(ok&&window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id))refreshClientThread(id)});
     startMessagePolling();
@@ -246,7 +247,8 @@
     const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
     const send=document.getElementById('dccClientMessageSend');if(send)send.disabled=true;
     try{
-      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',message:text});
+      const {data:sessionData,error:sessionError}=await db.auth.getSession();if(sessionError)throw sessionError;
+      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',message:text,sender_role:'client',sender_user_id:sessionData?.session?.user?.id||null});
       if(error)throw error;
       if(input)input.value='';await syncMessages();refreshClientThread(id);toastSafe('Mensaje enviado');
     }catch(e){console.error('DCC mensaje cliente:',e);toastSafe('No se pudo enviar el mensaje')}
@@ -258,7 +260,8 @@
     const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
     if(input)input.disabled=true;
     try{
-      const {error}=await db.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
+      const {data:sessionData,error:sessionError}=await db.auth.getSession();if(sessionError)throw sessionError;
+      const {error}=await db.from('client_messages').insert({client_id:id,sender:coachName(),message:text,sender_role:'coach',sender_user_id:sessionData?.session?.user?.id||null});
       if(error)throw error;
       if(input)input.value='';await syncMessages();toastSafe('Mensaje enviado');
       if(typeof window.dccOpenChat==='function'&&String(window.__dccOpenChat??'')===String(id))window.dccOpenChat(id);
