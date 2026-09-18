@@ -1,28 +1,28 @@
 {
-  "version": 2,
-  "descripcion": "Biblioteca DCC definitiva de ejercicios habituales de gimnasio. Base unificada para entrenador y cliente.",
-  "total": 130,
+  "version": 3,
+  "descripcion": "Biblioteca DCC ampliada de ejercicios habituales de gimnasio. Base unificada para entrenador y cliente.",
+  "total": 191,
   "criterios": [
     "Ejercicios reconocibles y habituales en gimnasios comerciales",
-    "Cobertura de maquinas, poleas, barras, mancuernas, multipower y peso corporal",
+    "Cobertura de máquinas, poleas, barras, mancuernas, multipower y peso corporal",
     "Sin duplicados funcionales evidentes",
-    "ID estable y una ilustracion propia por ejercicio"
+    "Selector del entrenador centrado en nombres de ejercicios, sin ilustraciones"
   ],
   "grupos": {
-    "Pectoral": 18,
-    "Espalda": 21,
-    "Hombros": 13,
-    "Bíceps": 13,
-    "Tríceps": 12,
-    "Cuádriceps": 14,
-    "Femoral": 8,
-    "Glúteos": 8,
-    "Aductores": 2,
-    "Gemelos": 4,
-    "Trapecio": 4,
-    "Antebrazos": 2,
-    "Lumbar": 3,
-    "Core": 8
+    "Pectoral": 24,
+    "Espalda": 28,
+    "Hombros": 18,
+    "Bíceps": 17,
+    "Tríceps": 17,
+    "Cuádriceps": 19,
+    "Femoral": 12,
+    "Glúteos": 12,
+    "Aductores": 5,
+    "Gemelos": 7,
+    "Trapecio": 6,
+    "Antebrazos": 5,
+    "Lumbar": 5,
+    "Core": 16
   },
   "ejercicios": [
     {
