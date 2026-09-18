@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v5';
+  const BUILD='20260918-training-methods-v6';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -21,6 +21,37 @@
   function dayRef(id,di){return routineDays(id)?.[Number(di)]||null;}
   function library(){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];}
   function save(){try{if(typeof window.saveData==='function')window.saveData();else if(typeof saveData==='function')saveData();}catch(_){}}
+  function markRoutineDirty(id){
+    if(!window.__dccRoutineUnsavedBackupSet){
+      window.__dccRoutineUnsavedBackup=JSON.stringify(window.data?.routines?.[id]??null);
+      window.__dccRoutineUnsavedBackupSet=true;
+    }
+    window.__dccRoutineUnsavedClient=String(id??window.selectedClient??'');
+    window.__dccRoutineDraftDirty=true;
+  }
+  function clearRoutineDirty(){
+    window.__dccRoutineDraftDirty=false;
+    window.__dccRoutineUnsavedBackup=undefined;
+    window.__dccRoutineUnsavedBackupSet=false;
+    window.__dccRoutineUnsavedClient='';
+  }
+  function discardRoutineDraft(){
+    const id=window.__dccRoutineUnsavedClient;
+    if(id&&window.__dccRoutineUnsavedBackupSet){
+      const old=JSON.parse(window.__dccRoutineUnsavedBackup);
+      if(!window.data.routines)window.data.routines={};
+      if(old===null)delete window.data.routines[id];else window.data.routines[id]=old;
+      save();
+    }
+    clearRoutineDirty();
+  }
+  function confirmRoutineExit(){
+    if(!window.__dccRoutineDraftDirty||window.__dccRoutineNavBypass)return true;
+    const leave=window.confirm('Tienes cambios sin guardar en la rutina. Si sales ahora, perderás esos cambios. ¿Salir sin guardar?');
+    if(!leave)return false;
+    discardRoutineDraft();
+    return true;
+  }
   function key(id,di){return String(id)+'|'+String(di);}
   function mode(id,di){return pickerMode[key(id,di)]||'normal';}
   function setMode(id,di,value){pickerMode[key(id,di)]=value;}
@@ -99,7 +130,7 @@
       .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
-      #coach-main.dcc-config-active{padding-bottom:92px!important}
+      #coach-main.dcc-config-active{padding-bottom:120px!important}
       #coach-main .dcc-exercise-card{padding:9px!important;border-radius:13px!important}
       #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-bottom:6px!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
@@ -109,9 +140,9 @@
       #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 92px!important;gap:7px!important;margin-top:7px!important}
       #coach-main .dcc-exercise-card input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
       #coach-main .dcc-exercise-card input[type="url"]{min-height:36px!important;font-size:11px!important}
-      #coach-main .dcc-exercise-card [data-dcc-delete]{width:auto!important;height:32px!important;min-width:0!important;padding:0 9px!important;border-radius:9px!important;border:1px solid rgba(183,123,19,.22)!important;color:#8c5a08!important;font-size:10px!important;font-weight:800!important;background:transparent!important}
+      #coach-main .dcc-exercise-card [data-dcc-delete]{width:34px!important;height:32px!important;min-width:34px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.48)!important;color:#c9343d!important;font-size:12px!important;font-weight:900!important;background:rgba(190,48,55,.035)!important}
       #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
-      #coach-main .dcc-config-save{position:sticky!important;bottom:calc(76px + env(safe-area-inset-bottom));z-index:12;width:100%!important;min-height:44px!important;margin-top:10px!important;border-radius:12px!important;font-size:13px!important;box-shadow:0 7px 20px rgba(61,42,12,.10)!important}
+      #coach-main .dcc-config-save{position:static!important;width:100%!important;min-height:44px!important;margin-top:12px!important;border-radius:12px!important;font-size:13px!important;box-shadow:none!important}
       #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
       #coach-main .dcc-method-config{margin:6px 0;padding:9px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}
       #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -274,6 +305,7 @@
       day.selectedExerciseIds=[];
       draftSelections(id,di).superset=[];
       day.trainingSetupStarted=true;
+      markRoutineDirty(id);
       save();
       if(showSuccess)notify('Superserie añadida');
       return true;
@@ -292,6 +324,7 @@
       day.selectedExerciseIds=[];
       draftSelections(id,di).restpause=[];
       day.trainingSetupStarted=true;
+      markRoutineDirty(id);
       save();
       if(showSuccess)notify('REST-pause añadido');
       return true;
@@ -327,7 +360,7 @@
   function updateSuperset(id,di,supersetId,keyName,value){
     const day=dayRef(id,di);if(!day)return;
     const n=keyName==='rounds'?Math.max(1,parseInt(value)||1):Math.max(0,parseInt(value)||0);
-    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save();
+    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});markRoutineDirty(id);save();
   }
 
   function updateRestPause(id,di,exerciseIndex,keyName,value){
@@ -339,7 +372,7 @@
       const n=Math.max(1,parseInt(value)||1);ex.restPauseSeconds=n;ex.restBetweenSets=n;
     }else{
       const n=Math.max(0,parseInt(value)||0);ex.restPauseFinalRest=n;ex.restBetweenExercises=n;
-    }save();
+    }markRoutineDirty(id);save();
   }
 
   function decorateConfiguration(id,di){
@@ -362,7 +395,7 @@
       if(!card)return;
       card.classList.add('dcc-exercise-card');
       const deleteBtn=[...card.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('removeTrainingExercise'));
-      if(deleteBtn){deleteBtn.textContent='Eliminar';deleteBtn.dataset.dccDelete='1';}
+      if(deleteBtn){deleteBtn.textContent='[x]';deleteBtn.dataset.dccDelete='1';}
       const videoBtn=[...card.querySelectorAll('button')].find(btn=>(btn.textContent||'').includes('Ver vídeo'));
       if(videoBtn){videoBtn.textContent='Ver vídeo';videoBtn.dataset.dccVideo='1';}
       const urlInput=card.querySelector('input[type="url"]');
@@ -370,6 +403,11 @@
     });
     const saveButton=[...root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('saveConfiguredTraining'));
     if(saveButton){saveButton.textContent='Guardar rutina';saveButton.classList.add('dcc-config-save');}
+    root.querySelectorAll('input').forEach(input=>{
+      if(input.dataset.dccDirtyBound)return;
+      input.dataset.dccDirtyBound='1';
+      input.addEventListener('input',()=>markRoutineDirty(id));
+    });
 
     groups.supersets.forEach(group=>{
       const groupCards=group.items.map(ex=>currentCards().find(card=>(card.textContent||'').includes(ex.name||'')&&card.querySelector('input'))).filter(Boolean);
@@ -425,6 +463,7 @@
         }
         day.trainingSetupStarted=true;
         day.selectedExerciseIds=[];
+        markRoutineDirty(id);
         save();
         window.openTrainingExercises?.(id,di,true);
         return;
@@ -464,7 +503,70 @@
 
   const nativeBackFromTrainingExercises=typeof window.backFromTrainingExercises==='function'?window.backFromTrainingExercises:null;
   if(nativeBackFromTrainingExercises){
-    window.backFromTrainingExercises=function(){removePickerSavebar();return nativeBackFromTrainingExercises.apply(this,arguments);};
+    window.backFromTrainingExercises=function(){
+      if(!confirmRoutineExit())return;
+      removePickerSavebar();
+      return nativeBackFromTrainingExercises.apply(this,arguments);
+    };
+  }
+
+  const nativeToggleTrainingMuscle=typeof window.toggleTrainingMuscle==='function'?window.toggleTrainingMuscle:null;
+  if(nativeToggleTrainingMuscle){
+    window.toggleTrainingMuscle=function(id){
+      markRoutineDirty(id);
+      return nativeToggleTrainingMuscle.apply(this,arguments);
+    };
+  }
+
+  const nativeAddManualTrainingExercise=typeof window.addManualTrainingExercise==='function'?window.addManualTrainingExercise:null;
+  if(nativeAddManualTrainingExercise){
+    window.addManualTrainingExercise=function(id,di){
+      const before=dayRef(id,di)?.exercises?.length||0;
+      const result=nativeAddManualTrainingExercise.apply(this,arguments);
+      const after=dayRef(id,di)?.exercises?.length||0;
+      if(after!==before)markRoutineDirty(id);
+      return result;
+    };
+  }
+
+  const nativeRemoveTrainingExercise=typeof window.removeTrainingExercise==='function'?window.removeTrainingExercise:null;
+  if(nativeRemoveTrainingExercise){
+    window.removeTrainingExercise=function(id,di){
+      const before=dayRef(id,di)?.exercises?.length||0;
+      const result=nativeRemoveTrainingExercise.apply(this,arguments);
+      const after=dayRef(id,di)?.exercises?.length||0;
+      if(after!==before)markRoutineDirty(id);
+      return result;
+    };
+  }
+
+  const nativeSaveConfiguredTraining=typeof window.saveConfiguredTraining==='function'?window.saveConfiguredTraining:null;
+  if(nativeSaveConfiguredTraining){
+    window.saveConfiguredTraining=async function(){
+      window.__dccRoutineNavBypass=true;
+      try{
+        const result=await nativeSaveConfiguredTraining.apply(this,arguments);
+        const day=dayRef(arguments[0],arguments[1]);
+        if(day?.trainingSetupStep==='complete')clearRoutineDirty();
+        return result;
+      }finally{window.__dccRoutineNavBypass=false;}
+    };
+  }
+
+  const nativeShowCoach=typeof window.showCoach==='function'?window.showCoach:null;
+  if(nativeShowCoach){
+    window.showCoach=function(){
+      if(window.__dccRoutineDraftDirty&&!window.__dccRoutineNavBypass&&!confirmRoutineExit())return;
+      return nativeShowCoach.apply(this,arguments);
+    };
+  }
+
+  const nativeOpenClientTabGuard=typeof window.dccOpenClientTab==='function'?window.dccOpenClientTab:null;
+  if(nativeOpenClientTabGuard){
+    window.dccOpenClientTab=function(id,tab){
+      if(window.__dccRoutineDraftDirty&&tab!=='training'&&!window.__dccRoutineNavBypass&&!confirmRoutineExit())return;
+      return nativeOpenClientTabGuard.apply(this,arguments);
+    };
   }
 
   function supersetWorkoutContext(){
