@@ -4437,91 +4437,37 @@ body{
 
 <body>
 
-<div id="login" class="login">
+<div id="login" class="login dcc-login-light">
+  <div class="login-box dcc-login-shell">
+    <header class="dcc-login-brand">
+      <img class="dcc-login-logo" src="./dc-logo-portada.svg?v=20260918-1" alt="DC">
+      <div class="dcc-login-kicker">ENTRENAMIENTO PERSONAL</div>
+      <h1>Tu progreso, en un solo lugar.</h1>
+      <p>Accede a tu espacio de entrenamiento o al panel profesional.</p>
+    </header>
 
-  <div class="login-box">
-
-    <div class="brand-logo">
-  <img
-    src="./dc-stride-logo.svg.svg"
-    alt="DC Stride"
-    style="
-      display:block;
-      width:110px;
-      height:auto;
-      margin:0 auto;
-    "
-  >
-</div>
-
-    <div class="brand-line"></div>
-
-
-    <div class="choices">
-
-
-      <button
-        class="choice choice-client"
-        type="button"
-        onclick="openApp('client')">
-
-        <div class="choice-icon">
-          <span>♙</span>
-        </div>
-
-        <b>ÁREA CLIENTE</b>
-
-        <div class="choice-line"></div>
-
-        <div class="choice-icons">
-          <span>⚑</span>
-          <span>⚖</span>
-          <span>↗</span>
-          <span>✓</span>
-          <span>💬</span>
-        </div>
-
-        <span class="choice-description">
-          Alimentación, entrenamiento,<br>
-          progreso, check-in y mensajes.
+    <div class="choices dcc-access-grid">
+      <button class="choice choice-client dcc-access-card" type="button" onclick="openApp('client')">
+        <span class="dcc-access-number">01</span>
+        <span class="dcc-access-copy">
+          <b>Acceso cliente</b>
+          <span class="choice-description">Entrenamiento, alimentación, progreso y seguimiento.</span>
         </span>
-
+        <span class="dcc-access-arrow" aria-hidden="true">→</span>
       </button>
 
-
-      <button
-        class="choice choice-admin"
-        type="button"
-        onclick="openApp('coach')">
-
-        <div class="choice-icon admin-icon">
-          <span>▥</span>
-        </div>
-
-        <b>PANEL ENTRENADOR</b>
-
-        <div class="choice-line"></div>
-
-        <div class="choice-icons">
-          <span>♙♙</span>
-          <span>▤</span>
-          <span>⚊</span>
-          <span>✓</span>
-          <span>💬</span>
-        </div>
-
-        <span class="choice-description">
-          Clientes, dietas, rutinas,<br>
-          check-ins y mensajes.
+      <button class="choice choice-admin dcc-access-card" type="button" onclick="openApp('coach')">
+        <span class="dcc-access-number">02</span>
+        <span class="dcc-access-copy">
+          <b>Acceso entrenador</b>
+          <span class="choice-description">Clientes, planificación, seguimiento y gestión profesional.</span>
         </span>
-
+        <span class="dcc-access-arrow" aria-hidden="true">→</span>
       </button>
-
-
     </div>
 
+    <div class="dcc-login-foot">DC · TRAINING PLATFORM</div>
   </div>
-
 </div>
 
 <div id="client" class="app">
@@ -16597,6 +16543,239 @@ async function sendClientCheckin(){
   .diet-pdf-text span{font-size:9px!important}
   .diet-pdf-button{min-height:34px!important;padding:7px 9px!important}
   .diet-pdf-button span{font-size:8.5px!important}
+}
+
+/* =========================================================
+   DCC — PORTADA LIGHT · 2026-09-18
+   Aislada de las zonas cliente/entrenador
+   ========================================================= */
+#login.dcc-login-light{
+  min-height:100vh!important;
+  min-height:100dvh!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:28px 20px!important;
+  overflow:auto!important;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(181,138,59,.10),transparent 28%),
+    radial-gradient(circle at 88% 92%,rgba(181,138,59,.07),transparent 26%),
+    linear-gradient(180deg,#fbf8f1 0%,#f5efe4 100%)!important;
+  color:#17191d!important;
+}
+#login.dcc-login-light::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(rgba(181,138,59,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(181,138,59,.035) 1px,transparent 1px)!important;
+  background-size:42px 42px!important;
+  -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 62%)!important;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 62%)!important;
+}
+#login.dcc-login-light .dcc-login-shell{
+  width:min(760px,100%)!important;
+  margin:0 auto!important;
+  padding:42px!important;
+  border:1px solid rgba(181,138,59,.28)!important;
+  border-radius:30px!important;
+  background:rgba(255,253,248,.88)!important;
+  box-shadow:0 24px 70px rgba(70,51,18,.10)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  position:relative!important;
+  z-index:2!important;
+  overflow:hidden!important;
+}
+#login.dcc-login-light .dcc-login-shell::before{
+  content:""!important;
+  position:absolute!important;
+  width:260px!important;
+  height:260px!important;
+  right:-145px!important;
+  top:-145px!important;
+  border-radius:50%!important;
+  background:rgba(181,138,59,.08)!important;
+  pointer-events:none!important;
+}
+#login.dcc-login-light .dcc-login-shell::after{display:none!important}
+#login.dcc-login-light .dcc-login-brand{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  text-align:center!important;
+  position:relative!important;
+  z-index:2!important;
+}
+#login.dcc-login-light .dcc-login-logo{
+  display:block!important;
+  width:154px!important;
+  height:auto!important;
+  margin:0 auto 12px!important;
+}
+#login.dcc-login-light .dcc-login-kicker{
+  margin-top:2px!important;
+  color:#a57624!important;
+  font-size:10px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:2.6px!important;
+}
+#login.dcc-login-light .dcc-login-brand h1{
+  margin:16px 0 0!important;
+  color:#17191d!important;
+  font-size:34px!important;
+  line-height:1.08!important;
+  letter-spacing:-1.25px!important;
+  font-weight:850!important;
+}
+#login.dcc-login-light .dcc-login-brand p{
+  max-width:480px!important;
+  margin:10px auto 0!important;
+  color:#73777f!important;
+  font-size:14px!important;
+  line-height:1.5!important;
+}
+#login.dcc-login-light .dcc-access-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  width:100%!important;
+  margin-top:30px!important;
+}
+#login.dcc-login-light .dcc-access-card{
+  width:100%!important;
+  min-height:132px!important;
+  height:auto!important;
+  padding:20px!important;
+  display:grid!important;
+  grid-template-columns:34px minmax(0,1fr) 34px!important;
+  align-items:center!important;
+  gap:12px!important;
+  border:1px solid #e3d3b5!important;
+  border-radius:19px!important;
+  background:#fffdf9!important;
+  color:#17191d!important;
+  text-align:left!important;
+  box-shadow:0 8px 22px rgba(67,49,19,.045)!important;
+  overflow:hidden!important;
+}
+#login.dcc-login-light .dcc-access-card::before,
+#login.dcc-login-light .dcc-access-card::after{display:none!important}
+#login.dcc-login-light .dcc-access-card:hover{
+  transform:translateY(-2px)!important;
+  border-color:#c99b46!important;
+  box-shadow:0 12px 28px rgba(94,67,22,.10)!important;
+}
+#login.dcc-login-light .dcc-access-card:active{transform:scale(.99)!important}
+#login.dcc-login-light .dcc-access-number{
+  align-self:start!important;
+  padding-top:3px!important;
+  color:#b58a3b!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+#login.dcc-login-light .dcc-access-copy{
+  display:block!important;
+  min-width:0!important;
+}
+#login.dcc-login-light .dcc-access-card b{
+  display:block!important;
+  margin:0 0 7px!important;
+  color:#17191d!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+  letter-spacing:-.35px!important;
+  font-weight:850!important;
+}
+#login.dcc-login-light .dcc-access-card .choice-description{
+  display:block!important;
+  max-width:none!important;
+  margin:0!important;
+  color:#777b83!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+  text-align:left!important;
+}
+#login.dcc-login-light .dcc-access-arrow{
+  width:32px!important;
+  height:32px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  justify-self:end!important;
+  border:1px solid rgba(181,138,59,.34)!important;
+  border-radius:50%!important;
+  background:#fbf3e1!important;
+  color:#9d701f!important;
+  font-size:17px!important;
+  line-height:1!important;
+}
+#login.dcc-login-light .choice-admin{
+  border-color:#d2aa5d!important;
+  background:linear-gradient(145deg,#fffdf8,#fbf2df)!important;
+}
+#login.dcc-login-light .dcc-login-foot{
+  margin-top:25px!important;
+  padding-top:18px!important;
+  border-top:1px solid rgba(181,138,59,.18)!important;
+  color:#a2a2a0!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:2.1px!important;
+  text-align:center!important;
+}
+@media(max-width:600px){
+  #login.dcc-login-light{
+    align-items:flex-start!important;
+    padding:24px 14px 28px!important;
+  }
+  #login.dcc-login-light .dcc-login-shell{
+    width:100%!important;
+    max-width:430px!important;
+    padding:30px 16px 22px!important;
+    border-radius:25px!important;
+  }
+  #login.dcc-login-light .dcc-login-logo{
+    width:132px!important;
+    margin-bottom:9px!important;
+  }
+  #login.dcc-login-light .dcc-login-kicker{
+    font-size:9px!important;
+    letter-spacing:2.2px!important;
+  }
+  #login.dcc-login-light .dcc-login-brand h1{
+    margin-top:14px!important;
+    font-size:29px!important;
+    letter-spacing:-1px!important;
+  }
+  #login.dcc-login-light .dcc-login-brand p{
+    max-width:310px!important;
+    font-size:12px!important;
+  }
+  #login.dcc-login-light .dcc-access-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    margin-top:24px!important;
+  }
+  #login.dcc-login-light .dcc-access-card{
+    min-height:105px!important;
+    padding:17px 15px!important;
+    border-radius:17px!important;
+  }
+  #login.dcc-login-light .dcc-access-card b{
+    font-size:17px!important;
+  }
+  #login.dcc-login-light .dcc-access-card .choice-description{
+    font-size:11px!important;
+  }
+  #login.dcc-login-light .dcc-login-foot{
+    margin-top:19px!important;
+    padding-top:15px!important;
+  }
 }
 </style>
 
