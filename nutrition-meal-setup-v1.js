@@ -139,7 +139,7 @@ async function persistType(id,type,day){
   next[type]=clone(day)||{calories:'',protein:'',meals:[]};return persistBoth(id,next);
 }
 async function createPlan(){
-  bridgeGlobals();if(busy||!currentId||!chosenCount||selected.length!==chosenCount)return;busy=true;syncBuilder();
+  bridgeGlobals();if(busy||!currentId||!chosenCount||selected.length!==chosenCount)return;busy=true;
   const id=currentId,names=[...selected],make=()=>names.map(meal),next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
   try{
     const saved=await persistBoth(id,next);saved.__dccPlanInitialized=true;
@@ -167,7 +167,6 @@ window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window._
 window.dccMealSetupInput=inputMeal;
 window.dccMealSetupToggle=toggleMeal;
 window.dccMealSetupRemove=removeMeal;
-window.dccMealSetupOrder=()=>false;
 window.dccMealSetupMove=moveMeal;
 window.dccMealSetupReview=()=>false;
 window.dccMealSetupBackToMeals=renderStep2;
