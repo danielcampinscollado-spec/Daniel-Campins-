@@ -2,12 +2,12 @@
 (function(){
 'use strict';
 
-const BUILD='20260917-nutrition-meal-setup-v19-direct-native-input';
+const BUILD='20260918-nutrition-meal-setup-v20-count-order';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
 const MEALS=['Desayuno','Merienda mañana','Comida','Merienda tarde','Pre-entreno','Post-entreno','Cena','Post-cena'];
-let selected=[];
+let chosenCount=0,selected=[];
 let currentId=null;
 let currentType='training';
 let busy=false;
@@ -71,34 +71,55 @@ function injectCss(){
 #coach-main .dcc-meal-create:disabled{opacity:.45;box-shadow:none}
 #coach-main .dcc-meal-add-btn{width:100%;min-height:46px;padding:8px 10px;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fffdf8;color:#17191d;font-size:11px;font-weight:850;text-align:left}
 #coach-main .dcc-meal-cancel{width:100%;min-height:48px;border:1px solid rgba(183,123,19,.22);border-radius:14px;background:#fffdf8;color:#5f6268;font-weight:900}
+#coach-main .dcc-meal-progress{display:flex;align-items:center;gap:7px;margin:0 2px}
+#coach-main .dcc-meal-progress span{height:4px;flex:1;border-radius:999px;background:rgba(183,123,19,.15)}
+#coach-main .dcc-meal-progress span.on{background:linear-gradient(90deg,#e5b64c,#f3cf72)}
+#coach-main .dcc-meal-step-label{color:#8a8173;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+#coach-main .dcc-meal-counts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+#coach-main .dcc-meal-count{height:50px;border:1px solid rgba(183,123,19,.24);border-radius:15px;background:#fffdf8;color:#17191d;font-size:16px;font-weight:900}
+#coach-main .dcc-meal-selected-count{display:inline-flex;margin:10px 0 2px;padding:7px 10px;border-radius:999px;background:#f5ead2;color:#956b18;font-size:10px;font-weight:850}
+#coach-main .dcc-meal-actions{display:grid;grid-template-columns:.8fr 1.35fr;gap:8px}
+#coach-main .dcc-meal-back,#coach-main .dcc-meal-next{width:100%;min-height:50px;border-radius:15px;font-weight:900}
+#coach-main .dcc-meal-back{border:1px solid rgba(183,123,19,.22);background:#fffdf8;color:#5f6268}
+#coach-main .dcc-meal-next{border:1px solid #e3b34f;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a}
+#coach-main .dcc-meal-next:disabled{opacity:.42}
 @media(min-width:760px){#coach-main .dcc-meal-builder-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}}
 @media(max-width:759px){#coach-main .dcc-meal-builder-grid{display:grid;gap:12px}}
 `;
   document.head.appendChild(s);
 }
 
+function progress(step){return `<div class="dcc-meal-step-label">Paso ${step} de 3</div><div class="dcc-meal-progress"><span class="on"></span><span class="${step>=2?'on':''}"></span><span class="${step>=3?'on':''}"></span></div>`}
 function availableMarkup(){
   return MEALS.map(name=>`<label class="dcc-meal-pick ${isTrainingMeal(name)?'training':''}"><input type="checkbox" class="dcc-meal-pick-input" value="${esc(name)}" onchange="window.dccMealSetupInput(this)" ${selected.includes(name)?'checked':''}><span class="dcc-meal-pick-ui"><span class="dcc-meal-pick-ico">${icon(name)}</span><span class="dcc-meal-pick-name">${esc(name)}</span><span class="dcc-meal-pick-plus">＋</span></span></label>`).join('');
 }
 function orderMarkup(){
-  if(!selected.length)return '<div class="dcc-meal-order-empty">Aquí aparecerán las comidas en el orden en que las vayas seleccionando.</div>';
-  return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-order-btn" onclick="window.dccMealSetupMove(${i},-1)" ${i===0?'disabled':''}>↑</button><button type="button" class="dcc-meal-order-btn" onclick="window.dccMealSetupMove(${i},1)" ${i===selected.length-1?'disabled':''}>↓</button><button type="button" class="dcc-meal-order-btn remove" onclick="window.dccMealSetupRemove('${name}')">−</button></span></div>`).join('');
+  return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-order-btn" onclick="window.dccMealSetupMove(${i},-1)" ${i===0?'disabled':''}>↑</button><button type="button" class="dcc-meal-order-btn" onclick="window.dccMealSetupMove(${i},1)" ${i===selected.length-1?'disabled':''}>↓</button></span></div>`).join('');
 }
-function syncBuilder(){
-  const root=document.querySelector('#coach-main .dcc-meal-builder');if(!root)return;
-  const order=root.querySelector('.dcc-meal-order-list');if(order)order.innerHTML=orderMarkup();
-  root.querySelectorAll('.dcc-meal-pick-input').forEach(input=>{input.checked=selected.includes(input.value)});
-  const create=root.querySelector('.dcc-meal-create');if(create)create.disabled=!selected.length||busy;
-}
-function renderBuilder(){
+function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
-  p.innerHTML=`<div class="dcc-meal-builder"><div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Añade las comidas que tendrá el plan. Se colocarán automáticamente en el orden en que las selecciones.</p><div class="dcc-meal-builder-note">El orden de selección será el orden que verá el cliente. Si te equivocas, puedes mover o quitar una comida antes de crear el plan.</div></div><div class="dcc-meal-builder-grid"><div class="dcc-meal-builder-card"><h3>Comidas disponibles</h3><small>Pulsa una comida para añadirla al plan.</small><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-builder-card"><h3>Orden del plan</h3><small>Se actualiza automáticamente con cada selección.</small><div class="dcc-meal-order-list">${orderMarkup()}</div></div></div><button type="button" class="dcc-meal-create" onclick="window.dccMealSetupCreate()" ${selected.length?'':'disabled'}>Crear plan de alimentación</button></div>`;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress(1)}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>¿Cuántas comidas quieres que tenga el día de entrenamiento?</p><div class="dcc-meal-counts">${[1,2,3,4,5,6,7,8].map(n=>`<button type="button" class="dcc-meal-count" onclick="window.dccMealSetupCount(${n})">${n}</button>`).join('')}</div></div><div class="dcc-meal-builder-note">Después elegirás cuáles son: desayuno, comida, cena, pre-entreno, post-entreno y el resto de momentos disponibles.</div></div>`;
   return true;
 }
-function inputMeal(input){if(!input||busy)return;const name=input.value;if(!MEALS.includes(name))return;if(input.checked&&!selected.includes(name))selected.push(name);if(!input.checked)selected=selected.filter(x=>x!==name);syncBuilder()}
-function toggleMeal(name){if(!MEALS.includes(name)||busy)return;const next=!selected.includes(name);if(next)selected.push(name);else selected=selected.filter(x=>x!==name);syncBuilder()}
-function moveMeal(index,delta){const to=index+delta;if(to<0||to>=selected.length||busy)return;const next=[...selected],[item]=next.splice(index,1);next.splice(to,0,item);selected=next;syncBuilder()}
-function removeMeal(name){if(busy)return;selected=selected.filter(x=>x!==name);syncBuilder()}
+function renderStep2(){
+  bridgeGlobals();injectCss();const p=pane();if(!p)return false;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress(2)}<div class="dcc-meal-builder-head"><h2>Elige ${chosenCount} ${chosenCount===1?'comida':'comidas'}</h2><p>Selecciona exactamente los momentos que quieres incluir.</p><span class="dcc-meal-selected-count">${selected.length} de ${chosenCount} seleccionadas</span></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="window.dccMealSetupBackToCount()">Atrás</button><button type="button" class="dcc-meal-next" onclick="window.dccMealSetupOrder()" ${selected.length===chosenCount?'':'disabled'}>Elegir orden</button></div></div>`;
+  return true;
+}
+function renderStep3(){
+  bridgeGlobals();injectCss();const p=pane();if(!p)return false;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress(3)}<div class="dcc-meal-builder-head"><h2>Orden de las comidas</h2><p>Colócalas en el orden exacto en que las verá el cliente.</p></div><div class="dcc-meal-builder-card"><div class="dcc-meal-order-list">${orderMarkup()}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="window.dccMealSetupBackToMeals()">Atrás</button><button type="button" class="dcc-meal-next" onclick="window.dccMealSetupCreate()">Crear plan de alimentación</button></div></div>`;
+  return true;
+}
+function inputMeal(input){
+  if(!input||busy)return;const name=input.value;if(!MEALS.includes(name))return;
+  if(input.checked&&!selected.includes(name)){if(selected.length>=chosenCount){input.checked=false;return}selected.push(name)}
+  if(!input.checked)selected=selected.filter(x=>x!==name);
+  renderStep2();
+}
+function toggleMeal(name){if(!MEALS.includes(name)||busy)return;if(selected.includes(name))selected=selected.filter(x=>x!==name);else if(selected.length<chosenCount)selected.push(name);renderStep2()}
+function moveMeal(index,delta){const to=index+delta;if(to<0||to>=selected.length||busy)return;const next=[...selected],[item]=next.splice(index,1);next.splice(to,0,item);selected=next;renderStep3()}
+function removeMeal(name){if(busy)return;selected=selected.filter(x=>x!==name);renderStep2()}
 
 function remainingMeals(id,type){bridgeGlobals();const current=window.data?.diets?.[id]?.[type]?.meals||[],used=new Set(current.map(x=>normalizeMealName(x?.name)));return MEALS.filter(name=>!used.has(normalizeMealName(name)))}
 function renderAddMealPicker(id,type){
@@ -118,7 +139,7 @@ async function persistType(id,type,day){
   next[type]=clone(day)||{calories:'',protein:'',meals:[]};return persistBoth(id,next);
 }
 async function createPlan(){
-  bridgeGlobals();if(busy||!currentId||!selected.length)return;busy=true;syncBuilder();
+  bridgeGlobals();if(busy||!currentId||!chosenCount||selected.length!==chosenCount)return;busy=true;syncBuilder();
   const id=currentId,names=[...selected],make=()=>names.map(meal),next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
   try{
     const saved=await persistBoth(id,next);saved.__dccPlanInitialized=true;
@@ -140,7 +161,7 @@ async function addPreset(name){
   }catch(error){console.error('DCC add preset meal:',error);alert('No se pudo guardar la nueva comida. No se ha aplicado ningún cambio.')}finally{busy=false}
 }
 
-function startSetup(id){bridgeGlobals();currentId=id;currentType='training';selected=[];return renderBuilder()}
+function startSetup(id){bridgeGlobals();currentId=id;currentType='training';chosenCount=0;selected=[];return renderStep1()}
 window.dccNutritionMealSetupStart=startSetup;
 window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window.__dccDietType||'training');
 window.dccMealSetupInput=inputMeal;
@@ -149,10 +170,11 @@ window.dccMealSetupRemove=removeMeal;
 window.dccMealSetupOrder=()=>false;
 window.dccMealSetupMove=moveMeal;
 window.dccMealSetupReview=()=>false;
-window.dccMealSetupBackToMeals=renderBuilder;
-window.dccMealSetupBackToOrder=renderBuilder;
-window.dccMealSetupBackToCount=renderBuilder;
-window.dccMealSetupCount=()=>false;
+window.dccMealSetupBackToMeals=renderStep2;
+window.dccMealSetupBackToOrder=renderStep3;
+window.dccMealSetupBackToCount=()=>{chosenCount=0;selected=[];return renderStep1()};
+window.dccMealSetupCount=n=>{const value=Number(n);if(!Number.isInteger(value)||value<1||value>MEALS.length)return false;chosenCount=value;selected=[];return renderStep2()};
+window.dccMealSetupOrder=()=>selected.length===chosenCount?renderStep3():false;
 window.dccMealSetupCreate=createPlan;
 window.dccMealAddPreset=addPreset;
 window.dccDietAddMeal=(id,type)=>Promise.resolve(renderAddMealPicker(id,type||window.__dccDietType||'training'));
