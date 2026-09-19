@@ -40,7 +40,7 @@ function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260919-meal-authority-v22-mobile-selection';
+    const wanted='nutrition-meal-setup-v1.js?v=20260919-meal-authority-v23-numbered-selection';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
