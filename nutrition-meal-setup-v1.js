@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v28-ios-direct';
+const BUILD='20260919-nutrition-meal-setup-v29-delegated';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -103,17 +103,25 @@ function orderMarkup(){
 }
 function bindMealSelection(p){
   if(!p)return;
-  p.querySelectorAll('[data-dcc-meal-name]').forEach(button=>button.addEventListener('click',event=>{
-    event.preventDefault();
-    if(busy)return;
-    const name=event.currentTarget?.dataset?.dccMealName;
-    if(!name||!MEALS.includes(name))return;
-    if(selected.includes(name))selected=selected.filter(item=>item!==name);
-    else selected.push(name);
-    renderStep1();
-  }));
-  const create=p.querySelector('[data-dcc-meal-create]');
-  if(create)create.onclick=event=>{event.preventDefault();if(selected.length&&!busy)createPlan()};
+  p.onclick=function(event){
+    const mealButton=event.target.closest('[data-dcc-meal-name]');
+    if(mealButton&&p.contains(mealButton)){
+      event.preventDefault();event.stopPropagation();
+      if(busy)return false;
+      const name=mealButton.getAttribute('data-dcc-meal-name');
+      if(!name||!MEALS.includes(name))return false;
+      if(selected.includes(name))selected=selected.filter(item=>item!==name);
+      else selected.push(name);
+      renderStep1();
+      return false;
+    }
+    const create=event.target.closest('[data-dcc-meal-create]');
+    if(create&&p.contains(create)){
+      event.preventDefault();event.stopPropagation();
+      if(selected.length&&!busy)createPlan();
+      return false;
+    }
+  };
 }
 function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
