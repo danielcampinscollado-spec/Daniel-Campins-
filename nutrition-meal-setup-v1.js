@@ -185,12 +185,5 @@ window.dccMealSetupOrder=()=>selected.length?renderStep1():false;
 window.dccMealSetupCreate=createPlan;
 window.dccMealAddPreset=addPreset;
 window.dccDietAddMeal=(id,type)=>Promise.resolve(renderAddMealPicker(id,type||window.__dccDietType||'training'));
-if(!window.__dccMealSetupMobileDelegation){
-  window.__dccMealSetupMobileDelegation=true;
-  document.addEventListener('click',event=>{
-    const next=event.target.closest?.('[data-dcc-meal-order]');
-    if(next){event.preventDefault();syncSelectedFromDom();if(selected.length)renderStep3()}
-  });
-}
 bridgeGlobals();injectCss();
 })();
