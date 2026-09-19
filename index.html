@@ -5692,7 +5692,8 @@ async function openApp(app){
   currentApp = app;
   window.currentApp = app;
 
-  setupMessageRealtime();
+  // La entrada debe pintar una sola vez. Realtime y la sincronización
+  // pesada arrancan después, sin competir con el retorno OAuth en Safari.
 
   const login =
     document.getElementById("login");
@@ -5725,20 +5726,23 @@ async function openApp(app){
     // la entrada en Safari/iPhone en conexiones móviles.
     showClient("home");
 
-    Promise.allSettled([
-      loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase(),
-      loadNotificationStateFromSupabase(),
-      loadMessagesFromSupabase(),
-      loadCheckinsFromSupabase()
-    ]).then(()=>{
-      if(currentApp==="client" && currentScreen==="home"){
-        showClient("home");
-      }
-    });
+    setTimeout(()=>{
+      setupMessageRealtime();
+      Promise.allSettled([
+        loadDietsFromSupabase(),
+        loadClientsFromSupabase(),
+        loadRoutinesFromSupabase(),
+        loadWorkoutHistoryFromSupabase(),
+        loadWeightsFromSupabase(),
+        loadNotificationStateFromSupabase(),
+        loadMessagesFromSupabase(),
+        loadCheckinsFromSupabase()
+      ]).then(()=>{
+        if(currentApp==="client" && currentScreen==="home"){
+          showClient("home");
+        }
+      });
+    },700);
 
   }else{
 
@@ -5748,21 +5752,21 @@ async function openApp(app){
     // no debe bloquear la primera pintura del entrenador.
     showCoach("dashboard");
 
-    Promise.allSettled([
-      loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase(),
-      loadMessagesFromSupabase(),
-      loadCheckinsFromSupabase()
-    ]).then(()=>{
-      if(currentScreen==="dashboard"){
-        const coachMain=document.getElementById("coach-main");
-        if(coachMain) coachMain.dataset.dccInstant="1";
-        showCoach("dashboard");
-      }
-    });
+    setTimeout(()=>{
+      setupMessageRealtime();
+      Promise.allSettled([
+        loadDietsFromSupabase(),
+        loadClientsFromSupabase(),
+        loadRoutinesFromSupabase(),
+        loadWorkoutHistoryFromSupabase(),
+        loadWeightsFromSupabase(),
+        loadMessagesFromSupabase(),
+        loadCheckinsFromSupabase()
+      ]).then(()=>{
+        // Los datos quedan sincronizados sin forzar una segunda entrada/render
+        // del panel inmediatamente después del OAuth.
+      });
+    },700);
 
   }
 
