@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260919-training-methods-v10-grouped-compact';
+  const BUILD='20260919-training-methods-v11-picker-stable';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -104,9 +104,12 @@
   function parsePickerContext(){
     const root=document.getElementById('coach-main');
     if(!root)return null;
-    const button=[...root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('addManualTrainingExercise'));
-    if(!button)return null;
-    const match=(button.getAttribute('onclick')||'').match(/addManualTrainingExercise\('([^']+)',\s*(\d+)\)/);
+    const buttons=[...root.querySelectorAll('button')];
+    const button=buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('addManualTrainingExercise'))||null;
+    const source=button||buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('toggleTrainingExercise'))||buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('continueTrainingExerciseSelection'));
+    if(!source)return null;
+    const code=source.getAttribute('onclick')||'';
+    const match=code.match(/(?:addManualTrainingExercise|toggleTrainingExercise|continueTrainingExerciseSelection)\('([^']+)',\s*(\d+)/);
     if(!match)return null;
     return {id:match[1],di:Number(match[2]),button,root};
   }
@@ -259,8 +262,10 @@
     const top=ctx.root.querySelector('.top');
     if(top&&top.nextSibling)top.parentNode.insertBefore(wrap,top.nextSibling);else ctx.root.insertBefore(wrap,ctx.root.firstChild);
 
-    ctx.button.classList.add('dcc-picker-manual-top');
-    wrap.parentNode.insertBefore(ctx.button,wrap.nextSibling);
+    if(ctx.button){
+      ctx.button.classList.add('dcc-picker-manual-top');
+      wrap.parentNode.insertBefore(ctx.button,wrap.nextSibling);
+    }
 
     const summaryCard=[...ctx.root.querySelectorAll('.card')].find(card=>/ejercicios disponibles/i.test(card.textContent||'')&&/seleccionados/i.test(card.textContent||''));
     summaryCard?.remove();
@@ -491,7 +496,16 @@
   }
 
   const nativeOpenTrainingExercises=typeof window.openTrainingExercises==='function'?window.openTrainingExercises:null;
-  if(nativeOpenTrainingExercises){window.openTrainingExercises=async function(){const result=await nativeOpenTrainingExercises.apply(this,arguments);requestAnimationFrame(decoratePicker);return result;};}
+  if(nativeOpenTrainingExercises){window.openTrainingExercises=async function(){const result=await nativeOpenTrainingExercises.apply(this,arguments);requestAnimationFrame(()=>requestAnimationFrame(decoratePicker));setTimeout(decoratePicker,60);return result;};}
+  function ensurePickerDecorated(){
+    const root=document.getElementById('coach-main');
+    if(!root)return;
+    const isPicker=[...root.querySelectorAll('button')].some(btn=>/(toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)/.test(btn.getAttribute('onclick')||''));
+    if(isPicker&&!root.querySelector('.dcc-mode-wrap'))decoratePicker();
+  }
+  const pickerObserver=new MutationObserver(()=>requestAnimationFrame(ensurePickerDecorated));
+  const coachRoot=document.getElementById('coach-main');
+  if(coachRoot)pickerObserver.observe(coachRoot,{childList:true,subtree:true});
 
   const nativeToggleTrainingExercise=typeof window.toggleTrainingExercise==='function'?window.toggleTrainingExercise:null;
   if(nativeToggleTrainingExercise){
