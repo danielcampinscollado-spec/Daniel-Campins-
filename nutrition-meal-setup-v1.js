@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v24-ios-click-order';
+const BUILD='20260919-nutrition-meal-setup-v25-native-checkbox';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -103,14 +103,12 @@ function orderMarkup(){
 }
 function bindMealSelection(p){
   if(!p)return;
-  p.querySelectorAll('.dcc-meal-pick').forEach(label=>label.addEventListener('click',event=>{
-    event.preventDefault();
+  p.querySelectorAll('.dcc-meal-pick-input').forEach(input=>input.addEventListener('change',event=>{
     if(busy)return;
-    const input=label.querySelector('.dcc-meal-pick-input');
-    const name=input?.value;
+    const name=event.currentTarget?.value;
     if(!name||!MEALS.includes(name))return;
-    if(selected.includes(name))selected=selected.filter(item=>item!==name);
-    else selected.push(name);
+    if(event.currentTarget.checked&&!selected.includes(name))selected.push(name);
+    if(!event.currentTarget.checked)selected=selected.filter(item=>item!==name);
     renderStep1();
   }));
   p.querySelector('[data-dcc-meal-create]')?.addEventListener('click',event=>{
