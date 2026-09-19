@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260918-training-methods-v8';
+  const BUILD='20260919-training-methods-v8b-compact-config';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -133,32 +133,32 @@
       .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
-      #coach-main.dcc-config-active{padding-bottom:120px!important}
-      #coach-main .dcc-exercise-card{padding:9px!important;border-radius:13px!important}
-      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-bottom:6px!important}
+      #coach-main.dcc-config-active{padding-bottom:96px!important}
+      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important}
+      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;margin-bottom:3px!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(2){gap:8px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:11px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 92px!important;gap:7px!important;margin-top:7px!important}
-      #coach-main .dcc-exercise-card input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
-      #coach-main .dcc-exercise-card input[type="url"]{min-height:36px!important;font-size:11px!important}
-      #coach-main .dcc-exercise-card [data-dcc-delete]{width:34px!important;height:32px!important;min-width:34px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.48)!important;color:#c9343d!important;font-size:12px!important;font-weight:900!important;background:rgba(190,48,55,.035)!important}
+      #coach-main .dcc-exercise-card>div:nth-child(2){gap:6px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:10px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 84px!important;gap:5px!important;margin-top:4px!important}
+      #coach-main .dcc-exercise-card input{min-height:31px!important;margin-top:2px!important;font-size:12px!important;padding-top:5px!important;padding-bottom:5px!important}
+      #coach-main .dcc-exercise-card input[type="url"]{min-height:31px!important;font-size:10px!important}
+      #coach-main .dcc-exercise-card [data-dcc-delete]{width:32px!important;height:30px!important;min-width:32px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.34)!important;color:#b92f38!important;background:rgba(190,48,55,.025)!important;display:grid!important;place-items:center!important}#coach-main .dcc-exercise-card [data-dcc-delete] svg{width:15px;height:15px}
       #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
       #coach-main .dcc-config-save{position:static!important;width:100%!important;min-height:44px!important;margin-top:12px!important;border-radius:12px!important;font-size:13px!important;box-shadow:none!important}
       #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
-      #coach-main .dcc-method-config{margin:6px 0;padding:9px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}
+      #coach-main .dcc-method-config{margin:5px 0;padding:8px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}#coach-main .dcc-superset-group{display:grid!important;gap:5px!important;padding:8px!important}#coach-main .dcc-superset-group>.dcc-exercise-card{background:#fffdf9!important;border-color:rgba(217,170,74,.28)!important;box-shadow:none!important}
       #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
       #coach-main .dcc-method-config-head b{font-size:13px}.dcc-method-config-head span{font-size:9px;color:#9a650c;font-weight:850}
       #coach-main .dcc-method-names{margin-top:5px;color:#6f747c;font-size:10px;line-height:1.35}
-      #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
+      #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
       #coach-main .dcc-method-fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
-      #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
-      #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
-      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 82px 38px;gap:7px;margin-top:10px}
-      #coach-main .dcc-method-video input{min-width:0;height:42px;border:1px solid rgba(183,123,19,.24);border-radius:12px;background:#fffdf9;padding:0 12px;font:inherit;color:#171717}
-      #coach-main .dcc-method-video button{height:38px;align-self:center;border:1px solid #d9aa4a;border-radius:9px;background:transparent;color:#a06d12;font-size:10px;font-weight:850}#coach-main .dcc-method-video [data-delete-rest]{width:38px;border-color:rgba(190,48,55,.48);background:rgba(190,48,55,.035);color:#c9343d;font-size:12px;font-weight:900}
+      #coach-main .dcc-method-fields input{width:100%;min-height:31px;margin-top:2px;box-sizing:border-box;font-size:12px}
+      #coach-main .dcc-method-note{margin-top:4px;color:#7a818a;font-size:9px;line-height:1.3}
+      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 78px 34px;gap:5px;margin-top:6px}
+      #coach-main .dcc-method-video input{min-width:0;height:34px;border:1px solid rgba(183,123,19,.24);border-radius:10px;background:#fffdf9;padding:0 10px;font:inherit;color:#171717}
+      #coach-main .dcc-method-video button{height:34px;align-self:center;border:1px solid #d9aa4a;border-radius:9px;background:transparent;color:#a06d12;font-size:10px;font-weight:850}#coach-main .dcc-method-video [data-delete-rest]{width:34px;padding:0;border-color:rgba(190,48,55,.34);background:rgba(190,48,55,.025);color:#b92f38;display:grid;place-items:center}#coach-main .dcc-method-video [data-delete-rest] svg{width:15px;height:15px}
       #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
       #coach-main .dcc-rest-global-top label{font-size:11px!important}
       #coach-main .dcc-rest-global-top input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
@@ -412,7 +412,7 @@
       if(!card)return;
       card.classList.add('dcc-exercise-card');
       const deleteBtn=[...card.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('removeTrainingExercise'));
-      if(deleteBtn){deleteBtn.textContent='[x]';deleteBtn.dataset.dccDelete='1';}
+      if(deleteBtn){deleteBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';deleteBtn.dataset.dccDelete='1';deleteBtn.setAttribute('aria-label','Eliminar ejercicio');deleteBtn.setAttribute('title','Eliminar ejercicio');}
       const videoBtn=[...card.querySelectorAll('button')].find(btn=>(btn.textContent||'').includes('Ver vídeo'));
       if(videoBtn){videoBtn.textContent='Ver vídeo';videoBtn.dataset.dccVideo='1';}
       const urlInput=card.querySelector('input[type="url"]');
@@ -441,6 +441,8 @@
         <div class="dcc-method-fields"><label>Series de superserie<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras cada serie<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}" placeholder="Ej. 90"></label></div>
         <div class="dcc-method-note">Ejemplo: 3 series. En cada serie haces todos los ejercicios seguidos, sin descanso entre ellos; después descansas el tiempo indicado.</div>`;
       first.parentNode.insertBefore(box,first);
+      box.classList.add('dcc-superset-group');
+      groupCards.forEach(card=>box.appendChild(card));
       box.querySelector('[data-rounds]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rounds',e.target.value));
       box.querySelector('[data-rest]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rest',e.target.value));
     });
@@ -454,7 +456,7 @@
           <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="Ej. 7"></label>
           <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="Ej. 90"></label>
         </div>
-        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest>[x]</button></div>
+        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
         <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
       card.parentNode.insertBefore(box,card);
       card.style.display='none';
