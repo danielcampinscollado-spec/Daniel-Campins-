@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v36-live-dom';
+const BUILD='20260919-nutrition-meal-setup-v37-separate-days';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -175,7 +175,7 @@ async function persistType(id,type,day){
 }
 async function createPlan(){
   bridgeGlobals();if(busy||!currentId||!selected.length)return;busy=true;
-  const id=currentId,names=[...selected],make=()=>names.map(meal),next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
+  const id=currentId,names=[...selected],make=()=>names.map(meal),next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:[]}};
   try{
     const saved=await persistBoth(id,next);saved.__dccPlanInitialized=true;
     window.data=window.data||{};window.data.diets=window.data.diets||{};window.data.diets[id]=clone(saved);
