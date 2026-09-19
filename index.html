@@ -14770,6 +14770,12 @@ if(!main)return;
 
       </div>
 
+      <div class="dcc-training-method-picker" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:4px 0 10px;">
+        <button type="button" data-dcc-method="normal" onclick="window.dccSetTrainingMethod?.('${id}',${dayIndex},'normal')" style="min-height:42px;border-radius:11px;border:1px solid #d9aa4a;background:#fffdf9;font-weight:800;font-size:12px;">Individual</button>
+        <button type="button" data-dcc-method="superset" onclick="window.dccSetTrainingMethod?.('${id}',${dayIndex},'superset')" style="min-height:42px;border-radius:11px;border:1px solid #d9aa4a;background:#fffdf9;font-weight:800;font-size:12px;">Superserie</button>
+        <button type="button" data-dcc-method="restpause" onclick="window.dccSetTrainingMethod?.('${id}',${dayIndex},'restpause')" style="min-height:42px;border-radius:11px;border:1px solid #d9aa4a;background:#fffdf9;font-weight:800;font-size:12px;">REST-pause</button>
+      </div>
+
       <div class="card" style="
         margin:4px 0 10px;
         padding:12px;
