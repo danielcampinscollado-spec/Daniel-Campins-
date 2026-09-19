@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v32-css-input';
+const BUILD='20260919-nutrition-meal-setup-v33-native-selfcontained';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -96,15 +96,29 @@ function injectCss(){
 
 function progress(){return '<div class="dcc-meal-step-label">Crear dieta · Día de entrenamiento</div><div class="dcc-meal-progress"><span class="on"></span></div>'}
 function availableMarkup(){
-  return MEALS.map(name=>{const order=selected.indexOf(name),checked=order>=0?'checked':'';return `<label class="dcc-meal-pick ${isTrainingMeal(name)?'training':''}"><input class="dcc-meal-native" type="checkbox" value="${esc(name)}" ${checked} onchange="window.dccMealSetupInput(this)"><span class="dcc-meal-pick-ui"><span class="dcc-meal-pick-ico">${icon(name)}</span><span class="dcc-meal-pick-name">${esc(name)}</span><span class="dcc-meal-pick-order">${order>=0?order+1:'＋'}</span></span></label>`}).join('');
+  return MEALS.map(name=>{const order=selected.indexOf(name),checked=order>=0?'checked':'';return `<label class="dcc-meal-pick ${isTrainingMeal(name)?'training':''}"><input class="dcc-meal-native" type="checkbox" value="${esc(name)}" ${checked}><span class="dcc-meal-pick-ui"><span class="dcc-meal-pick-ico">${icon(name)}</span><span class="dcc-meal-pick-name">${esc(name)}</span><span class="dcc-meal-pick-order">${order>=0?order+1:'＋'}</span></span></label>`}).join('');
 }
 function orderMarkup(){
   return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span></div>`).join('');
 }
-function bindMealSelection(){return true}
+function bindMealSelection(p){
+  if(!p)return;
+  p.querySelectorAll('.dcc-meal-native').forEach(input=>{
+    input.onchange=function(){
+      if(busy)return;
+      const name=this.value;
+      if(!MEALS.includes(name))return;
+      if(this.checked&&!selected.includes(name))selected.push(name);
+      if(!this.checked)selected=selected.filter(x=>x!==name);
+      renderStep1();
+    };
+  });
+  const create=p.querySelector('[data-dcc-meal-create]');
+  if(create)create.onclick=function(){if(selected.length&&!busy)createPlan()};
+}
 function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
-  p.innerHTML=`<div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create onclick="return window.dccMealSetupCreate()" ${selected.length?'':'disabled'}>＋ Añadir alimentos</button></div></div>`;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create ${selected.length?'':'disabled'}>＋ Añadir alimentos</button></div></div>`;
   bindMealSelection(p);return true;
 }
 function renderStep2(){return renderStep1()}
