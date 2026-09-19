@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v21-direct-selection';
+const BUILD='20260919-nutrition-meal-setup-v22-mobile-selection';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -96,13 +96,19 @@ function availableMarkup(){
 function orderMarkup(){
   return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-order-btn" data-index="${i}" data-delta="-1" ${i===0?'disabled':''}>↑</button><button type="button" class="dcc-meal-order-btn" data-index="${i}" data-delta="1" ${i===selected.length-1?'disabled':''}>↓</button></span></div>`).join('');
 }
+function syncSelectedFromDom(){
+  const p=pane();if(!p)return selected;
+  selected=[...p.querySelectorAll('.dcc-meal-pick-input:checked')].map(input=>input.value).filter(name=>MEALS.includes(name));
+  return selected;
+}
 function bindMealSelection(p){
-  p.querySelectorAll('.dcc-meal-pick-input').forEach(input=>input.addEventListener('change',()=>inputMeal(input)));
-  const next=p.querySelector('[data-dcc-meal-order]');if(next)next.addEventListener('click',()=>{if(selected.length)renderStep3()});
+  if(!p)return;
+  p.addEventListener('change',event=>{const input=event.target.closest?.('.dcc-meal-pick-input');if(!input)return;syncSelectedFromDom();renderStep1()});
+  const next=p.querySelector('[data-dcc-meal-order]');if(next)next.addEventListener('click',()=>{syncSelectedFromDom();if(selected.length)renderStep3()});
 }
 function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
-  p.innerHTML=`<div class="dcc-meal-builder">${progress(1)}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas que quieres incluir en el día. Puedes elegir una o varias.</p></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-builder-note">Disponibles: desayuno, merienda de mañana, comida, merienda de tarde, pre-entreno, post-entreno, cena y post-cena.</div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-next" data-dcc-meal-order ${selected.length?'':'disabled'}>Continuar · ${selected.length} ${selected.length===1?'comida':'comidas'}</button></div></div>`;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress(1)}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas que quieres incluir en el día. Puedes elegir una o varias.</p></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-builder-note">Disponibles: desayuno, merienda de mañana, comida, merienda de tarde, pre-entreno, post-entreno, cena y post-cena.</div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-next" data-dcc-meal-order>Continuar con las comidas seleccionadas</button></div></div>`;
   bindMealSelection(p);return true;
 }
 function renderStep2(){return renderStep1()}
