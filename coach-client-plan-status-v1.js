@@ -9,7 +9,7 @@ function exactExisting(src){try{const wanted=new URL(src,location.href);return [
 const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 async function loadMany(list){for(const src of list)await load(src)}
-const coachAuthority='./coach-premium-core-v13.js?v=20260916-core13a';
+const coachAuthority='./coach-premium-core-v13.js?v=20260919-core13b-clients';
 const themeAuthority='./dcc-theme-system-v1.js?v=20260917-light-only-clean-v1';
 const profileCritical=['./dcc-app-core-v1.js?v=20260916-clean1','./coach-client-profile-v2.js?v=20260916-runtime2','./coach-client-profile-light-v1.js?v=20260916-runtime2','./coach-client-profile-actions-v1.js?v=20260916-runtime2','./coach-followup-hardfix-v1.js?v=20260918-audit-private1','./coach-client-critical-authority-v1.js?v=20260918-critical-load1'];
 const authCritical=['./local-cache-authority-v1.js?v=20260916-runtime1','./auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./auth-session-guard-v2.js?v=20260918-isolation1','./auth-premium-v1.js?v=20260918-role-entry5','./auth-client-claim-v1.js?v=20260916-runtime1','./coach-profile-authority-v1.js?v=20260918-audit1'];
