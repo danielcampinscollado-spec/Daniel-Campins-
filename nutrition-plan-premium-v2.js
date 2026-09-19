@@ -63,7 +63,7 @@ function ensureEditorAuthority(){
   if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return Promise.resolve(true);
   if(editorAuthorityPromise)return editorAuthorityPromise;
   editorAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-editor-authority-v1.js?v=20260918-server-first-v13-empty-seed';
+    const wanted='nutrition-editor-authority-v1.js?v=20260919-v14-avoid-filter';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(window.dccDietAddFood?.__dccNutritionEditorAuthority===true)return resolve(true);
