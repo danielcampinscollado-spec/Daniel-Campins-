@@ -16286,7 +16286,7 @@ async function sendClientCheckin(){
     document.getElementById('dcc-google-auth-go').onclick=async()=>{
       if(busy)return;busy=true;save(r);
       try{
-        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,skipBrowserRedirect:false}});
+        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname+'?dcc_role='+encodeURIComponent(r),skipBrowserRedirect:false}});
         if(error)throw error;
       }catch(e){busy=false;console.error(e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}
     };
@@ -16303,7 +16303,7 @@ async function sendClientCheckin(){
   async function resumeOnce(){
     if(window.__dccAuthResumed)return;
     window.__dccAuthResumed=true;
-    const r=role();if(r!=='client'&&r!=='coach')return;
+    const qp=new URLSearchParams(location.search).get('dcc_role');const r=(qp==='client'||qp==='coach')?qp:role();if(r!=='client'&&r!=='coach')return;
     try{
       const {data}=await supabaseClient.auth.getSession();
       if(data?.session){
