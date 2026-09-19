@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v27-numbered-visible';
+const BUILD='20260919-nutrition-meal-setup-v28-ios-direct';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -46,7 +46,7 @@ function injectCss(){
 #coach-main .dcc-meal-builder-card h3{margin:0 0 4px;color:#7f5816;font-size:14px}
 #coach-main .dcc-meal-builder-card>small{display:block;margin-bottom:10px;color:#858b93;font-size:9px;line-height:1.35}
 #coach-main .dcc-meal-list,#coach-main .dcc-meal-order-list{display:grid;gap:6px}
-#coach-main .dcc-meal-pick{position:relative;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#coach-main .dcc-meal-pick{position:relative;display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 #coach-main .dcc-meal-pick input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
 #coach-main .dcc-meal-pick-ui{min-height:48px;display:grid;grid-template-columns:34px 1fr 32px;align-items:center;gap:9px;padding:7px 8px;border:1px solid rgba(183,123,19,.17);border-radius:14px;background:#fffdf8;color:#17191d}
 #coach-main .dcc-meal-pick-ico{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#f8ecd2;color:#9d711e}
@@ -54,7 +54,7 @@ function injectCss(){
 #coach-main .dcc-meal-pick-ico svg,#coach-main .dcc-meal-order-ico svg{width:18px;height:18px}
 #coach-main .dcc-meal-pick-name{font-size:12px;font-weight:850}
 #coach-main .dcc-meal-pick-plus{width:28px;height:28px;display:grid;place-items:center;border:1px solid rgba(132,103,52,.28);border-radius:50%;font-size:18px;font-weight:700;color:#17191d}
-#coach-main .dcc-meal-pick input:checked+.dcc-meal-pick-ui{background:linear-gradient(135deg,#f5d577,#e5b444);border-color:#d8a333}
+#coach-main .dcc-meal-pick.selected .dcc-meal-pick-ui{background:linear-gradient(135deg,#f5d577,#e5b444);border-color:#d8a333}
 #coach-main .dcc-meal-pick input:checked+.dcc-meal-pick-ui .dcc-meal-pick-plus{font-size:0;background:#9d711e;color:#fff}
 #coach-main .dcc-meal-pick input:checked+.dcc-meal-pick-ui .dcc-meal-pick-plus:after{content:'✓';font-size:13px}
 #coach-main .dcc-meal-order-empty{min-height:86px;display:grid;place-items:center;padding:16px;border:1px dashed rgba(183,123,19,.28);border-radius:14px;color:#8a8f96;font-size:10px;text-align:center;line-height:1.45}
@@ -83,7 +83,7 @@ function injectCss(){
 #coach-main .dcc-meal-order-hint{display:flex;align-items:flex-start;gap:9px;margin-top:10px;padding:10px 12px;border:1px solid rgba(183,123,19,.17);border-radius:14px;background:rgba(245,234,210,.48);color:#746957;font-size:10px;line-height:1.4}
 #coach-main .dcc-meal-order-hint b{color:#8f6519}
 #coach-main .dcc-meal-pick-order{width:34px;height:34px;display:grid!important;place-items:center!important;border:1px solid rgba(132,103,52,.28);border-radius:50%;font-size:15px!important;font-weight:950!important;color:#17191d;line-height:1;position:relative;z-index:8}
-#coach-main .dcc-meal-pick input:checked+.dcc-meal-pick-ui .dcc-meal-pick-order{border-color:#7f5914!important;background:#7f5914!important;color:#fff!important}
+#coach-main .dcc-meal-pick.selected .dcc-meal-pick-order{border-color:#7f5914!important;background:#7f5914!important;color:#fff!important}
 #coach-main .dcc-meal-back,#coach-main .dcc-meal-next{width:100%;min-height:50px;border-radius:15px;font-weight:900}
 #coach-main .dcc-meal-back{border:1px solid rgba(183,123,19,.22);background:#fffdf8;color:#5f6268}
 #coach-main .dcc-meal-next{border:1px solid #e3b34f;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a}
@@ -96,25 +96,24 @@ function injectCss(){
 
 function progress(){return '<div class="dcc-meal-step-label">Crear dieta · Día de entrenamiento</div><div class="dcc-meal-progress"><span class="on"></span></div>'}
 function availableMarkup(){
-  return MEALS.map(name=>{const order=selected.indexOf(name);const marker=order>=0?String(order+1):'＋';return `<label class="dcc-meal-pick ${isTrainingMeal(name)?'training':''}" data-dcc-order="${order>=0?order+1:''}"><input type="checkbox" class="dcc-meal-pick-input" value="${esc(name)}" ${order>=0?'checked':''}><span class="dcc-meal-pick-ui"><span class="dcc-meal-pick-ico">${icon(name)}</span><span class="dcc-meal-pick-name">${esc(name)}</span><span class="dcc-meal-pick-order" aria-label="${order>=0?'Comida '+(order+1):'Seleccionar comida'}">${marker}</span></span></label>`}).join('');
+  return MEALS.map(name=>{const order=selected.indexOf(name);const marker=order>=0?String(order+1):'＋';return `<button type="button" class="dcc-meal-pick ${isTrainingMeal(name)?'training':''} ${order>=0?'selected':''}" data-dcc-meal-name="${esc(name)}" data-dcc-order="${order>=0?order+1:''}"><span class="dcc-meal-pick-ui"><span class="dcc-meal-pick-ico">${icon(name)}</span><span class="dcc-meal-pick-name">${esc(name)}</span><span class="dcc-meal-pick-order" aria-label="${order>=0?'Comida '+(order+1):'Seleccionar comida'}">${marker}</span></span></button>`}).join('');
 }
 function orderMarkup(){
   return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span></div>`).join('');
 }
 function bindMealSelection(p){
   if(!p)return;
-  p.querySelectorAll('.dcc-meal-pick-input').forEach(input=>input.addEventListener('change',event=>{
+  p.querySelectorAll('[data-dcc-meal-name]').forEach(button=>button.addEventListener('click',event=>{
+    event.preventDefault();
     if(busy)return;
-    const name=event.currentTarget?.value;
+    const name=event.currentTarget?.dataset?.dccMealName;
     if(!name||!MEALS.includes(name))return;
-    if(event.currentTarget.checked&&!selected.includes(name))selected.push(name);
-    if(!event.currentTarget.checked)selected=selected.filter(item=>item!==name);
+    if(selected.includes(name))selected=selected.filter(item=>item!==name);
+    else selected.push(name);
     renderStep1();
   }));
-  p.querySelector('[data-dcc-meal-create]')?.addEventListener('click',event=>{
-    event.preventDefault();
-    if(selected.length&&!busy)createPlan();
-  });
+  const create=p.querySelector('[data-dcc-meal-create]');
+  if(create)create.onclick=event=>{event.preventDefault();if(selected.length&&!busy)createPlan()};
 }
 function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
