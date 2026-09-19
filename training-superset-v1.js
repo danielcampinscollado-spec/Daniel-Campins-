@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260919-training-methods-v12-picker-inline';
+  const BUILD='20260919-training-methods-v13-direct-picker';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -104,14 +104,15 @@
   function parsePickerContext(){
     const root=document.getElementById('coach-main');
     if(!root)return null;
-    const buttons=[...root.querySelectorAll('button')];
-    const button=buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('addManualTrainingExercise'))||null;
-    const source=button||buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('toggleTrainingExercise'))||buttons.find(btn=>(btn.getAttribute('onclick')||'').includes('continueTrainingExerciseSelection'));
-    if(!source)return null;
-    const code=source.getAttribute('onclick')||'';
-    const match=code.match(/(?:addManualTrainingExercise|toggleTrainingExercise|continueTrainingExerciseSelection)\('([^']+)',\s*(\d+)/);
-    if(!match)return null;
-    return {id:match[1],di:Number(match[2]),button,root};
+    const html=root.innerHTML||'';
+    const match=html.match(/(?:toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)\(&quot;([^&]+)&quot;,\s*(\d+)|(?:toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)\('([^']+)',\s*(\d+)/);
+    if(match)return {id:match[1]||match[3],di:Number(match[2]||match[4]),button:null,root};
+    const ret=window.__dccExercisePickerReturnClientAdmin;
+    if(ret&&ret.id!=null&&Number.isInteger(Number(ret.dayIndex)))return {id:String(ret.id),di:Number(ret.dayIndex),button:null,root};
+    const id=String(window.selectedClient||'');
+    const di=Number(window.__dccTrainingOpen);
+    if(id&&Number.isInteger(di)&&dayRef(id,di))return {id,di,button:null,root};
+    return null;
   }
 
   function installStyle(){
