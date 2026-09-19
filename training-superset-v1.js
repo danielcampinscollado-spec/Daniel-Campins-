@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260919-training-methods-v11-picker-stable';
+  const BUILD='20260919-training-methods-v12-picker-inline';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -259,8 +259,11 @@
 
     ctx.root.querySelector('.dcc-mode-wrap')?.remove();
     const wrap=document.createElement('div');wrap.className='dcc-mode-wrap';wrap.innerHTML=renderModeBar(ctx.id,ctx.di,day);
-    const top=ctx.root.querySelector('.top');
-    if(top&&top.nextSibling)top.parentNode.insertBefore(wrap,top.nextSibling);else ctx.root.insertBefore(wrap,ctx.root.firstChild);
+    const tabs=[...ctx.root.querySelectorAll('button')].filter(btn=>/\d+\s*$/.test((btn.textContent||'').trim()));
+    const firstCard=[...ctx.root.querySelectorAll('.card')].find(card=>/ejercicios disponibles/i.test(card.textContent||''));
+    if(firstCard)firstCard.parentNode.insertBefore(wrap,firstCard);
+    else if(tabs.length){const last=tabs[tabs.length-1];last.parentNode.parentNode.insertBefore(wrap,last.parentNode.nextSibling);}
+    else ctx.root.insertBefore(wrap,ctx.root.firstChild);
 
     if(ctx.button){
       ctx.button.classList.add('dcc-picker-manual-top');
