@@ -469,6 +469,27 @@
     });
   }
 
+  const nativeSaveConfiguredTraining=typeof window.saveConfiguredTraining==='function'?window.saveConfiguredTraining:null;
+  if(nativeSaveConfiguredTraining){
+    window.saveConfiguredTraining=async function(id,di){
+      const days=routineDays(id);
+      let idx=Number(di);
+      if(!dayRef(id,idx)){
+        const fallback=days.findIndex(d=>d?.trainingSetupStarted||d?.trainingSetupStep==='exerciseConfiguration');
+        if(fallback>=0)idx=fallback;
+      }
+      const result=await nativeSaveConfiguredTraining.call(this,id,idx);
+      const refreshed=routineDays(id);
+      const next=refreshed.findIndex((d,i)=>i>idx&&d?.trainingSetupStep!=='complete');
+      if(next>=0){
+        window.__dccTrainingOpen=next;
+        notify('Día '+(idx+1)+' guardado · continúa con Día '+(next+1));
+        setTimeout(()=>window.openTrainingDay?.(id,next),80);
+      }
+      return result;
+    };
+  }
+
   const nativeOpenTrainingExercises=typeof window.openTrainingExercises==='function'?window.openTrainingExercises:null;
   if(nativeOpenTrainingExercises){window.openTrainingExercises=async function(){const result=await nativeOpenTrainingExercises.apply(this,arguments);requestAnimationFrame(decoratePicker);return result;};}
 
