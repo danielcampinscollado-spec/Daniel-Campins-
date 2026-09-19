@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v30-inline-stable';
+const BUILD='20260919-nutrition-meal-setup-v31-global-first';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -160,6 +160,8 @@ async function addPreset(name){
 }
 
 function startSetup(id){bridgeGlobals();currentId=id;currentType='training';chosenCount=0;selected=[];return renderStep1()}
+window.dccMealSetupToggle=toggleMeal;
+window.dccMealSetupCreate=createPlan;
 window.dccNutritionMealSetupStart=startSetup;
 window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window.__dccDietType||'training');
 window.dccMealSetupInput=inputMeal;
