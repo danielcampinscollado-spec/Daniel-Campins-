@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v33-native-selfcontained';
+const BUILD='20260919-nutrition-meal-setup-v34-debug';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -11,6 +11,18 @@ let chosenCount=0,selected=[];
 let currentId=null;
 let currentType='training';
 let busy=false;
+const DEBUG_KEY='dcc:meal-selector-debug:v1';
+function dbg(type,detail){
+  try{
+    const rows=JSON.parse(localStorage.getItem(DEBUG_KEY)||'[]');
+    rows.push({t:new Date().toISOString(),type,detail:String(detail??'')});
+    localStorage.setItem(DEBUG_KEY,JSON.stringify(rows.slice(-40)));
+  }catch(_){}
+  const box=document.getElementById('dcc-meal-debug');
+  if(box)box.textContent=type+' · '+String(detail??'');
+}
+window.dccMealSelectorDebug=()=>{try{return JSON.parse(localStorage.getItem(DEBUG_KEY)||'[]')}catch(_){return[]}};
+
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clone=v=>JSON.parse(JSON.stringify(v??null));
@@ -105,6 +117,7 @@ function bindMealSelection(p){
   if(!p)return;
   p.querySelectorAll('.dcc-meal-native').forEach(input=>{
     input.onchange=function(){
+      dbg('change',this.value+' checked='+this.checked+' busy='+busy);
       if(busy)return;
       const name=this.value;
       if(!MEALS.includes(name))return;
@@ -117,8 +130,8 @@ function bindMealSelection(p){
   if(create)create.onclick=function(){if(selected.length&&!busy)createPlan()};
 }
 function renderStep1(){
-  bridgeGlobals();injectCss();const p=pane();if(!p)return false;
-  p.innerHTML=`<div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create ${selected.length?'':'disabled'}>＋ Añadir alimentos</button></div></div>`;
+  bridgeGlobals();injectCss();const p=pane();if(!p){dbg('renderStep1','pane missing');return false;}dbg('renderStep1','selected='+selected.join('|'));
+  p.innerHTML=`<div id="dcc-meal-debug" style="position:sticky;top:4px;z-index:9999;padding:7px 10px;border-radius:10px;background:#17191d;color:#fff;font-size:11px;font-weight:800">DEBUG v34 · esperando toque</div><div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create ${selected.length?'':'disabled'}>＋ Añadir alimentos</button></div></div>`;
   bindMealSelection(p);return true;
 }
 function renderStep2(){return renderStep1()}
@@ -173,7 +186,7 @@ async function addPreset(name){
   }catch(error){console.error('DCC add preset meal:',error);alert('No se pudo guardar la nueva comida. No se ha aplicado ningún cambio.')}finally{busy=false}
 }
 
-function startSetup(id){bridgeGlobals();currentId=id;currentType='training';chosenCount=0;selected=[];return renderStep1()}
+function startSetup(id){bridgeGlobals();currentId=id;currentType='training';chosenCount=0;selected=[];dbg('startSetup',id);return renderStep1()}
 window.dccMealSetupInput=inputMeal;
 window.dccMealSetupToggle=toggleMeal;
 window.dccMealSetupCreate=createPlan;
