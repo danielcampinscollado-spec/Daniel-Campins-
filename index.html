@@ -15626,9 +15626,41 @@ async function saveConfiguredTraining(id,dayIndex){
   }
 
   saveData();
-  toast("Rutina guardada correctamente");
 
-  showCoach("routines");
+  window.__dccRoutineDraftDirty=false;
+  window.__dccRoutineUnsavedBackup=undefined;
+  window.__dccRoutineUnsavedBackupSet=false;
+  window.__dccRoutineUnsavedClient="";
+  window.__dccRoutineNavBypass=false;
+  window.__dccTrainingEdit=false;
+  window.__dccTrainingOpen=null;
+  window.__dccTrainingChoosePending=false;
+  delete window.__dccTrainingBackup;
+
+  const days=Array.isArray(data.routines?.[id])?data.routines[id]:[];
+  const nextDayIndex=days.findIndex((item,index)=>index>Number(dayIndex)&&item?.trainingSetupStep!=="complete");
+
+  if(nextDayIndex>=0){
+    toast("Día "+(Number(dayIndex)+1)+" guardado · continúa con Día "+(nextDayIndex+1));
+    window.selectedClient=id;
+    window.__dccTrainingOpen=nextDayIndex;
+    if(typeof window.openTrainingDay==="function"){
+      window.openTrainingDay(id,nextDayIndex);
+      return;
+    }
+  }
+
+  toast("Rutina guardada correctamente");
+  window.selectedClient=id;
+  if(typeof window.dccClientAdmin==="function"){
+    window.dccClientAdmin(id,"training");
+    return;
+  }
+  if(typeof window.showClientAdmin==="function"){
+    window.showClientAdmin(id);
+    return;
+  }
+  showCoach("clients");
 }
 function removeTrainingExercise(id,dayIndex,index){
 
