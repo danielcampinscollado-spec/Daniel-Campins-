@@ -5716,19 +5716,25 @@ async function openApp(app){
 
     buildClientNav();
 
-    await Promise.all([
-  loadDietsFromSupabase(),
-  loadClientsFromSupabase(),
-  loadRoutinesFromSupabase(),
-  loadWorkoutHistoryFromSupabase(),
-  loadWeightsFromSupabase(),
-  loadNotificationStateFromSupabase(),
-  loadMessagesFromSupabase()
-]);
+    // Primera pintura inmediata con los datos locales ya disponibles.
+    // La sincronización remota continúa en segundo plano para no bloquear
+    // la entrada en Safari/iPhone en conexiones móviles.
+    showClient("home");
 
-await loadCheckinsFromSupabase();
-
-showClient("home");
+    Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadClientsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadNotificationStateFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]).then(()=>{
+      if(currentApp==="client" && currentScreen==="home"){
+        showClient("home");
+      }
+    });
 
   }else{
 
