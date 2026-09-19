@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v25-native-checkbox';
+const BUILD='20260919-nutrition-meal-setup-v26-numbered-add-foods';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -118,7 +118,7 @@ function bindMealSelection(p){
 }
 function renderStep1(){
   bridgeGlobals();injectCss();const p=pane();if(!p)return false;
-  p.innerHTML=`<div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create ${selected.length?'':'disabled'}>Crear plan de alimentación</button></div></div>`;
+  p.innerHTML=`<div class="dcc-meal-builder">${progress()}<div class="dcc-meal-builder-head"><h2>Crear plan de alimentación</h2><p>Selecciona las comidas en el mismo orden en que quieres que las vea el cliente.</p><div class="dcc-meal-order-hint"><span>①</span><span><b>El orden se crea automáticamente.</b> La primera comida que marques será la nº 1, la segunda será la nº 2, y así sucesivamente. Puedes desmarcar una y volver a elegirla para cambiar su posición.</span></div></div><div class="dcc-meal-builder-card"><div class="dcc-meal-list">${availableMarkup()}</div></div><div class="dcc-meal-actions single"><button type="button" class="dcc-meal-next" data-dcc-meal-create ${selected.length?'':'disabled'}>＋ Añadir alimentos</button></div></div>`;
   bindMealSelection(p);return true;
 }
 function renderStep2(){return renderStep1()}
