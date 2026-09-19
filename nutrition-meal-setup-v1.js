@@ -148,7 +148,7 @@ async function createPlan(){
     try{localStorage.setItem('dcc:diet-meal-template:v8:'+id,JSON.stringify(names))}catch(_){}
     if(typeof window.dccNutritionV2Edit==='function')await window.dccNutritionV2Edit(id);else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
     if(typeof window.toast==='function')window.toast('Plan de alimentación creado');
-  }catch(error){console.error('DCC meal setup:',error);alert('No se pudo guardar la estructura de la dieta. No se ha aplicado ningún cambio.');busy=false;syncBuilder();return}
+  }catch(error){console.error('DCC meal setup:',error);alert('No se pudo guardar la estructura de la dieta. No se ha aplicado ningún cambio.');busy=false;return}
   busy=false;
 }
 async function addPreset(name){
