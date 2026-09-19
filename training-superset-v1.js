@@ -250,6 +250,15 @@
     document.body.appendChild(bar);
   }
 
+  window.dccSetTrainingMethod=function(id,di,next){
+    const day=dayRef(id,Number(di));if(!day)return;
+    rememberCurrentDraft(id,Number(di),day);
+    setMode(id,Number(di),next);
+    restoreModeDraft(id,Number(di),day,next);
+    save();
+    window.openTrainingExercises?.(id,Number(di),true);
+  };
+
   function decoratePicker(){
     installStyle();
     const ctx=parsePickerContext();
