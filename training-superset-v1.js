@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260919-training-methods-v13-direct-picker';
+  const BUILD='20260918-training-methods-v8';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
@@ -104,15 +104,11 @@
   function parsePickerContext(){
     const root=document.getElementById('coach-main');
     if(!root)return null;
-    const html=root.innerHTML||'';
-    const match=html.match(/(?:toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)\(&quot;([^&]+)&quot;,\s*(\d+)|(?:toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)\('([^']+)',\s*(\d+)/);
-    if(match)return {id:match[1]||match[3],di:Number(match[2]||match[4]),button:null,root};
-    const ret=window.__dccExercisePickerReturnClientAdmin;
-    if(ret&&ret.id!=null&&Number.isInteger(Number(ret.dayIndex)))return {id:String(ret.id),di:Number(ret.dayIndex),button:null,root};
-    const id=String(window.selectedClient||'');
-    const di=Number(window.__dccTrainingOpen);
-    if(id&&Number.isInteger(di)&&dayRef(id,di))return {id,di,button:null,root};
-    return null;
+    const button=[...root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('addManualTrainingExercise'));
+    if(!button)return null;
+    const match=(button.getAttribute('onclick')||'').match(/addManualTrainingExercise\('([^']+)',\s*(\d+)\)/);
+    if(!match)return null;
+    return {id:match[1],di:Number(match[2]),button,root};
   }
 
   function installStyle(){
@@ -137,30 +133,30 @@
       .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
-      #coach-main.dcc-config-active{padding-bottom:92px!important}
-      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important}
-      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;margin-bottom:3px!important}
+      #coach-main.dcc-config-active{padding-bottom:120px!important}
+      #coach-main .dcc-exercise-card{padding:9px!important;border-radius:13px!important}
+      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;margin-bottom:6px!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
       #coach-main .dcc-exercise-card>div:nth-child(2){gap:8px!important}
       #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:11px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 86px!important;gap:6px!important;margin-top:4px!important}
-      #coach-main .dcc-exercise-card input{min-height:32px!important;margin-top:2px!important;font-size:12px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 92px!important;gap:7px!important;margin-top:7px!important}
+      #coach-main .dcc-exercise-card input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
       #coach-main .dcc-exercise-card input[type="url"]{min-height:36px!important;font-size:11px!important}
       #coach-main .dcc-exercise-card [data-dcc-delete]{width:34px!important;height:32px!important;min-width:34px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.48)!important;color:#c9343d!important;font-size:12px!important;font-weight:900!important;background:rgba(190,48,55,.035)!important}
       #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
       #coach-main .dcc-config-save{position:static!important;width:100%!important;min-height:44px!important;margin-top:12px!important;border-radius:12px!important;font-size:13px!important;box-shadow:none!important}
       #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
-      #coach-main .dcc-method-config{margin:5px 0;padding:8px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}
+      #coach-main .dcc-method-config{margin:6px 0;padding:9px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}
       #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
       #coach-main .dcc-method-config-head b{font-size:13px}.dcc-method-config-head span{font-size:9px;color:#9a650c;font-weight:850}
       #coach-main .dcc-method-names{margin-top:5px;color:#6f747c;font-size:10px;line-height:1.35}
-      #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
+      #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}
       #coach-main .dcc-method-fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
       #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
-      #coach-main .dcc-method-fields input{width:100%;min-height:32px;margin-top:2px;box-sizing:border-box;font-size:12px}
-      #coach-main .dcc-method-note{margin-top:4px;color:#7a818a;font-size:9px;line-height:1.35}
-      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 82px 38px;gap:6px;margin-top:6px}
+      #coach-main .dcc-method-fields input{width:100%;min-height:35px;margin-top:4px;box-sizing:border-box;font-size:12px}
+      #coach-main .dcc-method-note{margin-top:7px;color:#7a818a;font-size:9px;line-height:1.35}
+      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 82px 38px;gap:7px;margin-top:10px}
       #coach-main .dcc-method-video input{min-width:0;height:42px;border:1px solid rgba(183,123,19,.24);border-radius:12px;background:#fffdf9;padding:0 12px;font:inherit;color:#171717}
       #coach-main .dcc-method-video button{height:38px;align-self:center;border:1px solid #d9aa4a;border-radius:9px;background:transparent;color:#a06d12;font-size:10px;font-weight:850}#coach-main .dcc-method-video [data-delete-rest]{width:38px;border-color:rgba(190,48,55,.48);background:rgba(190,48,55,.035);color:#c9343d;font-size:12px;font-weight:900}
       #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
@@ -250,15 +246,6 @@
     document.body.appendChild(bar);
   }
 
-  window.dccSetTrainingMethod=function(id,di,next){
-    const day=dayRef(id,Number(di));if(!day)return;
-    rememberCurrentDraft(id,Number(di),day);
-    setMode(id,Number(di),next);
-    restoreModeDraft(id,Number(di),day,next);
-    save();
-    window.openTrainingExercises?.(id,Number(di),true);
-  };
-
   function decoratePicker(){
     installStyle();
     const ctx=parsePickerContext();
@@ -269,16 +256,11 @@
 
     ctx.root.querySelector('.dcc-mode-wrap')?.remove();
     const wrap=document.createElement('div');wrap.className='dcc-mode-wrap';wrap.innerHTML=renderModeBar(ctx.id,ctx.di,day);
-    const tabs=[...ctx.root.querySelectorAll('button')].filter(btn=>/\d+\s*$/.test((btn.textContent||'').trim()));
-    const firstCard=[...ctx.root.querySelectorAll('.card')].find(card=>/ejercicios disponibles/i.test(card.textContent||''));
-    if(firstCard)firstCard.parentNode.insertBefore(wrap,firstCard);
-    else if(tabs.length){const last=tabs[tabs.length-1];last.parentNode.parentNode.insertBefore(wrap,last.parentNode.nextSibling);}
-    else ctx.root.insertBefore(wrap,ctx.root.firstChild);
+    const top=ctx.root.querySelector('.top');
+    if(top&&top.nextSibling)top.parentNode.insertBefore(wrap,top.nextSibling);else ctx.root.insertBefore(wrap,ctx.root.firstChild);
 
-    if(ctx.button){
-      ctx.button.classList.add('dcc-picker-manual-top');
-      wrap.parentNode.insertBefore(ctx.button,wrap.nextSibling);
-    }
+    ctx.button.classList.add('dcc-picker-manual-top');
+    wrap.parentNode.insertBefore(ctx.button,wrap.nextSibling);
 
     const summaryCard=[...ctx.root.querySelectorAll('.card')].find(card=>/ejercicios disponibles/i.test(card.textContent||'')&&/seleccionados/i.test(card.textContent||''));
     summaryCard?.remove();
@@ -459,8 +441,6 @@
         <div class="dcc-method-fields"><label>Series de superserie<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras cada serie<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}" placeholder="Ej. 90"></label></div>
         <div class="dcc-method-note">Ejemplo: 3 series. En cada serie haces todos los ejercicios seguidos, sin descanso entre ellos; después descansas el tiempo indicado.</div>`;
       first.parentNode.insertBefore(box,first);
-      box.classList.add('dcc-superset-group');
-      groupCards.forEach(card=>box.appendChild(card));
       box.querySelector('[data-rounds]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rounds',e.target.value));
       box.querySelector('[data-rest]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rest',e.target.value));
     });
@@ -487,38 +467,8 @@
     });
   }
 
-  const nativeSaveConfiguredTraining=typeof window.saveConfiguredTraining==='function'?window.saveConfiguredTraining:null;
-  if(nativeSaveConfiguredTraining){
-    window.saveConfiguredTraining=async function(id,di){
-      const days=routineDays(id);
-      let idx=Number(di);
-      if(!dayRef(id,idx)){
-        const fallback=days.findIndex(d=>d?.trainingSetupStarted||d?.trainingSetupStep==='exerciseConfiguration');
-        if(fallback>=0)idx=fallback;
-      }
-      const result=await nativeSaveConfiguredTraining.call(this,id,idx);
-      const refreshed=routineDays(id);
-      const next=refreshed.findIndex((d,i)=>i>idx&&d?.trainingSetupStep!=='complete');
-      if(next>=0){
-        window.__dccTrainingOpen=next;
-        notify('Día '+(idx+1)+' guardado · continúa con Día '+(next+1));
-        setTimeout(()=>window.openTrainingDay?.(id,next),80);
-      }
-      return result;
-    };
-  }
-
   const nativeOpenTrainingExercises=typeof window.openTrainingExercises==='function'?window.openTrainingExercises:null;
-  if(nativeOpenTrainingExercises){window.openTrainingExercises=async function(){const result=await nativeOpenTrainingExercises.apply(this,arguments);requestAnimationFrame(()=>requestAnimationFrame(decoratePicker));setTimeout(decoratePicker,60);return result;};}
-  function ensurePickerDecorated(){
-    const root=document.getElementById('coach-main');
-    if(!root)return;
-    const isPicker=[...root.querySelectorAll('button')].some(btn=>/(toggleTrainingExercise|continueTrainingExerciseSelection|addManualTrainingExercise)/.test(btn.getAttribute('onclick')||''));
-    if(isPicker&&!root.querySelector('.dcc-mode-wrap'))decoratePicker();
-  }
-  const pickerObserver=new MutationObserver(()=>requestAnimationFrame(ensurePickerDecorated));
-  const coachRoot=document.getElementById('coach-main');
-  if(coachRoot)pickerObserver.observe(coachRoot,{childList:true,subtree:true});
+  if(nativeOpenTrainingExercises){window.openTrainingExercises=async function(){const result=await nativeOpenTrainingExercises.apply(this,arguments);requestAnimationFrame(decoratePicker);return result;};}
 
   const nativeToggleTrainingExercise=typeof window.toggleTrainingExercise==='function'?window.toggleTrainingExercise:null;
   if(nativeToggleTrainingExercise){
