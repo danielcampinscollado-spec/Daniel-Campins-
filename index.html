@@ -5721,28 +5721,53 @@ async function openApp(app){
 
     buildClientNav();
 
-    // Primera pintura inmediata con los datos locales ya disponibles.
-    // La sincronización remota continúa en segundo plano para no bloquear
-    // la entrada en Safari/iPhone en conexiones móviles.
-    showClient("home");
+    const clientMain=document.getElementById("client-main");
+    if(clientMain){
+      clientMain.innerHTML='<div style="padding:28px 20px;color:#6f747c;font-weight:700">Cargando tu perfil…</div>';
+    }
 
-    setTimeout(()=>{
-      setupMessageRealtime();
-      Promise.allSettled([
-        loadDietsFromSupabase(),
-        loadClientsFromSupabase(),
-        loadRoutinesFromSupabase(),
-        loadWorkoutHistoryFromSupabase(),
-        loadWeightsFromSupabase(),
-        loadNotificationStateFromSupabase(),
-        loadMessagesFromSupabase(),
-        loadCheckinsFromSupabase()
-      ]).then(()=>{
-        if(currentApp==="client" && currentScreen==="home"){
-          showClient("home");
-        }
-      });
-    },700);
+    try{
+      const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
+      if(claimError)throw claimError;
+      if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
+
+      currentClientId=String(claimedClientId);
+      window.currentClientId=currentClientId;
+
+      await loadClientsFromSupabase();
+
+      if(!client(currentClientId)){
+        throw new Error("No se pudo cargar el perfil del cliente");
+      }
+
+      showClient("home");
+
+      setTimeout(()=>{
+        setupMessageRealtime();
+        Promise.allSettled([
+          loadDietsFromSupabase(),
+          loadRoutinesFromSupabase(),
+          loadWorkoutHistoryFromSupabase(),
+          loadWeightsFromSupabase(),
+          loadNotificationStateFromSupabase(),
+          loadMessagesFromSupabase(),
+          loadCheckinsFromSupabase()
+        ]).then(()=>{
+          if(currentApp==="client" && currentScreen==="home"){
+            showClient("home");
+          }
+        });
+      },500);
+
+    }catch(error){
+      console.error("Error accediendo al perfil cliente:",error);
+      window.__dccOpenAppPromise=null;
+      currentClientId=null;
+      window.currentClientId=null;
+      if(clientMain){
+        clientMain.innerHTML='<div style="margin:24px;padding:20px;border:1px solid rgba(183,123,19,.25);border-radius:18px;background:#fffdf9;color:#17191d"><h2 style="margin:0 0 8px">No se pudo abrir el perfil de cliente</h2><p style="margin:0 0 14px;color:#6f747c;line-height:1.45">Entra con la cuenta de Google cuyo correo está asignado al cliente en el panel del entrenador.</p><button type="button" onclick="logout()" style="width:100%;min-height:46px;border:1px solid #d9aa4a;border-radius:12px;background:#f4d16f;font-weight:850">Cambiar cuenta</button></div>';
+      }
+    }
 
   }else{
 
@@ -5777,14 +5802,18 @@ function teardownMessageRealtime(){
   window.clientMessagesRealtimeChannel=null;
   try{Promise.resolve(supabaseClient.removeChannel(channel)).catch(error=>console.warn("DCC realtime cleanup:",error))}catch(error){console.warn("DCC realtime cleanup:",error)}
 }
-function logout(){
+async function logout(){
   teardownMessageRealtime();
+  try{await supabaseClient.auth.signOut()}catch(error){console.warn("DCC logout Supabase:",error)}
   data=createNeutralData();
   currentApp="";window.currentApp="";
   currentScreen="";window.currentScreen="";
   currentClientId=null;window.currentClientId=null;
+  window.__dccOpenAppPromise=null;
+  window.__dccAuthResumed=false;
   window.__dccCoachChatV2=null;window.openCoachMessageClientId=null;
   try{localStorage.setItem(KEY,JSON.stringify(createNeutralData()))}catch(_){}
+  try{localStorage.removeItem("dcc:selected-access-role")}catch(_){}
   document.getElementById("login").style.display="flex";
   document.getElementById("client").style.display="none";
   document.getElementById("coach").style.display="none";
