@@ -1,7 +1,7 @@
 /* DCC — flujo guiado y seguro de creación de alimentación. */
 (function(){
 'use strict';
-const BUILD='20260917-nutrition-visual-audit-v12-stable-draft-status';
+const BUILD='20260919-nutrition-flow-v13-independent-rest';
 if(window.__dccNutritionVisualOnly===BUILD)return;
 window.__dccNutritionVisualOnly=BUILD;
 const STYLE_ID='dcc-coach-client-visual-hotfix-v1';
@@ -26,7 +26,7 @@ function creationNames(id){
  if(tr.some(m=>m?.__dccCreating===true))return tr.map(m=>m?.name).filter(Boolean);
  const tf=foodCount(tr),rf=foodCount(re);
  if(tf>0&&rf===0)return tr.map(m=>m?.name).filter(Boolean);
- if(tf===0&&rf===0&&(!re.length||sameNames(tr,re)))return tr.map(m=>m?.name).filter(Boolean);
+ if(tf===0&&rf===0)return tr.map(m=>m?.name).filter(Boolean);
  return[];
 }
 function dayComplete(id,type,names){const ms=dayMeals(id,type);if(!ms.length||!names.length)return false;const wanted=new Set(names.map(norm)),relevant=ms.filter(m=>wanted.has(norm(m?.name)));return relevant.length===names.length&&relevant.every(m=>optionsOf(m).some(o=>Array.isArray(o?.foods)&&o.foods.length>0))}
