@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 
-const BUILD='20260919-nutrition-meal-setup-v35-stable';
+const BUILD='20260919-nutrition-meal-setup-v36-live-dom';
 if(window.__dccNutritionMealSetup===BUILD)return;
 window.__dccNutritionMealSetup=BUILD;
 
@@ -113,6 +113,17 @@ function availableMarkup(){
 function orderMarkup(){
   return selected.map((name,i)=>`<div class="dcc-meal-order-row ${isTrainingMeal(name)?'training':''}"><span class="dcc-meal-order-num">${i+1}</span><span class="dcc-meal-order-ico">${icon(name)}</span><span class="dcc-meal-order-name">${esc(name)}</span></div>`).join('');
 }
+function syncMealUi(p){
+  if(!p)return;
+  p.querySelectorAll('.dcc-meal-native').forEach(input=>{
+    const name=input.value,order=selected.indexOf(name),label=input.closest('.dcc-meal-pick'),badge=label?.querySelector('.dcc-meal-pick-order');
+    input.checked=order>=0;
+    if(label)label.classList.toggle('selected',order>=0);
+    if(badge)badge.textContent=order>=0?String(order+1):'＋';
+  });
+  const create=p.querySelector('[data-dcc-meal-create]');
+  if(create)create.disabled=!selected.length;
+}
 function bindMealSelection(p){
   if(!p)return;
   p.querySelectorAll('.dcc-meal-native').forEach(input=>{
@@ -122,7 +133,7 @@ function bindMealSelection(p){
       if(!MEALS.includes(name))return;
       if(this.checked&&!selected.includes(name))selected.push(name);
       if(!this.checked)selected=selected.filter(x=>x!==name);
-      renderStep1();
+      syncMealUi(p);
     };
   });
   const create=p.querySelector('[data-dcc-meal-create]');
