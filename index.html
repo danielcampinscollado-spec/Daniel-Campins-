@@ -16265,56 +16265,46 @@ async function sendClientCheckin(){
 <script src="./training-superset-v1.js?v=20260918-audit-final1"></script>
 
 
-<script id="dcc-auth-flow-v1">
+<script id="dcc-auth-flow-v2">
 (function(){
   const ROLE_KEY='dcc:selected-access-role';
   let busy=false;
-  function selectedRole(){try{return sessionStorage.getItem(ROLE_KEY)||''}catch(_){return ''}}
-  function saveRole(role){try{sessionStorage.setItem(ROLE_KEY,role)}catch(_){}}
-  function clearRole(){try{sessionStorage.removeItem(ROLE_KEY)}catch(_){}}
-  function loginEl(){return document.getElementById('login')}
-  function showRoleChoice(){const l=loginEl();if(l)l.style.display='flex'}
-  function googleButton(role){
-    const l=loginEl(); if(!l)return;
-    l.style.display='flex';
-    const shell=l.querySelector('.dcc-login-shell'); if(!shell)return;
+  const role=()=>{try{return sessionStorage.getItem(ROLE_KEY)||''}catch(_){return ''}};
+  const save=r=>{try{sessionStorage.setItem(ROLE_KEY,r)}catch(_){}};
+  const clear=()=>{try{sessionStorage.removeItem(ROLE_KEY)}catch(_){}};
+  function googleScreen(r){
+    const login=document.getElementById('login'),shell=login?.querySelector('.dcc-login-shell');if(!login||!shell)return;
+    login.style.display='flex';
     let box=document.getElementById('dcc-google-auth-box');
     if(!box){box=document.createElement('div');box.id='dcc-google-auth-box';box.style.cssText='margin-top:18px;display:grid;gap:10px';shell.appendChild(box)}
     box.innerHTML='<button type="button" id="dcc-google-auth-go" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(145deg,#fffdf8,#fbf2df);color:#17191d;font-weight:850;font-size:15px">Continuar con Google</button><button type="button" id="dcc-google-auth-back" style="border:0;background:transparent;color:#8b6a2b;font-weight:800;padding:8px">Volver</button>';
-    l.querySelector('.dcc-access-grid')?.setAttribute('style','display:none!important');
-    document.getElementById('dcc-google-auth-go').onclick=()=>startGoogle(role);
-    document.getElementById('dcc-google-auth-back').onclick=()=>{clearRole();box.remove();l.querySelector('.dcc-access-grid')?.removeAttribute('style')};
+    login.querySelector('.dcc-access-grid')?.setAttribute('style','display:none!important');
+    document.getElementById('dcc-google-auth-go').onclick=async()=>{if(busy)return;busy=true;save(r);try{const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname,skipBrowserRedirect:false}});if(error)throw error}catch(e){busy=false;console.error(e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}};
+    document.getElementById('dcc-google-auth-back').onclick=()=>{clear();box.remove();login.querySelector('.dcc-access-grid')?.removeAttribute('style')};
   }
-  async function startGoogle(role){
-    if(busy)return;busy=true;saveRole(role);
+  window.dccChooseAccessRole=async function(r){
+    if(r!=='client'&&r!=='coach'||busy)return;
+    save(r);
     try{
-      const redirectTo=location.origin+location.pathname;
-      const {error}=await window.supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo,skipBrowserRedirect:false}});
-      if(error)throw error;
-    }catch(e){busy=false;console.error('DCC Google auth',e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}
-  }
-  window.dccChooseAccessRole=function(role){
-    if(role!=='client'&&role!=='coach')return;
-    saveRole(role);
-    window.supabaseClient.auth.getSession().then(({data})=>{
-      if(data?.session){
-        clearRole();
-        if(window.currentApp!==role) window.openApp(role);
-      } else googleButton(role);
-    }).catch(()=>googleButton(role));
+      const {data}=await supabaseClient.auth.getSession();
+      if(data?.session){clear();return openApp(r)}
+    }catch(_){}
+    googleScreen(r);
   };
-  async function finishAuth(){
-    const role=selectedRole(); if(!role){showRoleChoice();return}
+  async function resumeOnce(){
+    if(window.__dccAuthResumed)return;
+    window.__dccAuthResumed=true;
+    const r=role();if(!r)return;
     try{
-      const {data}=await window.supabaseClient.auth.getSession();
-      if(data?.session){
-        clearRole();
-        history.replaceState({},document.title,location.origin+location.pathname);
-        if(window.currentApp!==role) await window.openApp(role);
-      } else googleButton(role);
-    }catch(_){googleButton(role)}
+      const {data}=await supabaseClient.auth.getSession();
+      if(!data?.session){googleScreen(r);return}
+      clear();
+      history.replaceState({},document.title,location.pathname);
+      await openApp(r);
+    }catch(e){console.error('DCC auth resume',e);googleScreen(r)}
   }
-  window.addEventListener('load',()=>{setTimeout(finishAuth,0)},{once:true});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resumeOnce,{once:true});
+  else resumeOnce();
 })();
 </script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
