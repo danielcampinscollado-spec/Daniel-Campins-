@@ -5679,12 +5679,16 @@ async function openApp(app){
     return;
   }
 
+  if(window.__dccOpenAppPromise){
+    return window.__dccOpenAppPromise;
+  }
   const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
   const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
   if(alreadyOpen){
     return true;
   }
 
+  window.__dccOpenAppPromise=Promise.resolve(true);
   currentApp = app;
   window.currentApp = app;
 
@@ -16293,16 +16297,21 @@ async function sendClientCheckin(){
     if(role!=='client'&&role!=='coach')return;
     saveRole(role);
     window.supabaseClient.auth.getSession().then(({data})=>{
-      if(data?.session){clearRole();window.openApp(role)}
-      else googleButton(role);
+      if(data?.session){
+        clearRole();
+        if(window.currentApp!==role) window.openApp(role);
+      } else googleButton(role);
     }).catch(()=>googleButton(role));
   };
   async function finishAuth(){
     const role=selectedRole(); if(!role){showRoleChoice();return}
     try{
       const {data}=await window.supabaseClient.auth.getSession();
-      if(data?.session){clearRole();history.replaceState({},document.title,location.origin+location.pathname);await window.openApp(role)}
-      else googleButton(role);
+      if(data?.session){
+        clearRole();
+        history.replaceState({},document.title,location.origin+location.pathname);
+        if(window.currentApp!==role) await window.openApp(role);
+      } else googleButton(role);
     }catch(_){googleButton(role)}
   }
   window.addEventListener('load',()=>{setTimeout(finishAuth,0)},{once:true});
