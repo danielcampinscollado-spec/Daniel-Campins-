@@ -314,14 +314,14 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
 
       /* Clientes */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{
-        grid-template-columns:minmax(0,1fr) 132px!important;gap:16px!important;min-height:96px!important;padding:16px 18px!important;
+        grid-template-columns:minmax(0,1fr) 132px!important;gap:14px!important;min-height:74px!important;padding:10px 14px!important;
       }
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-training{display:none!important}
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card.dcc-cl-card-ref{grid-template-columns:minmax(0,1fr) 24px!important;gap:12px!important}
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-active{display:none!important}
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card-ref .dcc-cl-chevron{display:flex!important;align-items:center!important;justify-content:flex-end!important;align-self:stretch!important;color:#b77b13!important;font-size:26px!important;line-height:1!important}
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{
-        min-height:50px!important;padding:9px 14px!important;border:1px solid rgba(183,123,19,.40)!important;border-radius:15px!important;
+        min-height:42px!important;padding:7px 13px!important;border:1px solid rgba(183,123,19,.40)!important;border-radius:15px!important;
         background:linear-gradient(145deg,#fffdf8 0%,#f8efdf 100%)!important;color:#8d5b08!important;
         box-shadow:0 5px 14px rgba(78,58,28,.06)!important;font-weight:800!important;
       }
@@ -329,6 +329,16 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
         border:0!important;outline:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:0!important;
       }
       html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-search{overflow:hidden!important}
+
+
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-client-card-authority{height:70px!important;padding:7px 12px!important;gap:11px!important;border-radius:18px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-client-avatar-authority{width:44px!important;height:44px!important;border-radius:14px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-client-copy-authority strong{font-size:15px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-client-copy-authority small{font-size:10px!important;margin-top:2px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-client-manage-authority{min-width:104px!important;height:40px!important;border-radius:13px!important;background:#fffdf8!important;color:#714909!important;border:1.3px solid #c9952f!important;font-weight:800!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-head{margin-bottom:10px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-new{margin-bottom:7px!important}
+      html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-list{gap:7px!important;margin-top:8px!important}
 
       /* Gestión de cliente: resumen */
       html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-v5-plan,
@@ -529,8 +539,8 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
         html.dcc-theme-light-premium body #modal.dcc-new-client-overlay .modal-box{border-radius:24px!important}
       }
       @media(max-width:600px){
-        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{grid-template-columns:minmax(0,1fr) 118px!important;gap:12px!important;min-height:90px!important;padding:14px!important}
-        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{min-height:48px!important;font-size:10px!important;padding:7px 10px!important}
+        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-card{grid-template-columns:minmax(0,1fr) 118px!important;gap:10px!important;min-height:72px!important;padding:9px 12px!important}
+        html.dcc-theme-light-premium body #coach #coach-main.dcc-premium-clients .dcc-cl-manage{min-height:40px!important;font-size:10px!important;padding:6px 10px!important}
       }
 
 @media(max-width:700px){
