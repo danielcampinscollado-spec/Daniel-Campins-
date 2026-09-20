@@ -195,9 +195,36 @@
     (document.head||document.documentElement).appendChild(s);
   }
 
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',install,{once:true});
-  }else{
+  function refineHome(){
+    const root=document.querySelector('#client-main .dch-wrap');
+    if(!root)return;
+    const nextName=root.querySelector('.dch-next-name');
+    if(nextName){
+      const text=(nextName.textContent||'').trim();
+      if(!text || /^sin\s+grupo/i.test(text)){
+        nextName.textContent='Rutina disponible';
+      }
+    }
+  }
+
+  function boot(){
     install();
+    refineHome();
+    const main=document.getElementById('client-main');
+    if(main&&!window.__dccClientHomeLightFixV2Observer){
+      let raf=0;
+      const observer=new MutationObserver(()=>{
+        cancelAnimationFrame(raf);
+        raf=requestAnimationFrame(refineHome);
+      });
+      observer.observe(main,{childList:true,subtree:true,characterData:true});
+      window.__dccClientHomeLightFixV2Observer=observer;
+    }
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',boot,{once:true});
+  }else{
+    boot();
   }
 })();
