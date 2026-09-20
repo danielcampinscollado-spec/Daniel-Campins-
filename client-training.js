@@ -358,17 +358,17 @@
           z-index:0!important;
           top:0!important;
           right:0!important;
-          width:36%!important;
+          width:48%!important;
           height:100%!important;
           max-width:none!important;
-          object-fit:contain!important;
-          object-position:right center!important;
+          object-fit:cover!important;
+          object-position:center right!important;
           border:0!important;
           border-radius:0 21px 21px 0!important;
           filter:none!important;
           pointer-events:none!important;
-          -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 20%,rgba(0,0,0,.82) 48%,#000 68%,#000 100%)!important;
-          mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.22) 20%,rgba(0,0,0,.82) 48%,#000 68%,#000 100%)!important
+          -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.55) 12%,#000 32%,#000 100%)!important;
+          mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.55) 12%,#000 32%,#000 100%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-plate-fade{
           position:absolute!important;
@@ -379,11 +379,12 @@
             radial-gradient(circle at 67% 12%,rgba(239,194,94,.16),transparent 27%),
             linear-gradient(90deg,
               #fffdf8 0%,
-              rgba(255,253,248,1) 50%,
-              rgba(255,253,248,.96) 59%,
-              rgba(255,253,248,.66) 69%,
-              rgba(255,253,248,.18) 82%,
-              rgba(255,253,248,.01) 100%)!important
+              rgba(255,253,248,1) 42%,
+              rgba(255,253,248,.90) 49%,
+              rgba(255,253,248,.56) 57%,
+              rgba(255,253,248,.18) 65%,
+              rgba(255,253,248,.02) 73%,
+              rgba(255,253,248,0) 80%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine>*:not(.dct3-plate):not(.dct3-plate-fade){
           position:relative!important;
