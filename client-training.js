@@ -121,7 +121,7 @@
     const region=muscleRegion(muscles);
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-auditfix1" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-muscles-clean1" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
       const img=muscleAsset(muscle);
@@ -272,7 +272,7 @@
           display:flex!important;
           justify-content:flex-end!important;
           align-items:flex-start!important;
-          gap:8px!important;
+          gap:10px!important;
           overflow:visible!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{
@@ -289,7 +289,7 @@
           border-radius:15px!important;
           overflow:hidden!important;
           background:transparent!important;
-          box-shadow:0 5px 14px rgba(69,48,15,.11)!important
+          box-shadow:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle img{
           display:block!important;
@@ -300,7 +300,26 @@
           object-position:center!important;
           border:0!important;
           border-radius:13px!important;
+          clip-path:inset(1px round 13px)!important;
           filter:none!important
+        }
+        /* Las ilustraciones heredadas dejan de mostrarse en naranja/rojo:
+           se unifican al tratamiento dorado Light Premium. */
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle:not(.is-premium) img{
+          filter:sepia(.55) saturate(.78) hue-rotate(348deg) brightness(1.04) contrast(1.04)!important
+        }
+        /* Si el día tiene un solo grupo muscular, no queda un hueco vacío. */
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals:has(.dct3-muscle-wrap:only-child){
+          justify-content:center!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals:has(.dct3-muscle-wrap:only-child) .dct3-muscle-wrap{
+          flex-basis:116px!important;
+          width:116px!important;
+          min-width:116px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals:has(.dct3-muscle-wrap:only-child) .dct3-muscle{
+          width:116px!important;
+          height:116px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap>span{
           display:block!important;
@@ -374,7 +393,7 @@
           height:100%!important;
           max-width:none!important;
           object-fit:cover!important;
-          object-position:72% center!important;
+          object-position:58% center!important;
           image-rendering:auto!important;
           border:0!important;
           border-radius:0 21px 21px 0!important;
@@ -560,7 +579,7 @@
         ${day?`
           <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/next-workout-plate.jpg?v=20260920-light-hq1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-user.webp?v=20260920-userdisk1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
