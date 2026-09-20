@@ -47,6 +47,13 @@
     return out.slice(0,2);
   }
 
+  function muscleRegion(muscles){
+    const names=(muscles||[]).map(x=>norm(x?.name)).join(' ');
+    if(/cuadriceps|femoral|isquio|glute|gemelo|pantorrilla/.test(names))return 'TREN INFERIOR';
+    if(/core|abdomen|lumbar/.test(names))return 'CORE Y ESTABILIDAD';
+    return 'TREN SUPERIOR';
+  }
+
   function exerciseMuscle(ex,day){
     if(ex?.muscle)return ex.muscle;
     const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
@@ -98,9 +105,10 @@
     const exercises=Array.isArray(day?.exercises)?day.exercises:[];
     const muscles=dayMuscles(day);
     const title=muscles.length?muscles.map(x=>x.name).join(' · '):(day?.muscle||'Entrenamiento');
+    const region=muscleRegion(muscles);
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle"><img src="./${esc(x.path)}" alt="${esc(x.name)}"></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle"><img src="./${esc(x.path)}" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
       const img=muscleAsset(muscle);
@@ -113,34 +121,438 @@
 
     main.innerHTML=`
       <style id="dcc-training-stable-v3-style">
-        #client-main .dcc-training-stable-v3{max-width:820px;margin:0 auto;padding:3px 0 112px;color:#f7f5f0}
-        #client-main .dct3-eyebrow{margin:0 0 12px;color:#e0ad4c;font-size:11px;font-weight:850;letter-spacing:3px}
-        #client-main .dct3-days{display:grid;grid-template-columns:repeat(${Math.max(1,Math.min(routine.length||1,7))},minmax(0,1fr));gap:5px;margin-bottom:12px}
-        #client-main .dct3-day{height:54px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(145deg,#14181f,#0c1015);color:#858d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
-        #client-main .dct3-day span{font-size:7.5px;font-weight:850;letter-spacing:1.2px}#client-main .dct3-day b{font-size:18px}
-        #client-main .dct3-day.active{border-color:#e3b447;background:linear-gradient(145deg,#241d10,#15130e);color:#f0c96b}
-        #client-main .dct3-card{position:relative;margin-bottom:10px;border:1px solid rgba(217,170,74,.68);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.09),transparent 40%),linear-gradient(145deg,#171b21,#0b0f14 72%);box-shadow:0 12px 28px rgba(0,0,0,.23);overflow:hidden}
-        #client-main .dct3-muscles{min-height:112px;padding:13px 15px;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.9fr);gap:12px;align-items:center}
-        #client-main .dct3-label{margin-bottom:7px;color:#e0ad4c;font-size:9px;font-weight:850;letter-spacing:2.4px}#client-main .dct3-title{margin:0;font-size:22px;line-height:1.08}
-        #client-main .dct3-visuals{display:flex;justify-content:flex-end;gap:5px}.dct3-muscle{width:50%;max-width:92px;height:86px;border:1px solid rgba(217,170,74,.13);border-radius:13px;overflow:hidden}.dct3-muscle img{width:100%;height:100%;object-fit:contain}
-        #client-main .dct3-tip{padding:12px 14px;display:grid;grid-template-columns:38px 1fr;gap:11px;align-items:center}.dct3-tip-icon{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.34);border-radius:11px;color:#f0c96b}.dct3-tip p{margin:0;color:#c1c7d0;font-size:11.5px;line-height:1.42}
-        #client-main .dct3-routine{padding:14px;border:1px solid rgba(217,170,74,.76);border-radius:20px;background:linear-gradient(145deg,#15191f,#0a0e13);position:relative;z-index:1}
-        #client-main .dct3-routine h3{margin:0;font-size:18px}.dct3-meta{margin-top:4px;color:#929ba6;font-size:10px}
-        #client-main .dct3-actions{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(120px,.9fr);gap:8px;margin-top:14px;position:relative;z-index:5}
-        #client-main .dct3-start,#client-main .dct3-view{min-height:52px;border-radius:15px;font-weight:850;position:relative;z-index:6;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent}
-        #client-main .dct3-start{border:1px solid #f4cd69;background:linear-gradient(135deg,#f0c45d,#dfa93d 58%,#f1c960);color:#15110a}.dct3-view{border:1px solid rgba(255,255,255,.14);background:#10151b;color:#e8e8e5}
-        #client-main .dct3-list{display:none;margin-top:10px;gap:7px}#client-main .dct3-routine.open .dct3-list{display:grid}
-        #client-main .dct3-exercise{min-height:72px;padding:8px 9px;display:grid;grid-template-columns:54px minmax(0,1fr);gap:10px;align-items:center;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.025)}
-        #client-main .dct3-exercise:not(:has(.dct3-ex-img)){grid-template-columns:1fr}.dct3-ex-img{width:54px;height:54px;border-radius:11px;overflow:hidden}.dct3-ex-img img{width:100%;height:100%;object-fit:contain}.dct3-exercise strong{display:block;font-size:13px}.dct3-exercise small{display:block;margin-top:4px;color:#e0ad4c;font-size:8px;font-weight:800;letter-spacing:1px}.dct3-exercise span{display:block;margin-top:4px;color:#8f98a4;font-size:9.5px}
-        #client-main .dct3-empty{padding:18px;border:1px solid rgba(255,255,255,.09);border-radius:16px;color:#929ba6;text-align:center}
-        @media(max-width:390px){#client-main .dct3-muscles{min-height:104px;grid-template-columns:minmax(0,1fr) 132px;padding:12px 13px}.dct3-muscle{height:78px}#client-main .dct3-title{font-size:19px}#client-main .dct3-actions{grid-template-columns:minmax(0,1.5fr) minmax(112px,.9fr)}#client-main .dct3-start,#client-main .dct3-view{min-height:49px;font-size:12px}}
+        #client-main .dcc-training-stable-v3{
+          max-width:820px;
+          margin:0 auto;
+          padding:3px 0 112px;
+          color:#17191d
+        }
+
+        #client-main .dct3-eyebrow{
+          margin:0 0 14px;
+          color:#a66d0d;
+          font-size:11px;
+          line-height:1;
+          font-weight:850;
+          letter-spacing:3.4px;
+          text-transform:uppercase
+        }
+
+        #client-main .dct3-days{
+          display:flex;
+          gap:7px;
+          overflow-x:auto;
+          margin:0 0 14px;
+          padding:1px 1px 3px;
+          scrollbar-width:none
+        }
+        #client-main .dct3-days::-webkit-scrollbar{display:none}
+        #client-main .dct3-day{
+          flex:0 0 82px;
+          width:82px;
+          height:70px;
+          border:1px solid rgba(183,123,19,.26);
+          border-radius:17px;
+          background:linear-gradient(145deg,#fffefa,#f8f0e3);
+          color:#777f89;
+          box-shadow:0 5px 14px rgba(78,58,28,.04),inset 0 1px 0 rgba(255,255,255,.95);
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+          gap:5px;
+          position:relative;
+          z-index:2;
+          pointer-events:auto;
+          touch-action:manipulation
+        }
+        #client-main .dct3-day span{
+          font-size:8px;
+          line-height:1;
+          font-weight:850;
+          letter-spacing:1.45px
+        }
+        #client-main .dct3-day b{
+          color:inherit!important;
+          font-size:21px;
+          line-height:1;
+          font-weight:650
+        }
+        #client-main .dct3-day.active{
+          border-color:#d6a33c;
+          background:
+            radial-gradient(circle at 50% 0,rgba(226,173,57,.17),transparent 62%),
+            linear-gradient(145deg,#1b1913 0%,#11110f 100%);
+          color:#f0c75d;
+          box-shadow:0 7px 17px rgba(67,49,18,.12),inset 0 1px 0 rgba(255,255,255,.045)
+        }
+        #client-main .dct3-day.active b{color:#f0c75d!important}
+
+        #client-main .dct3-card{
+          position:relative;
+          margin-bottom:12px;
+          border:1px solid rgba(183,123,19,.24);
+          border-radius:21px;
+          background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
+          box-shadow:0 10px 24px rgba(78,58,28,.065),inset 0 1px 0 rgba(255,255,255,.96)!important;
+          overflow:hidden
+        }
+
+        #client-main .dct3-muscles{
+          min-height:146px;
+          padding:18px 20px;
+          display:grid;
+          grid-template-columns:minmax(0,1fr) minmax(190px,.9fr);
+          gap:18px;
+          align-items:center
+        }
+        #client-main .dct3-label{
+          margin-bottom:8px;
+          color:#b77b13;
+          font-size:9.5px;
+          line-height:1.1;
+          font-weight:850;
+          letter-spacing:2.6px;
+          text-transform:uppercase
+        }
+        #client-main .dct3-title{
+          margin:0;
+          color:#17191d!important;
+          font-size:25px;
+          line-height:1.08;
+          font-weight:700;
+          letter-spacing:-.55px
+        }
+        #client-main .dct3-region{
+          display:flex;
+          align-items:center;
+          gap:10px;
+          margin-top:14px;
+          color:#7d828a;
+          font-size:8px;
+          line-height:1;
+          font-weight:750;
+          letter-spacing:2px
+        }
+        #client-main .dct3-region::before{
+          content:"";
+          width:38px;
+          height:2px;
+          border-radius:999px;
+          background:linear-gradient(90deg,#d7a73e,#b77b13)
+        }
+        #client-main .dct3-visuals{
+          display:flex;
+          justify-content:flex-end;
+          align-items:flex-start;
+          gap:8px
+        }
+        #client-main .dct3-muscle-wrap{
+          width:88px;
+          text-align:center
+        }
+        #client-main .dct3-muscle{
+          width:88px;
+          height:100px;
+          border:1px solid rgba(194,135,20,.48);
+          border-radius:16px;
+          overflow:hidden;
+          background:
+            radial-gradient(circle at 50% 10%,rgba(225,174,65,.12),transparent 40%),
+            linear-gradient(145deg,#17191c,#0d0f12);
+          box-shadow:0 7px 16px rgba(49,37,18,.12),inset 0 1px 0 rgba(255,255,255,.03)
+        }
+        #client-main .dct3-muscle img{
+          width:100%;
+          height:100%;
+          object-fit:cover;
+          display:block;
+          filter:sepia(.18) saturate(.92) hue-rotate(350deg) contrast(1.07) brightness(.94)
+        }
+        #client-main .dct3-muscle-wrap>span{
+          display:block;
+          margin-top:6px;
+          color:#a66d0d;
+          font-size:7.5px;
+          line-height:1;
+          font-weight:850;
+          letter-spacing:1.25px;
+          text-transform:uppercase;
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis
+        }
+
+        #client-main .dct3-tip{
+          min-height:82px;
+          padding:13px 17px;
+          display:grid;
+          grid-template-columns:48px minmax(0,1fr);
+          gap:14px;
+          align-items:center
+        }
+        #client-main .dct3-tip-icon{
+          width:46px;
+          height:46px;
+          display:grid;
+          place-items:center;
+          border:1px solid rgba(183,123,19,.31);
+          border-radius:14px;
+          color:#b77b13;
+          background:#fffaf0
+        }
+        #client-main .dct3-tip-icon svg{
+          width:24px;
+          height:24px;
+          stroke:currentColor
+        }
+        #client-main .dct3-tip p{
+          margin:0;
+          color:#68707c!important;
+          font-size:12px;
+          line-height:1.42;
+          font-weight:450
+        }
+
+        #client-main .dct3-routine{
+          position:relative;
+          isolation:isolate;
+          overflow:hidden;
+          padding:17px 18px;
+          border:1px solid rgba(183,123,19,.28)!important;
+          border-radius:21px;
+          background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
+          box-shadow:0 11px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important
+        }
+        #client-main .dct3-routine::before{
+          content:"";
+          position:absolute;
+          z-index:0;
+          top:0;
+          right:0;
+          width:54%;
+          height:178px;
+          pointer-events:none;
+          background-image:url("./assets/training-premium-plate.jpg");
+          background-repeat:no-repeat;
+          background-position:58% center;
+          background-size:cover;
+          opacity:.96;
+          -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.20) 14%,rgba(0,0,0,.76) 45%,#000 72%,#000 100%);
+          mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.20) 14%,rgba(0,0,0,.76) 45%,#000 72%,#000 100%)
+        }
+        #client-main .dct3-routine::after{
+          content:"";
+          position:absolute;
+          z-index:1;
+          top:0;
+          left:0;
+          right:0;
+          height:178px;
+          pointer-events:none;
+          background:
+            radial-gradient(circle at 58% 18%,rgba(240,197,103,.16),transparent 30%),
+            linear-gradient(90deg,
+              rgba(255,253,248,1) 0%,
+              rgba(255,253,248,.99) 37%,
+              rgba(255,253,248,.84) 52%,
+              rgba(255,253,248,.34) 68%,
+              rgba(255,253,248,.03) 100%)
+        }
+        #client-main .dct3-routine>*{
+          position:relative;
+          z-index:2
+        }
+        #client-main .dct3-routine h3{
+          margin:0;
+          max-width:53%;
+          color:#17191d!important;
+          font-size:21px;
+          line-height:1.08;
+          font-weight:700;
+          letter-spacing:-.45px
+        }
+        #client-main .dct3-meta{
+          margin-top:6px;
+          color:#707782!important;
+          font-size:10.5px
+        }
+        #client-main .dct3-actions{
+          display:grid;
+          grid-template-columns:minmax(0,1.55fr) minmax(116px,.88fr);
+          gap:9px;
+          max-width:520px;
+          margin-top:19px;
+          position:relative;
+          z-index:5
+        }
+        #client-main .dct3-start,
+        #client-main .dct3-view{
+          min-height:46px;
+          padding:0 14px;
+          border-radius:14px;
+          font-size:12px;
+          line-height:1;
+          font-weight:850;
+          position:relative;
+          z-index:6;
+          pointer-events:auto!important;
+          touch-action:manipulation!important;
+          -webkit-tap-highlight-color:transparent
+        }
+        #client-main .dct3-start{
+          border:1px solid #d6a33c!important;
+          background:linear-gradient(135deg,#ffe895 0%,#f2ca5b 50%,#dfa52f 100%)!important;
+          color:#17140d!important;
+          box-shadow:0 7px 17px rgba(185,126,18,.15),inset 0 1px 0 rgba(255,255,255,.72)!important
+        }
+        #client-main .dct3-view{
+          border:1px solid rgba(255,255,255,.12)!important;
+          background:linear-gradient(145deg,#191d24,#0e1116)!important;
+          color:#f4f2ec!important;
+          box-shadow:0 7px 16px rgba(25,23,19,.13)!important
+        }
+
+        #client-main .dct3-list{
+          display:none;
+          margin-top:16px;
+          gap:7px;
+          padding-top:12px;
+          border-top:1px solid rgba(177,119,18,.13)
+        }
+        #client-main .dct3-routine.open .dct3-list{display:grid}
+        #client-main .dct3-exercise{
+          min-height:68px;
+          padding:8px 9px;
+          display:grid;
+          grid-template-columns:50px minmax(0,1fr);
+          gap:10px;
+          align-items:center;
+          border:1px solid rgba(177,119,18,.17);
+          border-radius:14px;
+          background:rgba(255,253,248,.88)!important
+        }
+        #client-main .dct3-exercise:not(:has(.dct3-ex-img)){grid-template-columns:1fr}
+        #client-main .dct3-ex-img{
+          width:50px;
+          height:50px;
+          border:1px solid rgba(183,123,19,.18);
+          border-radius:11px;
+          overflow:hidden;
+          background:#fff7e8
+        }
+        #client-main .dct3-ex-img img{
+          width:100%;
+          height:100%;
+          object-fit:cover;
+          filter:sepia(.16) saturate(.92) hue-rotate(350deg)
+        }
+        #client-main .dct3-exercise strong{
+          display:block;
+          color:#17191d!important;
+          font-size:12.5px
+        }
+        #client-main .dct3-exercise small{
+          display:block;
+          margin-top:4px;
+          color:#b77b13!important;
+          font-size:7.7px;
+          font-weight:800;
+          letter-spacing:1px
+        }
+        #client-main .dct3-exercise span{
+          display:block;
+          margin-top:4px;
+          color:#777f89!important;
+          font-size:9.3px
+        }
+        #client-main .dct3-empty{
+          padding:18px;
+          border:1px solid rgba(177,119,18,.18);
+          border-radius:16px;
+          background:#fffaf1;
+          color:#777f89;
+          text-align:center
+        }
+
+        @media(max-width:520px){
+          #client-main .dcc-training-stable-v3{padding-bottom:108px}
+          #client-main .dct3-eyebrow{margin-bottom:13px}
+          #client-main .dct3-day{
+            flex-basis:78px;
+            width:78px;
+            height:68px
+          }
+          #client-main .dct3-muscles{
+            min-height:138px;
+            grid-template-columns:minmax(0,1fr) 178px;
+            gap:12px;
+            padding:16px 17px
+          }
+          #client-main .dct3-title{font-size:23px}
+          #client-main .dct3-muscle-wrap{width:82px}
+          #client-main .dct3-muscle{width:82px;height:94px}
+          #client-main .dct3-routine::before,
+          #client-main .dct3-routine::after{height:170px}
+        }
+
+        @media(max-width:390px){
+          #client-main .dct3-day{
+            flex-basis:72px;
+            width:72px;
+            height:64px;
+            border-radius:15px
+          }
+          #client-main .dct3-muscles{
+            min-height:130px;
+            grid-template-columns:minmax(0,1fr) 154px;
+            padding:14px 14px;
+            gap:10px
+          }
+          #client-main .dct3-title{font-size:20px}
+          #client-main .dct3-region{margin-top:11px;font-size:7px;letter-spacing:1.5px}
+          #client-main .dct3-region::before{width:28px}
+          #client-main .dct3-muscle-wrap{width:72px}
+          #client-main .dct3-muscle{width:72px;height:84px;border-radius:14px}
+          #client-main .dct3-muscle-wrap>span{font-size:6.7px;letter-spacing:.9px}
+          #client-main .dct3-tip{
+            min-height:76px;
+            grid-template-columns:43px minmax(0,1fr);
+            gap:11px;
+            padding:12px 14px
+          }
+          #client-main .dct3-tip-icon{width:42px;height:42px}
+          #client-main .dct3-tip p{font-size:11px}
+          #client-main .dct3-routine{
+            padding:15px 14px
+          }
+          #client-main .dct3-routine::before{
+            width:58%;
+            background-position:56% center
+          }
+          #client-main .dct3-routine h3{
+            max-width:58%;
+            font-size:19px
+          }
+          #client-main .dct3-actions{
+            grid-template-columns:minmax(0,1.45fr) minmax(105px,.86fr);
+            gap:8px;
+            margin-top:17px
+          }
+          #client-main .dct3-start,
+          #client-main .dct3-view{
+            min-height:44px;
+            padding:0 11px;
+            font-size:10.8px
+          }
+        }
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
         <div class="dct3-days">${dayButtons}</div>
         ${day?`
-          <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2></div><div class="dct3-visuals">${visuals}</div></section>
-          <section class="dct3-card dct3-tip"><div class="dct3-tip-icon">✦</div><div><div class="dct3-label" style="margin-bottom:4px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div></section>
+          <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals">${visuals}</div></section>
+          <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div></section>
           ${exercises.length?`<section class="dct3-routine"><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
