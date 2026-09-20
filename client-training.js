@@ -17,10 +17,10 @@
   const activeClientId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
 
   const MUSCLE_ASSETS={
-    pectoral:'assets/muscles/pectoral-client-premium.jpg',pecho:'assets/muscles/pectoral-client-premium.jpg',
+    pectoral:'assets/muscles/pectoral-reference-exact.jpg',pecho:'assets/muscles/pectoral-reference-exact.jpg',
     espalda:'assets/muscles/espalda.png',dorsal:'assets/muscles/espalda.png',dorsales:'assets/muscles/espalda.png',
     hombro:'assets/muscles/hombros.png',hombros:'assets/muscles/hombros.png',deltoide:'assets/muscles/hombros.png',deltoides:'assets/muscles/hombros.png',
-    biceps:'assets/muscles/biceps.png',triceps:'assets/muscles/triceps-client-premium.jpg',
+    biceps:'assets/muscles/biceps.png',triceps:'assets/muscles/triceps-reference-exact.jpg',
     cuadriceps:'assets/muscles/cuadriceps.png',
     femoral:'assets/muscles/isquios.png',femorales:'assets/muscles/isquios.png',isquios:'assets/muscles/isquios.png',isquiotibiales:'assets/muscles/isquios.png',
     gluteo:'assets/muscles/gluteos.png',gluteos:'assets/muscles/gluteos.png',
@@ -30,9 +30,9 @@
   };
 
   const OVERVIEW_PREMIUM_ASSETS={
-    pectoral:'assets/muscles/pectoral-client-premium.jpg',
-    pecho:'assets/muscles/pectoral-client-premium.jpg',
-    triceps:'assets/muscles/triceps-client-premium.jpg'
+    pectoral:'assets/muscles/pectoral-reference-exact.jpg',
+    pecho:'assets/muscles/pectoral-reference-exact.jpg',
+    triceps:'assets/muscles/triceps-reference-exact.jpg'
   };
 
   function overviewMuscleAsset(value){
@@ -54,9 +54,9 @@
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
       const path=overviewMuscleAsset(name);
-      if(path&&!out.some(x=>x.path===path))out.push({name,path,premium:/client-premium\.jpg$/i.test(path)});
+      if(path&&!out.some(x=>x.path===path))out.push({name,path,premium:/reference-exact\.jpg$/i.test(path)});
     });
-    if(!out.length&&day?.muscle){const path=overviewMuscleAsset(day.muscle);if(path)out.push({name:day.muscle,path,premium:/client-premium\.jpg$/i.test(path)});}
+    if(!out.length&&day?.muscle){const path=overviewMuscleAsset(day.muscle);if(path)out.push({name:day.muscle,path,premium:/reference-exact\.jpg$/i.test(path)});}
     return out.slice(0,2);
   }
 
@@ -121,7 +121,7 @@
     const region=muscleRegion(muscles);
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-client-training-premium1" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-exact-reference1" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
       const img=muscleAsset(muscle);
@@ -209,11 +209,11 @@
         }
 
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
-          min-height:142px!important;
-          padding:14px 15px!important;
+          min-height:140px!important;
+          padding:15px 16px!important;
           display:grid!important;
-          grid-template-columns:minmax(0,1fr) 156px!important;
-          gap:10px!important;
+          grid-template-columns:minmax(0,1fr) 168px!important;
+          gap:12px!important;
           align-items:center!important;
           overflow:visible!important
         }
@@ -229,7 +229,7 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-title{
           margin:0!important;
           color:#17191d!important;
-          font-size:17px!important;
+          font-size:20px!important;
           line-height:1.08!important;
           font-weight:760!important;
           letter-spacing:-.35px!important;
@@ -256,7 +256,7 @@
           background:linear-gradient(90deg,#d7a73e,#b77b13)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals{
-          width:156px!important;
+          width:168px!important;
           display:flex!important;
           justify-content:flex-end!important;
           align-items:flex-start!important;
@@ -264,15 +264,15 @@
           overflow:visible!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{
-          flex:0 0 74px!important;
-          width:74px!important;
-          min-width:74px!important;
+          flex:0 0 80px!important;
+          width:80px!important;
+          min-width:80px!important;
           text-align:center!important;
           overflow:visible!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
-          width:74px!important;
-          height:88px!important;
+          width:80px!important;
+          height:96px!important;
           border:1px solid rgba(194,135,20,.48)!important;
           border-radius:14px!important;
           overflow:hidden!important;
@@ -296,7 +296,7 @@
           opacity:1!important;
           margin-top:6px!important;
           color:#a66d0d!important;
-          font-size:7px!important;
+          font-size:7.4px!important;
           line-height:1!important;
           font-weight:850!important;
           letter-spacing:1.1px!important;
@@ -356,12 +356,12 @@
           position:absolute!important;
           z-index:0!important;
           top:0!important;
-          right:-2%!important;
-          width:43%!important;
+          right:0!important;
+          width:42%!important;
           height:100%!important;
           max-width:none!important;
           object-fit:cover!important;
-          object-position:62% center!important;
+          object-position:58% center!important;
           border:0!important;
           border-radius:0 21px 21px 0!important;
           filter:none!important;
@@ -376,11 +376,11 @@
             radial-gradient(circle at 67% 12%,rgba(239,194,94,.16),transparent 27%),
             linear-gradient(90deg,
               #fffdf8 0%,
-              rgba(255,253,248,1) 40%,
-              rgba(255,253,248,.97) 50%,
-              rgba(255,253,248,.80) 60%,
-              rgba(255,253,248,.38) 74%,
-              rgba(255,253,248,.04) 100%)!important
+              rgba(255,253,248,1) 39%,
+              rgba(255,253,248,.96) 48%,
+              rgba(255,253,248,.72) 59%,
+              rgba(255,253,248,.24) 73%,
+              rgba(255,253,248,.02) 100%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine>*:not(.dct3-plate):not(.dct3-plate-fade){
           position:relative!important;
@@ -503,14 +503,14 @@
             height:64px!important
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
-            grid-template-columns:minmax(0,1fr) 148px!important;
-            padding:13px!important;
-            gap:8px!important
+            grid-template-columns:minmax(0,1fr) 154px!important;
+            padding:13px 14px!important;
+            gap:9px!important
           }
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:148px!important;gap:6px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:71px!important;width:71px!important;min-width:71px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:71px!important;height:85px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:16px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:154px!important;gap:6px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:74px!important;width:74px!important;min-width:74px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:74px!important;height:89px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:18px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{font-size:18px!important;max-width:57%!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-actions{
             grid-template-columns:minmax(0,1.45fr) minmax(102px,.86fr)!important
@@ -519,14 +519,14 @@
 
         @media(min-width:420px){
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
-            min-height:150px!important;
-            grid-template-columns:minmax(0,1fr) 178px!important;
+            min-height:148px!important;
+            grid-template-columns:minmax(0,1fr) 184px!important;
             padding:16px 18px!important
           }
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:178px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:85px!important;width:85px!important;min-width:85px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:85px!important;height:100px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:20px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:184px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:88px!important;width:88px!important;min-width:88px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:88px!important;height:105px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:21px!important}
         }
       </style>
       <div class="dcc-training-stable-v3">
@@ -535,7 +535,7 @@
         ${day?`
           <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-client-plate.jpg?v=20260920-client-training-premium1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-exact.jpg?v=20260920-exact-reference1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
