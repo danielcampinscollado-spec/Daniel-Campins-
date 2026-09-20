@@ -555,11 +555,13 @@
     try{visible=getComputedStyle(app).display!=='none'}catch(_){visible=app.style.display!=='none'}
     if(!visible)return;
     const screen=String(window.currentScreen||'').toLowerCase();
-    if(screen!=='home')return;
+    if(screen && screen!=='home')return;
     if(!window.currentClientId)return;
     if(main.querySelector('.dch-wrap'))return;
     try{
       if(typeof window.showClient==='function'){
+        window.currentScreen='home';
+        try{currentScreen='home'}catch(_){}
         window.showClient('home');
       }
     }catch(error){
