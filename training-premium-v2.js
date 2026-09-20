@@ -141,7 +141,7 @@
         ${day?`
           <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon">✦</div><div><div class="dct3-label" style="margin-bottom:4px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div></section>
-          ${exercises.length?`<section class="dct3-routine"><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
