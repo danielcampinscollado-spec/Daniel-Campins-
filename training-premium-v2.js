@@ -172,8 +172,8 @@
           font-weight:850;
           letter-spacing:1.45px
         }
-        #client-main .dct3-day b{
-          color:inherit!important;
+        html.dcc-theme-light-premium body #client #client-main .dct3-day b{
+          color:#777f89!important;
           font-size:21px;
           line-height:1;
           font-weight:650
@@ -186,7 +186,7 @@
           color:#f0c75d;
           box-shadow:0 7px 17px rgba(67,49,18,.12),inset 0 1px 0 rgba(255,255,255,.045)
         }
-        #client-main .dct3-day.active b{color:#f0c75d!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#f0c75d!important}
 
         #client-main .dct3-card{
           position:relative;
@@ -267,12 +267,12 @@
           height:100%;
           object-fit:cover;
           display:block;
-          filter:sepia(.18) saturate(.92) hue-rotate(350deg) contrast(1.07) brightness(.94)
+          filter:hue-rotate(34deg) saturate(.92) contrast(1.07) brightness(.94)
         }
-        #client-main .dct3-muscle-wrap>span{
-          display:block;
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap>span{
+          display:block!important;
           margin-top:6px;
-          color:#a66d0d;
+          color:#a66d0d!important;
           font-size:7.5px;
           line-height:1;
           font-weight:850;
@@ -321,43 +321,21 @@
           padding:17px 18px;
           border:1px solid rgba(183,123,19,.28)!important;
           border-radius:21px;
-          background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
-          box-shadow:0 11px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important
-        }
-        #client-main .dct3-routine::before{
-          content:"";
-          position:absolute;
-          z-index:0;
-          top:0;
-          right:0;
-          width:54%;
-          height:178px;
-          pointer-events:none;
-          background-image:url("./assets/training-premium-plate.jpg");
-          background-repeat:no-repeat;
-          background-position:58% center;
-          background-size:cover;
-          opacity:.96;
-          -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.20) 14%,rgba(0,0,0,.76) 45%,#000 72%,#000 100%);
-          mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.20) 14%,rgba(0,0,0,.76) 45%,#000 72%,#000 100%)
-        }
-        #client-main .dct3-routine::after{
-          content:"";
-          position:absolute;
-          z-index:1;
-          top:0;
-          left:0;
-          right:0;
-          height:178px;
-          pointer-events:none;
-          background:
-            radial-gradient(circle at 58% 18%,rgba(240,197,103,.16),transparent 30%),
+          background-image:
             linear-gradient(90deg,
               rgba(255,253,248,1) 0%,
-              rgba(255,253,248,.99) 37%,
-              rgba(255,253,248,.84) 52%,
-              rgba(255,253,248,.34) 68%,
-              rgba(255,253,248,.03) 100%)
+              rgba(255,253,248,.99) 36%,
+              rgba(255,253,248,.90) 49%,
+              rgba(255,253,248,.52) 61%,
+              rgba(255,253,248,.10) 76%,
+              rgba(255,253,248,.02) 100%),
+            url("./assets/training-premium-plate.jpg?v=20260920-final2"),
+            linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
+          background-size:100% 100%,auto 100%,100% 100%!important;
+          background-position:center,right center,center!important;
+          background-repeat:no-repeat,no-repeat,no-repeat!important;
+          background-color:#fffdf8!important;
+          box-shadow:0 11px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important
         }
         #client-main .dct3-routine>*{
           position:relative;
@@ -445,7 +423,7 @@
           width:100%;
           height:100%;
           object-fit:cover;
-          filter:sepia(.16) saturate(.92) hue-rotate(350deg)
+          filter:hue-rotate(34deg) saturate(.92) contrast(1.05)
         }
         #client-main .dct3-exercise strong{
           display:block;
@@ -492,8 +470,6 @@
           #client-main .dct3-title{font-size:23px}
           #client-main .dct3-muscle-wrap{width:82px}
           #client-main .dct3-muscle{width:82px;height:94px}
-          #client-main .dct3-routine::before,
-          #client-main .dct3-routine::after{height:170px}
         }
 
         @media(max-width:390px){
@@ -526,9 +502,9 @@
           #client-main .dct3-routine{
             padding:15px 14px
           }
-          #client-main .dct3-routine::before{
-            width:58%;
-            background-position:56% center
+          #client-main .dct3-routine{
+            background-size:100% 100%,auto 100%,100% 100%!important;
+            background-position:center,right center,center!important
           }
           #client-main .dct3-routine h3{
             max-width:58%;
