@@ -134,447 +134,399 @@
 
     main.innerHTML=`
       <style id="dcc-training-stable-v3-style">
-        #client-main .dcc-training-stable-v3{
-          max-width:820px;
-          margin:0 auto;
-          padding:3px 0 112px;
-          color:#17191d
+        html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3{
+          max-width:820px!important;
+          margin:0 auto!important;
+          padding:3px 0 112px!important;
+          color:#17191d!important
         }
-
-        #client-main .dct3-eyebrow{
-          margin:0 0 14px;
-          color:#a66d0d;
-          font-size:11px;
-          line-height:1;
-          font-weight:850;
-          letter-spacing:3.4px;
-          text-transform:uppercase
+        html.dcc-theme-light-premium body #client #client-main .dct3-eyebrow{
+          margin:0 0 13px!important;
+          color:#a66d0d!important;
+          font-size:11px!important;
+          line-height:1!important;
+          font-weight:850!important;
+          letter-spacing:3.4px!important;
+          text-transform:uppercase!important
         }
-
-        #client-main .dct3-days{
-          display:flex;
-          gap:7px;
-          overflow-x:auto;
-          margin:0 0 14px;
-          padding:1px 1px 3px;
-          scrollbar-width:none
+        html.dcc-theme-light-premium body #client #client-main .dct3-days{
+          display:flex!important;
+          gap:7px!important;
+          overflow-x:auto!important;
+          margin:0 0 14px!important;
+          padding:1px 1px 3px!important;
+          scrollbar-width:none!important
         }
-        #client-main .dct3-days::-webkit-scrollbar{display:none}
-        #client-main .dct3-day{
-          flex:0 0 82px;
-          width:82px;
-          height:70px;
-          border:1px solid rgba(183,123,19,.26);
-          border-radius:17px;
-          background:linear-gradient(145deg,#fffefa,#f8f0e3);
-          color:#777f89;
-          box-shadow:0 5px 14px rgba(78,58,28,.04),inset 0 1px 0 rgba(255,255,255,.95);
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          justify-content:center;
-          gap:5px;
-          position:relative;
-          z-index:2;
-          pointer-events:auto;
-          touch-action:manipulation
+        html.dcc-theme-light-premium body #client #client-main .dct3-days::-webkit-scrollbar{display:none!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-day{
+          flex:0 0 78px!important;
+          width:78px!important;
+          height:68px!important;
+          border:1px solid rgba(183,123,19,.26)!important;
+          border-radius:16px!important;
+          background:linear-gradient(145deg,#fffefa,#f8f0e3)!important;
+          color:#777f89!important;
+          box-shadow:0 5px 14px rgba(78,58,28,.04),inset 0 1px 0 rgba(255,255,255,.95)!important;
+          display:flex!important;
+          flex-direction:column!important;
+          align-items:center!important;
+          justify-content:center!important;
+          gap:5px!important;
+          pointer-events:auto!important;
+          touch-action:manipulation!important
         }
-        #client-main .dct3-day span{
-          font-size:8px;
-          line-height:1;
-          font-weight:850;
-          letter-spacing:1.45px
+        html.dcc-theme-light-premium body #client #client-main .dct3-day span{
+          color:inherit!important;
+          font-size:8px!important;
+          line-height:1!important;
+          font-weight:850!important;
+          letter-spacing:1.45px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day b{
           color:#777f89!important;
-          font-size:21px;
-          line-height:1;
-          font-weight:650
+          font-size:21px!important;
+          line-height:1!important;
+          font-weight:650!important
         }
-        #client-main .dct3-day.active{
-          border-color:#d6a33c;
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.active{
+          border-color:#d6a33c!important;
           background:
             radial-gradient(circle at 50% 0,rgba(226,173,57,.17),transparent 62%),
-            linear-gradient(145deg,#1b1913 0%,#11110f 100%);
-          color:#f0c75d;
-          box-shadow:0 7px 17px rgba(67,49,18,.12),inset 0 1px 0 rgba(255,255,255,.045)
+            linear-gradient(145deg,#1b1913 0%,#11110f 100%)!important;
+          color:#f0c75d!important;
+          box-shadow:0 7px 17px rgba(67,49,18,.12),inset 0 1px 0 rgba(255,255,255,.045)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#f0c75d!important}
 
-        #client-main .dct3-card{
-          position:relative;
-          margin-bottom:12px;
-          border:1px solid rgba(183,123,19,.24);
-          border-radius:21px;
+        html.dcc-theme-light-premium body #client #client-main .dct3-card,
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine{
+          position:relative!important;
+          margin:0 0 12px!important;
+          border:1px solid rgba(183,123,19,.24)!important;
+          border-radius:21px!important;
           background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
-          box-shadow:0 10px 24px rgba(78,58,28,.065),inset 0 1px 0 rgba(255,255,255,.96)!important;
-          overflow:hidden
+          box-shadow:0 10px 24px rgba(78,58,28,.065),inset 0 1px 0 rgba(255,255,255,.96)!important
         }
 
-        #client-main .dct3-muscles{
-          min-height:146px;
-          padding:18px 20px;
-          display:grid;
-          grid-template-columns:minmax(0,1fr) minmax(190px,.9fr);
-          gap:18px;
-          align-items:center
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
+          min-height:142px!important;
+          padding:14px 15px!important;
+          display:grid!important;
+          grid-template-columns:minmax(0,1fr) 156px!important;
+          gap:10px!important;
+          align-items:center!important;
+          overflow:visible!important
         }
-        #client-main .dct3-label{
-          margin-bottom:8px;
-          color:#b77b13;
-          font-size:9.5px;
-          line-height:1.1;
-          font-weight:850;
-          letter-spacing:2.6px;
-          text-transform:uppercase
+        html.dcc-theme-light-premium body #client #client-main .dct3-label{
+          margin-bottom:7px!important;
+          color:#b77b13!important;
+          font-size:9px!important;
+          line-height:1.1!important;
+          font-weight:850!important;
+          letter-spacing:2.4px!important;
+          text-transform:uppercase!important
         }
-        #client-main .dct3-title{
-          margin:0;
+        html.dcc-theme-light-premium body #client #client-main .dct3-title{
+          margin:0!important;
           color:#17191d!important;
-          font-size:25px;
-          line-height:1.08;
-          font-weight:700;
-          letter-spacing:-.55px
+          font-size:17px!important;
+          line-height:1.08!important;
+          font-weight:760!important;
+          letter-spacing:-.35px!important;
+          white-space:nowrap!important
         }
-        #client-main .dct3-region{
-          display:flex;
-          align-items:center;
-          gap:10px;
-          margin-top:14px;
-          color:#7d828a;
-          font-size:8px;
-          line-height:1;
-          font-weight:750;
-          letter-spacing:2px
+        html.dcc-theme-light-premium body #client #client-main .dct3-region{
+          display:flex!important;
+          align-items:center!important;
+          gap:9px!important;
+          margin-top:12px!important;
+          color:#7d828a!important;
+          font-size:7px!important;
+          line-height:1!important;
+          font-weight:750!important;
+          letter-spacing:1.45px!important;
+          white-space:nowrap!important
         }
-        #client-main .dct3-region::before{
-          content:"";
-          width:38px;
-          height:2px;
-          border-radius:999px;
-          background:linear-gradient(90deg,#d7a73e,#b77b13)
+        html.dcc-theme-light-premium body #client #client-main .dct3-region::before{
+          content:""!important;
+          flex:0 0 29px!important;
+          width:29px!important;
+          height:2px!important;
+          border-radius:999px!important;
+          background:linear-gradient(90deg,#d7a73e,#b77b13)!important
         }
-        #client-main .dct3-visuals{
-          display:flex;
-          justify-content:flex-end;
-          align-items:flex-start;
-          gap:8px
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals{
+          width:156px!important;
+          display:flex!important;
+          justify-content:flex-end!important;
+          align-items:flex-start!important;
+          gap:8px!important;
+          overflow:visible!important
         }
-        #client-main .dct3-muscle-wrap{
-          width:102px;
-          text-align:center
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{
+          flex:0 0 74px!important;
+          width:74px!important;
+          min-width:74px!important;
+          text-align:center!important;
+          overflow:visible!important
         }
-        #client-main .dct3-muscle{
-          width:102px;
-          height:116px;
-          border:1px solid rgba(194,135,20,.48);
-          border-radius:16px;
-          overflow:hidden;
-          background:
-            radial-gradient(circle at 50% 10%,rgba(225,174,65,.12),transparent 40%),
-            linear-gradient(145deg,#17191c,#0d0f12);
-          box-shadow:0 7px 16px rgba(49,37,18,.12),inset 0 1px 0 rgba(255,255,255,.03)
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
+          width:74px!important;
+          height:88px!important;
+          border:1px solid rgba(194,135,20,.48)!important;
+          border-radius:14px!important;
+          overflow:hidden!important;
+          background:#151513!important;
+          box-shadow:0 6px 15px rgba(49,37,18,.12)!important
         }
-        #client-main .dct3-muscle img{
-          width:100%;
-          height:100%;
-          object-fit:cover;
-          display:block;
-          filter:hue-rotate(34deg) saturate(.92) contrast(1.07) brightness(.94)
-        }
-        #client-main .dct3-muscle.is-premium img{
-          filter:none!important;
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle img{
+          display:block!important;
+          width:100%!important;
+          height:100%!important;
+          max-width:none!important;
           object-fit:cover!important;
-          object-position:center!important
+          object-position:center!important;
+          border:0!important;
+          border-radius:13px!important;
+          filter:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap>span{
           display:block!important;
-          margin-top:6px;
+          visibility:visible!important;
+          opacity:1!important;
+          margin-top:6px!important;
           color:#a66d0d!important;
-          font-size:8px;
-          line-height:1;
-          font-weight:850;
-          letter-spacing:1.25px;
-          text-transform:uppercase;
-          white-space:nowrap;
-          overflow:hidden;
-          text-overflow:ellipsis
+          font-size:7px!important;
+          line-height:1!important;
+          font-weight:850!important;
+          letter-spacing:1.1px!important;
+          text-transform:uppercase!important;
+          white-space:nowrap!important;
+          overflow:visible!important
         }
 
-        #client-main .dct3-tip{
-          min-height:82px;
-          padding:13px 17px;
-          display:grid;
-          grid-template-columns:48px minmax(0,1fr) 18px;
-          gap:14px;
-          align-items:center
+        html.dcc-theme-light-premium body #client #client-main .dct3-tip{
+          min-height:76px!important;
+          padding:12px 14px!important;
+          display:grid!important;
+          grid-template-columns:42px minmax(0,1fr) 18px!important;
+          gap:11px!important;
+          align-items:center!important;
+          overflow:hidden!important
         }
-        #client-main .dct3-tip-icon{
-          width:46px;
-          height:46px;
-          display:grid;
-          place-items:center;
-          border:1px solid rgba(183,123,19,.31);
-          border-radius:14px;
-          color:#b77b13;
-          background:#fffaf0
+        html.dcc-theme-light-premium body #client #client-main .dct3-tip-icon{
+          width:42px!important;
+          height:42px!important;
+          display:grid!important;
+          place-items:center!important;
+          border:1px solid rgba(183,123,19,.31)!important;
+          border-radius:14px!important;
+          background:#fffaf0!important;
+          color:#b77b13!important
         }
-        #client-main .dct3-tip-icon svg{
-          width:24px;
-          height:24px;
-          stroke:currentColor
+        html.dcc-theme-light-premium body #client #client-main .dct3-tip-icon svg{
+          width:23px!important;
+          height:23px!important;
+          stroke:currentColor!important
         }
-        #client-main .dct3-tip p{
-          margin:0;
+        html.dcc-theme-light-premium body #client #client-main .dct3-tip p{
+          margin:0!important;
           color:#68707c!important;
-          font-size:12px;
-          line-height:1.42;
-          font-weight:450
+          font-size:11px!important;
+          line-height:1.42!important;
+          font-weight:450!important
         }
-        #client-main .dct3-tip-arrow{
-          color:#b7aa92;
-          font-size:27px;
-          line-height:1;
-          font-weight:300;
-          text-align:right;
-          transform:translateY(-1px)
+        html.dcc-theme-light-premium body #client #client-main .dct3-tip-arrow{
+          display:block!important;
+          color:#b7aa92!important;
+          font-size:27px!important;
+          line-height:1!important;
+          font-weight:300!important;
+          text-align:right!important
         }
 
-        #client-main .dct3-routine{
-          position:relative;
-          isolation:isolate;
-          overflow:hidden;
-          padding:17px 18px;
-          border:1px solid rgba(183,123,19,.28)!important;
-          border-radius:21px;
-          background-image:
-            linear-gradient(90deg,
-              rgba(255,253,248,1) 0%,
-              rgba(255,253,248,.99) 36%,
-              rgba(255,253,248,.90) 49%,
-              rgba(255,253,248,.52) 61%,
-              rgba(255,253,248,.10) 76%,
-              rgba(255,253,248,.02) 100%),
-            url("./assets/training-premium-plate.jpg?v=20260920-final2"),
-            linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
-          background-size:100% 100%,auto 100%,100% 100%!important;
-          background-position:center,right center,center!important;
-          background-repeat:no-repeat,no-repeat,no-repeat!important;
-          background-color:#fffdf8!important;
-          box-shadow:0 11px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine{
+          isolation:isolate!important;
+          overflow:hidden!important;
+          min-height:158px!important;
+          padding:17px 14px!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-routine::before{
-          content:""!important;
+        html.dcc-theme-light-premium body #client #client-main .dct3-plate{
+          display:block!important;
           position:absolute!important;
           z-index:0!important;
           top:0!important;
-          right:0!important;
-          width:56%!important;
+          right:-2%!important;
+          width:46%!important;
           height:100%!important;
-          pointer-events:none!important;
-          background:url("./assets/training-premium-plate.jpg?v=20260920-final2") right center/cover no-repeat!important;
-          opacity:1!important;
+          max-width:none!important;
+          object-fit:cover!important;
+          object-position:58% center!important;
+          border:0!important;
+          border-radius:0 21px 21px 0!important;
+          filter:none!important;
+          pointer-events:none!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-routine::after{
-          content:""!important;
+        html.dcc-theme-light-premium body #client #client-main .dct3-plate-fade{
           position:absolute!important;
           z-index:1!important;
           inset:0!important;
           pointer-events:none!important;
           background:
-            radial-gradient(circle at 62% 12%,rgba(243,201,109,.18),transparent 28%),
+            radial-gradient(circle at 67% 12%,rgba(239,194,94,.16),transparent 27%),
             linear-gradient(90deg,
-              rgba(255,253,248,1) 0%,
-              rgba(255,253,248,.99) 37%,
-              rgba(255,253,248,.88) 50%,
-              rgba(255,253,248,.56) 62%,
-              rgba(255,253,248,.12) 78%,
-              rgba(255,253,248,.02) 100%)!important;
+              #fffdf8 0%,
+              rgba(255,253,248,1) 39%,
+              rgba(255,253,248,.96) 49%,
+              rgba(255,253,248,.74) 59%,
+              rgba(255,253,248,.30) 72%,
+              rgba(255,253,248,.03) 100%)!important
         }
-        #client-main .dct3-routine>*{
-          position:relative;
-          z-index:2
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine>*:not(.dct3-plate):not(.dct3-plate-fade){
+          position:relative!important;
+          z-index:2!important
         }
-        #client-main .dct3-routine h3{
-          margin:0;
-          max-width:53%;
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{
+          margin:0!important;
+          max-width:55%!important;
           color:#17191d!important;
-          font-size:21px;
-          line-height:1.08;
-          font-weight:700;
-          letter-spacing:-.45px
+          font-size:19px!important;
+          line-height:1.08!important;
+          font-weight:760!important;
+          letter-spacing:-.35px!important;
+          white-space:nowrap!important
         }
-        #client-main .dct3-meta{
-          margin-top:6px;
+        html.dcc-theme-light-premium body #client #client-main .dct3-meta{
+          margin-top:6px!important;
           color:#707782!important;
-          font-size:10.5px
+          font-size:10.5px!important
         }
-        #client-main .dct3-actions{
-          display:grid;
-          grid-template-columns:minmax(0,1.55fr) minmax(116px,.88fr);
-          gap:9px;
-          max-width:520px;
-          margin-top:19px;
-          position:relative;
-          z-index:5
+        html.dcc-theme-light-premium body #client #client-main .dct3-actions{
+          display:grid!important;
+          grid-template-columns:minmax(0,1.55fr) minmax(108px,.9fr)!important;
+          gap:8px!important;
+          width:100%!important;
+          max-width:520px!important;
+          margin-top:18px!important
         }
-        #client-main .dct3-start,
-        #client-main .dct3-view{
-          min-height:46px;
-          padding:0 14px;
-          border-radius:14px;
-          font-size:12px;
-          line-height:1;
-          font-weight:850;
-          position:relative;
-          z-index:6;
+        html.dcc-theme-light-premium body #client #client-main .dct3-start,
+        html.dcc-theme-light-premium body #client #client-main .dct3-view{
+          min-height:44px!important;
+          padding:0 11px!important;
+          border-radius:14px!important;
+          font-size:10.8px!important;
+          line-height:1!important;
+          font-weight:850!important;
           pointer-events:auto!important;
           touch-action:manipulation!important;
-          -webkit-tap-highlight-color:transparent
+          -webkit-tap-highlight-color:transparent!important
         }
-        #client-main .dct3-start{
+        html.dcc-theme-light-premium body #client #client-main .dct3-start{
           border:1px solid #d6a33c!important;
           background:linear-gradient(135deg,#ffe895 0%,#f2ca5b 50%,#dfa52f 100%)!important;
           color:#17140d!important;
           box-shadow:0 7px 17px rgba(185,126,18,.15),inset 0 1px 0 rgba(255,255,255,.72)!important
         }
-        #client-main .dct3-view{
+        html.dcc-theme-light-premium body #client #client-main .dct3-view{
           border:1px solid rgba(255,255,255,.12)!important;
           background:linear-gradient(145deg,#191d24,#0e1116)!important;
           color:#f4f2ec!important;
           box-shadow:0 7px 16px rgba(25,23,19,.13)!important
         }
 
-        #client-main .dct3-list{
-          display:none;
-          margin-top:16px;
-          gap:7px;
-          padding-top:12px;
-          border-top:1px solid rgba(177,119,18,.13)
+        html.dcc-theme-light-premium body #client #client-main .dct3-list{
+          display:none!important;
+          margin-top:16px!important;
+          gap:7px!important;
+          padding-top:12px!important;
+          border-top:1px solid rgba(177,119,18,.13)!important
         }
-        #client-main .dct3-routine.open .dct3-list{display:grid}
-        #client-main .dct3-exercise{
-          min-height:68px;
-          padding:8px 9px;
-          display:grid;
-          grid-template-columns:50px minmax(0,1fr);
-          gap:10px;
-          align-items:center;
-          border:1px solid rgba(177,119,18,.17);
-          border-radius:14px;
-          background:rgba(255,253,248,.88)!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-list{display:grid!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-exercise{
+          min-height:68px!important;
+          padding:8px 9px!important;
+          display:grid!important;
+          grid-template-columns:50px minmax(0,1fr)!important;
+          gap:10px!important;
+          align-items:center!important;
+          border:1px solid rgba(177,119,18,.17)!important;
+          border-radius:14px!important;
+          background:rgba(255,253,248,.90)!important
         }
-        #client-main .dct3-exercise:not(:has(.dct3-ex-img)){grid-template-columns:1fr}
-        #client-main .dct3-ex-img{
-          width:50px;
-          height:50px;
-          border:1px solid rgba(183,123,19,.18);
-          border-radius:11px;
-          overflow:hidden;
-          background:#fff7e8
+        html.dcc-theme-light-premium body #client #client-main .dct3-exercise:not(:has(.dct3-ex-img)){grid-template-columns:1fr!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img{
+          width:50px!important;
+          height:50px!important;
+          border:1px solid rgba(183,123,19,.18)!important;
+          border-radius:11px!important;
+          overflow:hidden!important;
+          background:#fff7e8!important
         }
-        #client-main .dct3-ex-img img{
-          width:100%;
-          height:100%;
-          object-fit:cover;
-          filter:hue-rotate(34deg) saturate(.92) contrast(1.05)
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img img{
+          width:100%!important;
+          height:100%!important;
+          object-fit:cover!important;
+          filter:none!important
         }
-        #client-main .dct3-exercise strong{
-          display:block;
+        html.dcc-theme-light-premium body #client #client-main .dct3-exercise strong{
+          display:block!important;
           color:#17191d!important;
-          font-size:12.5px
+          font-size:12.5px!important
         }
-        #client-main .dct3-exercise small{
-          display:block;
-          margin-top:4px;
+        html.dcc-theme-light-premium body #client #client-main .dct3-exercise small{
+          display:block!important;
+          margin-top:4px!important;
           color:#b77b13!important;
-          font-size:7.7px;
-          font-weight:800;
-          letter-spacing:1px
+          font-size:7.7px!important;
+          font-weight:800!important;
+          letter-spacing:1px!important
         }
-        #client-main .dct3-exercise span{
-          display:block;
-          margin-top:4px;
+        html.dcc-theme-light-premium body #client #client-main .dct3-exercise span{
+          display:block!important;
+          margin-top:4px!important;
           color:#777f89!important;
-          font-size:9.3px
+          font-size:9.3px!important
         }
-        #client-main .dct3-empty{
-          padding:18px;
-          border:1px solid rgba(177,119,18,.18);
-          border-radius:16px;
-          background:#fffaf1;
-          color:#777f89;
-          text-align:center
-        }
-
-        @media(max-width:520px){
-          #client-main .dcc-training-stable-v3{padding-bottom:108px}
-          #client-main .dct3-eyebrow{margin-bottom:13px}
-          #client-main .dct3-day{
-            flex-basis:78px;
-            width:78px;
-            height:68px
-          }
-          #client-main .dct3-muscles{
-            min-height:152px;
-            grid-template-columns:minmax(0,1fr) 200px;
-            gap:12px;
-            padding:16px 17px
-          }
-          #client-main .dct3-title{font-size:23px}
-          #client-main .dct3-muscle-wrap{width:96px}
-          #client-main .dct3-muscle{width:96px;height:110px}
+        html.dcc-theme-light-premium body #client #client-main .dct3-empty{
+          padding:18px!important;
+          border:1px solid rgba(177,119,18,.18)!important;
+          border-radius:16px!important;
+          background:#fffaf1!important;
+          color:#777f89!important;
+          text-align:center!important
         }
 
-        @media(max-width:390px){
-          #client-main .dct3-day{
-            flex-basis:72px;
-            width:72px;
-            height:64px;
-            border-radius:15px
+        @media(max-width:389px){
+          html.dcc-theme-light-premium body #client #client-main .dct3-day{
+            flex-basis:72px!important;
+            width:72px!important;
+            height:64px!important
           }
-          #client-main .dct3-muscles{
-            min-height:148px;
-            grid-template-columns:minmax(0,1fr) 188px;
-            padding:14px 14px;
-            gap:10px
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
+            grid-template-columns:minmax(0,1fr) 148px!important;
+            padding:13px!important;
+            gap:8px!important
           }
-          #client-main .dct3-title{font-size:20px}
-          #client-main .dct3-region{margin-top:11px;font-size:7px;letter-spacing:1.5px}
-          #client-main .dct3-region::before{width:28px}
-          #client-main .dct3-muscle-wrap{width:90px}
-          #client-main .dct3-muscle{width:90px;height:104px;border-radius:14px}
-          #client-main .dct3-muscle-wrap>span{font-size:7px;letter-spacing:1px}
-          #client-main .dct3-tip{
-            min-height:76px;
-            grid-template-columns:43px minmax(0,1fr);
-            gap:11px;
-            padding:12px 14px
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:148px!important;gap:6px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:71px!important;width:71px!important;min-width:71px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:71px!important;height:85px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:16px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{font-size:18px!important;max-width:57%!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-actions{
+            grid-template-columns:minmax(0,1.45fr) minmax(102px,.86fr)!important
           }
-          #client-main .dct3-tip-icon{width:42px;height:42px}
-          #client-main .dct3-tip p{font-size:11px}
-          #client-main .dct3-routine{
-            padding:15px 14px
+        }
+
+        @media(min-width:420px){
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
+            min-height:150px!important;
+            grid-template-columns:minmax(0,1fr) 178px!important;
+            padding:16px 18px!important
           }
-          #client-main .dct3-routine{
-            background-size:100% 100%,auto 100%,100% 100%!important;
-            background-position:center,right center,center!important
-          }
-          #client-main .dct3-routine h3{
-            max-width:58%;
-            font-size:19px
-          }
-          #client-main .dct3-actions{
-            grid-template-columns:minmax(0,1.45fr) minmax(105px,.86fr);
-            gap:8px;
-            margin-top:17px
-          }
-          #client-main .dct3-start,
-          #client-main .dct3-view{
-            min-height:44px;
-            padding:0 11px;
-            font-size:10.8px
-          }
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:178px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:85px!important;width:85px!important;min-width:85px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:85px!important;height:100px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:20px!important}
         }
       </style>
       <div class="dcc-training-stable-v3">
