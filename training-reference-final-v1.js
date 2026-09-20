@@ -3,14 +3,14 @@
    No cambia datos, rutina, sesiones ni panel entrenador. */
 (function(){
   'use strict';
-  const BUILD='20260920-training-reference-final-v2';
+  const BUILD='20260920-training-reference-final-v3';
   if(window.__dccTrainingReferenceFinal===BUILD)return;
   window.__dccTrainingReferenceFinal=BUILD;
 
   const STYLE_ID='dcc-training-reference-final-style';
-  const PECTORAL='./assets/muscles/pectoral-reference-exact.webp?v=20260920-ref2';
-  const TRICEPS='./assets/muscles/triceps-reference-exact.webp?v=20260920-ref2';
-  const PLATE='./assets/training-reference-disk.webp?v=20260920-ref2';
+  const PECTORAL='./assets/muscles/pectoral-reference-final.jpg?v=20260920-ref3';
+  const TRICEPS='./assets/muscles/triceps-reference-final.jpg?v=20260920-ref3';
+  const PLATE='./assets/training-premium-plate.jpg?v=20260920-ref3';
 
   const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 
@@ -54,7 +54,7 @@
         min-height:142px!important;
         height:auto!important;
         display:grid!important;
-        grid-template-columns:minmax(0,1fr) 166px!important;
+        grid-template-columns:minmax(0,1fr) 162px!important;
         gap:9px!important;
         align-items:center!important;
         margin-bottom:12px!important;
@@ -78,7 +78,7 @@
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscles .dct3-title{
         margin:0!important;
         color:#17191d!important;
-        font-size:18px!important;
+        font-size:17px!important;
         line-height:1.08!important;
         font-weight:760!important;
         letter-spacing:-.4px!important;
@@ -110,23 +110,23 @@
         justify-content:flex-end!important;
         align-items:flex-start!important;
         gap:8px!important;
-        width:166px!important;
+        width:162px!important;
         overflow:visible!important
       }
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle-wrap{
-        flex:0 0 79px!important;
-        width:79px!important;
-        min-width:79px!important;
+        flex:0 0 77px!important;
+        width:77px!important;
+        min-width:77px!important;
         text-align:center!important;
         overflow:visible!important
       }
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle{
         width:79px!important;
-        height:91px!important;
+        height:89px!important;
         min-width:79px!important;
-        min-height:91px!important;
+        min-height:89px!important;
         border:1px solid rgba(196,140,33,.52)!important;
         border-radius:14px!important;
         overflow:hidden!important;
@@ -146,19 +146,21 @@
       }
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle-wrap>span{
+        display:none!important
+      }
+      html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle-wrap::after{
         display:block!important;
-        visibility:visible!important;
-        opacity:1!important;
-        margin-top:5px!important;
+        margin-top:6px!important;
         color:#a66d0d!important;
-        font-size:6.8px!important;
+        font-size:7.2px!important;
         line-height:1!important;
         font-weight:850!important;
-        letter-spacing:1px!important;
+        letter-spacing:1.25px!important;
         text-transform:uppercase!important;
-        white-space:nowrap!important;
-        overflow:visible!important
+        white-space:nowrap!important
       }
+      html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle-wrap:first-child::after{content:"PECTORAL"!important}
+      html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-muscle-wrap:nth-child(2)::after{content:"TRÍCEPS"!important}
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 section.dct3-tip{
         min-height:76px!important;
@@ -215,12 +217,12 @@
         z-index:0!important;
         top:0!important;
         right:0!important;
-        width:57%!important;
+        width:50%!important;
         height:100%!important;
         max-width:none!important;
         pointer-events:none!important;
         object-fit:cover!important;
-        object-position:center right!important;
+        object-position:62% center!important;
         border-radius:0 21px 21px 0!important;
         filter:none!important
       }
@@ -235,11 +237,11 @@
           radial-gradient(circle at 62% 10%,rgba(243,201,109,.17),transparent 27%),
           linear-gradient(90deg,
             rgba(255,253,248,1) 0%,
-            rgba(255,253,248,.99) 35%,
-            rgba(255,253,248,.88) 47%,
-            rgba(255,253,248,.53) 59%,
-            rgba(255,253,248,.11) 76%,
-            rgba(255,253,248,.01) 100%)!important
+            rgba(255,253,248,1) 38%,
+            rgba(255,253,248,.95) 48%,
+            rgba(255,253,248,.72) 58%,
+            rgba(255,253,248,.26) 72%,
+            rgba(255,253,248,.03) 100%)!important
       }
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 section.dct3-routine > *:not(.dct-ref-plate-img):not(.dct-ref-fade){
@@ -248,7 +250,7 @@
       }
 
       html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3 .dct3-routine h3{
-        max-width:56%!important;
+        max-width:54%!important;
         margin:0!important;
         color:#17191d!important;
         font-size:19px!important;
