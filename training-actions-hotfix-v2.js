@@ -67,14 +67,6 @@
     const style=document.createElement('style');
     style.id='dcc-client-training-refinements-v9';
     style.textContent=`
-      #client-main .dct3-days{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;margin-bottom:11px!important}
-      #client-main .dct3-day{height:44px!important;min-height:44px!important;padding:0 1px!important;border-radius:11px!important;gap:2px!important}
-      #client-main .dct3-day span{font-size:6px!important;line-height:1!important;letter-spacing:.8px!important}
-      #client-main .dct3-day b{font-size:14px!important;line-height:1!important}
-      #client-main .dct3-actions{display:flex!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:wrap!important;gap:8px!important;margin-top:12px!important}
-      #client-main .dct3-start,#client-main .dct3-view{width:auto!important;min-width:0!important;min-height:39px!important;height:39px!important;padding:0 14px!important;border-radius:12px!important;font-size:10.5px!important;line-height:1!important;font-weight:700!important;box-shadow:none!important}
-      #client-main .dct3-start{border:1px solid rgba(240,201,107,.82)!important;background:linear-gradient(145deg,rgba(217,170,74,.12),rgba(12,15,19,.98))!important;color:#f1c861!important}
-      #client-main .dct3-view{border:1px solid rgba(255,255,255,.13)!important;background:linear-gradient(145deg,#12171d,#0a0e13)!important;color:#c3c9d1!important}
       #client-main .dcc-active-exercise-advice,#client-main .dcc-exercise-client-advice{display:none!important}
 
       /* ================= ENTRENAMIENTO ACTIVO — LIGHT PREMIUM ================= */
@@ -163,11 +155,6 @@
       html.dcc-theme-light-premium body.dcc-workout-mode .dcc-theme-trigger{display:none!important}
 
       @media(max-width:390px){
-        #client-main .dct3-days{gap:3px!important}
-        #client-main .dct3-day{height:41px!important;min-height:41px!important;border-radius:10px!important}
-        #client-main .dct3-day span{font-size:5.5px!important;letter-spacing:.65px!important}
-        #client-main .dct3-day b{font-size:13px!important}
-        #client-main .dct3-start,#client-main .dct3-view{height:37px!important;min-height:37px!important;padding:0 12px!important;font-size:10px!important}
         html.dcc-theme-light-premium #client-main .dwa3-top{padding:12px!important;border-radius:19px!important}
       }
     `;
@@ -188,24 +175,9 @@
     }catch(error){console.warn('DCC advice sync:',error);}
   }
 
-  function refineTraining(){
-    try{
-      document.querySelectorAll('#client-main .dct3-title,#client-main .dct3-routine h3').forEach(el=>{
-        const next=(el.textContent||'').replace(/\bPecho\b/gi,'Pectoral');
-        if(next!==el.textContent)el.textContent=next;
-      });
-      document.querySelectorAll('#client-main .dct3-exercise').forEach(row=>{
-        const name=row.querySelector('strong')?.textContent||'';
-        const label=row.querySelector('small');if(!label)return;
-        const primary=primaryMuscle(name,label.textContent);if(primary)label.textContent=primary.toUpperCase();
-        const img=row.querySelector('.dct3-ex-img img');const src=muscleImage(primary);if(img&&src&&img.getAttribute('src')!==src)img.setAttribute('src',src);
-      });
-    }catch(error){console.warn('DCC training refinement:',error);}
-  }
-
   function schedule(){
     if(queued)return;queued=true;
-    requestAnimationFrame(()=>{queued=false;syncWorkoutAdvice();refineTraining();});
+    requestAnimationFrame(()=>{queued=false;syncWorkoutAdvice();});
   }
 
   function loadThemeSystem(){
