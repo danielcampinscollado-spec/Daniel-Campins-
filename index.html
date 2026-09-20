@@ -5744,6 +5744,21 @@ async function openApp(app){
 
       showClient("home");
 
+      // Safari/iOS puede restaurar la vista antes de que termine la primera
+      // pintura del contenido. Si Inicio queda vacío, repintarlo sin exigir
+      // que el cliente cambie manualmente de pestaña.
+      [80,250,700,1500].forEach(ms=>setTimeout(()=>{
+        const homeRoot=document.querySelector("#client-main .dch-wrap");
+        if(
+          currentApp==="client" &&
+          currentScreen==="home" &&
+          currentClientId &&
+          !homeRoot
+        ){
+          try{showClient("home")}catch(error){console.warn("DCC home initial repaint",error)}
+        }
+      },ms));
+
       setTimeout(()=>{
         setupMessageRealtime();
         Promise.allSettled([
@@ -16312,7 +16327,7 @@ async function sendClientCheckin(){
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260919-audit4-clients"></script>
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
-<script src="./client-home-light-fix-v1.js?v=20260920-old-light-v1"></script>
+<script src="./client-home-light-fix-v1.js?v=20260920-old-light-v2-load-nav"></script>
 <script src="./training-superset-v1.js?v=20260919-v8b-compact-config"></script>
 
 
