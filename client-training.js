@@ -17,10 +17,10 @@
   const activeClientId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
 
   const MUSCLE_ASSETS={
-    pectoral:'assets/muscles/pectoral-reference-final.jpg',pecho:'assets/muscles/pectoral-reference-final.jpg',
+    pectoral:'assets/muscles/pectoral-client-premium.jpg',pecho:'assets/muscles/pectoral-client-premium.jpg',
     espalda:'assets/muscles/espalda.png',dorsal:'assets/muscles/espalda.png',dorsales:'assets/muscles/espalda.png',
     hombro:'assets/muscles/hombros.png',hombros:'assets/muscles/hombros.png',deltoide:'assets/muscles/hombros.png',deltoides:'assets/muscles/hombros.png',
-    biceps:'assets/muscles/biceps.png',triceps:'assets/muscles/triceps-reference-final.jpg',
+    biceps:'assets/muscles/biceps.png',triceps:'assets/muscles/triceps-client-premium.jpg',
     cuadriceps:'assets/muscles/cuadriceps.png',
     femoral:'assets/muscles/isquios.png',femorales:'assets/muscles/isquios.png',isquios:'assets/muscles/isquios.png',isquiotibiales:'assets/muscles/isquios.png',
     gluteo:'assets/muscles/gluteos.png',gluteos:'assets/muscles/gluteos.png',
@@ -30,9 +30,9 @@
   };
 
   const OVERVIEW_PREMIUM_ASSETS={
-    pectoral:'assets/muscles/pectoral-reference-final.jpg',
-    pecho:'assets/muscles/pectoral-reference-final.jpg',
-    triceps:'assets/muscles/triceps-reference-final.jpg'
+    pectoral:'assets/muscles/pectoral-client-premium.jpg',
+    pecho:'assets/muscles/pectoral-client-premium.jpg',
+    triceps:'assets/muscles/triceps-client-premium.jpg'
   };
 
   function overviewMuscleAsset(value){
@@ -54,9 +54,9 @@
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
       const path=overviewMuscleAsset(name);
-      if(path&&!out.some(x=>x.path===path))out.push({name,path,premium:/reference-final\.jpg$/i.test(path)});
+      if(path&&!out.some(x=>x.path===path))out.push({name,path,premium:/client-premium\.jpg$/i.test(path)});
     });
-    if(!out.length&&day?.muscle){const path=overviewMuscleAsset(day.muscle);if(path)out.push({name:day.muscle,path,premium:/reference-final\.jpg$/i.test(path)});}
+    if(!out.length&&day?.muscle){const path=overviewMuscleAsset(day.muscle);if(path)out.push({name:day.muscle,path,premium:/client-premium\.jpg$/i.test(path)});}
     return out.slice(0,2);
   }
 
@@ -121,7 +121,7 @@
     const region=muscleRegion(muscles);
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-clean-final" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':''}"><img src="./${esc(x.path)}?v=20260920-client-training-premium1" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
       const img=muscleAsset(muscle);
@@ -357,11 +357,11 @@
           z-index:0!important;
           top:0!important;
           right:-2%!important;
-          width:46%!important;
+          width:43%!important;
           height:100%!important;
           max-width:none!important;
           object-fit:cover!important;
-          object-position:58% center!important;
+          object-position:62% center!important;
           border:0!important;
           border-radius:0 21px 21px 0!important;
           filter:none!important;
@@ -376,11 +376,11 @@
             radial-gradient(circle at 67% 12%,rgba(239,194,94,.16),transparent 27%),
             linear-gradient(90deg,
               #fffdf8 0%,
-              rgba(255,253,248,1) 39%,
-              rgba(255,253,248,.96) 49%,
-              rgba(255,253,248,.74) 59%,
-              rgba(255,253,248,.30) 72%,
-              rgba(255,253,248,.03) 100%)!important
+              rgba(255,253,248,1) 40%,
+              rgba(255,253,248,.97) 50%,
+              rgba(255,253,248,.80) 60%,
+              rgba(255,253,248,.38) 74%,
+              rgba(255,253,248,.04) 100%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine>*:not(.dct3-plate):not(.dct3-plate-fade){
           position:relative!important;
@@ -535,7 +535,7 @@
         ${day?`
           <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-premium-plate.jpg?v=20260920-clean-final" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-client-plate.jpg?v=20260920-client-training-premium1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
