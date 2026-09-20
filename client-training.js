@@ -151,7 +151,7 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
           display:flex!important;
-          gap:7px!important;
+          gap:6px!important;
           overflow-x:auto!important;
           margin:0 0 14px!important;
           padding:1px 1px 3px!important;
@@ -159,44 +159,56 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days::-webkit-scrollbar{display:none!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day{
-          flex:0 0 78px!important;
-          width:78px!important;
-          height:68px!important;
-          border:1px solid rgba(183,123,19,.26)!important;
-          border-radius:16px!important;
-          background:linear-gradient(145deg,#fffefa,#f8f0e3)!important;
-          color:#777f89!important;
-          box-shadow:0 5px 14px rgba(78,58,28,.04),inset 0 1px 0 rgba(255,255,255,.95)!important;
+          flex:0 0 58px!important;
+          width:58px!important;
+          min-width:58px!important;
+          height:56px!important;
+          padding:6px 4px!important;
+          border:1px solid rgba(183,123,19,.22)!important;
+          border-radius:14px!important;
+          background:linear-gradient(145deg,#fffefa 0%,#f9f3e9 100%)!important;
+          color:#7b818b!important;
+          box-shadow:0 4px 12px rgba(78,58,28,.035),inset 0 1px 0 rgba(255,255,255,.98)!important;
           display:flex!important;
           flex-direction:column!important;
           align-items:center!important;
           justify-content:center!important;
-          gap:5px!important;
+          gap:4px!important;
           pointer-events:auto!important;
           touch-action:manipulation!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day span{
-          color:inherit!important;
-          font-size:8px!important;
+          color:#9c7b3d!important;
+          font-size:6.8px!important;
           line-height:1!important;
           font-weight:850!important;
-          letter-spacing:1.45px!important
+          letter-spacing:1.25px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day b{
-          color:#777f89!important;
-          font-size:21px!important;
+          color:#686f79!important;
+          font-size:17px!important;
           line-height:1!important;
-          font-weight:650!important
+          font-weight:720!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active{
-          border-color:#d6a33c!important;
-          background:
-            radial-gradient(circle at 50% 0,rgba(226,173,57,.17),transparent 62%),
-            linear-gradient(145deg,#1b1913 0%,#11110f 100%)!important;
-          color:#f0c75d!important;
-          box-shadow:0 7px 17px rgba(67,49,18,.12),inset 0 1px 0 rgba(255,255,255,.045)!important
+          border-color:rgba(205,148,43,.58)!important;
+          background:linear-gradient(145deg,#fff8e5 0%,#f5e1b6 58%,#edc66b 100%)!important;
+          color:#5b4215!important;
+          box-shadow:0 7px 16px rgba(156,109,25,.12),inset 0 1px 0 rgba(255,255,255,.9)!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#f0c75d!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.active span{color:#9f6c0f!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#30291e!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="6"] .dct3-day,
+        html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="7"] .dct3-day{
+          flex-basis:46px!important;
+          width:46px!important;
+          min-width:46px!important;
+          height:52px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="6"] .dct3-day b,
+        html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="7"] .dct3-day b{
+          font-size:15px!important
+        }
 
         html.dcc-theme-light-premium body #client #client-main .dct3-card,
         html.dcc-theme-light-premium body #client #client-main .dct3-routine{
@@ -362,7 +374,8 @@
           height:100%!important;
           max-width:none!important;
           object-fit:cover!important;
-          object-position:center right!important;
+          object-position:72% center!important;
+          image-rendering:auto!important;
           border:0!important;
           border-radius:0 21px 21px 0!important;
           filter:none!important;
@@ -502,9 +515,17 @@
 
         @media(max-width:389px){
           html.dcc-theme-light-premium body #client #client-main .dct3-day{
-            flex-basis:72px!important;
-            width:72px!important;
-            height:64px!important
+            flex-basis:54px!important;
+            width:54px!important;
+            min-width:54px!important;
+            height:52px!important
+          }
+          html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="6"] .dct3-day,
+          html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="7"] .dct3-day{
+            flex-basis:44px!important;
+            width:44px!important;
+            min-width:44px!important;
+            height:50px!important
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
             grid-template-columns:minmax(0,1fr) 172px!important;
@@ -535,11 +556,11 @@
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
-        <div class="dct3-days">${dayButtons}</div>
+        <div class="dct3-days" data-count="${Math.min(routine.length,7)}">${dayButtons}</div>
         ${day?`
           <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-premium.webp?v=20260920-auditfix1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/next-workout-plate.jpg?v=20260920-light-hq1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
