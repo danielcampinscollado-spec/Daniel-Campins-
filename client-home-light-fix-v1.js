@@ -31,9 +31,9 @@
       /* ===== Cabecera como la versión anterior ===== */
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-welcome{
         position:relative!important;
-        min-height:92px!important;
-        margin:0 0 14px!important;
-        padding:5px 2px 18px!important;
+        min-height:68px!important;
+        margin:0 0 10px!important;
+        padding:5px 2px 10px!important;
         overflow:visible!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-welcome::before{
@@ -435,11 +435,22 @@
           text-align:center!important;
           white-space:nowrap!important;
         }
+        html.dcc-theme-light-premium body #client-nav button.active{
+          background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;
+          border:1px solid #d9a43a!important;
+          color:#17140d!important;
+          box-shadow:0 5px 14px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+        }
+        html.dcc-theme-light-premium body #client-nav button.active svg,
+        html.dcc-theme-light-premium body #client-nav button.active span{
+          color:#17140d!important;
+          stroke:currentColor!important;
+        }
       }
 
       @media(max-width:390px){
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-welcome{
-          min-height:86px!important;
+          min-height:64px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-welcome::after{
           right:0!important;
@@ -509,19 +520,78 @@
     }
   }
 
+  function refineNav(){
+    const nav=document.getElementById('client-nav');
+    if(!nav)return;
+    nav.querySelectorAll('button').forEach(btn=>{
+      ['background','background-image','border','color','box-shadow'].forEach(prop=>btn.style.removeProperty(prop));
+      if(btn.classList.contains('active')){
+        btn.style.setProperty('background','linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)','important');
+        btn.style.setProperty('background-image','linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)','important');
+        btn.style.setProperty('border','1px solid #d9a43a','important');
+        btn.style.setProperty('color','#17140d','important');
+        btn.style.setProperty('box-shadow','0 5px 14px rgba(185,126,18,.16), inset 0 1px 0 rgba(255,255,255,.9)','important');
+      }
+    });
+  }
+
+  function ensureHomePaint(){
+    const app=document.getElementById('client');
+    const main=document.getElementById('client-main');
+    if(!app||!main)return;
+    let visible=false;
+    try{visible=getComputedStyle(app).display!=='none'}catch(_){visible=app.style.display!=='none'}
+    if(!visible)return;
+    const screen=String(window.currentScreen||'').toLowerCase();
+    if(screen!=='home')return;
+    if(!window.currentClientId)return;
+    if(main.querySelector('.dch-wrap'))return;
+    try{
+      if(typeof window.showClient==='function'){
+        window.showClient('home');
+      }
+    }catch(error){
+      console.warn('DCC client home repaint',error);
+    }
+  }
+
   function boot(){
     install();
     refineHome();
+    refineNav();
+
     const main=document.getElementById('client-main');
     if(main&&!window.__dccClientHomeOldLightObserver){
       let raf=0;
       const observer=new MutationObserver(()=>{
         cancelAnimationFrame(raf);
-        raf=requestAnimationFrame(refineHome);
+        raf=requestAnimationFrame(()=>{
+          refineHome();
+          refineNav();
+        });
       });
       observer.observe(main,{childList:true,subtree:true,characterData:true});
       window.__dccClientHomeOldLightObserver=observer;
     }
+
+    const nav=document.getElementById('client-nav');
+    if(nav&&!window.__dccClientNavActiveObserver){
+      const navObserver=new MutationObserver(refineNav);
+      navObserver.observe(nav,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+      window.__dccClientNavActiveObserver=navObserver;
+    }
+
+    [0,120,300,650,1200,2200,3500].forEach(ms=>setTimeout(()=>{
+      refineNav();
+      ensureHomePaint();
+    },ms));
+
+    window.addEventListener('pageshow',()=>{
+      refineNav();
+      setTimeout(ensureHomePaint,80);
+      setTimeout(ensureHomePaint,450);
+    });
+    document.addEventListener('click',()=>requestAnimationFrame(refineNav),true);
   }
 
   if(document.readyState==='loading'){
