@@ -6414,7 +6414,7 @@ const notificationState =
 
     <section class="dch-card dch-progress" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 18v-5M11 18V9M16 18V5"/></svg></div><div><div class="dch-progress-label">PROGRESO DE FUERZA</div>${strengthRows.length ? `<div class="dch-progress-title">Has mejorado en ${strengthRows.length} ${strengthRows.length === 1 ? "ejercicio" : "ejercicios"}</div><div class="dch-progress-sub">Tu rendimiento está avanzando. Consulta el detalle en Progreso.</div>` : `<div class="dch-progress-title">Sigue dándolo todo</div><div class="dch-progress-sub">Todavía no hay mejoras registradas. Cada entrenamiento te acerca a tu mejor versión.</div>`}</div><div class="dch-chevron">›</div></section>
 
-    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc((nextWorkout.muscle && !/^sin\\s+grupos?/i.test(String(nextWorkout.muscle))) ? nextWorkout.muscle : "Rutina disponible")}</div><div class="dch-next-day">Día ${weeklyWorkouts + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
+    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc((nextWorkout.muscle && !/^sin\s+grupos?/i.test(String(nextWorkout.muscle))) ? nextWorkout.muscle : "Rutina disponible")}</div><div class="dch-next-day">Día ${weeklyWorkouts + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
 
     <div class="dch-slogan"><span>UNA VERSIÓN MÁS FUERTE<br>DE TI, CADA DÍA</span></div>
   </div>
@@ -16294,7 +16294,7 @@ async function sendClientCheckin(){
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260919-audit4-clients"></script>
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
-<script src="./client-home-light-fix-v1.js?v=20260920-home-light-fix2"></script>
+<script src="./client-home-light-fix-v1.js?v=20260920-home-light-fix3"></script>
 <script src="./training-superset-v1.js?v=20260919-v8b-compact-config"></script>
 
 
