@@ -3,11 +3,11 @@
    No modifica autenticación, datos ni lógica funcional. */
 (function(){
   'use strict';
-  const BUILD='20260920-client-home-old-light-v1';
+  const BUILD='20260920-client-home-compact-final-v2';
   if(window.__dccClientHomeOldLight===BUILD)return;
   window.__dccClientHomeOldLight=BUILD;
 
-  const ID='dcc-client-home-old-light-v1';
+  const ID='dcc-client-home-compact-final-v2';
 
   function install(){
     document.getElementById(ID)?.remove();
@@ -95,15 +95,15 @@
         box-shadow:none!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat{
-        min-height:100px!important;
-        height:100px!important;
+        min-height:78px!important;
+        height:78px!important;
         display:grid!important;
-        grid-template-columns:44px minmax(0,1fr)!important;
+        grid-template-columns:38px minmax(0,1fr)!important;
         align-items:center!important;
-        gap:12px!important;
-        padding:14px 14px!important;
-        border:1px solid rgba(183,123,19,.27)!important;
-        border-radius:21px!important;
+        gap:9px!important;
+        padding:9px 11px!important;
+        border:1px solid rgba(183,123,19,.25)!important;
+        border-radius:18px!important;
         background:
           radial-gradient(circle at 100% 0,rgba(214,163,61,.07),transparent 38%),
           linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
@@ -115,10 +115,10 @@
         display:none!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat .dch-iconbox{
-        width:44px!important;
-        height:44px!important;
-        border:1px solid rgba(183,123,19,.30)!important;
-        border-radius:12px!important;
+        width:38px!important;
+        height:38px!important;
+        border:1px solid rgba(183,123,19,.28)!important;
+        border-radius:11px!important;
         background:linear-gradient(145deg,#fff9eb,#f7ecd6)!important;
         color:#9d701f!important;
         box-shadow:none!important;
@@ -133,32 +133,32 @@
         box-shadow:none!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat-label{
-        margin:0 0 6px!important;
+        margin:0 0 4px!important;
         color:#5f6874!important;
-        font-size:8.5px!important;
-        line-height:1.1!important;
+        font-size:7.5px!important;
+        line-height:1.05!important;
         font-weight:700!important;
-        letter-spacing:1.8px!important;
+        letter-spacing:1.35px!important;
         text-transform:uppercase!important;
         white-space:nowrap!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat-value{
         color:#17191d!important;
-        font-size:27px!important;
+        font-size:23px!important;
         line-height:1!important;
         font-weight:450!important;
-        letter-spacing:-.65px!important;
+        letter-spacing:-.5px!important;
         white-space:nowrap!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat-value span{
         color:#7c838d!important;
-        font-size:12px!important;
+        font-size:10.5px!important;
         font-weight:450!important;
         letter-spacing:0!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-percent{
         color:#d8a63b!important;
-        font-size:22px!important;
+        font-size:19px!important;
         font-weight:500!important;
       }
 
@@ -292,40 +292,52 @@
         line-height:1.38!important;
       }
 
-      /* ===== Próximo entrenamiento: como el diseño anterior ===== */
+      /* ===== Próximo entrenamiento: compacto, disco solo aquí ===== */
       html.dcc-theme-light-premium body #client #client-main .dch-wrap section.dch-next{
         position:relative!important;
-        min-height:132px!important;
-        padding:16px!important;
+        min-height:106px!important;
+        padding:12px 13px!important;
         overflow:hidden!important;
         background-image:
           linear-gradient(90deg,
             rgba(255,253,248,1) 0%,
-            rgba(255,253,248,.98) 34%,
-            rgba(255,253,248,.80) 53%,
-            rgba(255,253,248,.24) 76%,
-            rgba(255,253,248,.02) 100%),
+            rgba(255,253,248,.99) 32%,
+            rgba(255,253,248,.90) 47%,
+            rgba(255,253,248,.62) 58%,
+            rgba(255,253,248,.22) 72%,
+            rgba(255,253,248,.03) 100%),
           url('./assets/next-workout-plate.jpg')!important;
         background-color:#fffdf8!important;
         background-size:cover!important;
         background-position:center right!important;
         background-repeat:no-repeat!important;
         border-color:rgba(183,123,19,.34)!important;
+        box-shadow:0 10px 25px rgba(78,58,28,.08),inset 0 1px 0 rgba(255,255,255,.95)!important;
+      }
+      html.dcc-theme-light-premium body #client #client-main .dch-wrap section.dch-next::after{
+        content:''!important;
+        position:absolute!important;
+        inset:0!important;
+        z-index:1!important;
+        pointer-events:none!important;
+        background:
+          radial-gradient(circle at 76% 50%,rgba(245,215,154,.11),transparent 32%),
+          linear-gradient(180deg,rgba(255,255,255,.03),rgba(75,58,33,.05))!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-content{
         position:relative!important;
         z-index:2!important;
-        min-height:96px!important;
+        min-height:80px!important;
         display:grid!important;
-        grid-template-columns:44px minmax(0,1fr)!important;
-        gap:16px!important;
+        grid-template-columns:38px minmax(0,1fr)!important;
+        gap:12px!important;
         align-items:center!important;
-        padding-right:158px!important;
+        padding-right:128px!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next .dch-iconbox{
-        width:44px!important;
-        height:44px!important;
-        background:rgba(255,250,240,.90)!important;
+        width:38px!important;
+        height:38px!important;
+        background:rgba(255,250,240,.92)!important;
         border-color:rgba(183,123,19,.30)!important;
         color:#9d701f!important;
         box-shadow:none!important;
@@ -333,19 +345,19 @@
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-label{
         margin:0 0 6px!important;
         color:#b77b13!important;
-        font-size:9px!important;
+        font-size:8.1px!important;
         line-height:1.05!important;
         font-weight:750!important;
-        letter-spacing:2.1px!important;
+        letter-spacing:1.75px!important;
         white-space:nowrap!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-name{
         margin:0!important;
         max-width:100%!important;
         color:#17191d!important;
-        font-size:17px!important;
-        line-height:1.18!important;
-        font-weight:400!important;
+        font-size:15.8px!important;
+        line-height:1.15!important;
+        font-weight:450!important;
         letter-spacing:-.15px!important;
         white-space:nowrap!important;
         overflow:hidden!important;
@@ -353,24 +365,24 @@
         text-shadow:none!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-day{
-        margin-top:7px!important;
+        margin-top:5px!important;
         color:#777d86!important;
-        font-size:11px!important;
+        font-size:10px!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-routine-btn{
         position:absolute!important;
-        right:15px!important;
-        bottom:15px!important;
+        right:12px!important;
+        bottom:12px!important;
         z-index:3!important;
-        min-width:124px!important;
-        min-height:46px!important;
-        padding:10px 16px!important;
+        min-width:108px!important;
+        min-height:40px!important;
+        padding:8px 13px!important;
         border:1px solid #d4a23d!important;
-        border-radius:15px!important;
+        border-radius:14px!important;
         background:linear-gradient(135deg,#f4d36f,#dfa93d)!important;
         color:#17130a!important;
-        font-size:12.5px!important;
-        font-weight:600!important;
+        font-size:11.5px!important;
+        font-weight:650!important;
         box-shadow:0 7px 18px rgba(177,119,18,.18)!important;
       }
 
@@ -405,14 +417,14 @@
       @media(max-width:700px){
         html.dcc-theme-light-premium body #client-nav{
           display:grid!important;
-          grid-template-columns:repeat(6,minmax(0,57px))!important;
+          grid-template-columns:repeat(6,minmax(0,52px))!important;
           justify-content:center!important;
           align-items:stretch!important;
           gap:0!important;
           padding:4px 6px!important;
         }
         html.dcc-theme-light-premium body #client-nav button{
-          width:57px!important;
+          width:52px!important;
           min-width:0!important;
           height:60px!important;
           padding:4px 1px!important;
@@ -428,7 +440,7 @@
           width:100%!important;
           margin:0!important;
           padding:0!important;
-          font-size:7.8px!important;
+          font-size:7.2px!important;
           line-height:1!important;
           font-weight:650!important;
           letter-spacing:-.10px!important;
@@ -462,46 +474,46 @@
           font-size:25px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat{
-          min-height:92px!important;
-          height:92px!important;
-          grid-template-columns:40px minmax(0,1fr)!important;
-          gap:10px!important;
-          padding:12px 11px!important;
+          min-height:74px!important;
+          height:74px!important;
+          grid-template-columns:36px minmax(0,1fr)!important;
+          gap:8px!important;
+          padding:8px 9px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat .dch-iconbox{
-          width:40px!important;
-          height:40px!important;
+          width:36px!important;
+          height:36px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat-label{
-          font-size:7.4px!important;
-          letter-spacing:1.25px!important;
+          font-size:6.9px!important;
+          letter-spacing:1.05px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-stat-value{
-          font-size:24px!important;
+          font-size:22px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-content{
-          padding-right:135px!important;
-          gap:13px!important;
+          padding-right:116px!important;
+          gap:10px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-next-name{
-          font-size:15.5px!important;
+          font-size:14.5px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-routine-btn{
-          min-width:114px!important;
-          min-height:43px!important;
-          right:13px!important;
-          bottom:13px!important;
-          padding:9px 13px!important;
-          font-size:11.5px!important;
+          min-width:100px!important;
+          min-height:38px!important;
+          right:10px!important;
+          bottom:10px!important;
+          padding:7px 11px!important;
+          font-size:10.8px!important;
         }
         html.dcc-theme-light-premium body #client-nav{
-          grid-template-columns:repeat(6,minmax(0,55px))!important;
+          grid-template-columns:repeat(6,minmax(0,50px))!important;
         }
         html.dcc-theme-light-premium body #client-nav button{
-          width:55px!important;
+          width:50px!important;
         }
         html.dcc-theme-light-premium body #client-nav button span{
-          font-size:7.4px!important;
+          font-size:6.9px!important;
         }
       }
     `;
