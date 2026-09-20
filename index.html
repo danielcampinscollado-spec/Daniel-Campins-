@@ -5682,11 +5682,47 @@ async function openApp(app){
   }
 
   if(window.__dccOpenAppPromise){
+    const pendingMain=app==="client"
+      ? document.getElementById("client-main")
+      : document.getElementById("coach-main");
+    const clientReady=
+      app==="client" &&
+      currentApp==="client" &&
+      currentClientId &&
+      typeof client==="function" &&
+      !!client(currentClientId);
+
+    if(clientReady && pendingMain && !pendingMain.textContent.trim()){
+      try{
+        showClient(currentScreen||"home");
+      }catch(error){
+        console.warn("DCC openApp pending repaint",error);
+      }
+    }
+
     return window.__dccOpenAppPromise;
   }
+
   const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
   const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
+
   if(alreadyOpen){
+    if(app==="client"){
+      const clientMain=document.getElementById("client-main");
+      const targetScreen=String(currentScreen||"home");
+      const homeMissing=
+        targetScreen==="home" &&
+        clientMain &&
+        !clientMain.querySelector(".dch-wrap");
+
+      if(currentClientId && homeMissing){
+        try{
+          showClient("home");
+        }catch(error){
+          console.warn("DCC openApp restored home repaint",error);
+        }
+      }
+    }
     return true;
   }
 
@@ -5811,6 +5847,12 @@ async function openApp(app){
     },700);
 
   }
+
+  // La promesa solo bloquea aperturas concurrentes. No debe quedar
+  // permanente, porque Safari/iOS puede restaurar la app desde caché
+  // y necesitar una nueva pintura de Inicio.
+  window.__dccOpenAppPromise=null;
+  return true;
 
 }
 function teardownMessageRealtime(){
@@ -5973,6 +6015,7 @@ function getWeeklyWorkoutCount(clientId){
 function showClient(screen){
 
   currentScreen=screen;
+  window.currentScreen=screen;
 
   /* Actualizar pestaña activa aunque se llegue desde una alerta */
   const clientNav=document.getElementById("client-nav");
@@ -16327,7 +16370,7 @@ async function sendClientCheckin(){
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260919-audit4-clients"></script>
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
-<script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v2"></script>
+<script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v3-loadfix"></script>
 <script src="./training-superset-v1.js?v=20260919-v8b-compact-config"></script>
 
 
