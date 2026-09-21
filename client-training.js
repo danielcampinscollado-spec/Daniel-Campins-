@@ -84,6 +84,10 @@
     biceps:'assets/muscles/client-biceps-premium.svg',
     antebrazo:'assets/muscles/client-antebrazos-premium.svg',
     antebrazos:'assets/muscles/client-antebrazos-premium.svg',
+    pierna completa:'assets/muscles/client-pierna-completa-premium.webp',
+    pierna:'assets/muscles/client-pierna-completa-premium.webp',
+    piernas:'assets/muscles/client-pierna-completa-premium.webp',
+    tren inferior:'assets/muscles/client-pierna-completa-premium.webp',
     core:'assets/muscles/client-core-premium.svg',
     abdomen:'assets/muscles/client-core-premium.svg',
     abdominales:'assets/muscles/client-core-premium.svg',
@@ -130,7 +134,7 @@
 
   function muscleRegion(muscles){
     const names=(muscles||[]).map(x=>norm(x?.name)).join(' ');
-    if(/cuadriceps|femoral|isquio|glute|gemelo|pantorrilla/.test(names))return 'TREN INFERIOR';
+    if(/pierna|tren inferior|cuadriceps|femoral|isquio|glute|gemelo|pantorrilla/.test(names))return 'TREN INFERIOR';
     if(/core|abdomen|lumbar/.test(names))return 'CORE Y ESTABILIDAD';
     return 'TREN SUPERIOR';
   }
@@ -205,7 +209,7 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
-      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-muscles-ivory1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-pierna-completa1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
