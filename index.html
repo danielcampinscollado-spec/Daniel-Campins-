@@ -5665,7 +5665,9 @@ return data.clients.find(c=>c.id===id);
 }
 async function deleteClient(id){
   const c=client(id);if(!c){toast("No se encontró el cliente");return}
-  if(!confirm("¿Seguro que quieres eliminar a "+c.name+"?\n\nSe eliminarán también sus datos asociados."))return;
+  if(!confirm("¿Seguro que quieres eliminar a "+c.name+"?
+
+Se eliminarán también sus datos asociados."))return;
   try{
     const {data:ok,error}=await supabaseClient.rpc("dcc_delete_client",{p_client_id:String(id)});
     if(error)throw error;if(ok!==true)throw new Error("El servidor no confirmó la eliminación");
@@ -17119,10 +17121,12 @@ async function sendClientCheckin(){
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260919-audit4-clients"></script>
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
-<script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v4-loadfix"></script>
-<script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>\n<script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
+<script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>
+<script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
-<script src="./client-training.js?v=20260921-weekly-lock2-history"></script>\n<script src="./client-home-premium-v2.js?v=20260921-home-v7-week-grid-hero"></script>
+<script src="./client-training.js?v=20260921-weekly-lock2-history"></script>
+<script src="./client-home-authority-final-v1.js?v=20260921-final1"></script>
+
 
 
 <script id="dcc-auth-flow-v4">
