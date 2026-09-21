@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (Google OAuth RC) */
 (function(){
   'use strict';
-  const BUILD='20260918-auth-role-entry-v5-stable-session';
+  const BUILD='20260921-auth-authority-v6-robust';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -10,8 +10,34 @@
   const ROLE_KEY='dcc:access-role:v1';
 
   function database(){
-    try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}
-    return window.supabaseClient||null;
+    if(window.supabaseClient?.auth)return window.supabaseClient;
+    try{
+      if(typeof supabaseClient!=='undefined'&&supabaseClient?.auth){
+        window.supabaseClient=supabaseClient;
+        return supabaseClient;
+      }
+    }catch(_){}
+    try{
+      const url=window.DCC_SUPABASE_URL||'https://khrhfurdlbqnlthlkhhp.supabase.co';
+      const key=window.DCC_SUPABASE_KEY||'sb_publishable_Dhr67diGFP22g8PKdmUg9A_jbn2EyNZ';
+      if(window.supabase?.createClient){
+        window.supabaseClient=window.supabase.createClient(url,key);
+        return window.supabaseClient;
+      }
+    }catch(error){
+      console.warn('DCC Auth — creando cliente Supabase:',error);
+    }
+    return null;
+  }
+
+  async function waitForDatabase(timeoutMs=8000){
+    const started=Date.now();
+    let db=database();
+    while(!db?.auth && Date.now()-started<timeoutMs){
+      await new Promise(resolve=>setTimeout(resolve,120));
+      db=database();
+    }
+    return db?.auth?db:null;
   }
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function status(message,type){const el=document.getElementById(STATUS_ID);if(!el)return;el.textContent=message||'';el.dataset.type=type||'info';}
@@ -74,24 +100,81 @@
   }
 
   async function requestGoogleLogin(){
-    const db=database(),button=document.getElementById('dcc-google-auth');if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}
-    button.disabled=true;status('Abriendo acceso con Google…','info');
-    try{const result=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirectUrl(selectedRole()),queryParams:{access_type:'offline',prompt:'select_account'}}});if(result.error)throw result.error;}
-    catch(error){console.error('DCC Google Auth:',error);status(String(error?.message||'No se pudo iniciar el acceso con Google.'),'error');button.disabled=false;}
+    const button=document.getElementById('dcc-google-auth');
+    if(button)button.disabled=true;
+    status('Conectando con el acceso seguro…','info');
+    const db=await waitForDatabase();
+    if(!db?.auth){
+      status('No se pudo conectar con el acceso seguro. Recarga la página e inténtalo de nuevo.','error');
+      if(button)button.disabled=false;
+      return;
+    }
+    status('Abriendo acceso con Google…','info');
+    try{
+      const result=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirectUrl(selectedRole()),queryParams:{access_type:'offline',prompt:'select_account'}}});
+      if(result.error)throw result.error;
+    }catch(error){
+      console.error('DCC Google Auth:',error);
+      status(String(error?.message||'No se pudo iniciar el acceso con Google.'),'error');
+      if(button)button.disabled=false;
+    }
   }
-
   async function requestMagicLink(){
-    const db=database(),input=document.getElementById('dcc-secure-auth-email'),button=document.getElementById('dcc-secure-auth-send'),email=String(input?.value||'').trim().toLowerCase();
-    if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}if(!email||!/^\S+@\S+\.\S+$/.test(email)){status('Introduce un email válido.','error');input?.focus();return}
-    button.disabled=true;status('Enviando enlace seguro…','info');
-    try{const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirectUrl(selectedRole())}});if(result.error)throw result.error;status(isPreview()?'Enlace enviado para esta RC. El enlace debe volver a este mismo Preview.':'Enlace enviado. Abre el correo y pulsa el enlace para iniciar sesión.','ok');}
-    catch(error){console.error('DCC Auth:',error);const msg=String(error?.message||'No se pudo enviar el enlace de acceso.');status(isPreview()?`No se envió el enlace RC: ${msg}`:msg,'error');}finally{button.disabled=false}
+    const input=document.getElementById('dcc-secure-auth-email');
+    const button=document.getElementById('dcc-secure-auth-send');
+    const email=String(input?.value||'').trim().toLowerCase();
+    if(!email||!/^\S+@\S+\.\S+$/.test(email)){
+      status('Introduce un email válido.','error');
+      input?.focus();
+      return;
+    }
+    if(button)button.disabled=true;
+    status('Conectando con el acceso seguro…','info');
+    const db=await waitForDatabase();
+    if(!db?.auth){
+      status('No se pudo conectar con el acceso seguro. Recarga la página e inténtalo de nuevo.','error');
+      if(button)button.disabled=false;
+      return;
+    }
+    status('Enviando enlace seguro…','info');
+    try{
+      const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirectUrl(selectedRole())}});
+      if(result.error)throw result.error;
+      status(isPreview()?'Enlace enviado. Abre el correo y vuelve a esta misma versión de prueba.':'Enlace enviado. Abre el correo y pulsa el enlace para iniciar sesión.','ok');
+    }catch(error){
+      console.error('DCC Auth:',error);
+      status(String(error?.message||'No se pudo enviar el enlace de acceso.'),'error');
+    }finally{
+      if(button)button.disabled=false;
+    }
   }
-
   function sessionBadge(role){let badge=document.querySelector('.dcc-secure-session-badge');if(!badge){badge=document.createElement('div');badge.className='dcc-secure-session-badge';document.body.appendChild(badge)}badge.textContent=role==='coach'?'SESIÓN SEGURA · ENTRENADOR':'SESIÓN SEGURA · CLIENTE'}
   function showPending(user){renderLogin();const root=document.getElementById(ROOT_ID);if(!root)return;let pending=root.querySelector('.dcc-auth-pending');if(!pending){pending=document.createElement('div');pending.className='dcc-auth-pending';root.appendChild(pending)}pending.innerHTML=`Cuenta autenticada como <b>${escapeHtml(user?.email||'usuario')}</b>.<br>La cuenta existe correctamente, pero todavía falta asignarle el rol o vincularla a un cliente.`;status('Cuenta autenticada. Falta completar la vinculación.','ok')}
   async function routeSession(session,requestedRole){const db=database(),user=session?.user,role=requestedRole||window.__dccSecureRole||selectedRole();if(!db||!user)return false;if(role!=='coach'&&role!=='client'){showRoleChooser();return false}try{if(role==='coach'){const {data:profile,error:profileError}=await db.from('app_profiles').select('role').eq('user_id',user.id).maybeSingle();if(profileError)throw profileError;if(profile?.role!=='coach'){showRoleChooser();document.getElementById(ROOT_ID)?.style.setProperty('display','block');status('Esta cuenta no tiene acceso de entrenador.','error');return false}window.__dccSecureRole='coach';sessionBadge('coach');if(typeof window.openApp==='function'){try{window.dccTheme?.set('light-premium')}catch(_){}await window.openApp('coach')}clearRoleIntent();return true}const {data:clientRow,error:clientError}=await db.from('clients').select('id').eq('auth_user_id',user.id).maybeSingle();if(clientError)throw clientError;let clientId=clientRow?.id||null;if(!clientId){const {data:claimedId,error:claimError}=await db.rpc('dcc_claim_client_access');if(claimError)throw claimError;clientId=claimedId||null}if(clientId){setCurrentClient(clientId);window.__dccSecureRole='client';sessionBadge('client');if(typeof window.openApp==='function')await window.openApp('client');clearRoleIntent();return true}showRoleChooser();document.getElementById(ROOT_ID)?.style.setProperty('display','block');showPending(user);return false}catch(error){console.error('DCC Auth — resolviendo sesión:',error);showRoleChooser();document.getElementById(ROOT_ID)?.style.setProperty('display','block');status('La sesión existe, pero no se pudo resolver ese acceso.','error');return false}}
   function patchLogout(){if(window.__dccSecureLogoutV1)return;const base=window.logout;window.logout=async function(){try{await database()?.auth?.signOut()}catch(error){console.warn('DCC Auth — cierre de sesión:',error)}document.querySelector('.dcc-secure-session-badge')?.remove();window.__dccSecureRole=null;clearRoleIntent();if(typeof base==='function')return base.apply(this,arguments);document.getElementById('login')?.style.setProperty('display','flex');document.getElementById('client')?.style.setProperty('display','none');document.getElementById('coach')?.style.setProperty('display','none')};window.__dccSecureLogoutV1=true;}
-  async function init(){renderLogin();patchLogout();const db=database();if(!db?.auth)return;try{const {data,error}=await db.auth.getSession();if(error)throw error;if(data?.session)await routeSession(data.session,selectedRole());else showRoleChooser()}catch(error){console.warn('DCC Auth — sesión inicial:',error)}db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.querySelector('.dcc-secure-session-badge')?.remove();return}if(session)setTimeout(()=>routeSession(session,window.__dccSecureRole||selectedRole()),0)});}
+  async function init(){
+    renderLogin();
+    patchLogout();
+    const db=await waitForDatabase();
+    if(!db?.auth){
+      console.warn('DCC Auth — Supabase no disponible tras espera inicial');
+      return;
+    }
+    try{
+      const {data,error}=await db.auth.getSession();
+      if(error)throw error;
+      if(data?.session)await routeSession(data.session,selectedRole());
+      else showRoleChooser();
+    }catch(error){
+      console.warn('DCC Auth — sesión inicial:',error);
+    }
+    db.auth.onAuthStateChange((event,session)=>{
+      if(event==='SIGNED_OUT'){
+        document.querySelector('.dcc-secure-session-badge')?.remove();
+        return;
+      }
+      if(session)setTimeout(()=>routeSession(session,window.__dccSecureRole||selectedRole()),0);
+    });
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
