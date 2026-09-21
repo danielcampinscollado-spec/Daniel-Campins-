@@ -4829,7 +4829,7 @@ function resetWeeklyCheckinIfNeeded(){
 function createNeutralData(){
   return {
     clients:[],diets:{},routines:{},previousRoutines:{},routineUpdatedAt:{},weights:{},workoutHistory:{},
-    bodyFatHistory:{},checkins:{},messages:{},notificationState:{},completedTrainingDays:{},trainingNextDayIndex:{},trainingProgressWeekStart:{}
+    bodyFatHistory:{},checkins:{},checkinHistory:{},messages:{},notificationState:{},completedTrainingDays:{},trainingNextDayIndex:{},trainingProgressWeekStart:{}
   };
 }
 function loadData(){
@@ -4852,6 +4852,9 @@ function loadData(){
 }
 if(parsed.notificationState){
   result.notificationState=parsed.notificationState;
+}
+if(parsed.checkinHistory){
+  result.checkinHistory=parsed.checkinHistory;
 }
 
 if(parsed.routineUpdatedAt){
@@ -5099,7 +5102,7 @@ async function loadWorkoutHistoryFromSupabase(){
 
     const { data:history, error } = await supabaseClient
       .from("workout_history")
-      .select("client_id,workout_date,duration,exercises")
+      .select("client_id,workout_date,duration,exercises,day_index,day_name")
       .order("workout_date",{ascending:true});
 
     if(error){
@@ -5123,6 +5126,8 @@ async function loadWorkoutHistoryFromSupabase(){
         date:row.workout_date,
 
         duration:Number(row.duration)||0,
+        dayIndex:Number.isInteger(Number(row.day_index))?Number(row.day_index):null,
+        dayName:String(row.day_name||""),
 
         exercises:Array.isArray(row.exercises)
           ? row.exercises
@@ -5227,6 +5232,37 @@ async function loadMessagesFromSupabase(){
 
   }catch(e){
     console.error("Error conectando con Supabase para mensajes:",e);
+  }
+}
+
+async function loadCheckinHistoryFromSupabase(){
+  try{
+    const {data:rows,error}=await supabaseClient
+      .from("client_checkin_history")
+      .select("client_id,weight,body_fat,sent_at")
+      .order("sent_at",{ascending:true});
+
+    if(error){
+      console.error("Error cargando historial de check-ins:",error);
+      return;
+    }
+
+    data.checkinHistory={};
+
+    (rows||[]).forEach(row=>{
+      if(!data.checkinHistory[row.client_id])data.checkinHistory[row.client_id]=[];
+      const rawWeight=String(row.weight||"").replace(",",".");
+      const weightMatch=rawWeight.match(/-?\d+(?:\.\d+)?/);
+      data.checkinHistory[row.client_id].push({
+        weight:weightMatch?Number(weightMatch[0]):null,
+        bodyFat:row.body_fat!=null?Number(row.body_fat):null,
+        sentAt:row.sent_at||null
+      });
+    });
+
+    saveData();
+  }catch(e){
+    console.error("Error conectando con Supabase para historial de check-ins:",e);
   }
 }
 
@@ -5520,6 +5556,21 @@ function getTrainingNextDayIndex(clientId,totalDays){
 
   ensureTrainingProgressWeek(clientId);
 
+  const history=(data.workoutHistory?.[clientId]||[])
+    .filter(w=>Number.isInteger(Number(w?.dayIndex)))
+    .slice()
+    .sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+
+  if(history.length){
+    const latestIndex=Number(history[0].dayIndex);
+    const inferred=(latestIndex+1)%total;
+    if(data.trainingNextDayIndex[clientId]!==inferred){
+      data.trainingNextDayIndex[clientId]=inferred;
+      saveData();
+    }
+    return inferred;
+  }
+
   const stored=parseInt(data.trainingNextDayIndex[clientId]);
   if(Number.isInteger(stored)&&stored>=0){
     return stored%total;
@@ -5533,7 +5584,18 @@ function getTrainingNextDayIndex(clientId,totalDays){
 }
 
 function isTrainingDayCompleted(clientId,dayIndex){
-  return getCompletedTrainingDays(clientId).includes(Number(dayIndex));
+  const index=Number(dayIndex);
+  const weekStart=getWeekStart();
+  const now=new Date();
+
+  const history=data.workoutHistory?.[clientId]||[];
+  const found=history.some(w=>{
+    const date=new Date(w?.date||0);
+    return Number(w?.dayIndex)===index && date>=weekStart && date<=now;
+  });
+
+  if(found)return true;
+  return getCompletedTrainingDays(clientId).includes(index);
 }
 
 function markTrainingDayCompleted(clientId,dayIndex,totalDays){
@@ -5946,6 +6008,7 @@ async function openApp(app){
         loadWeightsFromSupabase(),
         loadNotificationStateFromSupabase(),
         loadMessagesFromSupabase(),
+        loadCheckinHistoryFromSupabase(),
         loadCheckinsFromSupabase()
       ]);
 
@@ -11080,6 +11143,8 @@ const totalDays =
     workout_date:new Date().toISOString(),
 
     duration:duration,
+    day_index:Number(workout.dayIndex),
+    day_name:String(workout.dayName||"Entrenamiento"),
 
     exercises:workout.completedExercises
 
@@ -11113,7 +11178,7 @@ const totalDays =
     date:workoutData.workout_date,
 
     duration:duration,
-
+    dayIndex:Number(workout.dayIndex),
     dayName:workout.dayName,
 
     exercises:workout.completedExercises
@@ -17057,7 +17122,7 @@ async function sendClientCheckin(){
 <script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v4-loadfix"></script>
 <script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>\n<script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
-<script src="./client-training.js?v=20260921-weekly-lock1"></script>
+<script src="./client-training.js?v=20260921-weekly-lock2-history"></script>\n<script src="./client-home-premium-v2.js?v=20260921-home-v2-nextfix"></script>
 
 
 <script id="dcc-auth-flow-v4">
