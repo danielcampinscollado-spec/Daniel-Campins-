@@ -114,6 +114,44 @@
     triceps:'assets/muscles/triceps-reference-premium.webp'
   };
 
+  const CLIENT_GOLD_ATLAS='./assets/muscles/anatomy-male-final.svg?v=20260921-approved-atlas1';
+  const CLIENT_GOLD_POS={
+    dorsal:[1,0],espalda:[1,0],dorsales:[1,0],
+    hombro:[2,0],hombros:[2,0],deltoide:[2,0],deltoides:[2,0],
+    trapecio:[0,1],trapecios:[0,1],lumbar:[0,1],lumbares:[0,1],
+    biceps:[1,1],
+    antebrazo:[0,2],antebrazos:[0,2],
+    core:[1,2],abdomen:[1,2],abdominales:[1,2],
+    cuadriceps:[2,2],
+    femoral:[0,3],femorales:[0,3],isquio:[0,3],isquios:[0,3],isquiotibiales:[0,3],
+    gluteo:[1,3],gluteos:[1,3],
+    gemelo:[2,3],gemelos:[2,3],pantorrilla:[2,3],pantorrillas:[2,3]
+  };
+
+  function approvedMuscleVisual(name){
+    const n=norm(name);
+    if(!n)return null;
+    if(n.includes('pectoral')||n.includes('pecho')){
+      return {kind:'image',path:OVERVIEW_PREMIUM_ASSETS.pectoral,key:'pectoral'};
+    }
+    if(n.includes('triceps')){
+      return {kind:'image',path:OVERVIEW_PREMIUM_ASSETS.triceps,key:'triceps'};
+    }
+    for(const [key,pos] of Object.entries(CLIENT_GOLD_POS)){
+      if(n.includes(key)){
+        const cellW=98,cellH=52.5,cropX=5,cropY=4.75;
+        return {
+          kind:'sprite',
+          key,
+          path:CLIENT_GOLD_ATLAS,
+          x:-(pos[0]*cellW+cropX),
+          y:-(pos[1]*cellH+cropY)
+        };
+      }
+    }
+    return null;
+  }
+
   function overviewMuscleAsset(value){
     const n=norm(value);
     if(!n)return '';
@@ -134,18 +172,14 @@
       : String(day?.muscle||'').split(/[·+,&/]/);
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
-      const path=overviewMuscleAsset(name);
-      if(path&&!out.some(x=>x.path===path)){
-        out.push({
-          name,
-          path,
-          premium:/reference-premium\.webp$/i.test(path)
-        });
+      const visual=approvedMuscleVisual(name);
+      if(visual&&!out.some(x=>x.visual.key===visual.key)){
+        out.push({name,visual});
       }
     });
     if(!out.length&&day?.muscle){
-      const path=overviewMuscleAsset(day.muscle);
-      if(path)out.push({name:day.muscle,path,premium:/reference-premium\.webp$/i.test(path)});
+      const visual=approvedMuscleVisual(day.muscle);
+      if(visual)out.push({name:day.muscle,visual});
     }
     return out.slice(0,3);
   }
@@ -225,7 +259,13 @@
         );
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':'is-goldized'}"><img src="./${esc(x.path)}?v=20260921-muscle-fix2" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>{
+      const v=x.visual;
+      const art=v.kind==='image'
+        ? `<div class="dct3-muscle is-approved"><img src="./${esc(v.path)}?v=20260921-approved-only1" alt="${esc(x.name)}"></div>`
+        : `<div class="dct3-muscle is-approved-sprite"><span class="dct3-approved-sprite" style="background-position:${v.x}px ${v.y}px" role="img" aria-label="${esc(x.name)}"></span></div>`;
+      return `<div class="dct3-muscle-wrap">${art}<span>${esc(x.name)}</span></div>`;
+    }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
       const details=exerciseDisplayMeta(ex);
@@ -404,18 +444,31 @@
           border-radius:14px!important;
           background:#151514!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-premium img{
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved img{
           object-fit:cover!important;
           object-position:center!important;
           filter:none!important;
           transform:none!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-goldized img{
-          object-fit:cover!important;
-          object-position:center!important;
-          padding:0!important;
-          filter:saturate(1.22) hue-rotate(32deg) brightness(1.07) contrast(1.05)!important;
-          transform:none!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved-sprite{
+          height:78px!important;
+          display:grid!important;
+          place-items:center!important;
+          background:#fffaf1!important;
+          border:1px solid rgba(183,123,19,.12)!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-approved-sprite{
+          display:block!important;
+          width:88px!important;
+          height:43px!important;
+          flex:none!important;
+          background-image:url('${CLIENT_GOLD_ATLAS}')!important;
+          background-repeat:no-repeat!important;
+          background-size:294px 210px!important;
+          border-radius:0!important;
+          mix-blend-mode:multiply!important;
+          transform:none!important;
+          filter:none!important
         }
 
         /* Tres músculos: misma familia visual, compacta y legible en móvil. */
@@ -439,6 +492,12 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle img{
           border-radius:11px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle.is-approved-sprite{
+          height:58px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-approved-sprite{
+          transform:scale(.64)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap>span{
           margin-top:5px!important;
