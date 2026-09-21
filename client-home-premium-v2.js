@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-premium-v6-week7-hero';
+const BUILD='20260921-client-home-premium-v7-week-grid-hero';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -147,38 +147,50 @@ function css(){
     margin:0!important;color:#707989!important;font-size:9.2px!important;line-height:1.3!important
   }
 
-  /* WEEK: ALWAYS SUPPORT UP TO 7 DAYS IN ONE ROW */
+  /* WEEK: compact but readable, supports up to 7 days */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
-    padding:10px 9px 11px!important
+    padding:11px 10px 12px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-head{
-    display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:8px!important
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:10px!important;margin-bottom:9px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-link{
-    color:#a66d0d!important;font-size:6.8px!important;font-weight:850!important;letter-spacing:1.5px!important;
+    color:#a66d0d!important;font-size:7px!important;font-weight:850!important;letter-spacing:1.45px!important;
     text-transform:uppercase!important;white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
-    display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;width:100%!important
+    display:grid!important;gap:7px!important;width:100%!important
   }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="1"]{grid-template-columns:1fr!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="4"],
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="5"],
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="6"],
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="7"]{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important
+  }
+
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
-    min-width:0!important;min-height:64px!important;padding:7px 2px 6px!important;
-    border:1px solid rgba(177,127,38,.16)!important;border-radius:11px!important;background:#fbf8f2!important;
-    text-align:center!important;overflow:hidden!important
+    min-width:0!important;min-height:74px!important;padding:9px 6px 8px!important;
+    border:1px solid rgba(177,127,38,.17)!important;border-radius:13px!important;
+    background:#fbf8f2!important;text-align:center!important;overflow:hidden!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{
-    display:block!important;color:#17191d!important;font-size:9.2px!important;line-height:1!important;font-weight:850!important
+    display:block!important;color:#17191d!important;font-size:11.5px!important;line-height:1!important;font-weight:850!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{
-    display:block!important;min-height:18px!important;margin-top:5px!important;color:#737b86!important;
-    font-size:6.3px!important;line-height:1.12!important;overflow:hidden!important
+    display:block!important;min-height:21px!important;margin-top:6px!important;color:#737b86!important;
+    font-size:7.5px!important;line-height:1.15!important;overflow:hidden!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day em{
-    display:grid!important;place-items:center!important;width:18px!important;height:18px!important;margin:5px auto 0!important;
-    border-radius:50%!important;background:#f1ece2!important;color:#91794d!important;font-size:8px!important;
-    line-height:1!important;font-style:normal!important;font-weight:850!important
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    min-width:22px!important;height:20px!important;margin:6px auto 0!important;padding:0 6px!important;
+    border-radius:999px!important;background:#f1ece2!important;color:#91794d!important;
+    font-size:8px!important;line-height:1!important;font-style:normal!important;font-weight:850!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done{
     background:#f2f7e9!important;border-color:#c9ddb2!important
@@ -187,92 +199,117 @@ function css(){
     background:#77b858!important;color:#fff!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
-    background:#fff9ed!important;border-color:#c89125!important;box-shadow:inset 0 0 0 1px rgba(200,145,37,.08)!important
+    background:#fff9ed!important;border-color:#c89125!important;
+    box-shadow:inset 0 0 0 1px rgba(200,145,37,.08)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next em{
     background:#f0c95e!important;color:#3c2a08!important
   }
 
-  /* TOP PREMIUM NEXT WORKOUT */
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
-    position:relative!important;min-height:128px!important;display:grid!important;
-    grid-template-columns:minmax(0,1fr) 116px!important;align-items:end!important;gap:10px!important;
-    padding:14px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.34)!important;
-    border-radius:19px!important;background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.11)!important;color:#fff!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:before{
-    content:''!important;position:absolute!important;inset:0!important;
-    background:
-      linear-gradient(90deg,rgba(15,13,9,.96) 0%,rgba(15,13,9,.82) 34%,rgba(15,13,9,.48) 57%,rgba(15,13,9,.10) 78%,rgba(15,13,9,.02) 100%),
-      url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') 72% 52%/cover no-repeat!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:after{
-    content:''!important;position:absolute!important;inset:0!important;pointer-events:none!important;
-    background:radial-gradient(circle at 78% 38%,rgba(235,187,81,.14),transparent 28%)!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero>*{position:relative!important;z-index:2!important}
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-copy{min-width:0!important;padding-right:2px!important}
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-eyebrow{
-    color:#e6b950!important;font-size:7.6px!important;font-weight:900!important;letter-spacing:2.2px!important;text-transform:uppercase!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-title{
-    margin:7px 0 7px!important;color:#fff!important;font-family:Georgia,"Times New Roman",serif!important;
-    font-size:23px!important;line-height:1!important;font-weight:500!important;letter-spacing:-.3px!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-meta{
-    color:#e9e3d8!important;font-size:10px!important;line-height:1.2!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero-actions{
-    display:flex!important;align-items:flex-end!important;justify-content:stretch!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
-    width:100%!important;min-width:0!important;min-height:43px!important;padding:0 9px!important;
-    border:1px solid #e2ae41!important;border-radius:14px!important;
-    background:linear-gradient(135deg,#f7d46f 0%,#e9b94d 48%,#d99b2c 100%)!important;
-    color:#20170a!important;font-size:10px!important;font-weight:900!important;white-space:nowrap!important;
-    box-shadow:0 8px 18px rgba(213,153,40,.18),inset 0 1px 0 rgba(255,255,255,.6)!important
+  @media(max-width:430px){
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="4"],
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="5"],
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="6"],
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days[data-count="7"]{
+      grid-template-columns:repeat(4,minmax(0,1fr))!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{min-height:70px!important;padding:8px 4px 7px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{font-size:10.5px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full{display:none!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:inline!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full-muscle{display:none!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{
+      display:block!important;font-size:6.8px!important;line-height:1.1!important
+    }
   }
 
-  /* TRAINING: SAME PREMIUM LANGUAGE, COMPACT + LEGIBLE */
+  /* TOP PREMIUM NEXT WORKOUT */
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
+    position:relative!important;min-height:112px!important;display:grid!important;
+    grid-template-columns:minmax(0,1fr) 112px!important;align-items:center!important;gap:10px!important;
+    padding:13px 14px!important;overflow:hidden!important;
+    border:1px solid rgba(183,123,19,.34)!important;border-radius:19px!important;
+    background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.10)!important;color:#fff!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:before{
+    content:''!important;position:absolute!important;inset:0!important;z-index:0!important;
+    background:url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') right center/cover no-repeat!important;
+    filter:brightness(1.12) contrast(1.05) saturate(1.05)!important;transform:scale(1.01)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:after{
+    content:''!important;position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important;
+    background:
+      radial-gradient(circle at 80% 42%,rgba(240,194,91,.13),transparent 28%),
+      linear-gradient(90deg,rgba(15,13,9,.97) 0%,rgba(15,13,9,.87) 32%,rgba(15,13,9,.56) 52%,rgba(15,13,9,.18) 72%,rgba(15,13,9,0) 100%)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero>*{position:relative!important;z-index:2!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-copy{
+    min-width:0!important;align-self:center!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-eyebrow{
+    margin:0 0 7px!important;color:#e6b950!important;font-size:7.4px!important;
+    line-height:1!important;font-weight:900!important;letter-spacing:2.15px!important;text-transform:uppercase!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-title{
+    margin:0 0 7px!important;color:#fff!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:22px!important;line-height:1!important;font-weight:500!important;letter-spacing:-.3px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-meta{
+    color:#ebe5dc!important;font-size:9.8px!important;line-height:1.15!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero-actions{
+    display:flex!important;align-items:center!important;justify-content:stretch!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
+    width:100%!important;min-width:0!important;min-height:42px!important;padding:0 9px!important;
+    border:1px solid #e2ae41!important;border-radius:14px!important;
+    background:linear-gradient(135deg,#f7d46f 0%,#e9b94d 48%,#d99b2c 100%)!important;
+    color:#20170a!important;font-size:9.8px!important;font-weight:900!important;white-space:nowrap!important;
+    box-shadow:0 8px 18px rgba(213,153,40,.18),inset 0 1px 0 rgba(255,255,255,.58)!important
+  }
+
+  /* TRAINING: compact premium card, without touching the bottom nav */
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero{
-    position:relative!important;min-height:138px!important;height:auto!important;margin-bottom:10px!important;
-    padding:14px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.34)!important;
-    border-radius:19px!important;background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.10)!important;color:#fff!important
+    position:relative!important;min-height:124px!important;height:auto!important;margin-bottom:10px!important;
+    padding:13px 14px!important;overflow:hidden!important;
+    border:1px solid rgba(183,123,19,.34)!important;border-radius:19px!important;
+    background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.10)!important;color:#fff!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero:before{
     content:''!important;position:absolute!important;inset:0!important;z-index:0!important;
-    background:
-      linear-gradient(90deg,rgba(15,13,9,.96) 0%,rgba(15,13,9,.83) 36%,rgba(15,13,9,.50) 60%,rgba(15,13,9,.08) 100%),
-      url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') 72% 52%/cover no-repeat!important
+    background:url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') right center/cover no-repeat!important;
+    filter:brightness(1.10) contrast(1.04) saturate(1.04)!important;transform:scale(1.01)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero:after{
-    content:''!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
-    background:radial-gradient(circle at 78% 38%,rgba(235,187,81,.13),transparent 29%)!important
+    content:''!important;position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important;
+    background:
+      radial-gradient(circle at 80% 42%,rgba(240,194,91,.12),transparent 29%),
+      linear-gradient(90deg,rgba(15,13,9,.97) 0%,rgba(15,13,9,.88) 33%,rgba(15,13,9,.58) 54%,rgba(15,13,9,.16) 76%,rgba(15,13,9,0) 100%)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero>*{position:relative!important;z-index:2!important}
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate,
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate-fade{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-label{
-    margin:0 0 7px!important;color:#e6b950!important;font-size:7.8px!important;line-height:1!important;
-    font-weight:900!important;letter-spacing:2.2px!important;text-transform:uppercase!important
+    margin:0 0 7px!important;color:#e6b950!important;font-size:7.4px!important;line-height:1!important;
+    font-weight:900!important;letter-spacing:2.1px!important;text-transform:uppercase!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero h3{
-    max-width:72%!important;margin:0!important;color:#fff!important;
-    font-family:Georgia,"Times New Roman",serif!important;font-size:23px!important;line-height:1!important;
+    max-width:72%!important;margin:0 0 6px!important;color:#fff!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:22px!important;line-height:1!important;
     font-weight:500!important;letter-spacing:-.3px!important;white-space:normal!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-meta{
-    margin-top:7px!important;color:#e9e3d8!important;background:transparent!important;border:0!important;padding:0!important;
-    font-size:10px!important;line-height:1.2!important
+    margin:0!important;color:#ebe5dc!important;background:transparent!important;border:0!important;padding:0!important;
+    font-size:9.8px!important;line-height:1.15!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-actions{
     display:grid!important;grid-template-columns:minmax(0,1.45fr) minmax(112px,.9fr)!important;
-    gap:8px!important;width:100%!important;max-width:none!important;margin-top:14px!important
+    gap:8px!important;width:100%!important;max-width:none!important;margin-top:12px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start,
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-view{
-    min-height:42px!important;height:42px!important;padding:0 10px!important;border-radius:13px!important;
-    font-size:10.3px!important;font-weight:850!important
+    min-height:40px!important;height:40px!important;padding:0 10px!important;border-radius:13px!important;
+    font-size:10px!important;font-weight:850!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start:disabled{
     background:linear-gradient(145deg,#fffdf9,#f2eadc)!important;color:#847d72!important;border-color:#e6d7ba!important
@@ -281,8 +318,7 @@ function css(){
     background:linear-gradient(145deg,#171c24,#0d1117)!important;color:#fff!important;border-color:rgba(255,255,255,.12)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-list{
-    margin-top:12px!important;padding-top:10px!important;background:#fffdf8!important;color:#17191d!important;
-    border-radius:13px!important
+    margin-top:11px!important;padding-top:10px!important;background:#fffdf8!important;color:#17191d!important;border-radius:13px!important
   }
 
   @media(max-width:430px){
@@ -290,12 +326,7 @@ function css(){
       grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important
     }
     html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:31px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full{display:none!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:inline!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full-muscle{display:none!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{display:block!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{font-size:9.5px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{font-size:5.9px!important}
+
   }
   `;
   document.head.appendChild(s);
@@ -406,7 +437,7 @@ function renderHome(){
     </div>
     <section class="dcc-home2-card"><div class="dcc-home2-card-head"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div>${taskRows||'<div class="dcc-home2-task"><div></div><div><h3>Todo al día</h3><p>No tienes tareas pendientes ahora mismo.</p></div><div></div></div>'}</section>
     <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div class="dcc-home2-progress-copy"><div class="dcc-home2-label">TU PROGRESO</div><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></section>
-    ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-home2-days">${days}</div></section>`:''}
+    ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-home2-days" data-count="${Math.min(r.length,7)}">${days}</div></section>`:''}
     ${hero}
   </div>`;
 }
