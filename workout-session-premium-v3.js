@@ -146,20 +146,63 @@
     return {groupIndices,position,rounds,round,size:groupIndices.length};
   }
 
-  function renderRest(workout,exercise,superset){
+  function restPauseViewContext(workout,exercise){
+    if(!workout||!exercise?.restPause)return null;
+    const reps=String(exercise.restPauseReps||exercise.reps||'').trim();
+    const targets=reps.split(/[\/\-–,\s]+/).map(v=>String(v||'').trim()).filter(Boolean);
+    const blocks=Math.max(1,targets.length||parseInt(exercise.restPauseBlocks)||parseInt(exercise.sets)||1);
+    const miniRest=Math.max(1,parseInt(exercise.restPauseSeconds)||parseInt(exercise.restBetweenSets)||1);
+    const finalRest=Math.max(0,parseInt(exercise.restPauseFinalRest)||parseInt(exercise.restBetweenExercises)||0);
+    return {reps,targets,blocks,miniRest,finalRest};
+  }
+
+  function renderRest(workout,exercise,superset,restPause){
     const active=!!(workout.restUntil&&workout.restUntil>Date.now());
     if(!active)return '';
     const remaining=Math.max(0,Math.ceil((Number(workout.restUntil)-Date.now())/1000));
-    const copy=superset?'Descansa antes de la siguiente vuelta.':'Recupera antes de la siguiente serie.';
-    return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>DESCANSO</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>${copy}</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
+    const isRestPauseMini=restPause&&workout.restMode==='restpause-mini';
+    const isRestPauseFinal=restPause&&workout.restMode==='restpause-final';
+    const label=isRestPauseMini?'MINI DESCANSO':isRestPauseFinal?'DESCANSO FINAL':'DESCANSO';
+    const copy=isRestPauseMini
+      ? 'Pausa corta antes del siguiente bloque.'
+      : isRestPauseFinal
+        ? 'Recupera antes de continuar.'
+        : superset
+          ? 'Descansa antes de la siguiente vuelta.'
+          : 'Recupera antes de la siguiente serie.';
+    return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>${label}</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>${copy}</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
   }
 
-  function renderCurrent(workout,exercise,stats,planned,completed,finished,superset){
+  function renderCurrent(workout,exercise,stats,planned,completed,finished,superset,restPause){
     const visualPlanned=superset?superset.rounds:planned;
     const visualCompleted=superset?Math.max(0,superset.round-1):completed;
     const currentIndex=Math.min(visualCompleted,Math.max(0,visualPlanned-1));
     const previousSet=stats.latest?.sets?.[currentIndex]||null;
     const restActive=!!(workout.restUntil&&workout.restUntil>Date.now());
+
+    if(restPause){
+      const completedBlocks=Math.min(completed,restPause.blocks);
+      const nextBlock=Math.min(completedBlocks+1,restPause.blocks);
+      const target=restPause.targets[Math.min(completedBlocks,Math.max(0,restPause.targets.length-1))]||'';
+      const miniRestActive=restActive&&workout.restMode==='restpause-mini';
+      const finalRestActive=restActive&&workout.restMode==='restpause-final';
+
+      return `<section class="dwa3-card dwa3-current">
+        <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>REST-PAUSE</span></div><small>${finalRestActive?'Completado':`Bloque ${nextBlock} de ${restPause.blocks}`}</small></div>
+        <div class="dwa3-steps">${renderSeriesSteps(restPause.blocks,completedBlocks)}</div>
+        ${finalRestActive
+          ? `${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">REST-pause completado · descanso final de ${restPause.finalRest} s</div>`
+          : miniRestActive
+            ? `${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">Bloque ${completedBlocks} guardado · mini descanso de ${restPause.miniRest} s</div>`
+            : `
+              <div class="dwa3-fields">
+                <label><b>Peso (kg)</b><div class="dwa3-input"><input id="workout-kg" type="number" inputmode="decimal" step="0.5" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>kg</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.kg)} kg`:'Sin registro anterior'}</small></label>
+                <label><b>Repeticiones${target?` · objetivo ${esc(target)}`:''}</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="${target?esc(target):''}" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
+              </div>
+              ${renderSavedToday(workout.sets)}
+              <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${completedBlocks+1<restPause.blocks?`Guardar bloque · pausa ${restPause.miniRest} s`:`Completar REST-pause · descanso ${restPause.finalRest} s`} <b>→</b></button>`}
+      </section>`;
+    }
 
     if(superset){
       const currentRound=Math.min(superset.round,superset.rounds);
@@ -230,8 +273,9 @@
     document.body.classList.add('dcc-workout-mode');
     const total=workout.exercises.length,current=workout.currentExercise+1;
     const superset=supersetViewContext(workout,exercise);
+    const restPause=restPauseViewContext(workout,exercise);
     const planned=Math.max(0,parseInt(exercise.sets)||0),completed=workout.sets.length;
-    const finished=!superset&&planned>0&&completed>=planned;
+    const finished=!superset&&!restPause&&planned>0&&completed>=planned;
     const stats=historyStats(workout.clientId,exercise);
     const image=exerciseImage(exercise);
     const muscle=exercise.muscle||exercise.group||exercise.grupo||'';
@@ -346,7 +390,7 @@
           <div class="dwa3-copy">
             <div class="dwa3-kicker"><button type="button" class="dwa3-back" onclick="cancelWorkout()" aria-label="Volver">${icon('back')}</button><div><span>ENTRENAMIENTO</span><small>Ejercicio ${current} de ${total}</small></div></div>
             <h1 class="dwa3-title">${esc(exercise.name||'Ejercicio')}</h1>
-            <div class="dwa3-badges">${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${superset?`<span class="dwa3-badge">Superserie · ${superset.rounds} vueltas</span>`:planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
+            <div class="dwa3-badges">${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${superset?`<span class="dwa3-badge">Superserie · ${superset.rounds} vueltas</span>`:restPause?`<span class="dwa3-badge">REST-pause · ${restPause.blocks} bloques</span>`:planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
           </div>
           <div class="dwa3-media">${image?`<img src="./${esc(image)}" alt="${esc(exercise.name||'')}">`:'<div class="dwa3-media-placeholder">◇</div>'}</div>
           <div class="dwa3-actions"><button type="button" class="dwa3-tech" onclick="${techniqueAction}">${icon('play')} Ver técnica</button><div class="dwa3-elapsed"><div class="dwa3-elapsed-icon">${icon('clock')}</div><strong id="workout-elapsed">00:00</strong></div></div>
@@ -356,8 +400,8 @@
 
         <section class="dwa3-card dwa3-tip ${window.__dccWorkoutTipOpen?'open':''}"><button type="button" class="dwa3-tip-toggle" aria-expanded="${window.__dccWorkoutTipOpen?'true':'false'}" onclick="dccToggleWorkoutTips()"><div class="dwa3-history-icon">${icon('bulb')}</div><div class="head">CONSEJOS DEL EJERCICIO</div><span class="dwa3-tip-chevron"></span></button><div class="dwa3-tip-body">${esc(tip)}</div></section>
 
-        ${renderCurrent(workout,exercise,stats,planned,completed,finished,superset)}
-        ${renderRest(workout,exercise,superset)}
+        ${renderCurrent(workout,exercise,stats,planned,completed,finished,superset,restPause)}
+        ${renderRest(workout,exercise,superset,restPause)}
         <button type="button" class="dwa3-exit" onclick="cancelWorkout()">${icon('exit')} Salir del entrenamiento</button>
       </div>`;
 

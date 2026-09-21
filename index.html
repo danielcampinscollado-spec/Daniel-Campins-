@@ -10145,18 +10145,30 @@ function startRestTimer(){
 
   clearInterval(window.restTimerInterval);
 
+  const finishedRestMode=workout.restMode;
+
   workout.restUntil = null;
-
-  const wasExerciseRest =
-    workout.restMode === "exercise";
-
   workout.restMode = null;
+
+  if(finishedRestMode==="restpause-final"){
+
+    const restPauseCtx=getWorkoutRestPauseContext(workout);
+
+    if(restPauseCtx){
+      completeWorkoutRestPause(restPauseCtx);
+      return;
+    }
+  }
 
   renderWorkoutSession();
 
-  if(wasExerciseRest){
+  if(finishedRestMode==="exercise"){
 
     toast("Descanso terminado · Siguiente ejercicio");
+
+  }else if(finishedRestMode==="restpause-mini"){
+
+    toast("Mini descanso terminado · Siguiente bloque");
 
   }else{
 
@@ -10178,17 +10190,30 @@ function skipRest(){
 
   clearInterval(window.restTimerInterval);
 
-  const wasExerciseRest =
-    workout.restMode === "exercise";
+  const skippedRestMode=workout.restMode;
 
   workout.restUntil = null;
   workout.restMode = null;
 
+  if(skippedRestMode==="restpause-final"){
+
+    const restPauseCtx=getWorkoutRestPauseContext(workout);
+
+    if(restPauseCtx){
+      completeWorkoutRestPause(restPauseCtx);
+      return;
+    }
+  }
+
   renderWorkoutSession();
 
-  if(wasExerciseRest){
+  if(skippedRestMode==="exercise"){
 
     toast("Descanso omitido · Siguiente ejercicio");
+
+  }else if(skippedRestMode==="restpause-mini"){
+
+    toast("Mini descanso omitido · Siguiente bloque");
 
   }else{
 
@@ -10275,6 +10300,93 @@ function recordWorkoutSupersetSet(ctx){
   });
 }
 
+function getWorkoutRestPauseContext(workout){
+  if(!workout)return null;
+
+  const currentIndex=Number(workout.currentExercise)||0;
+  const exercise=workout.exercises?.[currentIndex];
+
+  if(!exercise?.restPause)return null;
+
+  const reps=String(exercise.restPauseReps||exercise.reps||"")
+    .trim();
+
+  const targets=reps
+    .split(/[\/\-–,\s]+/)
+    .map(value=>String(value||"").trim())
+    .filter(Boolean);
+
+  const blocks=Math.max(
+    1,
+    targets.length||
+    parseInt(exercise.restPauseBlocks)||
+    parseInt(exercise.sets)||
+    1
+  );
+
+  const miniRest=Math.max(
+    1,
+    parseInt(exercise.restPauseSeconds)||
+    parseInt(exercise.restBetweenSets)||
+    1
+  );
+
+  const finalRest=Math.max(
+    0,
+    parseInt(exercise.restPauseFinalRest)||
+    parseInt(exercise.restBetweenExercises)||
+    0
+  );
+
+  return {
+    workout,
+    exercise,
+    targets,
+    reps,
+    blocks,
+    miniRest,
+    finalRest
+  };
+}
+
+function completeWorkoutRestPause(ctx){
+  if(!ctx?.workout||!ctx?.exercise)return;
+
+  const workout=ctx.workout;
+  const exercise=ctx.exercise;
+
+  if(!Array.isArray(workout.completedExercises)){
+    workout.completedExercises=[];
+  }
+
+  workout.completedExercises.push({
+    libraryId:exercise.libraryId||"",
+    name:exercise.name||"Ejercicio",
+    plannedSets:ctx.blocks,
+    plannedReps:ctx.reps||exercise.reps||"",
+    restPause:true,
+    restPauseReps:ctx.reps||"",
+    restPauseSeconds:ctx.miniRest,
+    restPauseFinalRest:ctx.finalRest,
+    sets:JSON.parse(JSON.stringify(workout.sets||[]))
+  });
+
+  workout.sets=[];
+  workout.restUntil=null;
+  workout.restMode=null;
+  workout.restPausePendingFinal=false;
+  workout.currentExercise++;
+
+  if(workout.currentExercise>=workout.exercises.length){
+    finishWorkout();
+    return;
+  }
+
+  renderWorkoutSession();
+  toast("REST-pause completado · Siguiente ejercicio");
+}
+
+
 function saveWorkoutSet(){
 
   const workout = window.activeWorkout;
@@ -10296,7 +10408,11 @@ function saveWorkoutSet(){
   const supersetCtx=
     getWorkoutSupersetContext(workout);
 
+  const restPauseCtx=
+    getWorkoutRestPauseContext(workout);
+
   const plannedSets =
+    restPauseCtx?.blocks ||
     parseInt(exercise?.sets) || 0;
 
   if(
@@ -10372,6 +10488,60 @@ function saveWorkoutSet(){
   */
   if(supersetCtx){
     nextWorkoutExercise();
+    return;
+  }
+
+  /*
+    REST-PAUSE:
+    bloque -> mini descanso -> bloque -> mini descanso...
+    Al terminar el último bloque se usa SOLO el descanso final
+    configurado por el entrenador.
+  */
+  if(restPauseCtx){
+
+    const completedBlocks=
+      Array.isArray(workout.sets)
+        ? workout.sets.length
+        : 0;
+
+    if(completedBlocks < restPauseCtx.blocks){
+
+      workout.restUntil=
+        Date.now() + (restPauseCtx.miniRest * 1000);
+
+      workout.restMode="restpause-mini";
+      workout.restPausePendingFinal=false;
+
+      renderWorkoutSession();
+      startRestTimer();
+
+      toast(
+        `Bloque ${completedBlocks} guardado · Mini descanso ${restPauseCtx.miniRest} s`
+      );
+
+      return;
+    }
+
+    workout.restPausePendingFinal=true;
+
+    if(restPauseCtx.finalRest > 0){
+
+      workout.restUntil=
+        Date.now() + (restPauseCtx.finalRest * 1000);
+
+      workout.restMode="restpause-final";
+
+      renderWorkoutSession();
+      startRestTimer();
+
+      toast(
+        `REST-pause completado · Descanso final ${restPauseCtx.finalRest} s`
+      );
+
+      return;
+    }
+
+    completeWorkoutRestPause(restPauseCtx);
     return;
   }
 
