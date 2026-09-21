@@ -258,7 +258,8 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
-      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-approved"><img src="./${esc(v.path)}?v=20260921-unified-muscles1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
+      const artwork=/\.svg$/i.test(v.path);
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle ${artwork?'is-artwork':'is-reference'}"><img src="./${esc(v.path)}?v=20260921-unified-muscles2" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
@@ -436,7 +437,6 @@
           width:100%!important;
           height:100%!important;
           max-width:none!important;
-          object-fit:cover!important;
           object-position:center center!important;
           border:0!important;
           border-radius:13px!important;
@@ -444,6 +444,12 @@
           filter:none!important;
           transform:none!important;
           image-rendering:auto!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-reference img{
+          object-fit:cover!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-artwork img{
+          object-fit:contain!important
         }
 
         /* Tres músculos: misma familia visual, compacta y legible en móvil. */
