@@ -16,6 +16,54 @@
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const activeClientId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
 
+  const GOLD_MUSCLE_SPRITE='./assets/muscles/anatomy-male-final.svg?v=20260921-client-gold1';
+  const GOLD_MUSCLE_POS={
+    pectoral:[0,0],pecho:[0,0],
+    dorsal:[1,0],dorsales:[1,0],espalda:[1,0],
+    hombro:[2,0],hombros:[2,0],deltoide:[2,0],deltoides:[2,0],
+    trapecio:[0,1],trapecios:[0,1],lumbar:[0,1],lumbares:[0,1],
+    biceps:[1,1],
+    triceps:[2,1],
+    antebrazo:[0,2],antebrazos:[0,2],
+    core:[1,2],abdomen:[1,2],abdominales:[1,2],
+    cuadriceps:[2,2],
+    femoral:[0,3],femorales:[0,3],isquio:[0,3],isquios:[0,3],isquiotibiales:[0,3],
+    gluteo:[1,3],gluteos:[1,3],
+    gemelo:[2,3],gemelos:[2,3],pantorrilla:[2,3],pantorrillas:[2,3]
+  };
+
+  function goldMuscle(value){
+    const n=norm(value);
+    if(!n)return null;
+    for(const [key,pos] of Object.entries(GOLD_MUSCLE_POS)){
+      if(n.includes(key)){
+        const x=[0,50,100][pos[0]]??50;
+        const y=[0,33.333,66.667,100][pos[1]]??50;
+        return {key,pos,x,y};
+      }
+    }
+    return null;
+  }
+
+  function exerciseVideo(ex){
+    const direct=String(ex?.videoUrl||ex?.video_url||ex?.video||'').trim();
+    if(direct)return direct;
+    const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
+    const id=String(ex?.id??ex?.exerciseId??ex?.exercise_id??'').trim();
+    if(id){
+      const hit=list.find(x=>String(x?.id??'')===id);
+      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+      if(url)return url;
+    }
+    const name=norm(ex?.name??ex?.nombre??'');
+    if(name){
+      const hit=list.find(x=>norm(x?.name)===name);
+      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+      if(url)return url;
+    }
+    return '';
+  }
+
   const MUSCLE_ASSETS={
     pectoral:'assets/muscles/pectoral-reference-premium.webp',pecho:'assets/muscles/pectoral-reference-premium.webp',
     espalda:'assets/muscles/espalda.png',dorsal:'assets/muscles/espalda.png',dorsales:'assets/muscles/espalda.png',
@@ -50,13 +98,18 @@
   }
 
   function dayMuscles(day){
-    const raw=Array.isArray(day?.muscleGroups)&&day.muscleGroups.length?day.muscleGroups:String(day?.muscle||'').split(/[·+,&/]/);
+    const raw=Array.isArray(day?.muscleGroups)&&day.muscleGroups.length
+      ? day.muscleGroups
+      : String(day?.muscle||'').split(/[·+,&/]/);
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
-      const path=overviewMuscleAsset(name);
-      if(path&&!out.some(x=>x.path===path))out.push({name,path,premium:/reference-premium\.webp$/i.test(path)});
+      const sprite=goldMuscle(name);
+      if(sprite&&!out.some(x=>x.key===sprite.key))out.push({name,key:sprite.key,x:sprite.x,y:sprite.y});
     });
-    if(!out.length&&day?.muscle){const path=overviewMuscleAsset(day.muscle);if(path)out.push({name:day.muscle,path,premium:/reference-premium\.webp$/i.test(path)});}
+    if(!out.length&&day?.muscle){
+      const sprite=goldMuscle(day.muscle);
+      if(sprite)out.push({name:day.muscle,key:sprite.key,x:sprite.x,y:sprite.y});
+    }
     return out.slice(0,2);
   }
 
@@ -135,13 +188,10 @@
         );
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':'is-goldized'}"><img src="./${esc(x.path)}?v=20260920-muscles-clean2" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle dct3-muscle-gold" role="img" aria-label="${esc(x.name)}" style="--gold-x:${x.x}%;--gold-y:${x.y}%"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
-      const muscle=exerciseMuscle(ex,day);
-      const img=muscleAsset(muscle);
-      const premium=/reference-premium\.webp$/i.test(img);
-      const meta=[ex?.sets?`${esc(ex.sets)} series`:'',ex?.reps?`${esc(ex.reps)} repeticiones`:''].filter(Boolean).join(' · ');
-      return `<div class="dct3-exercise">${img?`<div class="dct3-ex-img ${premium?'is-premium':'is-goldized'}"><img src="./${esc(img)}?v=20260921-gold1" alt="${esc(muscle)}"></div>`:''}<div><strong>${esc(ex?.name||'Ejercicio')}</strong>${muscle?`<small>${esc(String(muscle).toUpperCase())}</small>`:''}${meta?`<span>${meta}</span>`:''}</div></div>`;
+      const video=exerciseVideo(ex);
+      return `<div class="dct3-exercise"><strong>${esc(ex?.name||'Ejercicio')}</strong>${video?`<button type="button" class="dct3-video" data-video="${esc(video)}">Ver vídeo</button>`:''}</div>`;
     }).join('');
 
     let tip='La técnica correcta siempre está por encima de mover más peso.';
@@ -307,30 +357,12 @@
           background:#151514!important;
           box-shadow:none!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle img{
-          display:block!important;
-          width:100%!important;
-          height:100%!important;
-          max-width:none!important;
-          object-fit:cover!important;
-          object-position:center!important;
-          border:0!important;
-          border-radius:14px!important;
-          transform:scale(1.055)!important;
-          transform-origin:center!important;
-          filter:none!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-goldized img{
-          filter:sepia(.58) saturate(.92) hue-rotate(350deg) brightness(1.06) contrast(1.05)!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-goldized::after{
-          content:""!important;
-          position:absolute!important;
-          inset:0!important;
-          z-index:1!important;
-          pointer-events:none!important;
-          background:linear-gradient(145deg,rgba(235,190,82,.10),rgba(179,116,18,.035))!important;
-          mix-blend-mode:color!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.dct3-muscle-gold{
+          background-image:url('${GOLD_MUSCLE_SPRITE}')!important;
+          background-repeat:no-repeat!important;
+          background-size:300% 400%!important;
+          background-position:var(--gold-x,50%) var(--gold-y,50%)!important;
+          background-color:#151514!important
         }
 
         /* Un único músculo: imagen mayor, centrada y sin hueco reservado para una segunda. */
@@ -522,58 +554,34 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-list{display:grid!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-exercise{
-          min-height:68px!important;
-          padding:8px 9px!important;
+          min-height:54px!important;
+          padding:8px 10px 8px 12px!important;
           display:grid!important;
-          grid-template-columns:50px minmax(0,1fr)!important;
+          grid-template-columns:minmax(0,1fr) auto!important;
           gap:10px!important;
           align-items:center!important;
           border:1px solid rgba(177,119,18,.17)!important;
           border-radius:14px!important;
-          background:rgba(255,253,248,.90)!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-exercise:not(:has(.dct3-ex-img)){grid-template-columns:1fr!important}
-        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img{
-          width:50px!important;
-          height:50px!important;
-          border:1px solid rgba(183,123,19,.18)!important;
-          border-radius:11px!important;
-          overflow:hidden!important;
-          background:#fff7e8!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img img{
-          display:block!important;
-          width:100%!important;
-          height:100%!important;
-          object-fit:cover!important;
-          object-position:center!important;
-          filter:none!important;
-          transform:scale(1.04)!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img.is-premium img{
-          filter:none!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img.is-goldized img{
-          filter:sepia(.58) saturate(.92) hue-rotate(350deg) brightness(1.06) contrast(1.05)!important
+          background:rgba(255,253,248,.94)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-exercise strong{
           display:block!important;
           color:#17191d!important;
-          font-size:12.5px!important
+          font-size:12.5px!important;
+          line-height:1.25!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-exercise small{
-          display:block!important;
-          margin-top:4px!important;
-          color:#b77b13!important;
-          font-size:7.7px!important;
-          font-weight:800!important;
-          letter-spacing:1px!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-exercise span{
-          display:block!important;
-          margin-top:4px!important;
-          color:#777f89!important;
-          font-size:9.3px!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-video{
+          min-width:82px!important;
+          height:36px!important;
+          padding:0 12px!important;
+          border:1px solid rgba(183,123,19,.35)!important;
+          border-radius:11px!important;
+          background:#fff8e8!important;
+          color:#9c6710!important;
+          font-size:10px!important;
+          font-weight:850!important;
+          white-space:nowrap!important;
+          box-shadow:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-empty{
           padding:18px!important;
@@ -646,6 +654,7 @@
     main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
     const view=main.querySelector('.dct3-view');
     if(view)view.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const card=view.closest('.dct3-routine');const open=card?.classList.toggle('open');view.setAttribute('aria-expanded',String(!!open));view.textContent=open?'Ocultar ejercicios':'Ver ejercicios';});
+    main.querySelectorAll('.dct3-video').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const url=btn.dataset.video;if(url)window.open(url,'_blank','noopener');}));
     const start=main.querySelector('.dct3-start');
     if(start&&!start.disabled)start.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();callNativeStart(Number(start.dataset.day));});
   }
