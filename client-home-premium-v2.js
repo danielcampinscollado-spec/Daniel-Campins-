@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-premium-v2-nextfix';
+const BUILD='20260921-client-home-premium-v3-prototype';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -17,80 +17,243 @@ const dayTitle=day=>{
 const fmt=n=>Number(n).toFixed(1).replace('.',',');
 
 function css(){
-  if(document.getElementById('dcc-home-premium-v2-css'))return;
+  const old=document.getElementById('dcc-home-premium-v2-css');
+  if(old)old.remove();
   const s=document.createElement('style');s.id='dcc-home-premium-v2-css';
   s.textContent=`
-  #client-main .dcc-home2{max-width:820px;margin:0 auto;padding:0 0 116px;color:#17191d}
-  #client-main .dcc-home2-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:5px 3px 12px}
-  #client-main .dcc-home2-kicker,#client-main .dcc-home2-label{color:#a66d0d;font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
-  #client-main .dcc-home2-head h1{margin:8px 0 8px;font-family:Georgia,"Times New Roman",serif;font-size:32px;line-height:1;font-weight:520;letter-spacing:-.9px}
-  #client-main .dcc-home2-line{width:42px;height:2px;border-radius:5px;background:#d6a13a}
-  #client-main .dcc-home2-motto{max-width:150px;padding-top:9px;color:#7c8490;font-size:8px;line-height:1.55;font-weight:700;letter-spacing:2.6px;text-transform:uppercase}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2{
+    max-width:820px!important;margin:0 auto!important;
+    padding:18px 0 116px!important;color:#17191d!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-head{
+    display:flex!important;justify-content:space-between!important;align-items:flex-start!important;
+    gap:18px!important;padding:0 2px 14px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-kicker,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-label{
+    color:#a66d0d!important;font-size:10px!important;font-weight:900!important;
+    letter-spacing:3px!important;text-transform:uppercase!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{
+    margin:8px 0 10px!important;color:#17191d!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:34px!important;
+    line-height:1!important;font-weight:500!important;letter-spacing:-1px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-line{
+    width:42px!important;height:2px!important;border-radius:5px!important;background:#d6a13a!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{
+    max-width:145px!important;padding-top:10px!important;color:#7c8490!important;
+    font-size:8px!important;line-height:1.6!important;font-weight:700!important;
+    letter-spacing:2.5px!important;text-transform:uppercase!important
+  }
 
-  #client-main .dcc-home2-checkin{display:grid;grid-template-columns:46px minmax(0,1fr) 18px;gap:12px;align-items:center;margin:0 0 11px;padding:13px 14px;border:1px solid rgba(189,130,26,.26);border-radius:18px;background:linear-gradient(145deg,#fffefa,#faf5eb);box-shadow:0 8px 22px rgba(80,58,25,.045)}
-  #client-main .dcc-home2-checkin-icon,#client-main .dcc-home2-task-icon,#client-main .dcc-home2-progress-icon{width:46px;height:46px;display:grid;place-items:center;border:1px solid rgba(190,132,28,.22);border-radius:14px;background:#fff7e5;color:#ac7410}
-  #client-main .dcc-home2-checkin-icon svg,#client-main .dcc-home2-task-icon svg,#client-main .dcc-home2-progress-icon svg{width:24px;height:24px}
-  #client-main .dcc-home2-checkin h3{margin:3px 0 3px;font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:520;line-height:1}
-  #client-main .dcc-home2-checkin p{margin:0;color:#687181;font-size:13px;line-height:1.35}
-  #client-main .dcc-home2-checkin small{display:block;margin-top:7px;padding-top:7px;border-top:1px solid rgba(110,81,32,.10);color:#a16e15;font-size:8px;font-weight:850;letter-spacing:2px;text-transform:uppercase}
-  #client-main .dcc-home2-arrow{color:#b27a15;font-size:25px;line-height:1}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin{
+    display:grid!important;grid-template-columns:46px minmax(0,1fr) 18px!important;gap:12px!important;
+    align-items:center!important;margin:0 0 11px!important;padding:13px 14px!important;
+    border:1px solid rgba(189,130,26,.26)!important;border-radius:18px!important;
+    background:linear-gradient(145deg,#fffefa,#faf5eb)!important;
+    box-shadow:0 8px 22px rgba(80,58,25,.045)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon{
+    width:46px!important;height:46px!important;display:grid!important;place-items:center!important;
+    border:1px solid rgba(190,132,28,.22)!important;border-radius:14px!important;
+    background:#fff7e5!important;color:#ac7410!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon svg,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon svg,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon svg{width:24px!important;height:24px!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin h3{
+    margin:4px 0 3px!important;color:#17191d!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:21px!important;
+    line-height:1.05!important;font-weight:500!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin p{
+    margin:0!important;color:#687181!important;font-size:12px!important;line-height:1.4!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin small{
+    display:block!important;margin-top:7px!important;padding-top:7px!important;
+    border-top:1px solid rgba(110,81,32,.10)!important;color:#a16e15!important;
+    font-size:8px!important;font-weight:850!important;letter-spacing:2px!important;text-transform:uppercase!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-arrow{color:#b27a15!important;font-size:25px!important;line-height:1!important}
 
-  #client-main .dcc-home2-card{margin:0 0 11px;overflow:hidden;border:1px solid rgba(189,130,26,.24);border-radius:18px;background:#fffdf8;box-shadow:0 8px 22px rgba(80,58,25,.04)}
-  #client-main .dcc-home2-card-head{min-height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid rgba(126,93,37,.10)}
-  #client-main .dcc-home2-count{width:31px;height:31px;display:grid;place-items:center;border:1px solid rgba(190,132,28,.24);border-radius:50%;background:#fff7e2;color:#96620b;font-size:13px;font-weight:900}
-  #client-main .dcc-home2-task{display:grid;grid-template-columns:46px minmax(0,1fr) 18px;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(126,93,37,.09);cursor:pointer}
-  #client-main .dcc-home2-task:last-child{border-bottom:0}
-  #client-main .dcc-home2-task h3{margin:0 0 3px;font-family:Georgia,"Times New Roman",serif;font-size:17px;font-weight:520}
-  #client-main .dcc-home2-task p{margin:0;color:#7a828e;font-size:11px;line-height:1.35}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card{
+    margin:0 0 11px!important;overflow:hidden!important;border:1px solid rgba(189,130,26,.24)!important;
+    border-radius:18px!important;background:#fffdf8!important;box-shadow:0 8px 22px rgba(80,58,25,.04)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card-head{
+    min-height:50px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+    padding:0 14px!important;border-bottom:1px solid rgba(126,93,37,.10)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-count{
+    width:31px!important;height:31px!important;display:grid!important;place-items:center!important;
+    border:1px solid rgba(190,132,28,.24)!important;border-radius:50%!important;
+    background:#fff7e2!important;color:#96620b!important;font-size:13px!important;font-weight:900!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{
+    display:grid!important;grid-template-columns:46px minmax(0,1fr) 18px!important;gap:12px!important;
+    align-items:center!important;min-height:88px!important;padding:12px 14px!important;
+    border-bottom:1px solid rgba(126,93,37,.09)!important;cursor:pointer!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task:last-child{border-bottom:0!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task h3{
+    margin:0 0 4px!important;color:#17191d!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:19px!important;
+    line-height:1.05!important;font-weight:500!important;letter-spacing:-.2px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task p{
+    margin:0!important;color:#737c8b!important;font-size:11.5px!important;line-height:1.35!important
+  }
 
-  #client-main .dcc-home2-progress{display:grid;grid-template-columns:46px minmax(0,1fr) 18px;gap:12px;align-items:center;margin:0 0 11px;padding:14px;border:1px solid rgba(189,130,26,.24);border-radius:18px;background:#fffdf8;cursor:pointer}
-  #client-main .dcc-home2-progress h3{margin:5px 0 4px;font-family:Georgia,"Times New Roman",serif;font-size:21px;font-weight:520}
-  #client-main .dcc-home2-progress p{margin:0;color:#727b88;font-size:11px;line-height:1.45}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{
+    display:grid!important;grid-template-columns:46px minmax(0,1fr) 18px!important;gap:12px!important;
+    align-items:center!important;min-height:112px!important;margin:0 0 11px!important;padding:14px!important;
+    border:1px solid rgba(189,130,26,.24)!important;border-radius:18px!important;background:#fffdf8!important;
+    box-shadow:0 8px 22px rgba(80,58,25,.035)!important;cursor:pointer!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
+    margin:5px 0 4px!important;color:#17191d!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:22px!important;
+    line-height:1.05!important;font-weight:500!important;letter-spacing:-.25px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress p{
+    margin:0!important;color:#707989!important;font-size:11.5px!important;line-height:1.45!important
+  }
 
-  #client-main .dcc-home2-week{margin:0 0 11px;padding:13px;border:1px solid rgba(189,130,26,.24);border-radius:18px;background:#fffdf8}
-  #client-main .dcc-home2-week-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-  #client-main .dcc-home2-week-link{color:#a66d0d;font-size:8px;font-weight:850;letter-spacing:2px;text-transform:uppercase}
-  #client-main .dcc-home2-days{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
-  #client-main .dcc-home2-day{min-height:88px;padding:10px 8px;border:1px solid rgba(177,127,38,.18);border-radius:14px;background:#fbf8f2;text-align:center}
-  #client-main .dcc-home2-day b{display:block;font-size:13px}.dcc-home2-day span{display:block;margin-top:6px;color:#737b86;font-size:10px;line-height:1.25}
-  #client-main .dcc-home2-day em{display:block;margin-top:7px;color:#99835c;font-size:9px;font-style:normal}
-  #client-main .dcc-home2-day.done{background:#f2f7e9;border-color:#cfe0b5}.dcc-home2-day.done em{color:#4c8a37;font-weight:800}
-  #client-main .dcc-home2-day.next{background:#fffaf0;border-color:#c89125;box-shadow:inset 0 0 0 1px rgba(200,145,37,.12)}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
+    margin:0 0 11px!important;padding:13px!important;border:1px solid rgba(189,130,26,.24)!important;
+    border-radius:18px!important;background:#fffdf8!important;box-shadow:0 8px 22px rgba(80,58,25,.03)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-head{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:10px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-link{
+    color:#a66d0d!important;font-size:8px!important;font-weight:850!important;letter-spacing:2px!important;text-transform:uppercase!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
+    display:grid!important;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))!important;gap:8px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
+    min-height:98px!important;padding:11px 8px!important;border:1px solid rgba(177,127,38,.18)!important;
+    border-radius:14px!important;background:#fbf8f2!important;text-align:center!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{
+    display:block!important;color:#17191d!important;font-size:14px!important;font-weight:800!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day span{
+    display:block!important;margin-top:6px!important;color:#737b86!important;font-size:10.5px!important;line-height:1.25!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day em{
+    display:block!important;margin-top:8px!important;color:#99835c!important;font-size:9.5px!important;font-style:normal!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done{background:#f2f7e9!important;border-color:#cfe0b5!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{color:#4c8a37!important;font-weight:800!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
+    background:#fffaf0!important;border-color:#c89125!important;box-shadow:inset 0 0 0 1px rgba(200,145,37,.12)!important
+  }
 
-  #client-main .dcc-next-hero{position:relative;min-height:158px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;padding:18px 18px;overflow:hidden;border:1px solid rgba(183,123,19,.40);border-radius:20px;background:#1b1914;box-shadow:0 12px 30px rgba(55,39,13,.12);color:#fff}
-  #client-main .dcc-next-hero:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,17,14,.94) 0%,rgba(18,17,14,.72) 45%,rgba(18,17,14,.15) 100%),url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') center right/cover no-repeat}
-  #client-main .dcc-next-hero>*{position:relative;z-index:1}
-  #client-main .dcc-next-hero .eyebrow{color:#e7bb55;font-size:9px;font-weight:900;letter-spacing:2.7px;text-transform:uppercase}
-  #client-main .dcc-next-hero h2{margin:8px 0 5px;color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:29px;line-height:1;font-weight:520}
-  #client-main .dcc-next-hero .day{color:#f1eee7;font-size:13px}.dcc-next-hero .status{margin-top:8px;color:#ddd7ca;font-size:11px}
-  #client-main .dcc-next-hero .hero-btn{min-width:126px;min-height:48px;padding:0 15px;border:1px solid #e0ac40;border-radius:15px;background:linear-gradient(135deg,#f4d06d,#dda63c);color:#21180a;font-size:12px;font-weight:900}
-  #client-main .dcc-next-hero .hero-btn[disabled]{opacity:.58;filter:grayscale(.15)}
-  #client-main .dcc-next-hero .hero-secondary{min-height:44px;padding:0 13px;border:1px solid rgba(241,199,103,.55);border-radius:14px;background:rgba(15,18,23,.86);color:#fff;font-size:11px;font-weight:850}
-  #client-main .dcc-next-hero-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
+    position:relative!important;min-height:142px!important;display:grid!important;
+    grid-template-columns:minmax(0,1fr) 122px!important;align-items:end!important;gap:12px!important;
+    padding:16px 16px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.40)!important;
+    border-radius:19px!important;background:#17150f!important;box-shadow:0 10px 24px rgba(55,39,13,.10)!important;color:#fff!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:before{
+    content:''!important;position:absolute!important;inset:0!important;
+    background:linear-gradient(90deg,rgba(18,17,14,.94) 0%,rgba(18,17,14,.76) 44%,rgba(18,17,14,.12) 100%),
+    url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') center right/cover no-repeat!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero>*{position:relative!important;z-index:1!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-eyebrow{
+    color:#e7bb55!important;font-size:8.5px!important;font-weight:900!important;letter-spacing:2.6px!important;text-transform:uppercase!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-title{
+    margin:8px 0 5px!important;color:#fff!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:27px!important;
+    line-height:1!important;font-weight:500!important;letter-spacing:-.35px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-dayline{
+    color:#f1eee7!important;font-size:12.5px!important;line-height:1.2!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-status{
+    margin-top:7px!important;color:#ddd7ca!important;background:transparent!important;border:0!important;
+    padding:0!important;font-size:10.5px!important;line-height:1.2!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero-actions{
+    display:flex!important;flex-direction:column!important;gap:8px!important;align-items:stretch!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
+    width:100%!important;min-width:0!important;min-height:44px!important;padding:0 12px!important;
+    border:1px solid #e0ac40!important;border-radius:14px!important;
+    background:linear-gradient(135deg,#f4d06d,#dda63c)!important;color:#21180a!important;
+    font-size:11px!important;font-weight:900!important;white-space:nowrap!important
+  }
 
-  #client-main .dct3-routine.dcc-training-hero{min-height:165px!important;padding:18px!important;border-radius:20px!important;background:#1b1914!important;color:#fff!important}
-  #client-main .dct3-routine.dcc-training-hero:before{content:'';position:absolute!important;inset:0!important;z-index:0!important;background:linear-gradient(90deg,rgba(18,17,14,.94) 0%,rgba(18,17,14,.68) 47%,rgba(18,17,14,.12) 100%),url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') center right/cover no-repeat!important}
-  #client-main .dct3-routine.dcc-training-hero>*{position:relative!important;z-index:1!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-plate,#client-main .dct3-routine.dcc-training-hero .dct3-plate-fade{display:none!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-label{color:#e7bb55!important}
-  #client-main .dct3-routine.dcc-training-hero h3{max-width:62%;margin:8px 0 5px!important;color:#fff!important;font-family:Georgia,"Times New Roman",serif!important;font-size:28px!important;font-weight:520!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-meta{color:#e4ded2!important;font-size:11px!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-actions{margin-top:14px!important;justify-content:flex-start!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-start{background:linear-gradient(135deg,#f4d06d,#dda63c)!important;color:#21180a!important;border-color:#e0ac40!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-view{background:rgba(13,17,23,.86)!important;color:#fff!important;border-color:rgba(241,199,103,.40)!important}
-  #client-main .dct3-routine.dcc-training-hero .dct3-list{margin-top:13px!important;background:#fffdf8!important;color:#17191d!important;border-radius:14px!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero{
+    min-height:0!important;height:auto!important;margin-bottom:10px!important;padding:14px 16px!important;
+    border-radius:19px!important;background:#17150f!important;color:#fff!important;overflow:hidden!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero:before{
+    content:''!important;position:absolute!important;inset:0!important;z-index:0!important;
+    background:linear-gradient(90deg,rgba(18,17,14,.95) 0%,rgba(18,17,14,.77) 45%,rgba(18,17,14,.11) 100%),
+    url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') center right/cover no-repeat!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero>*{position:relative!important;z-index:1!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate,
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate-fade{display:none!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-label{
+    margin-bottom:6px!important;color:#e7bb55!important;font-size:8.5px!important;letter-spacing:2.5px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero h3{
+    max-width:70%!important;margin:0!important;color:#fff!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:22px!important;
+    line-height:1.05!important;font-weight:500!important;letter-spacing:-.25px!important;white-space:normal!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-meta{
+    margin-top:6px!important;color:#eee9df!important;background:transparent!important;
+    border:0!important;padding:0!important;font-size:10.5px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-actions{
+    display:grid!important;grid-template-columns:minmax(0,1.55fr) minmax(116px,.95fr)!important;
+    gap:8px!important;width:100%!important;max-width:none!important;margin-top:13px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start,
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-view{
+    min-height:42px!important;height:42px!important;padding:0 10px!important;border-radius:13px!important;
+    font-size:10.5px!important;font-weight:850!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start:disabled{
+    background:linear-gradient(145deg,#fffdf9,#f3ece0)!important;color:#847d72!important;border-color:#e7d8bc!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-view{
+    background:linear-gradient(145deg,#1a1e26,#0d1117)!important;color:#fff!important;border-color:rgba(255,255,255,.12)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-list{
+    margin-top:11px!important;padding-top:10px!important;background:#fffdf8!important;color:#17191d!important;border-radius:13px!important
+  }
 
   @media(max-width:430px){
-    #client-main .dcc-home2-head{gap:12px}.dcc-home2-motto{max-width:118px!important;font-size:7px!important}
-    #client-main .dcc-home2-head h1{font-size:30px}
-    #client-main .dcc-next-hero{min-height:148px;grid-template-columns:1fr;padding:16px}
-    #client-main .dcc-next-hero h2{font-size:25px}.dcc-next-hero-actions{flex-direction:row!important}
-    #client-main .dcc-next-hero .hero-btn,#client-main .dcc-next-hero .hero-secondary{flex:1;min-width:0}
-    #client-main .dct3-routine.dcc-training-hero h3{max-width:75%;font-size:25px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2{padding-top:14px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head{gap:10px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:31px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{max-width:112px!important;font-size:7px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{min-height:82px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task h3{font-size:18px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{min-height:104px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{font-size:20px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
+      min-height:132px!important;grid-template-columns:minmax(0,1fr) 112px!important;padding:14px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-title{font-size:24px!important}
+    html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero{padding:13px 14px!important}
+    html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero h3{max-width:76%!important;font-size:20px!important}
   }`;
   document.head.appendChild(s);
 }
-
 function lastCheckinSummary(){
   const arr=(d().checkinHistory?.[id()]||[]).slice().sort((a,b)=>new Date(a.sentAt||0)-new Date(b.sentAt||0));
   if(!arr.length)return null;
@@ -185,7 +348,7 @@ function renderHome(){
 
   const taskRows=tasks.slice(0,4).map(t=>`<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div><div class="dcc-home2-arrow">›</div></div>`).join('');
 
-  const hero=next.day?`<section class="dcc-next-hero"><div><div class="eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2>${esc(next.title)}</h2><div class="day">Día ${next.index+1}</div><div class="status">${esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
+  const hero=next.day?`<section class="dcc-next-hero"><div><div class="dcc-next-eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2 class="dcc-next-title">${esc(next.title)}</h2><div class="dcc-next-dayline">Día ${next.index+1}</div><div class="dcc-next-status">${esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
 
   main.innerHTML=`
   <div class="dcc-home2">
@@ -211,9 +374,27 @@ function enhanceTraining(){
   const i=Number(window.trainingDayTab)||0;
   const day=r[i]||null;
   const access=typeof window.dccGetTrainingAccessState==='function'?window.dccGetTrainingAccessState(id(),i):{allowed:true,code:'ready'};
-  if(label)label.textContent='TU PRÓXIMO ENTRENAMIENTO';
-  if(title&&day)title.textContent=dayTitle(day);
-  if(meta)meta.textContent=`Día ${i+1} · ${accessText(access)}`;
+  if(label){
+    label.textContent='TU PRÓXIMO ENTRENAMIENTO';
+    label.style.setProperty('color','#e7bb55','important');
+  }
+  if(title&&day){
+    title.textContent=dayTitle(day);
+    title.style.setProperty('color','#ffffff','important');
+    title.style.setProperty('font-family','Georgia, "Times New Roman", serif','important');
+    title.style.setProperty('font-size','22px','important');
+    title.style.setProperty('line-height','1.05','important');
+    title.style.setProperty('font-weight','500','important');
+    title.style.setProperty('white-space','normal','important');
+  }
+  if(meta){
+    meta.textContent=`Día ${i+1} · ${accessText(access)}`;
+    meta.style.setProperty('color','#eee9df','important');
+    meta.style.setProperty('background','transparent','important');
+    meta.style.setProperty('padding','0','important');
+  }
+  card.style.setProperty('min-height','0','important');
+  card.style.setProperty('padding','14px 16px','important');
 }
 
 function install(){
