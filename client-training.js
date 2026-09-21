@@ -64,6 +64,37 @@
     return '';
   }
 
+  function exerciseDisplayMeta(ex){
+    const items=[];
+    let sets=String(ex?.sets??'').trim();
+    let reps=String(ex?.reps??'').trim();
+
+    if(ex?.supersetId){
+      sets=String(ex?.supersetRounds??sets).trim();
+      if(sets)items.push(sets+' '+(sets==='1'?'serie':'series'));
+      if(reps)items.push(reps+' reps');
+      const order=Number(ex?.supersetOrder)||0;
+      const size=Number(ex?.supersetSize)||0;
+      items.push('SUPERSERIE'+(order&&size?' · '+order+'/'+size:''));
+      return items;
+    }
+
+    if(ex?.restPause){
+      const rpReps=String(ex?.restPauseReps||reps).trim();
+      const blocks=Number(ex?.restPauseBlocks)||Number(sets)||(
+        rpReps?rpReps.split(/[\/\-–,\s]+/).filter(Boolean).length:0
+      );
+      if(blocks)items.push(blocks+' '+(blocks===1?'bloque':'bloques'));
+      if(rpReps)items.push(rpReps+' reps');
+      items.push('REST-PAUSE');
+      return items;
+    }
+
+    if(sets)items.push(sets+' '+(sets==='1'?'serie':'series'));
+    if(reps)items.push(reps+' reps');
+    return items;
+  }
+
   const MUSCLE_ASSETS={
     pectoral:'assets/muscles/pectoral-reference-premium.webp',pecho:'assets/muscles/pectoral-reference-premium.webp',
     espalda:'assets/muscles/espalda.png',dorsal:'assets/muscles/espalda.png',dorsales:'assets/muscles/espalda.png',
@@ -116,7 +147,7 @@
       const path=overviewMuscleAsset(day.muscle);
       if(path)out.push({name:day.muscle,path,premium:/reference-premium\.webp$/i.test(path)});
     }
-    return out.slice(0,2);
+    return out.slice(0,3);
   }
 
   function muscleRegion(muscles){
@@ -197,7 +228,8 @@
     const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':'is-goldized'}"><img src="./${esc(x.path)}?v=20260921-muscle-fix2" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
-      return `<div class="dct3-exercise"><strong>${esc(ex?.name||'Ejercicio')}</strong>${video?`<button type="button" class="dct3-video" data-video="${esc(video)}">Ver vídeo</button>`:''}</div>`;
+      const details=exerciseDisplayMeta(ex);
+      return `<div class="dct3-exercise"><div class="dct3-ex-main"><strong>${esc(ex?.name||'Ejercicio')}</strong>${details.length?`<div class="dct3-ex-meta">${details.map(item=>`<span>${esc(item)}</span>`).join('')}</div>`:''}</div>${video?`<button type="button" class="dct3-video" data-video="${esc(video)}">Ver vídeo</button>`:''}</div>`;
     }).join('');
 
     let tip='La técnica correcta siempre está por encima de mover más peso.';
@@ -386,6 +418,40 @@
           transform:none!important
         }
 
+        /* Tres músculos: misma familia visual, compacta y legible en móvil. */
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{
+          grid-template-columns:minmax(0,1fr) 184px!important;
+          gap:8px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{
+          width:184px!important;
+          gap:4px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{
+          flex:0 0 58px!important;
+          width:58px!important;
+          min-width:58px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{
+          width:58px!important;
+          height:84px!important;
+          border-radius:11px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle img{
+          border-radius:11px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap>span{
+          margin-top:5px!important;
+          font-size:6px!important;
+          letter-spacing:.72px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{
+          max-width:145px!important;
+          white-space:normal!important;
+          font-size:16.5px!important;
+          line-height:1.08!important
+        }
+
         /* Un único músculo: imagen mayor, centrada y sin hueco reservado para una segunda. */
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{
           grid-template-columns:minmax(0,1fr) 128px!important
@@ -510,6 +576,16 @@
           position:relative!important;
           z-index:2!important
         }
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open{
+          background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-plate,
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-plate-fade{
+          display:none!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open h3{
+          max-width:100%!important
+        }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{
           margin:0!important;
           max-width:55%!important;
@@ -591,6 +667,30 @@
           font-size:12.5px!important;
           line-height:1.25!important
         }
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-main{
+          min-width:0!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-meta{
+          display:flex!important;
+          flex-wrap:wrap!important;
+          gap:5px!important;
+          margin-top:7px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-meta span{
+          display:inline-flex!important;
+          align-items:center!important;
+          min-height:22px!important;
+          margin:0!important;
+          padding:0 8px!important;
+          border:1px solid rgba(183,123,19,.18)!important;
+          border-radius:999px!important;
+          background:#fff9ec!important;
+          color:#8e651d!important;
+          font-size:8.2px!important;
+          line-height:1!important;
+          font-weight:800!important;
+          letter-spacing:.15px!important
+        }
         html.dcc-theme-light-premium body #client #client-main .dct3-video{
           min-width:82px!important;
           height:36px!important;
@@ -635,6 +735,11 @@
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:172px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:83px!important;width:83px!important;min-width:83px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:83px!important;height:100px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 164px!important;gap:7px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:164px!important;gap:4px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:52px!important;width:52px!important;min-width:52px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:78px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:132px!important;font-size:15.5px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 112px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:112px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle-wrap{flex-basis:98px!important;width:98px!important;min-width:98px!important}
@@ -655,6 +760,11 @@
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:198px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:96px!important;width:96px!important;min-width:96px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:96px!important;height:114px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 198px!important;gap:9px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:198px!important;gap:4px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:63px!important;width:63px!important;min-width:63px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:90px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:160px!important;font-size:17px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 136px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:136px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle-wrap{flex-basis:118px!important;width:118px!important;min-width:118px!important}
