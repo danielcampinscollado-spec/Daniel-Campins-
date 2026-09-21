@@ -4829,7 +4829,7 @@ function resetWeeklyCheckinIfNeeded(){
 function createNeutralData(){
   return {
     clients:[],diets:{},routines:{},previousRoutines:{},routineUpdatedAt:{},weights:{},workoutHistory:{},
-    bodyFatHistory:{},checkins:{},messages:{},notificationState:{},completedTrainingDays:{}
+    bodyFatHistory:{},checkins:{},messages:{},notificationState:{},completedTrainingDays:{},trainingNextDayIndex:{}
   };
 }
 function loadData(){
@@ -4860,6 +4860,9 @@ if(parsed.routineUpdatedAt){
 
 if(parsed.completedTrainingDays){
   result.completedTrainingDays=parsed.completedTrainingDays;
+}
+if(parsed.trainingNextDayIndex){
+  result.trainingNextDayIndex=parsed.trainingNextDayIndex;
 }
 
       if(parsed.diets){
@@ -5391,6 +5394,34 @@ function getCompletedTrainingDays(clientId){
   return data.completedTrainingDays[clientId];
 }
 
+function getTrainingNextDayIndex(clientId,totalDays){
+  const total=Math.max(0,parseInt(totalDays)||0);
+
+  if(!total)return 0;
+
+  if(!data.trainingNextDayIndex){
+    data.trainingNextDayIndex={};
+  }
+
+  const stored=parseInt(data.trainingNextDayIndex[clientId]);
+
+  if(Number.isInteger(stored)&&stored>=0){
+    return stored%total;
+  }
+
+  /*
+    Compatibilidad con el progreso anterior:
+    si todavía no existe el cursor continuo, partimos del número
+    de días ya completados en el ciclo antiguo.
+  */
+  const legacy=getCompletedTrainingDays(clientId);
+  const inferred=Math.max(0,legacy.length)%total;
+
+  data.trainingNextDayIndex[clientId]=inferred;
+
+  return inferred;
+}
+
 function isTrainingDayCompleted(clientId,dayIndex){
   return getCompletedTrainingDays(clientId)
     .includes(Number(dayIndex));
@@ -5398,22 +5429,40 @@ function isTrainingDayCompleted(clientId,dayIndex){
 
 function markTrainingDayCompleted(clientId,dayIndex,totalDays){
 
-  const completed=getCompletedTrainingDays(clientId);
-  const index=Number(dayIndex);
+  const total=Math.max(1,parseInt(totalDays)||1);
+  const index=Math.max(0,Number(dayIndex)||0);
 
-  if(!completed.includes(index)){
-    completed.push(index);
+  if(!data.trainingNextDayIndex){
+    data.trainingNextDayIndex={};
   }
 
-  if(completed.length>=totalDays){
-    data.completedTrainingDays[clientId]=[];
-    saveData();
-    return true;
-  }
+  /*
+    La rutina es una secuencia continua:
+    Día 1 -> Día 2 -> Día 3 -> Día 1...
+    El cambio de semana NO reinicia el orden.
+  */
+  const next=(index+1)%total;
+
+  data.trainingNextDayIndex[clientId]=next;
+
+  /*
+    completedTrainingDays queda solo como compatibilidad histórica.
+    No decide qué día toca ni provoca resets semanales.
+  */
+  data.completedTrainingDays[clientId]=[];
+
+  window.trainingDayTab=next;
 
   saveData();
-  return false;
+
+  /*
+    El bloqueo semanal sí se reinicia cada lunes y se calcula
+    exclusivamente con el historial real de entrenamientos.
+  */
+  return getWeeklyWorkoutCount(clientId)>=total;
 }
+
+window.dccGetTrainingNextDayIndex=getTrainingNextDayIndex;
 async function saveRoutineToSupabase(id){
   try{
     const routine=data.routines[id]||[];
@@ -6051,32 +6100,37 @@ function getTrainingAccessState(clientId,dayIndex){
     };
   }
 
+  const nextIndex=getTrainingNextDayIndex(
+    clientId,
+    routine.length
+  );
+
+  /*
+    Límite semanal:
+    el cliente nunca puede superar el número de sesiones
+    que el entrenador ha programado para esa rutina.
+  */
   if(completedThisWeek>=routine.length){
     return {
       allowed:false,
-      reason:"Rutina semanal completada. Podrás volver a empezar el Día 1 la próxima semana.",
+      reason:"Has completado todos los entrenamientos permitidos esta semana. El siguiente se habilitará la próxima semana.",
       code:"week-complete",
-      nextIndex:routine.length,
+      nextIndex,
       completedThisWeek
     };
   }
 
-  if(index<completedThisWeek){
+  /*
+    Orden continuo:
+    si quedó un día pendiente la semana anterior, ese día sigue
+    siendo el siguiente. La semana nueva no fuerza Día 1.
+  */
+  if(index!==nextIndex){
     return {
       allowed:false,
-      reason:`El Día ${index+1} ya está completado esta semana.`,
-      code:"already-completed",
-      nextIndex:completedThisWeek,
-      completedThisWeek
-    };
-  }
-
-  if(index>completedThisWeek){
-    return {
-      allowed:false,
-      reason:`Completa primero el Día ${completedThisWeek+1}.`,
-      code:"previous-required",
-      nextIndex:completedThisWeek,
+      reason:`Tu próximo entrenamiento es el Día ${nextIndex+1}.`,
+      code:"sequence-required",
+      nextIndex,
       completedThisWeek
     };
   }
@@ -6086,7 +6140,7 @@ function getTrainingAccessState(clientId,dayIndex){
       allowed:false,
       reason:"Ya has completado el entrenamiento de hoy. El siguiente estará disponible mañana.",
       code:"today-complete",
-      nextIndex:completedThisWeek,
+      nextIndex,
       completedThisWeek
     };
   }
@@ -6095,7 +6149,7 @@ function getTrainingAccessState(clientId,dayIndex){
     allowed:true,
     reason:"",
     code:"ready",
-    nextIndex:completedThisWeek,
+    nextIndex,
     completedThisWeek
   };
 }
@@ -6316,10 +6370,15 @@ const routine =
   const weeklyWorkouts =
     getWeeklyWorkoutCount(c.id);
 
+  const nextTrainingDayIndex =
+    routine.length
+      ? getTrainingNextDayIndex(c.id,routine.length)
+      : 0;
+
   const nextWorkout =
     routine.length > 0 &&
     weeklyWorkouts < routine.length
-      ? routine[weeklyWorkouts]
+      ? routine[nextTrainingDayIndex]
       : null;
 
   const nextWorkoutLabel =
@@ -6579,7 +6638,7 @@ const notificationState =
 
     <section class="dch-card dch-progress" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 18v-5M11 18V9M16 18V5"/></svg></div><div><div class="dch-progress-label">PROGRESO DE FUERZA</div>${strengthRows.length ? `<div class="dch-progress-title">Has mejorado en ${strengthRows.length} ${strengthRows.length === 1 ? "ejercicio" : "ejercicios"}</div><div class="dch-progress-sub">Tu rendimiento está avanzando. Consulta el detalle en Progreso.</div>` : `<div class="dch-progress-title">Sigue dándolo todo</div><div class="dch-progress-sub">Todavía no hay mejoras registradas. Cada entrenamiento te acerca a tu mejor versión.</div>`}</div><div class="dch-chevron">›</div></section>
 
-    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc(nextWorkoutLabel)}</div><div class="dch-next-day">Día ${weeklyWorkouts + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
+    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc(nextWorkoutLabel)}</div><div class="dch-next-day">Día ${nextTrainingDayIndex + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
 
     <div class="dch-slogan"><span>UNA VERSIÓN MÁS FUERTE<br>DE TI, CADA DÍA</span></div>
   </div>
@@ -16876,7 +16935,7 @@ async function sendClientCheckin(){
 <script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v4-loadfix"></script>
 <script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
-<script src="./client-training.js?v=20260921-user-muscles-v5"></script>
+<script src="./client-training.js?v=20260921-continuous-sequence1"></script>
 
 
 <script id="dcc-auth-flow-v4">
