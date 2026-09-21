@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-premium-v3-prototype';
+const BUILD='20260921-client-home-premium-v4-prototype-tight';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -43,7 +43,7 @@ function css(){
     width:42px!important;height:2px!important;border-radius:5px!important;background:#d6a13a!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{
-    max-width:145px!important;padding-top:10px!important;color:#7c8490!important;
+    max-width:220px!important;padding-top:16px!important;color:#7c8490!important;
     font-size:8px!important;line-height:1.6!important;font-weight:700!important;
     letter-spacing:2.5px!important;text-transform:uppercase!important
   }
@@ -235,23 +235,193 @@ function css(){
     margin-top:11px!important;padding-top:10px!important;background:#fffdf8!important;color:#17191d!important;border-radius:13px!important
   }
 
+  /* Ajuste exacto al prototipo aprobado */
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
+    display:grid!important;
+    grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;
+    gap:14px!important;
+    align-items:start!important;
+    margin-bottom:12px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top.no-checkin{
+    grid-template-columns:1fr!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-head{
+    margin:0!important;padding:5px 2px 0!important;min-height:132px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin{
+    height:100%!important;min-height:132px!important;margin:0!important;padding:12px 13px!important;
+    grid-template-columns:44px minmax(0,1fr) 16px!important;gap:10px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin h3{
+    font-size:19px!important;margin:4px 0 2px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin p{
+    font-size:11px!important;line-height:1.35!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin small{
+    font-size:7px!important;letter-spacing:1.7px!important;margin-top:6px!important;padding-top:6px!important
+  }
+
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .main{
+    display:block!important;color:#17191d!important;
+    font-family:Georgia,"Times New Roman",serif!important;
+    font-size:18px!important;line-height:1.08!important;font-weight:500!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .sub{
+    display:block!important;margin-top:4px!important;color:#737c8b!important;
+    font-size:11.5px!important;line-height:1.3!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .status{
+    display:block!important;margin-top:3px!important;color:#8c8477!important;
+    font-size:10px!important;line-height:1.2!important
+  }
+
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card{
+    border-radius:19px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card-head{
+    min-height:51px!important;padding:0 15px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{
+    min-height:91px!important;padding:13px 15px!important
+  }
+
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{
+    min-height:118px!important;padding:15px!important
+  }
+
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
+    padding:14px!important;border-radius:19px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-head{
+    margin-bottom:11px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
+    grid-template-columns:repeat(auto-fit,minmax(132px,1fr))!important;gap:9px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
+    min-height:101px!important;padding:12px 9px!important
+  }
+
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
+    min-height:150px!important;
+    grid-template-columns:minmax(0,1fr) 128px!important;
+    align-items:end!important;
+    padding:17px 18px!important;
+    border-radius:20px!important;
+    margin-bottom:8px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-title{
+    font-size:29px!important;margin:8px 0 6px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-dayline{
+    font-size:13px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-motivation{
+    display:block!important;margin-top:8px!important;color:#e3ded4!important;
+    font-size:10.5px!important;line-height:1.25!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-status{
+    display:none!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
+    min-height:46px!important;font-size:11.5px!important
+  }
+
   @media(max-width:430px){
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2{padding-top:14px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head{gap:10px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:31px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{max-width:112px!important;font-size:7px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{min-height:82px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task h3{font-size:18px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{min-height:104px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{font-size:20px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
-      min-height:132px!important;grid-template-columns:minmax(0,1fr) 112px!important;padding:14px!important
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2{
+      padding-top:12px!important;
+      padding-bottom:190px!important
     }
-    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-title{font-size:24px!important}
-    html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero{padding:13px 14px!important}
-    html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero h3{max-width:76%!important;font-size:20px!important}
-  }`;
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
+      grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)!important;
+      gap:8px!important;margin-bottom:10px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top.no-checkin{
+      grid-template-columns:1fr!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-head{
+      min-height:116px!important;padding:4px 2px 0!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{
+      font-size:29px!important;letter-spacing:-.8px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{
+      max-width:104px!important;font-size:6.7px!important;letter-spacing:2px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin{
+      min-height:116px!important;padding:10px!important;
+      grid-template-columns:38px minmax(0,1fr) 14px!important;gap:8px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin-icon{
+      width:38px!important;height:38px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin h3{
+      font-size:16.5px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin p{
+      font-size:9.7px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top .dcc-home2-checkin small{
+      font-size:6.4px!important;letter-spacing:1.35px!important
+    }
+
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-card-head{min-height:48px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{
+      min-height:84px!important;
+      grid-template-columns:43px minmax(0,1fr) 16px!important;
+      gap:10px!important;padding:11px 13px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon{
+      width:43px!important;height:43px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .main{
+      font-size:16.5px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .sub{
+      font-size:10px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .status{
+      font-size:9px!important
+    }
+
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{
+      min-height:106px!important;padding:13px!important;
+      grid-template-columns:43px minmax(0,1fr) 16px!important;gap:10px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon{
+      width:43px!important;height:43px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
+      font-size:19px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress p{
+      font-size:10px!important
+    }
+
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
+      min-height:94px!important
+    }
+
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
+      min-height:140px!important;
+      grid-template-columns:minmax(0,1fr) 118px!important;
+      padding:15px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .dcc-next-title{
+      font-size:25px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-motivation{
+      font-size:9.7px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
+      min-height:44px!important;font-size:10.5px!important
+    }
+  }
   document.head.appendChild(s);
 }
 function lastCheckinSummary(){
@@ -346,14 +516,24 @@ function renderHome(){
     return `<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}"><b>Día ${i+1}</b><span>${esc(dayTitle(day))}</span><em>${done?'✓ ':''}${esc(state)}</em></div>`;
   }).join('');
 
-  const taskRows=tasks.slice(0,4).map(t=>`<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div><div class="dcc-home2-arrow">›</div></div>`).join('');
+  const taskRows=tasks.slice(0,4).map(t=>{
+    if(t.type==='training'){
+      const parts=String(t.text||'').split(' · ');
+      const dayText=parts.slice(0,3).join(' · ');
+      const stateText=parts.slice(3).join(' · ');
+      return `<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(dayText)}</span><span class="status">${esc(stateText)}</span></div><div class="dcc-home2-arrow">›</div></div>`;
+    }
+    return `<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(t.text)}</span></div><div class="dcc-home2-arrow">›</div></div>`;
+  }).join('');
 
-  const hero=next.day?`<section class="dcc-next-hero"><div><div class="dcc-next-eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2 class="dcc-next-title">${esc(next.title)}</h2><div class="dcc-next-dayline">Día ${next.index+1}</div><div class="dcc-next-status">${esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
+  const hero=next.day?`<section class="dcc-next-hero"><div><div class="dcc-next-eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2 class="dcc-next-title">${esc(next.title)}</h2><div class="dcc-next-dayline">Día ${next.index+1}</div><div class="dcc-next-motivation">Fortalece hoy tu mejor versión</div><div class="dcc-next-status">${esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
 
   main.innerHTML=`
   <div class="dcc-home2">
-    <header class="dcc-home2-head"><div><div class="dcc-home2-kicker">BIENVENIDO</div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-home2-line"></div></div><div class="dcc-home2-motto">DISCIPLINA HOY,<br>RESULTADOS SIEMPRE</div></header>
-    ${checkinSummary?`<section class="dcc-home2-checkin" onclick="showClient('progress')"><div class="dcc-home2-checkin-icon">${icon('chart')}</div><div><div class="dcc-home2-label">TU ÚLTIMO CHECK-IN</div><h3>${esc(checkinSummary.title)}</h3><p>${esc(checkinSummary.text)}</p><small>${esc(checkinSummary.foot)}</small></div><div class="dcc-home2-arrow">›</div></section>`:''}
+    <div class="dcc-home2-top ${checkinSummary?'':'no-checkin'}">
+      <header class="dcc-home2-head"><div><div class="dcc-home2-kicker">BIENVENIDO</div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-home2-line"></div><div class="dcc-home2-motto">DISCIPLINA HOY,<br>RESULTADOS SIEMPRE</div></div></header>
+      ${checkinSummary?`<section class="dcc-home2-checkin" onclick="showClient('progress')"><div class="dcc-home2-checkin-icon">${icon('chart')}</div><div><div class="dcc-home2-label">TU ÚLTIMO CHECK-IN</div><h3>${esc(checkinSummary.title)}</h3><p>${esc(checkinSummary.text)}</p><small>${esc(checkinSummary.foot)}</small></div><div class="dcc-home2-arrow">›</div></section>`:''}
+    </div>
     <section class="dcc-home2-card"><div class="dcc-home2-card-head"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div>${taskRows||'<div class="dcc-home2-task"><div></div><div><h3>Todo al día</h3><p>No tienes tareas pendientes ahora mismo.</p></div><div></div></div>'}</section>
     <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div><div class="dcc-home2-label">TU PROGRESO</div><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></section>
     ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-home2-days">${days}</div></section>`:''}
