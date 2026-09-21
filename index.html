@@ -17132,6 +17132,8 @@ async function sendClientCheckin(){
 <script id="dcc-auth-flow-v4">
 (function(){
   const ROLE_KEY='dcc:selected-access-role';
+  const AUTH_ORIGIN='https://daniel-campins-git-a-244c40-danielcampinscollado-4962s-projects.vercel.app';
+  const authRedirect=r=>AUTH_ORIGIN+'/?dcc_role='+encodeURIComponent(r);
   let busy=false;
   const role=()=>{try{return localStorage.getItem(ROLE_KEY)||''}catch(_){return ''}};
   const save=r=>{try{localStorage.setItem(ROLE_KEY,r)}catch(_){}};
@@ -17150,7 +17152,7 @@ async function sendClientCheckin(){
     document.getElementById('dcc-google-auth-go').onclick=async()=>{
       if(busy)return;busy=true;save(r);
       try{
-        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname+'?dcc_role='+encodeURIComponent(r),skipBrowserRedirect:false}});
+        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect(r),skipBrowserRedirect:false}});
         if(error)throw error;
       }catch(e){busy=false;console.error(e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}
     };
@@ -17160,21 +17162,40 @@ async function sendClientCheckin(){
     const login=document.getElementById('login'),shell=login?.querySelector('.dcc-login-shell');if(!login||!shell)return;
     login.style.display='flex';resetAccessUi();save('client');
     const box=document.createElement('div');box.id='dcc-client-email-box';box.style.cssText='margin-top:18px;display:grid;gap:10px';shell.appendChild(box);
-    box.innerHTML='<div style="padding:14px;border:1px solid rgba(210,170,93,.42);border-radius:16px;background:#fffdf8;text-align:left"><b style="display:block;color:#17191d;font-size:15px;margin-bottom:5px">Acceso cliente</b><span style="display:block;color:#75684e;font-size:12px;line-height:1.45">Introduce el correo que tu entrenador asignó a tu perfil. Recibirás un enlace seguro para entrar.</span></div><input id="dcc-client-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" style="width:100%;min-height:52px;border:1px solid rgba(210,170,93,.55);border-radius:15px;background:#fff;color:#17191d;padding:0 14px;font:inherit;box-sizing:border-box"><button type="button" id="dcc-client-email-send" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-weight:900;font-size:15px">Enviar enlace de acceso</button><div id="dcc-client-email-status" style="display:none;padding:11px 12px;border-radius:12px;background:#fff7df;color:#6f5522;font-size:12px;font-weight:750;line-height:1.4"></div><button type="button" id="dcc-client-email-back" style="border:0;background:transparent;color:#8b6a2b;font-weight:800;padding:8px">Volver</button>';
+    box.innerHTML='<div style="padding:14px;border:1px solid rgba(210,170,93,.42);border-radius:16px;background:#fffdf8;text-align:left"><b style="display:block;color:#17191d;font-size:15px;margin-bottom:5px">Acceso cliente</b><span style="display:block;color:#75684e;font-size:12px;line-height:1.45">Entra con Google o utiliza el correo que tu entrenador asignó a tu perfil.</span></div><button type="button" id="dcc-client-google" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(145deg,#fffdf8,#fbf2df);color:#17191d;font-weight:900;font-size:15px">Continuar con Google</button><div style="display:flex;align-items:center;gap:10px;color:#999187;font-size:10px;letter-spacing:1.8px;text-transform:uppercase"><span style="height:1px;background:#e8ddca;flex:1"></span>o por email<span style="height:1px;background:#e8ddca;flex:1"></span></div><input id="dcc-client-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" style="width:100%;min-height:52px;border:1px solid rgba(210,170,93,.55);border-radius:15px;background:#fff;color:#17191d;padding:0 14px;font:inherit;box-sizing:border-box"><button type="button" id="dcc-client-email-send" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-weight:900;font-size:15px">Enviar enlace de acceso</button><div id="dcc-client-email-status" style="display:none;padding:11px 12px;border-radius:12px;background:#fff7df;color:#6f5522;font-size:12px;font-weight:750;line-height:1.4"></div><button type="button" id="dcc-client-email-back" style="border:0;background:transparent;color:#8b6a2b;font-weight:800;padding:8px">Volver</button>';
     login.querySelector('.dcc-access-grid')?.setAttribute('style','display:none!important');
-    const input=document.getElementById('dcc-client-email'),send=document.getElementById('dcc-client-email-send'),status=document.getElementById('dcc-client-email-status');
+    const input=document.getElementById('dcc-client-email'),send=document.getElementById('dcc-client-email-send'),status=document.getElementById('dcc-client-email-status'),google=document.getElementById('dcc-client-google');
+    google.onclick=async()=>{
+      if(busy)return;busy=true;google.disabled=true;save('client');
+      try{
+        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect('client'),skipBrowserRedirect:false}});
+        if(error)throw error;
+      }catch(e){
+        console.error('DCC client Google auth',e);
+        status.style.display='block';
+        status.textContent='No se pudo abrir el acceso con Google. '+String(e?.message||'Inténtalo de nuevo.');
+        busy=false;google.disabled=false;
+      }
+    };
     send.onclick=async()=>{
       const email=String(input?.value||'').trim().toLowerCase();
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.style.display='block';status.textContent='Introduce un correo válido.';return}
       if(busy)return;busy=true;send.disabled=true;status.style.display='block';status.textContent='Enviando enlace…';save('client');
       try{
         try{await supabaseClient.auth.signOut()}catch(_){}
-        const {error}=await supabaseClient.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?dcc_role=client'}});
+        const {error}=await supabaseClient.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirect('client')}});
         if(error)throw error;
         status.textContent='Enlace enviado. Revisa tu correo y pulsa el enlace para entrar.';
       }catch(e){
         console.error('DCC client email auth',e);
-        status.textContent='No se pudo enviar el enlace. Inténtalo de nuevo.';
+        const msg=String(e?.message||'').toLowerCase();
+        if(msg.includes('rate')||msg.includes('limit')||msg.includes('too many')){
+          status.textContent='Has solicitado varios enlaces seguidos. Prueba “Continuar con Google” o espera unos minutos antes de pedir otro enlace.';
+        }else if(msg.includes('not authorized')||msg.includes('unauthorized')){
+          status.textContent='El servidor de correo de prueba no permite enviar a esta dirección. Usa “Continuar con Google”.';
+        }else{
+          status.textContent='No se pudo enviar el enlace. Usa “Continuar con Google” o inténtalo de nuevo. '+String(e?.message||'');
+        }
         busy=false;send.disabled=false;
       }
     };
