@@ -1,7 +1,7 @@
 /* DCC — Cliente Alimentación: aviso, notas y PDF premium */
 (function(){
 'use strict';
-const BUILD='20260921-diet-print-premium-v2';
+const BUILD='20260921-diet-print-premium-v3-compact';
 if(window.__dccDietPrintPremium===BUILD)return;
 window.__dccDietPrintPremium=BUILD;
 
@@ -19,26 +19,26 @@ function css(){
   const s=document.createElement('style');
   s.id='dcc-diet-info-print-css';
   s.textContent=`
-  #client-main .dcc-diet-info-stack{display:grid;gap:9px;margin:0 0 11px}
-  #client-main .dcc-diet-accordion{margin:0!important;overflow:hidden!important;border:1px solid rgba(198,139,32,.30)!important;border-radius:18px!important;background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;box-shadow:0 9px 22px rgba(83,63,31,.055),inset 0 1px 0 #fff!important}
-  #client-main .dcc-diet-accordion summary{min-height:58px;display:grid!important;grid-template-columns:35px minmax(0,1fr) 24px!important;align-items:center!important;gap:10px!important;padding:9px 12px!important;list-style:none!important;cursor:pointer!important;background:transparent!important}
+  #client-main .dcc-diet-info-stack{display:grid;gap:7px;margin:0 0 10px}
+  #client-main .dcc-diet-accordion{margin:0!important;overflow:hidden!important;border:1px solid rgba(198,139,32,.25)!important;border-radius:15px!important;background:#fffdf8!important;box-shadow:0 5px 16px rgba(83,63,31,.035)!important}
+  #client-main .dcc-diet-accordion summary{min-height:48px;display:grid!important;grid-template-columns:28px minmax(0,1fr) 20px!important;align-items:center!important;gap:9px!important;padding:7px 11px!important;list-style:none!important;cursor:pointer!important;background:transparent!important}
   #client-main .dcc-diet-accordion summary::-webkit-details-marker{display:none!important}
-  #client-main .dcc-diet-accordion-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid rgba(187,126,20,.30);border-radius:50%;background:#fff6df;color:#a66d0b}
-  #client-main .dcc-diet-accordion-icon svg{width:18px;height:18px}
-  #client-main .dcc-diet-accordion-title{color:#17191d;font-size:14px;font-weight:760;line-height:1.2;letter-spacing:-.15px}
-  #client-main .dcc-diet-accordion-arrow{position:relative;width:24px;height:24px}
-  #client-main .dcc-diet-accordion-arrow:after{content:'';position:absolute;left:50%;top:46%;width:7px;height:7px;border-right:1.8px solid #9c660a;border-bottom:1.8px solid #9c660a;transform:translate(-50%,-60%) rotate(45deg);transition:transform .2s ease}
-  #client-main .dcc-diet-accordion[open] .dcc-diet-accordion-arrow:after{transform:translate(-50%,-30%) rotate(225deg)}
-  #client-main .dcc-diet-accordion-body{margin:0 12px 12px 57px;padding:10px 11px;border-top:1px solid rgba(112,84,37,.10);border-radius:12px;background:rgba(249,244,234,.72);color:#657080;font-size:11px;line-height:1.52;white-space:pre-line}
-  #client-main .diet-pdf-card.dcc-diet-pdf-bottom{margin:11px 0 0!important;cursor:pointer!important}
-  #client-main .diet-pdf-card.dcc-diet-pdf-bottom .diet-pdf-text strong{font-size:14px!important}
-  #client-main .diet-pdf-card.dcc-diet-pdf-bottom .diet-pdf-text span{font-size:9.5px!important}
+  #client-main .dcc-diet-accordion-icon{width:27px;height:27px;display:grid;place-items:center;border:0;border-radius:50%;background:#fff5dc;color:#a66d0b}
+  #client-main .dcc-diet-accordion-icon svg{width:16px;height:16px}
+  #client-main .dcc-diet-accordion-title{color:#1c1e22;font-size:12px;font-weight:780;line-height:1.2;letter-spacing:-.08px}
+  #client-main .dcc-diet-accordion-arrow{position:relative;width:20px;height:20px}
+  #client-main .dcc-diet-accordion-arrow:after{content:'';position:absolute;left:50%;top:46%;width:6px;height:6px;border-right:1.6px solid #9c660a;border-bottom:1.6px solid #9c660a;transform:translate(-50%,-62%) rotate(45deg);transition:transform .2s ease}
+  #client-main .dcc-diet-accordion[open] .dcc-diet-accordion-arrow:after{transform:translate(-50%,-28%) rotate(225deg)}
+  #client-main .dcc-diet-accordion-body{margin:0 11px 10px 47px;padding:9px 10px;border-top:1px solid rgba(112,84,37,.09);border-radius:10px;background:#faf6ee;color:#69717d;font-size:10px;line-height:1.48;white-space:pre-line}
+  #client-main .diet-pdf-card.dcc-diet-pdf-bottom{margin:10px 0 0!important;cursor:pointer!important}
+  #client-main .diet-pdf-card.dcc-diet-pdf-bottom .diet-pdf-text strong{font-size:13px!important}
+  #client-main .diet-pdf-card.dcc-diet-pdf-bottom .diet-pdf-text span{font-size:9px!important}
   #client-main .diet-pdf-card.dcc-diet-pdf-bottom .diet-pdf-button{white-space:nowrap!important}
   @media(max-width:390px){
-    #client-main .dcc-diet-accordion summary{min-height:54px;padding:8px 10px!important;grid-template-columns:31px minmax(0,1fr) 22px!important}
-    #client-main .dcc-diet-accordion-icon{width:29px;height:29px}
-    #client-main .dcc-diet-accordion-title{font-size:13px}
-    #client-main .dcc-diet-accordion-body{margin:0 10px 10px 50px;padding:9px 10px;font-size:10px}
+    #client-main .dcc-diet-accordion summary{min-height:46px;padding:7px 10px!important;grid-template-columns:27px minmax(0,1fr) 18px!important}
+    #client-main .dcc-diet-accordion-icon{width:25px;height:25px}
+    #client-main .dcc-diet-accordion-title{font-size:11.5px}
+    #client-main .dcc-diet-accordion-body{margin:0 10px 9px 45px;padding:8px 9px;font-size:9.5px}
   }`;
   document.head.appendChild(s);
 }
@@ -65,6 +65,16 @@ function accordion(title,body,kind){
   </details>`;
 }
 
+function syncClientNav(screen){
+  const nav=document.getElementById('client-nav');
+  if(!nav)return;
+  const map={home:0,food:1,training:2,progress:3,checkin:4,messages:5};
+  const buttons=[...nav.querySelectorAll('button')];
+  buttons.forEach(b=>b.classList.remove('active'));
+  const target=map[screen||window.currentScreen];
+  if(target!==undefined&&buttons[target])buttons[target].classList.add('active');
+}
+
 function enhance(){
   css();
   const main=document.getElementById('client-main');
@@ -78,7 +88,9 @@ function enhance(){
   const stack=document.createElement('div');
   stack.className='dcc-diet-info-stack';
   stack.innerHTML=accordion('Aviso sobre las dietas',notice(),'notice')+(notes?accordion('Notas del entrenador',notes,'notes'):'');
+  stack.querySelectorAll('details').forEach(d=>d.open=false);
   sw.insertAdjacentElement('afterend',stack);
+  syncClientNav('food');
 
   const pdf=main.querySelector('.diet-pdf-card');
   if(pdf){
@@ -164,6 +176,7 @@ function install(){
     const base=fn;
     const wrapped=function(screen){
       const result=base.apply(this,arguments);
+      requestAnimationFrame(()=>syncClientNav(screen));
       if(screen==='food')requestAnimationFrame(()=>requestAnimationFrame(enhance));
       return result;
     };
