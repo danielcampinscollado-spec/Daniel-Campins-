@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-premium-v5-mobile-rebuild';
+const BUILD='20260921-client-home-premium-v6-week7-hero';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -14,6 +14,15 @@ const dayTitle=day=>{
   const list=Array.isArray(day?.muscleGroups)?day.muscleGroups.map(x=>String(x||'').trim()).filter(Boolean):[];
   return list.length?list.join(' · '):(String(day?.muscle||'Entrenamiento').replace(/^Sin grupos musculares$/i,'Entrenamiento'));
 };
+const shortDayTitle=day=>{
+  const parts=dayTitle(day).split(' · ').map(x=>x.trim()).filter(Boolean);
+  const short=p=>{
+    const clean=String(p||'').trim();
+    if(clean.length<=5)return clean;
+    return clean.slice(0,3)+(clean.length>3?'.':'');
+  };
+  return parts.slice(0,2).map(short).join(' · ');
+};
 const fmt=n=>Number(n).toFixed(1).replace('.',',');
 
 function css(){
@@ -23,216 +32,272 @@ function css(){
   s.id='dcc-home-premium-v2-css';
   s.textContent=`
   html.dcc-theme-light-premium body #client #client-main .dcc-home2,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2 *{
-    box-sizing:border-box!important
-  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2 *{box-sizing:border-box!important}
 
   html.dcc-theme-light-premium body #client #client-main .dcc-home2{
-    width:100%!important;max-width:none!important;margin:0!important;
-    padding:12px 0 112px!important;color:#17191d!important
+    width:100%!important;max-width:none!important;margin:0!important;padding:12px 0 116px!important;color:#17191d!important
   }
 
+  /* HEADER */
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
+    display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:10px!important;align-items:start!important;margin:0 0 10px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-top.no-checkin{grid-template-columns:1fr!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-head{
-    display:grid!important;grid-template-columns:minmax(0,1fr) 122px!important;
-    align-items:start!important;gap:10px!important;padding:0 3px 14px!important
+    display:block!important;padding:2px 4px 0!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-kicker,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-label{
-    display:block!important;color:#a66d0d!important;font-size:8.8px!important;
-    line-height:1!important;font-weight:900!important;letter-spacing:3px!important;text-transform:uppercase!important
+    color:#a66d0d!important;font-size:8.6px!important;line-height:1!important;font-weight:900!important;
+    letter-spacing:2.8px!important;text-transform:uppercase!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{
-    display:block!important;margin:8px 0 10px!important;color:#17191d!important;
-    font-family:Georgia,"Times New Roman",serif!important;font-size:33px!important;
-    line-height:.98!important;font-weight:500!important;letter-spacing:-1px!important
+    margin:8px 0 10px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:32px!important;line-height:.98!important;font-weight:500!important;letter-spacing:-1px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-line{
-    display:block!important;width:41px!important;height:2px!important;border-radius:999px!important;background:#d3a03a!important
+    width:42px!important;height:2px!important;border-radius:999px!important;background:#d3a03a!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{
-    display:block!important;padding-top:7px!important;color:#7f8793!important;
-    font-size:6.8px!important;line-height:1.5!important;font-weight:700!important;
-    letter-spacing:2.3px!important;text-transform:uppercase!important
+    margin-top:11px!important;color:#7f8793!important;font-size:6.8px!important;line-height:1.5!important;
+    font-weight:700!important;letter-spacing:2.2px!important;text-transform:uppercase!important
   }
 
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin,
+  /* CHECK-IN */
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin{
+    display:grid!important;grid-template-columns:38px minmax(0,1fr) 12px!important;gap:8px!important;
+    align-items:center!important;padding:10px!important;border:1px solid rgba(189,130,26,.22)!important;
+    border-radius:17px!important;background:linear-gradient(145deg,#fffefa,#fbf6ed)!important;
+    box-shadow:0 6px 16px rgba(80,58,25,.03)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon{
+    width:38px!important;height:38px!important;display:grid!important;place-items:center!important;
+    border:1px solid rgba(190,132,28,.20)!important;border-radius:12px!important;background:#fff8e8!important;color:#aa720f!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon svg,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon svg,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon svg{width:19px!important;height:19px!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-copy,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy,
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-copy{
+    min-width:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin h3{
+    margin:4px 0 2px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:17px!important;line-height:1.03!important;font-weight:500!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin p{
+    margin:0!important;color:#687181!important;font-size:9.6px!important;line-height:1.3!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin small{
+    display:block!important;width:100%!important;margin-top:5px!important;padding-top:5px!important;
+    border-top:1px solid rgba(110,81,32,.09)!important;color:#a16e15!important;font-size:6.4px!important;
+    line-height:1.15!important;font-weight:850!important;letter-spacing:1.4px!important;text-transform:uppercase!important
+  }
+
+  /* TASKS */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
     width:100%!important;margin:0 0 10px!important;border:1px solid rgba(189,130,26,.22)!important;
     border-radius:18px!important;background:#fffdf8!important;box-shadow:0 6px 16px rgba(80,58,25,.03)!important
   }
-
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin{
-    display:grid!important;grid-template-columns:40px minmax(0,1fr) 14px!important;
-    gap:10px!important;align-items:center!important;padding:11px 12px!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-copy,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-copy{
-    display:flex!important;min-width:0!important;flex-direction:column!important;align-items:flex-start!important
-  }
-
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon{
-    width:40px!important;height:40px!important;display:grid!important;place-items:center!important;
-    border:1px solid rgba(190,132,28,.20)!important;border-radius:13px!important;
-    background:#fff8e8!important;color:#aa720f!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon svg,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon svg,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-icon svg{
-    width:20px!important;height:20px!important
-  }
-
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin h3,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task h3,
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
-    display:block!important;width:100%!important;margin:0!important;color:#17191d!important;
-    font-family:Georgia,"Times New Roman",serif!important;font-weight:500!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin h3{
-    margin-top:4px!important;font-size:18.5px!important;line-height:1.03!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin p{
-    display:block!important;width:100%!important;margin:2px 0 0!important;color:#687181!important;
-    font-size:10.6px!important;line-height:1.3!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin small{
-    display:block!important;width:100%!important;margin-top:6px!important;padding-top:6px!important;
-    border-top:1px solid rgba(110,81,32,.09)!important;color:#a16e15!important;
-    font-size:7px!important;line-height:1.15!important;font-weight:850!important;
-    letter-spacing:1.8px!important;text-transform:uppercase!important
-  }
-
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card{overflow:hidden!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card-head{
-    min-height:44px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+    min-height:43px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
     padding:0 13px!important;border-bottom:1px solid rgba(126,93,37,.08)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-count{
-    width:28px!important;height:28px!important;display:grid!important;place-items:center!important;
-    border:1px solid rgba(190,132,28,.20)!important;border-radius:50%!important;
-    background:#fff7e2!important;color:#96620b!important;font-size:11px!important;font-weight:900!important
+    width:27px!important;height:27px!important;display:grid!important;place-items:center!important;
+    border:1px solid rgba(190,132,28,.20)!important;border-radius:50%!important;background:#fff7e2!important;
+    color:#96620b!important;font-size:11px!important;font-weight:900!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task{
-    display:grid!important;grid-template-columns:40px minmax(0,1fr) 14px!important;
-    gap:10px!important;align-items:center!important;min-height:72px!important;padding:10px 12px!important;
-    border-bottom:1px solid rgba(126,93,37,.08)!important;cursor:pointer!important
+    display:grid!important;grid-template-columns:38px minmax(0,1fr) 12px!important;gap:10px!important;
+    align-items:center!important;min-height:69px!important;padding:10px 12px!important;border-bottom:1px solid rgba(126,93,37,.08)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task:last-child{border-bottom:0!important}
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task h3{
-    font-size:16.5px!important;line-height:1.05!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .main{
+    display:block!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:16px!important;line-height:1.05!important;font-weight:500!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task p{
-    display:block!important;width:100%!important;margin:4px 0 0!important;color:#667083!important;
-    font-size:10.2px!important;line-height:1.22!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .sub{
+    display:block!important;margin-top:3px!important;color:#667083!important;font-size:9.8px!important;line-height:1.2!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task small{
-    display:block!important;width:100%!important;margin:3px 0 0!important;color:#a18a63!important;
-    font-size:9px!important;line-height:1.15!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .status{
+    display:block!important;margin-top:2px!important;color:#a18a63!important;font-size:8.7px!important;line-height:1.15!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-arrow{
-    display:block!important;align-self:center!important;color:#b27a15!important;font-size:22px!important;line-height:1!important
+    color:#b27a15!important;font-size:21px!important;line-height:1!important
   }
 
+  /* PROGRESS */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{
-    display:grid!important;grid-template-columns:40px minmax(0,1fr) 14px!important;gap:10px!important;
-    align-items:center!important;min-height:84px!important;padding:11px 12px!important;cursor:pointer!important
+    display:grid!important;grid-template-columns:38px minmax(0,1fr) 12px!important;gap:10px!important;
+    align-items:center!important;min-height:80px!important;padding:10px 12px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
-    margin-top:5px!important;font-size:18px!important;line-height:1.04!important
+    margin:5px 0 3px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:17.5px!important;line-height:1.03!important;font-weight:500!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress p{
-    display:block!important;width:100%!important;margin:4px 0 0!important;color:#707989!important;
-    font-size:9.8px!important;line-height:1.3!important
+    margin:0!important;color:#707989!important;font-size:9.2px!important;line-height:1.3!important
   }
 
+  /* WEEK: ALWAYS SUPPORT UP TO 7 DAYS IN ONE ROW */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
-    padding:11px 11px 12px!important
+    padding:10px 9px 11px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-head{
     display:flex!important;align-items:center!important;justify-content:space-between!important;margin-bottom:8px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-link{
-    display:block!important;color:#a66d0d!important;font-size:7.1px!important;
-    font-weight:850!important;letter-spacing:1.7px!important;text-transform:uppercase!important;white-space:nowrap!important
+    color:#a66d0d!important;font-size:6.8px!important;font-weight:850!important;letter-spacing:1.5px!important;
+    text-transform:uppercase!important;white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
-    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important
+    display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;width:100%!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
-    min-height:78px!important;padding:9px 7px!important;border:1px solid rgba(177,127,38,.16)!important;
-    border-radius:14px!important;background:#fbf8f2!important;text-align:center!important
+    min-width:0!important;min-height:64px!important;padding:7px 2px 6px!important;
+    border:1px solid rgba(177,127,38,.16)!important;border-radius:11px!important;background:#fbf8f2!important;
+    text-align:center!important;overflow:hidden!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{
-    display:block!important;color:#17191d!important;font-size:12.8px!important;font-weight:800!important
+    display:block!important;color:#17191d!important;font-size:9.2px!important;line-height:1!important;font-weight:850!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day span{
-    display:block!important;margin-top:5px!important;color:#737b86!important;font-size:9.4px!important;line-height:1.2!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:none!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{
+    display:block!important;min-height:18px!important;margin-top:5px!important;color:#737b86!important;
+    font-size:6.3px!important;line-height:1.12!important;overflow:hidden!important
   }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day em{
-    display:block!important;margin-top:7px!important;color:#99835c!important;font-size:8.7px!important;font-style:normal!important
+    display:grid!important;place-items:center!important;width:18px!important;height:18px!important;margin:5px auto 0!important;
+    border-radius:50%!important;background:#f1ece2!important;color:#91794d!important;font-size:8px!important;
+    line-height:1!important;font-style:normal!important;font-weight:850!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done{
-    background:#f2f7e9!important;border-color:#cfe0b5!important
+    background:#f2f7e9!important;border-color:#c9ddb2!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
-    color:#4c8a37!important;font-weight:800!important
+    background:#77b858!important;color:#fff!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
-    background:#fffaf0!important;border-color:#c89125!important;
-    box-shadow:inset 0 0 0 1px rgba(200,145,37,.08)!important
+    background:#fff9ed!important;border-color:#c89125!important;box-shadow:inset 0 0 0 1px rgba(200,145,37,.08)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next em{
+    background:#f0c95e!important;color:#3c2a08!important
   }
 
+  /* TOP PREMIUM NEXT WORKOUT */
   html.dcc-theme-light-premium body #client #client-main .dcc-next-hero{
-    position:relative!important;min-height:116px!important;display:grid!important;
-    grid-template-columns:minmax(0,1fr) 104px!important;align-items:end!important;gap:9px!important;
-    padding:13px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.36)!important;
-    border-radius:18px!important;background:#17150f!important;box-shadow:0 8px 19px rgba(55,39,13,.09)!important;color:#fff!important
+    position:relative!important;min-height:128px!important;display:grid!important;
+    grid-template-columns:minmax(0,1fr) 116px!important;align-items:end!important;gap:10px!important;
+    padding:14px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.34)!important;
+    border-radius:19px!important;background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.11)!important;color:#fff!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:before{
     content:''!important;position:absolute!important;inset:0!important;
-    background:linear-gradient(90deg,rgba(14,13,10,.96) 0%,rgba(14,13,10,.76) 47%,rgba(14,13,10,.12) 100%),
-    url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') center right/cover no-repeat!important
+    background:
+      linear-gradient(90deg,rgba(15,13,9,.96) 0%,rgba(15,13,9,.82) 34%,rgba(15,13,9,.48) 57%,rgba(15,13,9,.10) 78%,rgba(15,13,9,.02) 100%),
+      url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') 72% 52%/cover no-repeat!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero>*{position:relative!important;z-index:1!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero:after{
+    content:''!important;position:absolute!important;inset:0!important;pointer-events:none!important;
+    background:radial-gradient(circle at 78% 38%,rgba(235,187,81,.14),transparent 28%)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-hero>*{position:relative!important;z-index:2!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-copy{min-width:0!important;padding-right:2px!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-next-eyebrow{
-    display:block!important;color:#e7bb55!important;font-size:7.5px!important;
-    font-weight:900!important;letter-spacing:2.1px!important;text-transform:uppercase!important
+    color:#e6b950!important;font-size:7.6px!important;font-weight:900!important;letter-spacing:2.2px!important;text-transform:uppercase!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-next-title{
-    display:block!important;margin:6px 0 4px!important;color:#fff!important;
-    font-family:Georgia,"Times New Roman",serif!important;font-size:21px!important;
-    line-height:1!important;font-weight:500!important;letter-spacing:-.25px!important
+    margin:7px 0 7px!important;color:#fff!important;font-family:Georgia,"Times New Roman",serif!important;
+    font-size:23px!important;line-height:1!important;font-weight:500!important;letter-spacing:-.3px!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-dayline{
-    display:block!important;color:#f2eee6!important;font-size:10.5px!important;line-height:1.15!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-next-status{
-    display:block!important;margin-top:5px!important;color:#ded8cd!important;background:transparent!important;
-    border:0!important;padding:0!important;font-size:8.8px!important;line-height:1.2!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-next-meta{
+    color:#e9e3d8!important;font-size:10px!important;line-height:1.2!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-next-hero-actions{
-    display:flex!important;align-items:flex-end!important
+    display:flex!important;align-items:flex-end!important;justify-content:stretch!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-next-hero .hero-btn{
-    width:100%!important;min-width:0!important;min-height:40px!important;padding:0 8px!important;
-    border:1px solid #e0ac40!important;border-radius:13px!important;
-    background:linear-gradient(135deg,#f4d06d,#dda63c)!important;color:#21180a!important;
-    font-size:9.6px!important;font-weight:900!important;white-space:nowrap!important
+    width:100%!important;min-width:0!important;min-height:43px!important;padding:0 9px!important;
+    border:1px solid #e2ae41!important;border-radius:14px!important;
+    background:linear-gradient(135deg,#f7d46f 0%,#e9b94d 48%,#d99b2c 100%)!important;
+    color:#20170a!important;font-size:10px!important;font-weight:900!important;white-space:nowrap!important;
+    box-shadow:0 8px 18px rgba(213,153,40,.18),inset 0 1px 0 rgba(255,255,255,.6)!important
   }
 
-  @media(min-width:600px){
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2{max-width:680px!important;margin:0 auto!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head{grid-template-columns:minmax(0,1fr) 170px!important}
+  /* TRAINING: SAME PREMIUM LANGUAGE, COMPACT + LEGIBLE */
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero{
+    position:relative!important;min-height:138px!important;height:auto!important;margin-bottom:10px!important;
+    padding:14px!important;overflow:hidden!important;border:1px solid rgba(183,123,19,.34)!important;
+    border-radius:19px!important;background:#15130f!important;box-shadow:0 10px 24px rgba(49,34,11,.10)!important;color:#fff!important
   }
-
-  /* Entrenamiento no se toca salvo legibilidad ya aprobada */
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero:before{
+    content:''!important;position:absolute!important;inset:0!important;z-index:0!important;
+    background:
+      linear-gradient(90deg,rgba(15,13,9,.96) 0%,rgba(15,13,9,.83) 36%,rgba(15,13,9,.50) 60%,rgba(15,13,9,.08) 100%),
+      url('./assets/training-reference-disk-user.webp?v=20260920-userdisk1') 72% 52%/cover no-repeat!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero:after{
+    content:''!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+    background:radial-gradient(circle at 78% 38%,rgba(235,187,81,.13),transparent 29%)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero>*{position:relative!important;z-index:2!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate,
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-plate-fade{display:none!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-label{
+    margin:0 0 7px!important;color:#e6b950!important;font-size:7.8px!important;line-height:1!important;
+    font-weight:900!important;letter-spacing:2.2px!important;text-transform:uppercase!important
+  }
   html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero h3{
-    color:#fff!important
-  }`;
+    max-width:72%!important;margin:0!important;color:#fff!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:23px!important;line-height:1!important;
+    font-weight:500!important;letter-spacing:-.3px!important;white-space:normal!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-meta{
+    margin-top:7px!important;color:#e9e3d8!important;background:transparent!important;border:0!important;padding:0!important;
+    font-size:10px!important;line-height:1.2!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-actions{
+    display:grid!important;grid-template-columns:minmax(0,1.45fr) minmax(112px,.9fr)!important;
+    gap:8px!important;width:100%!important;max-width:none!important;margin-top:14px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start,
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-view{
+    min-height:42px!important;height:42px!important;padding:0 10px!important;border-radius:13px!important;
+    font-size:10.3px!important;font-weight:850!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-start:disabled{
+    background:linear-gradient(145deg,#fffdf9,#f2eadc)!important;color:#847d72!important;border-color:#e6d7ba!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-view{
+    background:linear-gradient(145deg,#171c24,#0d1117)!important;color:#fff!important;border-color:rgba(255,255,255,.12)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dct3-routine.dcc-training-hero .dct3-list{
+    margin-top:12px!important;padding-top:10px!important;background:#fffdf8!important;color:#17191d!important;
+    border-radius:13px!important
+  }
+
+  @media(max-width:430px){
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:31px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full{display:none!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:inline!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full-muscle{display:none!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{display:block!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{font-size:9.5px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{font-size:5.9px!important}
+  }
+  `;
   document.head.appendChild(s);
 }
 function lastCheckinSummary(){
@@ -325,20 +390,13 @@ function renderHome(){
     const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
     const isNext=i===next.index;
     const state=done?'Completado':(isNext?(next.access.code==='today-complete'?'Mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
-    return `<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}"><b>Día ${i+1}</b><span>${esc(dayTitle(day))}</span><em>${done?'✓ ':''}${esc(state)}</em></div>`;
+    const shortState=done?'✓':(isNext?(next.access.code==='today-complete'?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
+    return `<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b><span class="full">Día ${i+1}</span><span class="mini">D${i+1}</span></b><span class="muscle full-muscle">${esc(dayTitle(day))}</span><span class="muscle mini-muscle">${esc(shortDayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`;
   }).join('');
 
-  const taskRows=tasks.slice(0,4).map(t=>{
-    if(t.type==='training'){
-      const parts=String(t.text||'').split(' · ');
-      const dayText=parts.slice(0,3).join(' · ');
-      const stateText=parts.slice(3).join(' · ');
-      return `<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(dayText)}</span><span class="status">${esc(stateText)}</span></div><div class="dcc-home2-arrow">›</div></div>`;
-    }
-    return `<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(t.text)}</span></div><div class="dcc-home2-arrow">›</div></div>`;
-  }).join('');
+  const taskRows=tasks.slice(0,4).map(t=>`<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(t.text)}</span>${t.subtext?`<span class="status">${esc(t.subtext)}</span>`:''}</div><div class="dcc-home2-arrow">›</div></div>`).join('');
 
-  const hero=next.day?`<section class="dcc-next-hero"><div><div class="dcc-next-eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2 class="dcc-next-title">${esc(next.title)}</h2><div class="dcc-next-dayline">Día ${next.index+1}</div><div class="dcc-next-motivation">Fortalece hoy tu mejor versión</div><div class="dcc-next-status">${next.access?.code==='today-complete'?'Fortalece hoy tu mejor versión':esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
+  const hero=next.day?`<section class="dcc-next-hero"><div class="dcc-next-copy"><div class="dcc-next-eyebrow">TU PRÓXIMO ENTRENAMIENTO</div><h2 class="dcc-next-title">${esc(next.title)}</h2><div class="dcc-next-meta">Día ${next.index+1} · ${esc(accessText(next.access))}</div></div><div class="dcc-next-hero-actions"><button type="button" class="hero-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></div></section>`:'';
 
   main.innerHTML=`
   <div class="dcc-home2">
@@ -359,36 +417,26 @@ function enhanceTraining(){
   const card=main?.querySelector('.dct3-routine');
   if(!card)return;
   card.classList.add('dcc-training-hero');
+
   const label=card.querySelector('.dct3-label');
   const title=card.querySelector('h3');
   const meta=card.querySelector('.dct3-meta');
   const r=routine();
   const i=Number(window.trainingDayTab)||0;
   const day=r[i]||null;
-  const access=typeof window.dccGetTrainingAccessState==='function'?window.dccGetTrainingAccessState(id(),i):{allowed:true,code:'ready'};
-  if(label){
-    label.textContent='TU PRÓXIMO ENTRENAMIENTO';
-    label.style.setProperty('color','#e7bb55','important');
-  }
-  if(title&&day){
-    title.textContent=dayTitle(day);
-    title.style.setProperty('color','#ffffff','important');
-    title.style.setProperty('font-family','Georgia, "Times New Roman", serif','important');
-    title.style.setProperty('font-size','22px','important');
-    title.style.setProperty('line-height','1.05','important');
-    title.style.setProperty('font-weight','500','important');
-    title.style.setProperty('white-space','normal','important');
-  }
-  if(meta){
-    meta.textContent=`Día ${i+1} · ${accessText(access)}`;
-    meta.style.setProperty('color','#eee9df','important');
-    meta.style.setProperty('background','transparent','important');
-    meta.style.setProperty('padding','0','important');
-  }
-  card.style.setProperty('min-height','0','important');
-  card.style.setProperty('padding','14px 16px','important');
-}
+  const next=nextState();
+  const access=typeof window.dccGetTrainingAccessState==='function'
+    ?window.dccGetTrainingAccessState(id(),i)
+    :{allowed:true,code:'ready'};
 
+  if(label){
+    label.textContent=access?.code==='already-completed'
+      ?'ENTRENAMIENTO COMPLETADO'
+      :(i===next.index?'TU PRÓXIMO ENTRENAMIENTO':'ENTRENAMIENTO');
+  }
+  if(title&&day)title.textContent=dayTitle(day);
+  if(meta)meta.textContent=`Día ${i+1} · ${accessText(access)}`;
+}
 function install(){
   css();
   const current=window.showClient;
