@@ -67,42 +67,42 @@
   }
 
   const APPROVED_CLIENT_MUSCLE_ASSETS={
-    pectoral:'assets/muscles/client-pectoral-premium.svg',
-    pecho:'assets/muscles/client-pectoral-premium.svg',
-    triceps:'assets/muscles/client-triceps-premium.svg',
-    dorsal:'assets/muscles/client-dorsal-premium.svg',
-    dorsales:'assets/muscles/client-dorsal-premium.svg',
-    espalda:'assets/muscles/client-dorsal-premium.svg',
-    hombro:'assets/muscles/client-hombros-premium.svg',
-    hombros:'assets/muscles/client-hombros-premium.svg',
-    deltoide:'assets/muscles/client-hombros-premium.svg',
-    deltoides:'assets/muscles/client-hombros-premium.svg',
+    pectoral:'assets/muscles/client-pectoral-premium-v5.webp',
+    pecho:'assets/muscles/client-pectoral-premium-v5.webp',
+    triceps:'assets/muscles/client-triceps-premium-v5.webp',
+    dorsal:'assets/muscles/client-dorsal-premium-v5.webp',
+    dorsales:'assets/muscles/client-dorsal-premium-v5.webp',
+    espalda:'assets/muscles/client-dorsal-premium-v5.webp',
+    hombro:'assets/muscles/client-hombros-premium-v5.webp',
+    hombros:'assets/muscles/client-hombros-premium-v5.webp',
+    deltoide:'assets/muscles/client-hombros-premium-v5.webp',
+    deltoides:'assets/muscles/client-hombros-premium-v5.webp',
     trapecio:'assets/muscles/client-trapecio-premium.svg',
     trapecios:'assets/muscles/client-trapecio-premium.svg',
     lumbar:'assets/muscles/client-trapecio-premium.svg',
     lumbares:'assets/muscles/client-trapecio-premium.svg',
-    biceps:'assets/muscles/client-biceps-premium.svg',
+    biceps:'assets/muscles/client-biceps-premium-v5.webp',
     antebrazo:'assets/muscles/client-antebrazos-premium.svg',
     antebrazos:'assets/muscles/client-antebrazos-premium.svg',
-    'pierna completa':'assets/muscles/client-pierna-completa-premium.webp',
-    pierna:'assets/muscles/client-pierna-completa-premium.webp',
-    piernas:'assets/muscles/client-pierna-completa-premium.webp',
-    'tren inferior':'assets/muscles/client-pierna-completa-premium.webp',
-    core:'assets/muscles/client-core-premium.svg',
-    abdomen:'assets/muscles/client-core-premium.svg',
-    abdominales:'assets/muscles/client-core-premium.svg',
-    cuadriceps:'assets/muscles/client-cuadriceps-premium.svg',
-    femoral:'assets/muscles/client-femoral-premium.svg',
-    femorales:'assets/muscles/client-femoral-premium.svg',
-    isquio:'assets/muscles/client-femoral-premium.svg',
-    isquios:'assets/muscles/client-femoral-premium.svg',
-    isquiotibiales:'assets/muscles/client-femoral-premium.svg',
-    gluteo:'assets/muscles/client-gluteos-premium.svg',
-    gluteos:'assets/muscles/client-gluteos-premium.svg',
-    gemelo:'assets/muscles/client-gemelos-premium.svg',
-    gemelos:'assets/muscles/client-gemelos-premium.svg',
-    pantorrilla:'assets/muscles/client-gemelos-premium.svg',
-    pantorrillas:'assets/muscles/client-gemelos-premium.svg'
+    'pierna completa':'assets/muscles/client-pierna-completa-premium-v5.webp',
+    pierna:'assets/muscles/client-pierna-completa-premium-v5.webp',
+    piernas:'assets/muscles/client-pierna-completa-premium-v5.webp',
+    'tren inferior':'assets/muscles/client-pierna-completa-premium-v5.webp',
+    core:'assets/muscles/client-core-premium-v5.webp',
+    abdomen:'assets/muscles/client-core-premium-v5.webp',
+    abdominales:'assets/muscles/client-core-premium-v5.webp',
+    cuadriceps:'assets/muscles/client-cuadriceps-premium-v5.webp',
+    femoral:'assets/muscles/client-femoral-premium-v5.webp',
+    femorales:'assets/muscles/client-femoral-premium-v5.webp',
+    isquio:'assets/muscles/client-femoral-premium-v5.webp',
+    isquios:'assets/muscles/client-femoral-premium-v5.webp',
+    isquiotibiales:'assets/muscles/client-femoral-premium-v5.webp',
+    gluteo:'assets/muscles/client-gluteos-premium-v5.webp',
+    gluteos:'assets/muscles/client-gluteos-premium-v5.webp',
+    gemelo:'assets/muscles/client-gemelos-premium-v5.webp',
+    gemelos:'assets/muscles/client-gemelos-premium-v5.webp',
+    pantorrilla:'assets/muscles/client-gemelos-premium-v5.webp',
+    pantorrillas:'assets/muscles/client-gemelos-premium-v5.webp'
   };
 
   function approvedMuscleVisual(name){
@@ -209,7 +209,7 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
-      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-pierna-completa1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-user-muscles-v5" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
