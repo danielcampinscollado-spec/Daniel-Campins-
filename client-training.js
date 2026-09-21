@@ -67,6 +67,8 @@
   }
 
   const FEMALE_MUSCLE_ATLAS='assets/muscles/anatomy-female-premium-v1.webp';
+  const FEMALE_TRAP='assets/muscles/client-trapecio-female-premium-v1.webp';
+  const FEMALE_FOREARMS='assets/muscles/client-antebrazos-female-premium-v1.webp';
   const FEMALE_FULL_LEG='assets/muscles/client-pierna-completa-female-premium-v1.webp';
   const FEMALE_FALLBACK_ATLAS='assets/muscles/anatomy-female-final.svg';
   const FEMALE_MUSCLE_POS={
@@ -80,7 +82,7 @@
     gluteo:[50,100],gluteos:[50,100],
     gemelo:[100,100],gemelos:[100,100],pantorrilla:[100,100],pantorrillas:[100,100]
   };
-  const FEMALE_FALLBACK_POS={trapecio:[0,34],trapecios:[0,34],lumbar:[0,34],lumbares:[0,34],antebrazo:[0,67],antebrazos:[0,67]};
+  const FEMALE_FALLBACK_POS={lumbar:[0,34],lumbares:[0,34]};
 
   function dayAnatomy(day){
     return String(day?.anatomy||'male').toLowerCase()==='female'?'female':'male';
@@ -130,6 +132,8 @@
     if(!n)return null;
 
     if(anatomy==='female'){
+      if(n.includes('trapec'))return {kind:'image',path:FEMALE_TRAP,key:'trapecio'};
+      if(n.includes('antebrazo'))return {kind:'image',path:FEMALE_FOREARMS,key:'antebrazos'};
       if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',path:FEMALE_FULL_LEG,key:'pierna completa'};
       for(const [key,pos] of Object.entries(FEMALE_MUSCLE_POS)){
         if(n.includes(key))return {kind:'female-sprite',path:FEMALE_MUSCLE_ATLAS,pos,key};
@@ -242,8 +246,8 @@
     const visuals=muscles.map(x=>{
       const v=x.visual;
       const art=v.kind==='image'
-        ? `<img src="./${esc(v.path)}?v=20260921-female-premium1" alt="${esc(x.name)}" loading="eager" decoding="async">`
-        : `<span class="dcc-female-muscle-sprite ${v.kind==='female-fallback'?'is-fallback':''}" style="background-image:url('./${esc(v.path)}?v=20260921-female-premium1');background-position:${v.pos[0]}% ${v.pos[1]}%"></span>`;
+        ? `<img src="./${esc(v.path)}?v=20260921-female-premium2" alt="${esc(x.name)}" loading="eager" decoding="async">`
+        : `<span class="dcc-female-muscle-sprite ${v.kind==='female-fallback'?'is-fallback':''}" style="background-image:url('./${esc(v.path)}?v=20260921-female-premium2');background-position:${v.pos[0]}% ${v.pos[1]}%"></span>`;
       return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork">${art}</div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{

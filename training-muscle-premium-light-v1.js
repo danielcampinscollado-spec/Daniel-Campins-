@@ -1,8 +1,8 @@
 /* DCC — selector muscular premium light: anatomía hombre/mujer + ilustraciones compactas */
 (function(){
 'use strict';
-const BUILD='20260921-muscle-premium-light-v21-female-premium';if(window.__dccMusclePremiumLight===BUILD)return;window.__dccMusclePremiumLight=BUILD;
-const MALE='./assets/muscles/anatomy-male-final.svg?v=20260918-final2',FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2',FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1',NEUTRAL_MALE='./assets/muscles/premium-light-male-neutral.svg?v=20260918-clean1',NEUTRAL_FEMALE='./assets/muscles/premium-light-female-neutral.svg?v=20260918-clean1',FULL_LEG='./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',FULL_LEG_FEMALE='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1',STORE='dcc-training-anatomy-v1';
+const BUILD='20260921-muscle-premium-light-v22-female-trap-forearms';if(window.__dccMusclePremiumLight===BUILD)return;window.__dccMusclePremiumLight=BUILD;
+const MALE='./assets/muscles/anatomy-male-final.svg?v=20260918-final2',FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2',FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1',FEMALE_TRAP='./assets/muscles/client-trapecio-female-premium-v1.webp?v=20260921-female-premium2',FEMALE_FOREARMS='./assets/muscles/client-antebrazos-female-premium-v1.webp?v=20260921-female-premium2',NEUTRAL_MALE='./assets/muscles/premium-light-male-neutral.svg?v=20260918-clean1',NEUTRAL_FEMALE='./assets/muscles/premium-light-female-neutral.svg?v=20260918-clean1',FULL_LEG='./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',FULL_LEG_FEMALE='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1',STORE='dcc-training-anatomy-v1';
 const MP={'Pectoral':[0,0],'Dorsal':[1,0],'Hombros':[2,0],'Trapecio':[0,1],'Bíceps':[1,1],'Tríceps':[2,1],'Antebrazos':[0,2],'Core':[1,2],'Pierna completa':['full',0],'Cuádriceps':[2,2],'Isquiotibiales':[0,3],'Femoral':[0,3],'Glúteos':[1,3],'Gemelos':[2,3]};
 const FP=MP;
 const norm=v=>String(v||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');function canon(v){const n=norm(v).toLowerCase();if(['femoral','femorales','isquios','isquiotibiales'].includes(n))return'Isquiotibiales';if(['gluteo','gluteos'].includes(n))return'Glúteos';if(n==='biceps')return'Bíceps';if(n==='triceps')return'Tríceps';if(n==='cuadriceps')return'Cuádriceps';if(['pierna completa','piernas','pierna','tren inferior'].includes(n))return'Pierna completa';return Object.keys(MP).find(k=>norm(k).toLowerCase()===n)||String(v||'')}
@@ -61,6 +61,12 @@ function sprite(g,a){
   if(g==='Pierna completa'){
     const src=a==='female'?FULL_LEG_FEMALE:FULL_LEG;
     return `background-image:url("${src}")!important;background-size:contain!important;background-position:center!important`;
+  }
+  if(a==='female'&&g==='Trapecio'){
+    return `background-image:url("${FEMALE_TRAP}")!important;background-size:cover!important;background-position:center!important`;
+  }
+  if(a==='female'&&g==='Antebrazos'){
+    return `background-image:url("${FEMALE_FOREARMS}")!important;background-size:cover!important;background-position:center!important`;
   }
   if(a==='female'&&FEMALE_NEW_POS[g]){
     const pos=FEMALE_NEW_POS[g];

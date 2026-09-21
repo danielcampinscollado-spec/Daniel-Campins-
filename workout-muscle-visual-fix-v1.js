@@ -4,6 +4,8 @@ const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u03
 function primary(name){const n=norm(name);if(/press banca|press inclinado|press declinado|apertura|cruce|pec deck|pullover|flexion/.test(n))return'Pectoral';if(/elevacion lateral|elevaciones laterales|elevacion frontal|press militar|press hombro|pajaro|face pull/.test(n))return'Hombro';if(/triceps|extension de triceps|extension triceps|patada/.test(n))return'Tríceps';if(/curl|biceps/.test(n))return'Bíceps';if(/remo|jalon|dominada|dorsal/.test(n))return'Espalda';if(/sentadilla|prensa|cuadriceps/.test(n))return'Cuádriceps';if(/femoral|isquio|peso muerto rumano/.test(n))return'Femoral';if(/hip thrust|gluteo|abduccion/.test(n))return'Glúteo';if(/gemelo|pantorrilla/.test(n))return'Gemelo';if(/abdominal|core|plancha|crunch/.test(n))return'Core';return''}
 function pretty(m){const n=norm(m);if(/pecho|pectoral/.test(n))return'Pectoral';if(/hombro|deltoid/.test(n))return'Hombros';if(/tricep/.test(n))return'Tríceps';if(/bicep/.test(n))return'Bíceps';if(/espalda|dorsal/.test(n))return'Dorsal';if(/trapec/.test(n))return'Trapecio';if(/antebrazo/.test(n))return'Antebrazos';if(/cuadr/.test(n))return'Cuádriceps';if(/femoral|isquio/.test(n))return'Femoral';if(/glute/.test(n))return'Glúteos';if(/gemelo|pantorrilla/.test(n))return'Gemelos';if(/core|abdomen/.test(n))return'Core';if(/lumbar/.test(n))return'Lumbar';return String(m||'').trim()}
 const FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1';
+const FEMALE_TRAP='./assets/muscles/client-trapecio-female-premium-v1.webp?v=20260921-female-premium2';
+const FEMALE_FOREARMS='./assets/muscles/client-antebrazos-female-premium-v1.webp?v=20260921-female-premium2';
 const FEMALE_FULL_LEG='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1';
 const FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2';
 const FEMALE_POS={
@@ -17,7 +19,7 @@ const FEMALE_POS={
   gluteo:[50,95],gluteos:[50,95],
   gemelo:[100,95],gemelos:[100,95],pantorrilla:[100,95]
 };
-const FEMALE_FALLBACK_POS={trapecio:[0,35],lumbar:[0,35],antebrazo:[0,65],antebrazos:[0,65]};
+const FEMALE_FALLBACK_POS={lumbar:[0,35]};
 const ACTIVE_APPROVED_ASSETS={
   pectoral:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
   pecho:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
@@ -52,6 +54,8 @@ function visualFor(m,anatomy){
   const n=norm(m);
   if(!n)return null;
   if(anatomy==='female'){
+    if(n.includes('trapec'))return {kind:'image',src:FEMALE_TRAP};
+    if(n.includes('antebrazo'))return {kind:'image',src:FEMALE_FOREARMS};
     if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',src:FEMALE_FULL_LEG};
     for(const [key,pos] of Object.entries(FEMALE_POS))if(n.includes(key))return {kind:'sprite',src:FEMALE_ATLAS,pos};
     for(const [key,pos] of Object.entries(FEMALE_FALLBACK_POS))if(n.includes(key))return {kind:'fallback',src:FEMALE_FALLBACK,pos};
