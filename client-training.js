@@ -880,18 +880,11 @@
   window.showClient.__base=nativeShowClient;
 })();
 
-<style id="dcc-training-muscle-alignment-hotfix">
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{
-  display:flex!important;flex-direction:column!important;align-items:center!important
-}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{
-  height:92px!important
-}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{
-  height:92px!important
-}
+(()=>{const s=document.createElement('style');s.id='dcc-training-muscle-alignment-hotfix';s.textContent=`
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{display:flex!important;flex-direction:column!important;align-items:center!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:92px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:92px!important}
 @media(max-width:389px){
-  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:86px!important}
-  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:86px!important}
-}
-</style>
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:86px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:86px!important}
+}`;document.head.appendChild(s)})();
