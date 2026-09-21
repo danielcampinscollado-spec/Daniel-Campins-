@@ -1,8 +1,23 @@
 /* DCC — integración visual músculos entrenamiento activo, estable */
-(function(){'use strict';if(window.__dccWorkoutMuscleVisualFixV19)return;window.__dccWorkoutMuscleVisualFixV19=true;
+(function(){'use strict';if(window.__dccWorkoutMuscleVisualFixV20)return;window.__dccWorkoutMuscleVisualFixV20=true;
 const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 function primary(name){const n=norm(name);if(/press banca|press inclinado|press declinado|apertura|cruce|pec deck|pullover|flexion/.test(n))return'Pectoral';if(/elevacion lateral|elevaciones laterales|elevacion frontal|press militar|press hombro|pajaro|face pull/.test(n))return'Hombro';if(/triceps|extension de triceps|extension triceps|patada/.test(n))return'Tríceps';if(/curl|biceps/.test(n))return'Bíceps';if(/remo|jalon|dominada|dorsal/.test(n))return'Espalda';if(/sentadilla|prensa|cuadriceps/.test(n))return'Cuádriceps';if(/femoral|isquio|peso muerto rumano/.test(n))return'Femoral';if(/hip thrust|gluteo|abduccion/.test(n))return'Glúteo';if(/gemelo|pantorrilla/.test(n))return'Gemelo';if(/abdominal|core|plancha|crunch/.test(n))return'Core';return''}
 function pretty(m){const n=norm(m);if(/pecho|pectoral/.test(n))return'Pectoral';if(/hombro|deltoid/.test(n))return'Hombros';if(/tricep/.test(n))return'Tríceps';if(/bicep/.test(n))return'Bíceps';if(/espalda|dorsal/.test(n))return'Dorsal';if(/trapec/.test(n))return'Trapecio';if(/antebrazo/.test(n))return'Antebrazos';if(/cuadr/.test(n))return'Cuádriceps';if(/femoral|isquio/.test(n))return'Femoral';if(/glute/.test(n))return'Glúteos';if(/gemelo|pantorrilla/.test(n))return'Gemelos';if(/core|abdomen/.test(n))return'Core';if(/lumbar/.test(n))return'Lumbar';return String(m||'').trim()}
+const FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1';
+const FEMALE_FULL_LEG='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1';
+const FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2';
+const FEMALE_POS={
+  pectoral:[0,5],pecho:[0,5],
+  dorsal:[50,5],espalda:[50,5],
+  hombro:[100,5],hombros:[100,5],deltoide:[100,5],
+  biceps:[50,35],triceps:[100,35],
+  core:[50,65],abdomen:[50,65],
+  cuadriceps:[100,65],
+  femoral:[0,95],isquio:[0,95],isquiotibiales:[0,95],
+  gluteo:[50,95],gluteos:[50,95],
+  gemelo:[100,95],gemelos:[100,95],pantorrilla:[100,95]
+};
+const FEMALE_FALLBACK_POS={trapecio:[0,35],lumbar:[0,35],antebrazo:[0,65],antebrazos:[0,65]};
 const ACTIVE_APPROVED_ASSETS={
   pectoral:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
   pecho:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
@@ -33,11 +48,16 @@ const ACTIVE_APPROVED_ASSETS={
   gemelos:'./assets/muscles/client-gemelos-premium-v5.webp?v=20260921-user-muscles-v5',
   pantorrilla:'./assets/muscles/client-gemelos-premium-v5.webp?v=20260921-user-muscles-v5'
 };
-function visualFor(m){
+function visualFor(m,anatomy){
   const n=norm(m);
   if(!n)return null;
+  if(anatomy==='female'){
+    if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',src:FEMALE_FULL_LEG};
+    for(const [key,pos] of Object.entries(FEMALE_POS))if(n.includes(key))return {kind:'sprite',src:FEMALE_ATLAS,pos};
+    for(const [key,pos] of Object.entries(FEMALE_FALLBACK_POS))if(n.includes(key))return {kind:'fallback',src:FEMALE_FALLBACK,pos};
+  }
   for(const [key,src] of Object.entries(ACTIVE_APPROVED_ASSETS)){
-    if(n.includes(key))return {src,artwork:true};
+    if(n.includes(key))return {kind:'image',src,artwork:true};
   }
   return null;
 }
@@ -84,12 +104,29 @@ function fix(){
 
   media.classList.remove('dcc-muscle-reference','dcc-muscle-artwork');
 
-  const visual=visualFor(m);
+  const anatomy=String(workout?.anatomy||'male').toLowerCase()==='female'?'female':'male';
+  const visual=visualFor(m,anatomy);
   if(!visual){
     media.style.visibility='hidden';
+    box.style.backgroundImage='';
     return;
   }
 
+  if(visual.kind==='sprite'||visual.kind==='fallback'){
+    media.style.display='none';
+    media.style.visibility='hidden';
+    box.style.backgroundImage=`url("${visual.src}")`;
+    box.style.backgroundRepeat='no-repeat';
+    box.style.backgroundSize=visual.kind==='fallback'?'300% 400%':'300% auto';
+    box.style.backgroundPosition=`${visual.pos[0]}% ${visual.pos[1]}%`;
+    box.style.backgroundColor='#fff7e8';
+    return;
+  }
+
+  box.style.backgroundImage='';
+  box.style.backgroundSize='';
+  box.style.backgroundPosition='';
+  media.style.display='block';
   if(media.getAttribute('src')!==visual.src)media.src=visual.src;
   media.style.visibility='visible';
   media.alt=m;

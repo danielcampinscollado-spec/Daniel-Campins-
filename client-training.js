@@ -66,6 +66,26 @@
     return items;
   }
 
+  const FEMALE_MUSCLE_ATLAS='assets/muscles/anatomy-female-premium-v1.webp';
+  const FEMALE_FULL_LEG='assets/muscles/client-pierna-completa-female-premium-v1.webp';
+  const FEMALE_FALLBACK_ATLAS='assets/muscles/anatomy-female-final.svg';
+  const FEMALE_MUSCLE_POS={
+    pectoral:[0,0],pecho:[0,0],
+    dorsal:[50,0],dorsales:[50,0],espalda:[50,0],
+    hombro:[100,0],hombros:[100,0],deltoide:[100,0],deltoides:[100,0],
+    biceps:[50,34],triceps:[100,34],
+    core:[50,67],abdomen:[50,67],abdominales:[50,67],
+    cuadriceps:[100,67],
+    femoral:[0,100],femorales:[0,100],isquio:[0,100],isquios:[0,100],isquiotibiales:[0,100],
+    gluteo:[50,100],gluteos:[50,100],
+    gemelo:[100,100],gemelos:[100,100],pantorrilla:[100,100],pantorrillas:[100,100]
+  };
+  const FEMALE_FALLBACK_POS={trapecio:[0,34],trapecios:[0,34],lumbar:[0,34],lumbares:[0,34],antebrazo:[0,67],antebrazos:[0,67]};
+
+  function dayAnatomy(day){
+    return String(day?.anatomy||'male').toLowerCase()==='female'?'female':'male';
+  }
+
   const APPROVED_CLIENT_MUSCLE_ASSETS={
     pectoral:'assets/muscles/client-pectoral-premium-v5.webp',
     pecho:'assets/muscles/client-pectoral-premium-v5.webp',
@@ -105,9 +125,20 @@
     pantorrillas:'assets/muscles/client-gemelos-premium-v5.webp'
   };
 
-  function approvedMuscleVisual(name){
+  function approvedMuscleVisual(name,anatomy){
     const n=norm(name);
     if(!n)return null;
+
+    if(anatomy==='female'){
+      if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',path:FEMALE_FULL_LEG,key:'pierna completa'};
+      for(const [key,pos] of Object.entries(FEMALE_MUSCLE_POS)){
+        if(n.includes(key))return {kind:'female-sprite',path:FEMALE_MUSCLE_ATLAS,pos,key};
+      }
+      for(const [key,pos] of Object.entries(FEMALE_FALLBACK_POS)){
+        if(n.includes(key))return {kind:'female-fallback',path:FEMALE_FALLBACK_ATLAS,pos,key};
+      }
+    }
+
     for(const [key,path] of Object.entries(APPROVED_CLIENT_MUSCLE_ASSETS)){
       if(n.includes(key))return {kind:'image',path,key};
     }
@@ -115,18 +146,19 @@
   }
 
   function dayMuscles(day){
+    const anatomy=dayAnatomy(day);
     const raw=Array.isArray(day?.muscleGroups)&&day.muscleGroups.length
       ? day.muscleGroups
       : String(day?.muscle||'').split(/[·+,&/]/);
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
-      const visual=approvedMuscleVisual(name);
+      const visual=approvedMuscleVisual(name,anatomy);
       if(visual&&!out.some(x=>x.visual.key===visual.key)){
         out.push({name,visual});
       }
     });
     if(!out.length&&day?.muscle){
-      const visual=approvedMuscleVisual(day.muscle);
+      const visual=approvedMuscleVisual(day.muscle,anatomy);
       if(visual)out.push({name:day.muscle,visual});
     }
     return out.slice(0,3);
@@ -209,7 +241,10 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
-      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-user-muscles-v5" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
+      const art=v.kind==='image'
+        ? `<img src="./${esc(v.path)}?v=20260921-female-premium1" alt="${esc(x.name)}" loading="eager" decoding="async">`
+        : `<span class="dcc-female-muscle-sprite ${v.kind==='female-fallback'?'is-fallback':''}" style="background-image:url('./${esc(v.path)}?v=20260921-female-premium1');background-position:${v.pos[0]}% ${v.pos[1]}%"></span>`;
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork">${art}</div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
@@ -394,6 +429,17 @@
           filter:none!important;
           transform:none!important;
           image-rendering:auto!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle .dcc-female-muscle-sprite{
+          display:block!important;
+          width:100%!important;
+          height:100%!important;
+          background-repeat:no-repeat!important;
+          background-size:300% auto!important;
+          background-color:#fffaf1!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle .dcc-female-muscle-sprite.is-fallback{
+          background-size:300% 400%!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-artwork img{
           object-fit:contain!important;

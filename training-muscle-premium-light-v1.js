@@ -1,12 +1,24 @@
 /* DCC — selector muscular premium light: anatomía hombre/mujer + ilustraciones compactas */
 (function(){
 'use strict';
-const BUILD='20260921-muscle-premium-light-v20-user-muscles';if(window.__dccMusclePremiumLight===BUILD)return;window.__dccMusclePremiumLight=BUILD;
-const MALE='./assets/muscles/anatomy-male-final.svg?v=20260918-final2',FEMALE='./assets/muscles/anatomy-female-final.svg?v=20260918-final2',NEUTRAL_MALE='./assets/muscles/premium-light-male-neutral.svg?v=20260918-clean1',NEUTRAL_FEMALE='./assets/muscles/premium-light-female-neutral.svg?v=20260918-clean1',FULL_LEG='./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',STORE='dcc-training-anatomy-v1';
+const BUILD='20260921-muscle-premium-light-v21-female-premium';if(window.__dccMusclePremiumLight===BUILD)return;window.__dccMusclePremiumLight=BUILD;
+const MALE='./assets/muscles/anatomy-male-final.svg?v=20260918-final2',FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2',FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1',NEUTRAL_MALE='./assets/muscles/premium-light-male-neutral.svg?v=20260918-clean1',NEUTRAL_FEMALE='./assets/muscles/premium-light-female-neutral.svg?v=20260918-clean1',FULL_LEG='./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',FULL_LEG_FEMALE='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1',STORE='dcc-training-anatomy-v1';
 const MP={'Pectoral':[0,0],'Dorsal':[1,0],'Hombros':[2,0],'Trapecio':[0,1],'Bíceps':[1,1],'Tríceps':[2,1],'Antebrazos':[0,2],'Core':[1,2],'Pierna completa':['full',0],'Cuádriceps':[2,2],'Isquiotibiales':[0,3],'Femoral':[0,3],'Glúteos':[1,3],'Gemelos':[2,3]};
 const FP=MP;
 const norm=v=>String(v||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');function canon(v){const n=norm(v).toLowerCase();if(['femoral','femorales','isquios','isquiotibiales'].includes(n))return'Isquiotibiales';if(['gluteo','gluteos'].includes(n))return'Glúteos';if(n==='biceps')return'Bíceps';if(n==='triceps')return'Tríceps';if(n==='cuadriceps')return'Cuádriceps';if(['pierna completa','piernas','pierna','tren inferior'].includes(n))return'Pierna completa';return Object.keys(MP).find(k=>norm(k).toLowerCase()===n)||String(v||'')}
-const anatomy=()=>{try{return sessionStorage.getItem(STORE)||''}catch(_){return''}},setAnatomy=v=>{try{sessionStorage.setItem(STORE,v)}catch(_){}};
+function anatomy(info){
+  const d=info?day(info):null;
+  const stored=String(d?.anatomy||'').toLowerCase();
+  if(stored==='male'||stored==='female')return stored;
+  try{return sessionStorage.getItem(STORE)||''}catch(_){return''}
+}
+function setAnatomy(info,v){
+  try{sessionStorage.setItem(STORE,v)}catch(_){}
+  const raw=window.data?.routines?.[info?.id];
+  const days=Array.isArray(raw)?raw:Array.isArray(raw?.routine)?raw.routine:[];
+  days.forEach(d=>{if(d&&typeof d==='object')d.anatomy=v});
+  try{window.saveData?.()}catch(_){}
+}
 function css(){document.querySelectorAll('[id^="dcc-muscle-premium-light-css-"]').forEach(x=>x.remove());const s=document.createElement('style');s.id='dcc-muscle-premium-light-css-final';s.textContent=`
 #coach-main .dcc-muscle-anatomy{margin:5px 0 6px!important;padding:7px 9px!important;border:1px solid rgba(190,137,30,.34)!important;border-radius:16px!important;background:#fffaf1!important;box-shadow:0 5px 14px rgba(83,63,31,.045)!important;color:#17191d!important}
 #coach-main .dcc-muscle-anatomy-title{font-size:12px!important;line-height:1.1!important;font-weight:900!important;color:#17191d!important}
@@ -35,10 +47,34 @@ function css(){document.querySelectorAll('[id^="dcc-muscle-premium-light-css-"]'
 @media(max-width:350px){#coach-main .dcc-muscle-premium-grid{gap:5px!important}#coach-main button.dcc-muscle-premium-card{height:60px!important;min-height:60px!important}#coach-main .dcc-muscle-premium-art{width:84px!important;height:41px!important;background-size:294px 210px!important}#coach-main .dcc-muscle-premium-name{font-size:8.3px!important}}
 `;(document.head||document.documentElement).appendChild(s)}
 function parse(c){const m=(c.getAttribute('onclick')||'').match(/toggleTrainingMuscle\('([^']*)',(\d+),'([^']*)'\)/);return m?{id:m[1],day:+m[2],group:m[3].replace(/\\'/g,"'")}:null}function day(i){const r=window.data?.routines?.[i.id],ds=Array.isArray(r)?r:Array.isArray(r?.routine)?r.routine:[];return ds[i.day]}function selected(i){const d=day(i),a=Array.isArray(d?.muscleGroups)?d.muscleGroups:Array.isArray(d?.muscles)?d.muscles:[];return a.map(canon)}
-function sprite(g,a){g=canon(g);const p=MP[g];if(!p)return'';if(g==='Pierna completa')return `background-image:url("${FULL_LEG}")!important;background-size:contain!important;background-position:center!important`;const src=a==='female'?FEMALE:MALE;const cellW=98,cellH=52.5;const viewW=88,viewH=43;let cropX=(cellW-viewW)/2;const cropY=(cellH-viewH)/2;if(a==='female'&&g==='Core')cropX+=6;if(a==='female'&&g==='Glúteos')cropX+=12;return `background-image:url("${src}")!important;background-position:${-(p[0]*cellW+cropX)}px ${-(p[1]*cellH+cropY)}px!important`}
-function anatomyHtml(){const a=anatomy();return `<section class="dcc-muscle-anatomy" data-dcc-anatomy="1"><div class="dcc-muscle-anatomy-title">¿Qué anatomía quieres utilizar?</div><div class="dcc-muscle-anatomy-sub">La elección solo afecta a las ilustraciones.</div><div class="dcc-muscle-anatomy-options"><button type="button" class="dcc-muscle-anatomy-option ${a==='male'?'on':''}" data-anatomy="male"><span class="dcc-muscle-anatomy-dot">✓</span><span class="dcc-muscle-anatomy-preview male"></span><span><b>Hombre</b><small>Ilustración masculina</small></span></button><button type="button" class="dcc-muscle-anatomy-option ${a==='female'?'on':''}" data-anatomy="female"><span class="dcc-muscle-anatomy-dot">✓</span><span class="dcc-muscle-anatomy-preview female"></span><span><b>Mujer</b><small>Ilustración femenina</small></span></button></div>${a?'':'<div class="dcc-muscle-anatomy-hint">Elige una anatomía para continuar.</div>'}</section>`}
-function ensureA(grid){let box=grid.previousElementSibling;if(!box?.matches?.('[data-dcc-anatomy="1"]')){grid.insertAdjacentHTML('beforebegin',anatomyHtml());box=grid.previousElementSibling}box.querySelectorAll('[data-anatomy]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();setAnatomy(b.dataset.anatomy);box.outerHTML=anatomyHtml();decorate()})}
-function decorate(){css();const cards=[...document.querySelectorAll('#coach-main button[onclick*="toggleTrainingMuscle"]')];if(!cards.length)return;const grid=cards[0].parentElement;if(!grid)return;grid.classList.add('dcc-muscle-premium-grid');ensureA(grid);const a=anatomy();grid.classList.toggle('dcc-await-anatomy',!a);cards.forEach(c=>{c.querySelectorAll(':scope>.training-muscle-check').forEach(x=>x.remove());const i=parse(c);if(!i)return;const g=canon(i.group);if(!(MP[g]||FP[g])){c.style.display='none';return}const list=selected(i),n=list.indexOf(g)+1;c.classList.add('dcc-muscle-premium-card');c.classList.toggle('is-selected',n>0);const sig=`${a||'male'}|${g}|${n}`;if(c.dataset.dccPremiumSig!==sig){c.dataset.dccPremiumSig=sig;c.innerHTML=`<span class="dcc-muscle-premium-check">${n||''}</span><span class="dcc-muscle-premium-art ${a==='female'?'female':'male'}" style='${sprite(g,a||'male')}'></span><span class="dcc-muscle-premium-name">${g==='Isquiotibiales'?'Femoral':g}</span>`}})}
+const FEMALE_NEW_POS={
+  'Pectoral':[0,5],'Dorsal':[50,5],'Hombros':[100,5],
+  'Bíceps':[50,35],'Tríceps':[100,35],
+  'Core':[50,65],'Cuádriceps':[100,65],
+  'Isquiotibiales':[0,95],'Femoral':[0,95],
+  'Glúteos':[50,95],'Gemelos':[100,95]
+};
+function sprite(g,a){
+  g=canon(g);
+  const p=MP[g];
+  if(!p)return'';
+  if(g==='Pierna completa'){
+    const src=a==='female'?FULL_LEG_FEMALE:FULL_LEG;
+    return `background-image:url("${src}")!important;background-size:contain!important;background-position:center!important`;
+  }
+  if(a==='female'&&FEMALE_NEW_POS[g]){
+    const pos=FEMALE_NEW_POS[g];
+    return `background-image:url("${FEMALE_ATLAS}")!important;background-size:300% auto!important;background-position:${pos[0]}% ${pos[1]}%!important`;
+  }
+  const src=a==='female'?FEMALE_FALLBACK:MALE;
+  const cellW=98,cellH=52.5,viewW=88,viewH=43;
+  let cropX=(cellW-viewW)/2;
+  const cropY=(cellH-viewH)/2;
+  return `background-image:url("${src}")!important;background-position:${-(p[0]*cellW+cropX)}px ${-(p[1]*cellH+cropY)}px!important`;
+}
+function anatomyHtml(a){return `<section class="dcc-muscle-anatomy" data-dcc-anatomy="1"><div class="dcc-muscle-anatomy-title">¿Qué anatomía quieres utilizar?</div><div class="dcc-muscle-anatomy-sub">La elección se guarda para este cliente y también se usa en su perfil.</div><div class="dcc-muscle-anatomy-options"><button type="button" class="dcc-muscle-anatomy-option ${a==='male'?'on':''}" data-anatomy="male"><span class="dcc-muscle-anatomy-dot">✓</span><span class="dcc-muscle-anatomy-preview male"></span><span><b>Hombre</b><small>Ilustración masculina</small></span></button><button type="button" class="dcc-muscle-anatomy-option ${a==='female'?'on':''}" data-anatomy="female"><span class="dcc-muscle-anatomy-dot">✓</span><span class="dcc-muscle-anatomy-preview female"></span><span><b>Mujer</b><small>Ilustración femenina</small></span></button></div>${a?'':'<div class="dcc-muscle-anatomy-hint">Elige una anatomía para continuar.</div>'}</section>`}
+function ensureA(grid,info){const a=anatomy(info);let box=grid.previousElementSibling;if(!box?.matches?.('[data-dcc-anatomy="1"]')){grid.insertAdjacentHTML('beforebegin',anatomyHtml(a));box=grid.previousElementSibling}else if(box.dataset.dccAnatomyValue!==a){box.outerHTML=anatomyHtml(a);box=grid.previousElementSibling}if(!box)return;box.dataset.dccAnatomyValue=a;box.querySelectorAll('[data-anatomy]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();setAnatomy(info,b.dataset.anatomy);box.outerHTML=anatomyHtml(b.dataset.anatomy);decorate()})}
+function decorate(){css();const cards=[...document.querySelectorAll('#coach-main button[onclick*="toggleTrainingMuscle"]')];if(!cards.length)return;const grid=cards[0].parentElement;if(!grid)return;const firstInfo=parse(cards[0]);grid.classList.add('dcc-muscle-premium-grid');ensureA(grid,firstInfo);const a=anatomy(firstInfo);grid.classList.toggle('dcc-await-anatomy',!a);cards.forEach(c=>{c.querySelectorAll(':scope>.training-muscle-check').forEach(x=>x.remove());const i=parse(c);if(!i)return;const g=canon(i.group);if(!(MP[g]||FP[g])){c.style.display='none';return}const list=selected(i),n=list.indexOf(g)+1;c.classList.add('dcc-muscle-premium-card');c.classList.toggle('is-selected',n>0);const sig=`${a||'male'}|${g}|${n}`;if(c.dataset.dccPremiumSig!==sig){c.dataset.dccPremiumSig=sig;c.innerHTML=`<span class="dcc-muscle-premium-check">${n||''}</span><span class="dcc-muscle-premium-art ${a==='female'?'female':'male'}" style='${sprite(g,a||'male')}'></span><span class="dcc-muscle-premium-name">${g==='Isquiotibiales'?'Femoral':g}</span>`}})}
 let raf=0;function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;decorate()})}function wrap(){const old=window.toggleTrainingMuscle;if(typeof old==='function'&&!old.__dccPremiumLightV3){const f=function(){const i={id:String(arguments[0]),day:+arguments[1],group:String(arguments[2]||'')},before=selected(i);if(!before.includes(canon(i.group))&&before.length>=3){window.toast?.('Puedes seleccionar hasta 3 grupos musculares');return false}const r=old.apply(this,arguments);requestAnimationFrame(decorate);return r};f.__dccPremiumLightV3=true;f.__dccOriginal=old;window.toggleTrainingMuscle=f}}
 function start(){wrap();decorate();const root=document.getElementById('coach-main');if(root)new MutationObserver(()=>{wrap();schedule()}).observe(root,{childList:true,subtree:true})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
