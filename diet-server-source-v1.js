@@ -14,20 +14,21 @@
     const sid=String(id);
     const {data:rows,error}=await database
       .from('client_diets')
-      .select('diet_type,calories,protein,meals,updated_at')
+      .select('diet_type,calories,protein,meals,notes,updated_at')
       .eq('client_id',sid);
     if(error)throw error;
 
     const next={
-      training:{calories:'',protein:'',meals:[]},
-      rest:{calories:'',protein:'',meals:[]}
+      training:{calories:'',protein:'',meals:[],notes:''},
+      rest:{calories:'',protein:'',meals:[],notes:''}
     };
     (rows||[]).forEach(row=>{
       if(row?.diet_type!=='training'&&row?.diet_type!=='rest')return;
       next[row.diet_type]={
         calories:String(row.calories??''),
         protein:String(row.protein??''),
-        meals:Array.isArray(row.meals)?row.meals:[]
+        meals:Array.isArray(row.meals)?row.meals:[],
+        notes:String(row.notes??'')
       };
     });
 

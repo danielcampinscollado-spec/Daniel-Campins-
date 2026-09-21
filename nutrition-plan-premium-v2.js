@@ -22,12 +22,12 @@ function hasPlan(id){const diets=window.data?.diets;if(!diets||!Object.prototype
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 async function refreshPlan(id){
   if(!window.supabaseClient)throw new Error('No hay conexión con Supabase');
-  const{data:rows,error}=await window.supabaseClient.from('client_diets').select('diet_type,calories,protein,meals,updated_at').eq('client_id',String(id));
+  const{data:rows,error}=await window.supabaseClient.from('client_diets').select('diet_type,calories,protein,meals,notes,updated_at').eq('client_id',String(id));
   if(error)throw error;
-  const next={training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
+  const next={training:{calories:'',protein:'',meals:[],notes:''},rest:{calories:'',protein:'',meals:[],notes:''}};
   (rows||[]).forEach(row=>{
     if(row?.diet_type!=='training'&&row?.diet_type!=='rest')return;
-    next[row.diet_type]={calories:String(row.calories??''),protein:String(row.protein??''),meals:Array.isArray(row.meals)?clone(row.meals):[],updated_at:row.updated_at||null};
+    next[row.diet_type]={calories:String(row.calories??''),protein:String(row.protein??''),meals:Array.isArray(row.meals)?clone(row.meals):[],notes:String(row.notes??''),updated_at:row.updated_at||null};
   });
   window.data=window.data||{};
   window.data.diets=window.data.diets||{};
