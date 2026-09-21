@@ -10619,6 +10619,25 @@ function nextWorkoutExercise(){
 
   }
 
+  /*
+    Si el siguiente bloque es una superserie, se entra directamente.
+    El descanso propio de la superserie solo empieza tras completar
+    todos sus ejercicios de la vuelta.
+  */
+  const nextExercise=workout.exercises[workout.currentExercise];
+
+  if(nextExercise?.supersetId){
+
+    workout.restUntil=null;
+    workout.restMode=null;
+
+    renderWorkoutSession();
+
+    toast("Empieza la superserie · sin descanso");
+
+    return;
+  }
+
   /* Descanso entre ejercicios configurado por el entrenador */
 
   const restSeconds=
@@ -16686,7 +16705,7 @@ async function sendClientCheckin(){
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
 <script src="./client-home-light-fix-v1.js?v=20260920-client-compact-final-v4-loadfix"></script>
 <script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>
-<script src="./training-superset-v1.js?v=20260921-superset-round-flow1"></script>
+<script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
 <script src="./client-training.js?v=20260921-user-muscles-v5"></script>
 
 

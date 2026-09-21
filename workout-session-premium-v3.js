@@ -128,17 +128,56 @@
     return `<div class="dwa3-today">${sets.map((set,i)=>`<span><b>S${i+1}</b> ${fmt(set.kg)} kg × ${fmt(set.reps)}</span>`).join('')}</div>`;
   }
 
-  function renderRest(workout,exercise){
+  function supersetViewContext(workout,exercise){
+    if(!workout||!exercise?.supersetId)return null;
+    const currentIndex=Number(workout.currentExercise)||0;
+    const groupIndices=(workout.exercises||[])
+      .map((item,index)=>item?.supersetId===exercise.supersetId?index:-1)
+      .filter(index=>index>=0)
+      .sort((a,b)=>{
+        const ao=parseInt(workout.exercises[a]?.supersetOrder);
+        const bo=parseInt(workout.exercises[b]?.supersetOrder);
+        return (Number.isFinite(ao)?ao:a)-(Number.isFinite(bo)?bo:b);
+      });
+    if(!groupIndices.length)return null;
+    const position=Math.max(0,groupIndices.indexOf(currentIndex));
+    const rounds=Math.max(1,parseInt(exercise.supersetRounds)||parseInt(exercise.sets)||1);
+    const round=Math.min(rounds,Math.max(1,parseInt(workout.supersetRoundById?.[exercise.supersetId])||1));
+    return {groupIndices,position,rounds,round,size:groupIndices.length};
+  }
+
+  function renderRest(workout,exercise,superset){
     const active=!!(workout.restUntil&&workout.restUntil>Date.now());
     if(!active)return '';
     const remaining=Math.max(0,Math.ceil((Number(workout.restUntil)-Date.now())/1000));
-    return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>DESCANSO</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>Recupera antes de la siguiente serie.</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
+    const copy=superset?'Descansa antes de la siguiente vuelta.':'Recupera antes de la siguiente serie.';
+    return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>DESCANSO</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>${copy}</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
   }
 
-  function renderCurrent(workout,exercise,stats,planned,completed,finished){
-    const currentIndex=Math.min(completed,Math.max(0,planned-1));
+  function renderCurrent(workout,exercise,stats,planned,completed,finished,superset){
+    const visualPlanned=superset?superset.rounds:planned;
+    const visualCompleted=superset?Math.max(0,superset.round-1):completed;
+    const currentIndex=Math.min(visualCompleted,Math.max(0,visualPlanned-1));
     const previousSet=stats.latest?.sets?.[currentIndex]||null;
     const restActive=!!(workout.restUntil&&workout.restUntil>Date.now());
+
+    if(superset){
+      const currentRound=Math.min(superset.round,superset.rounds);
+      const exerciseNumber=superset.position+1;
+      const isLastInRound=exerciseNumber>=superset.size;
+      const completedRound=Math.max(0,currentRound-1);
+
+      return `<section class="dwa3-card dwa3-current">
+        <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>SUPERSERIE</span></div><small>Vuelta ${currentRound} de ${superset.rounds} · Ejercicio ${exerciseNumber} de ${superset.size}</small></div>
+        <div class="dwa3-steps">${renderSeriesSteps(superset.rounds,completedRound)}</div>
+        ${restActive?`<div class="dwa3-rest-note">Vuelta ${completedRound} completada · descansa antes de continuar</div>`:`
+          <div class="dwa3-fields">
+            <label><b>Peso (kg)</b><div class="dwa3-input"><input id="workout-kg" type="number" inputmode="decimal" step="0.5" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>kg</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.kg)} kg`:'Sin registro anterior'}</small></label>
+            <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
+          </div>
+          <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${isLastInRound?'Guardar y descansar':`Guardar y pasar al ejercicio ${exerciseNumber+1}`} <b>→</b></button>`}
+      </section>`;
+    }
 
     if(finished){
       return `<section class="dwa3-card dwa3-current"><div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>EJERCICIO COMPLETADO</span></div><small>${completed} de ${planned}</small></div>${renderSavedToday(workout.sets)}<button class="dwa3-primary" type="button" onclick="nextWorkoutExercise()">${workout.currentExercise<workout.exercises.length-1?'Siguiente ejercicio':'Finalizar entrenamiento'} <b>→</b></button></section>`;
@@ -190,8 +229,9 @@
 
     document.body.classList.add('dcc-workout-mode');
     const total=workout.exercises.length,current=workout.currentExercise+1;
+    const superset=supersetViewContext(workout,exercise);
     const planned=Math.max(0,parseInt(exercise.sets)||0),completed=workout.sets.length;
-    const finished=planned>0&&completed>=planned;
+    const finished=!superset&&planned>0&&completed>=planned;
     const stats=historyStats(workout.clientId,exercise);
     const image=exerciseImage(exercise);
     const muscle=exercise.muscle||exercise.group||exercise.grupo||'';
@@ -306,7 +346,7 @@
           <div class="dwa3-copy">
             <div class="dwa3-kicker"><button type="button" class="dwa3-back" onclick="cancelWorkout()" aria-label="Volver">${icon('back')}</button><div><span>ENTRENAMIENTO</span><small>Ejercicio ${current} de ${total}</small></div></div>
             <h1 class="dwa3-title">${esc(exercise.name||'Ejercicio')}</h1>
-            <div class="dwa3-badges">${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
+            <div class="dwa3-badges">${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${superset?`<span class="dwa3-badge">Superserie · ${superset.rounds} vueltas</span>`:planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
           </div>
           <div class="dwa3-media">${image?`<img src="./${esc(image)}" alt="${esc(exercise.name||'')}">`:'<div class="dwa3-media-placeholder">◇</div>'}</div>
           <div class="dwa3-actions"><button type="button" class="dwa3-tech" onclick="${techniqueAction}">${icon('play')} Ver técnica</button><div class="dwa3-elapsed"><div class="dwa3-elapsed-icon">${icon('clock')}</div><strong id="workout-elapsed">00:00</strong></div></div>
@@ -316,8 +356,8 @@
 
         <section class="dwa3-card dwa3-tip ${window.__dccWorkoutTipOpen?'open':''}"><button type="button" class="dwa3-tip-toggle" aria-expanded="${window.__dccWorkoutTipOpen?'true':'false'}" onclick="dccToggleWorkoutTips()"><div class="dwa3-history-icon">${icon('bulb')}</div><div class="head">CONSEJOS DEL EJERCICIO</div><span class="dwa3-tip-chevron"></span></button><div class="dwa3-tip-body">${esc(tip)}</div></section>
 
-        ${renderCurrent(workout,exercise,stats,planned,completed,finished)}
-        ${renderRest(workout,exercise)}
+        ${renderCurrent(workout,exercise,stats,planned,completed,finished,superset)}
+        ${renderRest(workout,exercise,superset)}
         <button type="button" class="dwa3-exit" onclick="cancelWorkout()">${icon('exit')} Salir del entrenamiento</button>
       </div>`;
 
