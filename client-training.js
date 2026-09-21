@@ -388,7 +388,7 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
           position:relative!important;
           width:92px!important;
-          height:111px!important;
+          height:102px!important;
           border:0!important;
           border-radius:14px!important;
           overflow:hidden!important;
@@ -411,10 +411,10 @@
           transform:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-goldized img{
-          object-fit:contain!important;
+          object-fit:cover!important;
           object-position:center!important;
-          padding:3px!important;
-          filter:sepia(.72) saturate(1.08) hue-rotate(354deg) brightness(1.06) contrast(1.06)!important;
+          padding:0!important;
+          filter:saturate(1.22) hue-rotate(32deg) brightness(1.07) contrast(1.05)!important;
           transform:none!important
         }
 
@@ -434,7 +434,7 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{
           width:58px!important;
-          height:84px!important;
+          height:64px!important;
           border-radius:11px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle img{
@@ -467,7 +467,7 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{
           width:110px!important;
-          height:126px!important
+          height:116px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="0"]{
           grid-template-columns:1fr!important
@@ -544,13 +544,13 @@
           top:0!important;
           right:0!important;
           width:48%!important;
-          height:100%!important;
+          height:158px!important;
           max-width:none!important;
           object-fit:cover!important;
           object-position:58% center!important;
           image-rendering:auto!important;
           border:0!important;
-          border-radius:0 21px 21px 0!important;
+          border-radius:0 21px 0 0!important;
           filter:none!important;
           pointer-events:none!important;
           -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.55) 12%,#000 32%,#000 100%)!important;
@@ -559,17 +559,20 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-plate-fade{
           position:absolute!important;
           z-index:1!important;
-          inset:0!important;
+          top:0!important;
+          left:0!important;
+          right:0!important;
+          height:158px!important;
           pointer-events:none!important;
           background:
-            radial-gradient(circle at 67% 12%,rgba(239,194,94,.16),transparent 27%),
+            radial-gradient(circle at 67% 12%,rgba(239,194,94,.14),transparent 27%),
             linear-gradient(90deg,
               #fffdf8 0%,
               rgba(255,253,248,1) 42%,
               rgba(255,253,248,.90) 49%,
-              rgba(255,253,248,.56) 57%,
-              rgba(255,253,248,.18) 65%,
-              rgba(255,253,248,.02) 73%,
+              rgba(255,253,248,.52) 57%,
+              rgba(255,253,248,.14) 65%,
+              rgba(255,253,248,.01) 73%,
               rgba(255,253,248,0) 80%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine>*:not(.dct3-plate):not(.dct3-plate-fade){
@@ -579,12 +582,16 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-routine.open{
           background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-plate,
-        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-plate-fade{
-          display:none!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-routine.open .dct3-list{
+          position:relative!important;
+          z-index:3!important;
+          margin-left:-2px!important;
+          margin-right:-2px!important;
+          padding:12px 2px 0!important;
+          background:linear-gradient(180deg,rgba(255,254,250,.98) 0%,rgba(251,245,235,.99) 100%)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine.open h3{
-          max-width:100%!important
+          max-width:54%!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{
           margin:0!important;
@@ -734,11 +741,11 @@
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:172px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:83px!important;width:83px!important;min-width:83px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:83px!important;height:100px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:83px!important;height:92px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 164px!important;gap:7px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:164px!important;gap:4px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:52px!important;width:52px!important;min-width:52px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:78px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:58px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:132px!important;font-size:15.5px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 112px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:112px!important}
@@ -759,11 +766,11 @@
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:198px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:96px!important;width:96px!important;min-width:96px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:96px!important;height:114px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:96px!important;height:104px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 198px!important;gap:9px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:198px!important;gap:4px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:63px!important;width:63px!important;min-width:63px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:90px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:69px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:160px!important;font-size:17px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 136px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:136px!important}
