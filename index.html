@@ -4515,19 +4515,12 @@ body{
 
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-if(!window.supabase){
-  document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\\/script>');
-}
-</script>
 <script src="./ejercicio-biblioteca.js?v=20260916-audit2"></script>
 <script>
 const KEY="danielCampinsApp";
 const SUPABASE_URL="https://khrhfurdlbqnlthlkhhp.supabase.co";
 const SUPABASE_KEY="sb_publishable_Dhr67diGFP22g8PKdmUg9A_jbn2EyNZ";
-window.DCC_SUPABASE_URL=SUPABASE_URL;
-window.DCC_SUPABASE_KEY=SUPABASE_KEY;
-const supabaseClient=window.supabaseClient=window.supabase?.createClient ? window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY) : null;
+const supabaseClient=window.supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let data=loadData();
 
 var currentApp="";
@@ -17136,7 +17129,121 @@ async function sendClientCheckin(){
 
 
 
+<script id="dcc-auth-flow-v4">
+(function(){
+  const ROLE_KEY='dcc:selected-access-role';
+  let busy=false;
+  const role=()=>{try{return localStorage.getItem(ROLE_KEY)||''}catch(_){return ''}};
+  const save=r=>{try{localStorage.setItem(ROLE_KEY,r)}catch(_){}};
+  const clear=()=>{try{localStorage.removeItem(ROLE_KEY)}catch(_){}};
+  function resetAccessUi(){
+    document.getElementById('dcc-google-auth-box')?.remove();
+    document.getElementById('dcc-client-email-box')?.remove();
+    document.querySelector('#login .dcc-access-grid')?.removeAttribute('style');
+  }
+  function googleScreen(r){
+    const login=document.getElementById('login'),shell=login?.querySelector('.dcc-login-shell');if(!login||!shell)return;
+    login.style.display='flex';resetAccessUi();
+    let box=document.createElement('div');box.id='dcc-google-auth-box';box.style.cssText='margin-top:18px;display:grid;gap:10px';shell.appendChild(box);
+    box.innerHTML='<button type="button" id="dcc-google-auth-go" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(145deg,#fffdf8,#fbf2df);color:#17191d;font-weight:850;font-size:15px">Continuar con Google</button><button type="button" id="dcc-google-auth-back" style="border:0;background:transparent;color:#8b6a2b;font-weight:800;padding:8px">Volver</button>';
+    login.querySelector('.dcc-access-grid')?.setAttribute('style','display:none!important');
+    document.getElementById('dcc-google-auth-go').onclick=async()=>{
+      if(busy)return;busy=true;save(r);
+      try{
+        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname+'?dcc_role='+encodeURIComponent(r),skipBrowserRedirect:false}});
+        if(error)throw error;
+      }catch(e){busy=false;console.error(e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}
+    };
+    document.getElementById('dcc-google-auth-back').onclick=()=>{busy=false;clear();resetAccessUi()};
+  }
+  function clientEmailScreen(){
+    const login=document.getElementById('login'),shell=login?.querySelector('.dcc-login-shell');if(!login||!shell)return;
+    login.style.display='flex';resetAccessUi();save('client');
+    const box=document.createElement('div');box.id='dcc-client-email-box';box.style.cssText='margin-top:18px;display:grid;gap:10px';shell.appendChild(box);
+    box.innerHTML='<div style="padding:14px;border:1px solid rgba(210,170,93,.42);border-radius:16px;background:#fffdf8;text-align:left"><b style="display:block;color:#17191d;font-size:15px;margin-bottom:5px">Acceso cliente</b><span style="display:block;color:#75684e;font-size:12px;line-height:1.45">Introduce el correo que tu entrenador asignó a tu perfil. Recibirás un enlace seguro para entrar.</span></div><input id="dcc-client-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" style="width:100%;min-height:52px;border:1px solid rgba(210,170,93,.55);border-radius:15px;background:#fff;color:#17191d;padding:0 14px;font:inherit;box-sizing:border-box"><button type="button" id="dcc-client-email-send" style="width:100%;min-height:54px;border:1px solid #d2aa5d;border-radius:16px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-weight:900;font-size:15px">Enviar enlace de acceso</button><div id="dcc-client-email-status" style="display:none;padding:11px 12px;border-radius:12px;background:#fff7df;color:#6f5522;font-size:12px;font-weight:750;line-height:1.4"></div><button type="button" id="dcc-client-email-back" style="border:0;background:transparent;color:#8b6a2b;font-weight:800;padding:8px">Volver</button>';
+    login.querySelector('.dcc-access-grid')?.setAttribute('style','display:none!important');
+    const input=document.getElementById('dcc-client-email'),send=document.getElementById('dcc-client-email-send'),status=document.getElementById('dcc-client-email-status');
+    send.onclick=async()=>{
+      const email=String(input?.value||'').trim().toLowerCase();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.style.display='block';status.textContent='Introduce un correo válido.';return}
+      if(busy)return;busy=true;send.disabled=true;status.style.display='block';status.textContent='Enviando enlace…';save('client');
+      try{
+        try{await supabaseClient.auth.signOut()}catch(_){}
+        const {error}=await supabaseClient.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname+'?dcc_role=client'}});
+        if(error)throw error;
+        status.textContent='Enlace enviado. Revisa tu correo y pulsa el enlace para entrar.';
+      }catch(e){
+        console.error('DCC client email auth',e);
+        status.textContent='No se pudo enviar el enlace. Inténtalo de nuevo.';
+        busy=false;send.disabled=false;
+      }
+    };
+    input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send.click()}});
+    document.getElementById('dcc-client-email-back').onclick=()=>{busy=false;clear();resetAccessUi()};
+  }
+  window.dccChooseAccessRole=async function(r){
+    if(r!=='client'&&r!=='coach'||busy)return;
+    if(r==='client'){clientEmailScreen();return}
+    try{
+      const {data}=await supabaseClient.auth.getSession();
+      if(data?.session){save(r);return openApp(r)}
+    }catch(_){}
+    save(r);googleScreen(r);
+  };
+  async function resumeOnce(){
+    if(window.__dccAuthResumed)return;
+    window.__dccAuthResumed=true;
 
+    const qp=new URLSearchParams(location.search).get('dcc_role');
+    let r=(qp==='client'||qp==='coach')?qp:role();
+
+    try{
+      const {data}=await supabaseClient.auth.getSession();
+      const session=data?.session||null;
+
+      // Las versiones anteriores borraban el rol tras entrar. Si hay una
+      // sesión válida pero no queda rol guardado, detectar automáticamente
+      // si esta cuenta pertenece a un cliente para que el enlace estable
+      // vuelva a abrir Inicio sin pedir el correo otra vez.
+      if(session && r!=='client' && r!=='coach'){
+        try{
+          const {data:clientId,error:clientRoleError}=await supabaseClient.rpc('dcc_claim_client_access');
+          if(!clientRoleError && clientId)r='client';
+        }catch(_){}
+      }
+
+      if(session){
+        if(r!=='client'&&r!=='coach')return;
+        save(r);
+        history.replaceState({},document.title,location.pathname);
+        await openApp(r);
+        return;
+      }
+
+      let authSubscription=null;
+      const {data:listener}=supabaseClient.auth.onAuthStateChange(async(event,newSession)=>{
+        if(!newSession)return;
+        authSubscription?.unsubscribe();
+
+        let nextRole=(qp==='client'||qp==='coach')?qp:role();
+        if(nextRole!=='client'&&nextRole!=='coach'){
+          try{
+            const {data:clientId,error:clientRoleError}=await supabaseClient.rpc('dcc_claim_client_access');
+            if(!clientRoleError && clientId)nextRole='client';
+          }catch(_){}
+        }
+        if(nextRole!=='client'&&nextRole!=='coach')return;
+
+        save(nextRole);
+        history.replaceState({},document.title,location.pathname);
+        if(!window.currentApp)openApp(nextRole);
+      });
+      authSubscription=listener?.subscription||null;
+    }catch(e){console.error('DCC auth resume',e)}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resumeOnce,{once:true});else resumeOnce();
+})();
+</script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
 <script>
 (function(){
