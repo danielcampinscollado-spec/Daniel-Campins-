@@ -4,7 +4,7 @@
 (function(){
   'use strict';
 
-  const BUILD='20260919-training-methods-v8b-compact-config';
+  const BUILD='20260921-training-methods-v9-superset-round-flow';
   if(window.__dccTrainingMethods===BUILD)return;
   window.__dccTrainingMethods=BUILD;
 
