@@ -103,12 +103,18 @@
       : String(day?.muscle||'').split(/[·+,&/]/);
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
-      const sprite=goldMuscle(name);
-      if(sprite&&!out.some(x=>x.key===sprite.key))out.push({name,key:sprite.key,x:sprite.x,y:sprite.y});
+      const path=overviewMuscleAsset(name);
+      if(path&&!out.some(x=>x.path===path)){
+        out.push({
+          name,
+          path,
+          premium:/reference-premium\.webp$/i.test(path)
+        });
+      }
     });
     if(!out.length&&day?.muscle){
-      const sprite=goldMuscle(day.muscle);
-      if(sprite)out.push({name:day.muscle,key:sprite.key,x:sprite.x,y:sprite.y});
+      const path=overviewMuscleAsset(day.muscle);
+      if(path)out.push({name:day.muscle,path,premium:/reference-premium\.webp$/i.test(path)});
     }
     return out.slice(0,2);
   }
@@ -188,7 +194,7 @@
         );
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
-    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle dct3-muscle-gold" role="img" aria-label="${esc(x.name)}" style="--gold-x:${x.x}%;--gold-y:${x.y}%"></div><span>${esc(x.name)}</span></div>`).join('');
+    const visuals=muscles.map(x=>`<div class="dct3-muscle-wrap"><div class="dct3-muscle ${x.premium?'is-premium':'is-goldized'}"><img src="./${esc(x.path)}?v=20260921-muscle-fix2" alt="${esc(x.name)}"></div><span>${esc(x.name)}</span></div>`).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
       return `<div class="dct3-exercise"><strong>${esc(ex?.name||'Ejercicio')}</strong>${video?`<button type="button" class="dct3-video" data-video="${esc(video)}">Ver vídeo</button>`:''}</div>`;
@@ -357,12 +363,27 @@
           background:#151514!important;
           box-shadow:none!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.dct3-muscle-gold{
-          background-image:url('${GOLD_MUSCLE_SPRITE}')!important;
-          background-repeat:no-repeat!important;
-          background-size:300% 400%!important;
-          background-position:var(--gold-x,50%) var(--gold-y,50%)!important;
-          background-color:#151514!important
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle img{
+          display:block!important;
+          width:100%!important;
+          height:100%!important;
+          max-width:none!important;
+          border:0!important;
+          border-radius:14px!important;
+          background:#151514!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-premium img{
+          object-fit:cover!important;
+          object-position:center!important;
+          filter:none!important;
+          transform:none!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-goldized img{
+          object-fit:contain!important;
+          object-position:center!important;
+          padding:3px!important;
+          filter:sepia(.72) saturate(1.08) hue-rotate(354deg) brightness(1.06) contrast(1.06)!important;
+          transform:none!important
         }
 
         /* Un único músculo: imagen mayor, centrada y sin hueco reservado para una segunda. */
