@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-authority-final-v1';
+const BUILD='20260921-client-home-authority-week-carousel1';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -147,7 +147,7 @@ function css(){
     margin:0!important;color:#707989!important;font-size:9.2px!important;line-height:1.3!important
   }
 
-  /* WEEK: compact but readable, supports up to 7 days */
+  /* WEEK: five visible cards, 6-7 available by carousel */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
     padding:11px 10px 12px!important
   }
@@ -159,30 +159,38 @@ function css(){
     color:#a66d0d!important;font-size:7px!important;font-weight:850!important;letter-spacing:1.45px!important;
     text-transform:uppercase!important;white-space:nowrap!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
-    display:grid!important;gap:7px!important;width:100%!important
+  html.dcc-theme-light-premium body #client #client-main .dcc-week-carousel{
+    display:grid!important;grid-template-columns:18px minmax(0,1fr) 18px!important;
+    align-items:center!important;gap:5px!important;width:100%!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-week-arrow{
+    width:18px!important;height:38px!important;display:grid!important;place-items:center!important;
+    padding:0!important;border:0!important;background:transparent!important;color:#aa7411!important;
+    font-family:Georgia,"Times New Roman",serif!important;font-size:24px!important;line-height:1!important;
+    cursor:pointer!important;opacity:1!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-week-arrow:disabled{
+    opacity:.14!important;cursor:default!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
-    grid-template-columns:repeat(4,minmax(0,1fr))!important
+    display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    gap:6px!important;width:100%!important;min-width:0!important
   }
-
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
-    min-width:0!important;min-height:74px!important;padding:9px 6px 8px!important;
+    min-width:0!important;min-height:82px!important;padding:9px 4px 8px!important;
     border:1px solid rgba(177,127,38,.17)!important;border-radius:13px!important;
     background:#fbf8f2!important;text-align:center!important;overflow:hidden!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{
-    display:block!important;color:#17191d!important;font-size:11.5px!important;line-height:1!important;font-weight:850!important
+    display:block!important;color:#17191d!important;font-size:10.5px!important;line-height:1!important;font-weight:850!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{
-    display:block!important;min-height:21px!important;margin-top:6px!important;color:#737b86!important;
-    font-size:7.5px!important;line-height:1.15!important;overflow:hidden!important
+    display:block!important;min-height:24px!important;margin-top:6px!important;color:#737b86!important;
+    font-size:7.1px!important;line-height:1.12!important;overflow:hidden!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{display:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day em{
     display:inline-flex!important;align-items:center!important;justify-content:center!important;
-    min-width:22px!important;height:20px!important;margin:6px auto 0!important;padding:0 6px!important;
+    min-width:23px!important;height:21px!important;margin:6px auto 0!important;padding:0 6px!important;
     border-radius:999px!important;background:#f1ece2!important;color:#91794d!important;
     font-size:8px!important;line-height:1!important;font-style:normal!important;font-weight:850!important
   }
@@ -199,17 +207,16 @@ function css(){
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next em{
     background:#f0c95e!important;color:#3c2a08!important
   }
-
-  @media(max-width:430px){
-    
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{min-height:78px!important;padding:9px 5px 8px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{font-size:11px!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full{display:none!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini{display:inline!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .full-muscle{display:none!important}
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .mini-muscle{
-      display:block!important;font-size:7.2px!important;line-height:1.12!important
+  @media(max-width:390px){
+    html.dcc-theme-light-premium body #client #client-main .dcc-week-carousel{
+      grid-template-columns:16px minmax(0,1fr) 16px!important;gap:4px!important
     }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{gap:5px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
+      min-height:78px!important;padding:8px 3px 7px!important
+    }
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{font-size:10px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{font-size:6.7px!important}
   }
 
   /* TOP PREMIUM NEXT WORKOUT */
@@ -406,13 +413,34 @@ function renderHome(){
     tasks.push({type:'check',title:'Nueva alimentación',text:'Tu entrenador ha actualizado tu alimentación',action:"showClient('food')"});
   }
 
-  const days=r.map((day,i)=>{
+  const allDays=r.map((day,i)=>{
     const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
     const isNext=i===next.index;
     const state=done?'Completado':(isNext?(next.access.code==='today-complete'?'Mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
     const shortState=done?'✓':(isNext?(next.access.code==='today-complete'?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
-    return `<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b><span class="full">Día ${i+1}</span><span class="mini">D${i+1}</span></b><span class="muscle full-muscle">${esc(dayTitle(day))}</span><span class="muscle mini-muscle">${esc(shortDayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`;
-  }).join('');
+    return {
+      i,
+      html:`<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b>Día ${i+1}</b><span class="muscle">${esc(dayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`
+    };
+  });
+
+  const totalPlanDays=allDays.length;
+  const maxStart=Math.max(0,totalPlanDays-5);
+  const autoStart=totalPlanDays>5 && next.index>=5 ? maxStart : 0;
+
+  if(!Number.isInteger(window.__dccWeekPlanStart)){
+    window.__dccWeekPlanStart=autoStart;
+  }
+
+  if(window.__dccWeekPlanAutoIndex!==next.index){
+    window.__dccWeekPlanAutoIndex=next.index;
+    window.__dccWeekPlanStart=autoStart;
+  }
+
+  const weekStart=Math.min(maxStart,Math.max(0,Number(window.__dccWeekPlanStart)||0));
+  const visibleDays=allDays.slice(weekStart,weekStart+5).map(x=>x.html).join('');
+  const canGoLeft=weekStart>0;
+  const canGoRight=weekStart<maxStart;
 
   const taskRows=tasks.slice(0,4).map(t=>`<div class="dcc-home2-task" onclick="${t.action}"><div class="dcc-home2-task-icon">${icon(t.type)}</div><div class="dcc-home2-task-copy"><span class="main">${esc(t.title)}</span><span class="sub">${esc(t.text)}</span>${t.subtext?`<span class="status">${esc(t.subtext)}</span>`:''}</div><div class="dcc-home2-arrow">›</div></div>`).join('');
 
@@ -426,7 +454,7 @@ function renderHome(){
     </div>
     <section class="dcc-home2-card"><div class="dcc-home2-card-head"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div>${taskRows||'<div class="dcc-home2-task"><div></div><div><h3>Todo al día</h3><p>No tienes tareas pendientes ahora mismo.</p></div><div></div></div>'}</section>
     <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div class="dcc-home2-progress-copy"><div class="dcc-home2-label">TU PROGRESO</div><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></section>
-    ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-home2-days" data-count="${Math.min(r.length,7)}">${days}</div></section>`:''}
+    ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-week-carousel"><button type="button" class="dcc-week-arrow left" aria-label="Ver días anteriores" ${canGoLeft?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.max(0,${weekStart}-2);window.__dccWeekPlanAutoIndex=null;showClient('home')">‹</button><div class="dcc-home2-days">${visibleDays}</div><button type="button" class="dcc-week-arrow right" aria-label="Ver días siguientes" ${canGoRight?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.min(${maxStart},${weekStart}+2);window.__dccWeekPlanAutoIndex=null;showClient('home')">›</button></div></section>`:''}
     ${hero}
   </div>`;
 }
