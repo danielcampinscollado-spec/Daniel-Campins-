@@ -205,7 +205,7 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
-      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-premium-muscles-standalone1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork"><img src="./${esc(v.path)}?v=20260921-muscles-ivory1" alt="${esc(x.name)}" loading="eager" decoding="async"></div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
@@ -370,11 +370,11 @@
           position:relative!important;
           width:92px!important;
           height:72px!important;
-          border:1px solid rgba(183,123,19,.18)!important;
+          border:1px solid rgba(183,123,19,.20)!important;
           border-radius:14px!important;
           overflow:hidden!important;
-          background:#121312!important;
-          box-shadow:none!important;
+          background:#fff7e8!important;
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)!important;
           display:grid!important;
           place-items:center!important
         }
@@ -386,7 +386,7 @@
           object-position:center center!important;
           border:0!important;
           border-radius:13px!important;
-          background:#121312!important;
+          background:#fff7e8!important;
           filter:none!important;
           transform:none!important;
           image-rendering:auto!important
