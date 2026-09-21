@@ -139,19 +139,19 @@
     }
     for(const [key,pos] of Object.entries(CLIENT_GOLD_POS)){
       if(n.includes(key)){
-        const scale=2;
+        const scale=1.15;
         const cellW=98*scale;
         const cellH=52.5*scale;
-        const viewW=92;
-        const viewH=102;
-        const cropX=(cellW-viewW)/2;
-        const cropY=(cellH-viewH)/2;
         return {
           kind:'sprite',
           key,
           path:CLIENT_GOLD_ATLAS,
-          x:-(pos[0]*cellW+cropX),
-          y:-(pos[1]*cellH+cropY)
+          x:-(pos[0]*cellW),
+          y:-(pos[1]*cellH),
+          cellW,
+          cellH,
+          atlasW:294*scale,
+          atlasH:210*scale
         };
       }
     }
@@ -269,7 +269,7 @@
       const v=x.visual;
       const art=v.kind==='image'
         ? `<div class="dct3-muscle is-approved"><img src="./${esc(v.path)}?v=20260921-approved-only1" alt="${esc(x.name)}"></div>`
-        : `<div class="dct3-muscle is-approved-sprite"><span class="dct3-approved-sprite" style="background-position:${v.x}px ${v.y}px" role="img" aria-label="${esc(x.name)}"></span></div>`;
+        : `<div class="dct3-muscle is-approved-sprite"><span class="dct3-approved-sprite" style="width:${v.cellW}px;height:${v.cellH}px;background-size:${v.atlasW}px ${v.atlasH}px;background-position:${v.x}px ${v.y}px" role="img" aria-label="${esc(x.name)}"></span></div>`;
       return `<div class="dct3-muscle-wrap">${art}<span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
@@ -434,7 +434,7 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
           position:relative!important;
           width:92px!important;
-          height:102px!important;
+          height:92px!important;
           border:0!important;
           border-radius:14px!important;
           overflow:hidden!important;
@@ -454,26 +454,24 @@
           object-fit:cover!important;
           object-position:center!important;
           filter:none!important;
-          transform:none!important
+          transform:scale(1.075)!important;
+          transform-origin:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved-sprite{
-          height:102px!important;
+          height:92px!important;
           display:grid!important;
           place-items:center!important;
-          background:#fffaf1!important;
-          border:1px solid rgba(183,123,19,.15)!important;
+          background:#121312!important;
+          border:1px solid rgba(183,123,19,.22)!important;
           overflow:hidden!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-approved-sprite{
           display:block!important;
-          width:92px!important;
-          height:102px!important;
           flex:none!important;
           background-image:url('${CLIENT_GOLD_ATLAS}')!important;
           background-repeat:no-repeat!important;
-          background-size:588px 420px!important;
-          border-radius:13px!important;
-          mix-blend-mode:multiply!important;
+          border-radius:0!important;
+          mix-blend-mode:normal!important;
           transform:none!important;
           filter:none!important
         }
@@ -504,7 +502,7 @@
           height:64px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-approved-sprite{
-          transform:scale(.63)!important;
+          transform:scale(.56)!important;
           transform-origin:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap>span{
@@ -881,3 +879,19 @@
   window.showClient.__dccTrainingStableV3=true;
   window.showClient.__base=nativeShowClient;
 })();
+
+<style id="dcc-training-muscle-alignment-hotfix">
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{
+  display:flex!important;flex-direction:column!important;align-items:center!important
+}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{
+  height:92px!important
+}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{
+  height:92px!important
+}
+@media(max-width:389px){
+  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:86px!important}
+  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:86px!important}
+}
+</style>
