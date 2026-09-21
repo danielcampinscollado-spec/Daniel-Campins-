@@ -125,8 +125,9 @@
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
       const img=muscleAsset(muscle);
+      const premium=/reference-premium\.webp$/i.test(img);
       const meta=[ex?.sets?`${esc(ex.sets)} series`:'',ex?.reps?`${esc(ex.reps)} repeticiones`:''].filter(Boolean).join(' · ');
-      return `<div class="dct3-exercise">${img?`<div class="dct3-ex-img"><img src="./${esc(img)}" alt=""></div>`:''}<div><strong>${esc(ex?.name||'Ejercicio')}</strong>${muscle?`<small>${esc(String(muscle).toUpperCase())}</small>`:''}${meta?`<span>${meta}</span>`:''}</div></div>`;
+      return `<div class="dct3-exercise">${img?`<div class="dct3-ex-img ${premium?'is-premium':'is-goldized'}"><img src="./${esc(img)}?v=20260921-gold1" alt="${esc(muscle)}"></div>`:''}<div><strong>${esc(ex?.name||'Ejercicio')}</strong>${muscle?`<small>${esc(String(muscle).toUpperCase())}</small>`:''}${meta?`<span>${meta}</span>`:''}</div></div>`;
     }).join('');
 
     let tip='La técnica correcta siempre está por encima de mover más peso.';
@@ -519,10 +520,19 @@
           background:#fff7e8!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-ex-img img{
+          display:block!important;
           width:100%!important;
           height:100%!important;
           object-fit:cover!important;
+          object-position:center!important;
+          filter:none!important;
+          transform:scale(1.04)!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img.is-premium img{
           filter:none!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-ex-img.is-goldized img{
+          filter:sepia(.58) saturate(.92) hue-rotate(350deg) brightness(1.06) contrast(1.05)!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-exercise strong{
           display:block!important;
