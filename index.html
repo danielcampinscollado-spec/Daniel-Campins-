@@ -6015,6 +6015,92 @@ function getWeeklyWorkoutCount(clientId){
 
   }).length;
 }
+
+function getTodayWorkoutCount(clientId){
+
+  const history=data.workoutHistory?.[clientId]||[];
+  const now=new Date();
+  const start=new Date(now);
+  start.setHours(0,0,0,0);
+  const end=new Date(start);
+  end.setDate(end.getDate()+1);
+
+  return history.filter(w=>{
+    const date=new Date(w.date);
+    return date>=start && date<end;
+  }).length;
+}
+
+function getTrainingAccessState(clientId,dayIndex){
+
+  const routine=Array.isArray(data.routines?.[clientId])
+    ? data.routines[clientId]
+    : [];
+
+  const index=Math.max(0,Number(dayIndex)||0);
+  const completedThisWeek=getWeeklyWorkoutCount(clientId);
+  const completedToday=getTodayWorkoutCount(clientId);
+
+  if(!routine.length){
+    return {
+      allowed:false,
+      reason:"No tienes una rutina disponible",
+      code:"no-routine",
+      nextIndex:0,
+      completedThisWeek
+    };
+  }
+
+  if(completedThisWeek>=routine.length){
+    return {
+      allowed:false,
+      reason:"Rutina semanal completada. Podrás volver a empezar el Día 1 la próxima semana.",
+      code:"week-complete",
+      nextIndex:routine.length,
+      completedThisWeek
+    };
+  }
+
+  if(index<completedThisWeek){
+    return {
+      allowed:false,
+      reason:`El Día ${index+1} ya está completado esta semana.`,
+      code:"already-completed",
+      nextIndex:completedThisWeek,
+      completedThisWeek
+    };
+  }
+
+  if(index>completedThisWeek){
+    return {
+      allowed:false,
+      reason:`Completa primero el Día ${completedThisWeek+1}.`,
+      code:"previous-required",
+      nextIndex:completedThisWeek,
+      completedThisWeek
+    };
+  }
+
+  if(completedToday>0){
+    return {
+      allowed:false,
+      reason:"Ya has completado el entrenamiento de hoy. El siguiente estará disponible mañana.",
+      code:"today-complete",
+      nextIndex:completedThisWeek,
+      completedThisWeek
+    };
+  }
+
+  return {
+    allowed:true,
+    reason:"",
+    code:"ready",
+    nextIndex:completedThisWeek,
+    completedThisWeek
+  };
+}
+
+window.dccGetTrainingAccessState=getTrainingAccessState;
 function showClient(screen){
 
   currentScreen=screen;
@@ -9337,8 +9423,16 @@ main.innerHTML=html;
 }
 function startWorkout(dayIndex){
 
+  const index=Number(dayIndex);
+  const access=getTrainingAccessState(currentClientId,index);
+
+  if(!access.allowed){
+    toast(access.reason);
+    return;
+  }
+
   const routine = data.routines[currentClientId] || [];
-  const day = routine[Number(dayIndex)];
+  const day = routine[index];
 
   if(!day){
     toast("No se encontró el entrenamiento");
@@ -10448,7 +10542,7 @@ const completedAll =
   );
 
 if(completedAll){
-  toast("¡Rutina completada! Nuevo ciclo disponible.");
+  toast("¡Rutina semanal completada! El Día 1 volverá a estar disponible la próxima semana.");
 }
   window.activeWorkout=null;
 
