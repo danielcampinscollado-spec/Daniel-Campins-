@@ -1,98 +1,73 @@
-/* DCC — progreso de días de entrenamiento persistente v1 */
+/* DCC — progreso semanal de entrenamiento + secuencia continua */
 (function(){
   'use strict';
-  const BUILD='20260921-training-progress-authority-v2-continuous';
+  const BUILD='20260921-training-progress-authority-v3-weekly';
   if(window.__dccTrainingProgressAuthority===BUILD)return;
   window.__dccTrainingProgressAuthority=BUILD;
 
   function db(){
-    try{
-      if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient;
-    }catch(_){}
+    try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}
     return window.supabaseClient||null;
   }
 
   function appData(){
-    try{return data||window.data||null}catch(_){return window.data||null}
+    try{return typeof data!=='undefined'?data:(window.data||null)}catch(_){return window.data||null}
   }
 
-  function persistLocal(){
-    try{
-      if(typeof saveData==='function')return saveData();
-      if(typeof window.saveData==='function')return window.saveData();
-    }catch(error){console.warn('DCC training progress cache:',error)}
-  }
-
-  function normalizeDays(value){
-    if(!Array.isArray(value))return [];
-    return [...new Set(value.map(Number).filter(Number.isInteger).filter(n=>n>=0))].sort((a,b)=>a-b);
+  function currentWeek(){
+    if(typeof window.getCurrentWeekKey==='function')return window.getCurrentWeekKey();
+    try{if(typeof getCurrentWeekKey==='function')return getCurrentWeekKey()}catch(_){}
+    const now=new Date(),d=now.getDay(),m=new Date(now);
+    m.setDate(now.getDate()+(d===0?-6:1-d));m.setHours(0,0,0,0);
+    return m.getFullYear()+'-'+String(m.getMonth()+1).padStart(2,'0')+'-'+String(m.getDate()).padStart(2,'0');
   }
 
   async function loadProgress(){
-    const client=db();
-    const d=appData();
-    if(!client||!d)return false;
-
-    const {data:rows,error}=await client
-      .from('client_training_progress')
-      .select('client_id,completed_days,next_day_index');
-
-    if(error)throw error;
-
-    const next={};
-    const nextDayIndex={};
-    (rows||[]).forEach(row=>{
-      const clientId=String(row.client_id);
-      next[clientId]=normalizeDays(row.completed_days);
-      nextDayIndex[clientId]=Math.max(0,parseInt(row.next_day_index)||0);
-    });
-    d.completedTrainingDays=next;
-    d.trainingNextDayIndex=nextDayIndex;
-
-    try{
-      if(window.__dccSecureRole==='client'&&typeof currentClientId!=='undefined'&&currentClientId){
-        const routine=Array.isArray(d.routines?.[currentClientId])?d.routines[currentClientId]:[];
-        if(routine.length){
-          window.trainingDayTab=(nextDayIndex[currentClientId]||0)%routine.length;
+    if(typeof window.dccLoadTrainingProgressFromSupabase==='function'){
+      const ok=await window.dccLoadTrainingProgressFromSupabase();
+      const d=appData();
+      try{
+        const id=typeof currentClientId!=='undefined'?currentClientId:window.currentClientId;
+        const routine=Array.isArray(d?.routines?.[id])?d.routines[id]:[];
+        if(id&&routine.length&&typeof window.dccGetTrainingNextDayIndex==='function'){
+          window.trainingDayTab=window.dccGetTrainingNextDayIndex(id,routine.length);
         }
-      }
-    }catch(_){}
+      }catch(_){}
+      return ok;
+    }
 
-    persistLocal();
+    const client=db(),d=appData();
+    if(!client||!d)return false;
+    const {data:rows,error}=await client.from('client_training_progress').select('client_id,completed_days,next_day_index,week_start');
+    if(error)throw error;
+    const week=currentWeek();
+    d.completedTrainingDays=d.completedTrainingDays||{};
+    d.trainingNextDayIndex=d.trainingNextDayIndex||{};
+    d.trainingProgressWeekStart=d.trainingProgressWeekStart||{};
+    for(const row of rows||[]){
+      const id=String(row.client_id);
+      d.trainingNextDayIndex[id]=Math.max(0,parseInt(row.next_day_index)||0);
+      d.trainingProgressWeekStart[id]=week;
+      d.completedTrainingDays[id]=String(row.week_start||'')===week&&Array.isArray(row.completed_days)?row.completed_days.map(Number).filter(Number.isInteger):[];
+    }
+    try{if(typeof saveData==='function')saveData()}catch(_){}
     return true;
   }
 
   async function saveProgress(clientId){
-    const client=db();
-    const d=appData();
-    if(!client||!d||!clientId)return false;
-
-    const completed=normalizeDays(d.completedTrainingDays?.[clientId]);
-    const nextDayIndex=Math.max(0,parseInt(d.trainingNextDayIndex?.[clientId])||0);
-    const {error}=await client
-      .from('client_training_progress')
-      .upsert({
-        client_id:String(clientId),
-        completed_days:completed,
-        next_day_index:nextDayIndex,
-        updated_at:new Date().toISOString()
-      },{onConflict:'client_id'});
-
-    if(error)throw error;
-    return true;
+    if(typeof window.dccSaveTrainingProgressToSupabase==='function'){
+      return window.dccSaveTrainingProgressToSupabase(clientId);
+    }
+    return false;
   }
 
   function wrapMarkCompleted(){
     const current=window.markTrainingDayCompleted;
     if(typeof current!=='function')return false;
     if(current.__dccTrainingProgressAuthority===BUILD)return true;
-
-    const wrapped=function(clientId,dayIndex,totalDays){
+    const wrapped=function(clientId){
       const result=current.apply(this,arguments);
-      saveProgress(clientId).catch(error=>{
-        console.error('DCC training progress save:',error);
-        try{toast('El entrenamiento se guardó, pero no se pudo sincronizar el progreso de días.')}catch(_){}
-      });
+      saveProgress(clientId).catch(error=>console.error('DCC training progress save:',error));
       return result;
     };
     wrapped.__dccTrainingProgressAuthority=BUILD;
@@ -105,22 +80,16 @@
     const current=window.openApp;
     if(typeof current!=='function')return false;
     if(current.__dccTrainingProgressAuthority===BUILD)return true;
-
     const wrapped=async function(app){
       const result=await current.apply(this,arguments);
       if(result===false)return result;
-
       try{
         await loadProgress();
-        if(app==='client'&&window.__dccSecureRole==='client'){
+        if(app==='client'){
           const screen=typeof currentScreen==='string'?currentScreen:window.currentScreen;
-          if(screen==='home'||screen==='training'){
-            if(typeof window.showClient==='function')window.showClient(screen);
-          }
+          if((screen==='home'||screen==='training')&&typeof window.showClient==='function')window.showClient(screen);
         }
-      }catch(error){
-        console.error('DCC training progress load:',error);
-      }
+      }catch(error){console.error('DCC training progress load:',error)}
       return result;
     };
     wrapped.__dccTrainingProgressAuthority=BUILD;
@@ -129,14 +98,9 @@
     return true;
   }
 
+  window.dccReloadTrainingProgress=loadProgress;
   wrapMarkCompleted();
   wrapOpenApp();
-  document.addEventListener('DOMContentLoaded',()=>{
-    wrapMarkCompleted();
-    wrapOpenApp();
-  },{once:true});
-  window.addEventListener('pageshow',()=>{
-    wrapMarkCompleted();
-    wrapOpenApp();
-  });
+  document.addEventListener('DOMContentLoaded',()=>{wrapMarkCompleted();wrapOpenApp()},{once:true});
+  window.addEventListener('pageshow',()=>{wrapMarkCompleted();wrapOpenApp()});
 })();
