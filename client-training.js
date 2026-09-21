@@ -139,7 +139,13 @@
     }
     for(const [key,pos] of Object.entries(CLIENT_GOLD_POS)){
       if(n.includes(key)){
-        const cellW=98,cellH=52.5,cropX=5,cropY=4.75;
+        const scale=2;
+        const cellW=98*scale;
+        const cellH=52.5*scale;
+        const viewW=92;
+        const viewH=102;
+        const cropX=(cellW-viewW)/2;
+        const cropY=(cellH-viewH)/2;
         return {
           kind:'sprite',
           key,
@@ -451,21 +457,22 @@
           transform:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved-sprite{
-          height:78px!important;
+          height:102px!important;
           display:grid!important;
           place-items:center!important;
           background:#fffaf1!important;
-          border:1px solid rgba(183,123,19,.12)!important
+          border:1px solid rgba(183,123,19,.15)!important;
+          overflow:hidden!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-approved-sprite{
           display:block!important;
-          width:88px!important;
-          height:43px!important;
+          width:92px!important;
+          height:102px!important;
           flex:none!important;
           background-image:url('${CLIENT_GOLD_ATLAS}')!important;
           background-repeat:no-repeat!important;
-          background-size:294px 210px!important;
-          border-radius:0!important;
+          background-size:588px 420px!important;
+          border-radius:13px!important;
           mix-blend-mode:multiply!important;
           transform:none!important;
           filter:none!important
@@ -494,10 +501,11 @@
           border-radius:11px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle.is-approved-sprite{
-          height:58px!important
+          height:64px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-approved-sprite{
-          transform:scale(.64)!important
+          transform:scale(.63)!important;
+          transform-origin:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap>span{
           margin-top:5px!important;
@@ -527,6 +535,10 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{
           width:110px!important;
           height:116px!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-approved-sprite{
+          transform:scale(1.08)!important;
+          transform-origin:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="0"]{
           grid-template-columns:1fr!important
