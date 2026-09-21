@@ -78,9 +78,7 @@ function fix(){
   const media=box?.querySelector('img');
   if(!box||!media)return;
 
-  box.querySelectorAll('.dcc-active-approved-sprite').forEach(el=>el.remove());
-  box.classList.remove('is-sprite');
-  media.classList.remove('dcc-muscle-approved','dcc-muscle-reference','dcc-muscle-artwork');
+  media.classList.remove('dcc-muscle-reference','dcc-muscle-artwork');
 
   const visual=visualFor(m);
   if(!visual){
@@ -91,7 +89,7 @@ function fix(){
   if(media.getAttribute('src')!==visual.src)media.src=visual.src;
   media.style.visibility='visible';
   media.alt=m;
-  media.classList.add(visual.artwork?'dcc-muscle-artwork':'dcc-muscle-reference');
+  media.classList.add('dcc-muscle-artwork');
 }
 let queued=false;function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;fix()})}
 const main=document.getElementById('client-main');if(main)new MutationObserver(queue).observe(main,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(queue,0),true);window.addEventListener('dcc:themechange',queue);queue();})();
