@@ -4591,6 +4591,8 @@ let data=loadData();
 var currentApp="";
 var currentScreen="";
 var currentClientId=null;
+window.__dccClientReady=false;
+window.__dccPendingClientScreen="home";
 
 /* =========================================================
    CONSEJOS DE COACHING
@@ -6017,6 +6019,10 @@ async function openApp(app){
   window.__dccOpenAppPromise=Promise.resolve(true);
   currentApp = app;
   window.currentApp = app;
+  if(app==="client"){
+    window.__dccClientReady=false;
+    window.__dccPendingClientScreen=String(window.__dccPendingClientScreen||"home");
+  }
 
   // La entrada debe pintar una sola vez. Realtime y la sincronización
   // pesada arrancan después, sin competir con el retorno OAuth en Safari.
@@ -6076,31 +6082,31 @@ async function openApp(app){
         throw new Error("No se pudo cargar el perfil del cliente");
       }
 
-      currentScreen="home";
-      window.currentScreen="home";
+      // A partir de aquí el perfil ya tiene identidad y datos mínimos:
+      // solo ahora se permite que la navegación pinte pantallas.
+      window.__dccClientReady=true;
+      const requestedScreen=String(window.__dccPendingClientScreen||"home");
+      window.__dccPendingClientScreen="";
+      currentScreen=requestedScreen;
+      window.currentScreen=requestedScreen;
 
-      // Única autoridad de Inicio: pintar en cuanto existe el cliente.
-      // Dieta, rutina, progreso, mensajes y check-in se sincronizan después.
-      const paintApprovedHome=()=>{
-        if(
-          currentApp!=="client" ||
-          !currentClientId ||
-          String(window.currentScreen||currentScreen||"home")!=="home"
-        )return;
+      const paintClientScreen=(screen=requestedScreen)=>{
+        const target=String(screen||"home");
+        if(currentApp!=="client"||!currentClientId||!window.__dccClientReady)return false;
         try{
-          if(typeof window.dccClientGoHome==="function"){
+          if(target==="home"&&typeof window.dccClientGoHome==="function"){
             window.dccClientGoHome();
-          }else if(typeof window.dccRenderClientHomeApproved==="function"){
-            window.dccRenderClientHomeApproved();
           }else{
-            showClient("home");
+            showClient(target);
           }
+          return true;
         }catch(error){
-          console.warn("DCC approved home paint",error);
+          console.warn("DCC client first paint",error);
+          return false;
         }
       };
 
-      paintApprovedHome();
+      paintClientScreen();
       setupMessageRealtime();
 
       // La sincronización secundaria ya no puede dejar la pantalla Inicio vacía.
@@ -6121,23 +6127,26 @@ async function openApp(app){
         if(loadedRoutine.length){
           window.trainingDayTab=getTrainingNextDayIndex(currentClientId,loadedRoutine.length);
         }
-        paintApprovedHome();
+        // Refrescar la pantalla que el usuario esté viendo, no una pantalla antigua.
+        const activeScreen=String(window.currentScreen||currentScreen||"home");
+        paintClientScreen(activeScreen);
       }).catch(error=>{
         console.warn("DCC sincronización secundaria cliente",error);
       });
 
-      // Recuperación visual limitada: solo si Inicio sigue vacío.
+      // Recuperación visual limitada: solo Inicio y solo con el cliente ya preparado.
       [80,250,700,1800,4000].forEach(delay=>{
         setTimeout(()=>{
           const main=document.getElementById("client-main");
           if(
             currentApp==="client" &&
+            window.__dccClientReady &&
             String(window.currentScreen||currentScreen||"home")==="home" &&
             currentClientId &&
             main &&
             !main.querySelector(".dcc-home2")
           ){
-            paintApprovedHome();
+            paintClientScreen("home");
           }
         },delay);
       });
@@ -6145,6 +6154,7 @@ async function openApp(app){
     }catch(error){
       console.error("Error accediendo al perfil cliente:",error);
       window.__dccOpenAppPromise=null;
+      window.__dccClientReady=false;
       currentClientId=null;
       window.currentClientId=null;
       if(clientMain){
@@ -6198,6 +6208,8 @@ async function logout(){
   currentApp="";window.currentApp="";
   currentScreen="";window.currentScreen="";
   currentClientId=null;window.currentClientId=null;
+  window.__dccClientReady=false;
+  window.__dccPendingClientScreen="home";
   window.__dccOpenAppPromise=null;
   window.__dccAuthResumed=false;
   window.__dccCoachChatV2=null;window.openCoachMessageClientId=null;
@@ -17489,7 +17501,7 @@ async function sendClientCheckin(){
   });
 })();
 </script>
-<script src="./client-final-router-v1.js?v=20260922-router2"></script>
+<script src="./client-final-router-v1.js?v=20260922-router3"></script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
 <script>
 (function(){
