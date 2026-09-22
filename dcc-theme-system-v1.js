@@ -93,9 +93,9 @@
         html.dcc-theme-light-premium body #client-nav{
           display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;align-items:stretch!important;
           width:100%!important;height:68px!important;gap:0!important;padding:4px!important;margin:0!important;
-          box-sizing:border-box!important;overflow:hidden!important;border:1.5px solid rgba(190,132,28,.82)!important;
+          box-sizing:border-box!important;overflow:hidden!important;border:1px solid rgba(166,126,59,.26)!important;
           border-radius:22px!important;background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;
-          box-shadow:0 10px 28px rgba(93,67,25,.12),0 0 0 1px rgba(222,176,77,.08)!important;
+          box-shadow:0 10px 28px rgba(93,67,25,.12)!important;
         }
         html.dcc-theme-light-premium body #client-nav button{
           width:100%!important;min-width:0!important;height:60px!important;margin:0!important;padding:4px 1px!important;
@@ -108,11 +108,11 @@
         html.dcc-theme-light-premium body #client-nav button svg{width:21px!important;height:21px!important;flex:0 0 21px!important;color:currentColor!important;stroke:currentColor!important}
         html.dcc-theme-light-premium body #client-nav button span{width:100%!important;margin:0!important;padding:0!important;color:currentColor!important;font-size:9px!important;line-height:1!important;font-weight:650!important;text-align:center!important;white-space:nowrap!important}
         html.dcc-theme-light-premium body #client-nav button.active{
-          color:#b57d16!important;background:transparent!important;background-image:none!important;
-          border:0!important;box-shadow:none!important;transform:none!important;
+          color:#17140d!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;
+          border:1px solid #d9a43a!important;box-shadow:0 5px 14px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
         }
         html.dcc-theme-light-premium body #client-nav button.active svg,
-        html.dcc-theme-light-premium body #client-nav button.active span{color:#b57d16!important;stroke:currentColor!important;font-weight:800!important}
+        html.dcc-theme-light-premium body #client-nav button.active span{color:#17140d!important;stroke:currentColor!important;font-weight:800!important}
       }
 
       /* Escritorio: Light. En móvil el entrenador lo controla exclusivamente coach-premium-core-v13.js. */
