@@ -5933,19 +5933,49 @@ async function openApp(app){
 
     buildClientNav();
 
-    await Promise.all([
-  loadDietsFromSupabase(),
-  loadClientsFromSupabase(),
-  loadRoutinesFromSupabase(),
-  loadWorkoutHistoryFromSupabase(),
-  loadWeightsFromSupabase(),
-  loadNotificationStateFromSupabase(),
-  loadMessagesFromSupabase()
-]);
+    // El cliente necesita su ficha antes del primer render, pero el resto de
+    // sincronizaciones no deben bloquear Inicio. Así evitamos una pantalla
+    // vacía si una carga secundaria tarda o falla.
+    const secondaryClientLoads = Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadNotificationStateFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]);
 
-await loadCheckinsFromSupabase();
+    await loadClientsFromSupabase();
 
-showClient("home");
+    const activeClient = client(currentClientId);
+
+    if(activeClient){
+      showClient("home");
+    }else{
+      const clientMain=document.getElementById("client-main");
+      if(clientMain){
+        clientMain.innerHTML=`
+          <div class="card" style="margin-top:18px">
+            <h2 style="margin-top:0">Cargando tu perfil</h2>
+            <p class="muted" style="margin-bottom:0">
+              No hemos podido cargar tu ficha todavía. Vuelve a intentarlo en unos segundos.
+            </p>
+          </div>
+        `;
+      }
+      console.error("DCC: no se encontró el cliente autenticado tras cargar clientes", currentClientId);
+    }
+
+    secondaryClientLoads.then(()=>{
+      if(
+        currentApp==="client" &&
+        currentScreen==="home" &&
+        client(currentClientId)
+      ){
+        showClient("home");
+      }
+    });
 
   }else{
 
