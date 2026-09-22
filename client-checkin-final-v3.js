@@ -108,7 +108,7 @@
 
   function install(){
     const base=window.showClient;if(typeof base!=='function'||base.__dccCheckinFinalV3)return false;
-    const wrapped=function(screen){const r=base.apply(this,arguments);if(screen==='checkin')requestAnimationFrame(()=>render(false));return r};
+    const wrapped=function(screen){const r=base.apply(this,arguments);if(r!==false&&window.__dccClientReady&&screen==='checkin')requestAnimationFrame(()=>render(false));return r};
     wrapped.__dccCheckinFinalV3=true;
     wrapped.__dccClientCheckinMessagesV1=true;
     wrapped.__base=base;
