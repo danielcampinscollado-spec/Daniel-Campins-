@@ -5580,8 +5580,45 @@ function markTrainingDayCompleted(clientId,dayIndex,totalDays){
     }
   });
 
-  return getWeeklyWorkoutCount(clientId)>=total;
+  return completed.length>=total;
 }
+
+/* Acceso semanal: cada día de la rutina puede completarse una sola vez por semana.
+   Los días no realizados caducan al cambiar de semana y el lunes se genera
+   un ciclo nuevo completo. Si todos los días ya están hechos, no se reinicia
+   el ciclo antes del lunes. */
+function getTrainingAccessState(clientId,dayIndex){
+  const routine=Array.isArray(data.routines?.[clientId])?data.routines[clientId]:[];
+  const total=routine.length;
+  const index=Number(dayIndex);
+
+  if(!total || !Number.isInteger(index) || index<0 || index>=total){
+    return {allowed:false,code:"no-routine",reason:"Entrenamiento no disponible"};
+  }
+
+  ensureTrainingProgressWeek(clientId);
+  const completed=getCompletedTrainingDays(clientId);
+
+  if(completed.includes(index)){
+    return {
+      allowed:false,
+      code:completed.length>=total ? "week-complete" : "already-completed",
+      reason:"Este entrenamiento ya está completado esta semana"
+    };
+  }
+
+  if(completed.length>=total){
+    return {
+      allowed:false,
+      code:"week-complete",
+      reason:"Semana completada. Disponible de nuevo el próximo lunes"
+    };
+  }
+
+  return {allowed:true,code:"ready",reason:""};
+}
+
+window.dccGetTrainingAccessState=getTrainingAccessState;
 async function saveRoutineToSupabase(id){
   try{
     const routine=data.routines[id]||[];
