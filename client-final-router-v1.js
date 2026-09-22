@@ -1,7 +1,7 @@
 /* DCC — Router cliente autoritativo final v3 */
 (function(){
   'use strict';
-  const BUILD='20260922-client-final-router-v3';
+  const BUILD='20260922-client-final-router-v4';
   if(window.__dccClientFinalRouter===BUILD)return;
   window.__dccClientFinalRouter=BUILD;
 
@@ -86,7 +86,21 @@
 
     let visible=false;
     try{visible=getComputedStyle(app).display!=='none'}catch(_){visible=true}
-    if(!visible||window.currentApp!=='client'||!window.__dccClientReady||!window.currentClientId)return;
+    if(!visible||window.currentApp!=='client')return;
+
+    if(!window.__dccClientReady||!window.currentClientId){
+      repairing=true;
+      try{
+        if(typeof window.openApp==='function'){
+          Promise.resolve(window.openApp('client')).catch(error=>console.warn('DCC client startup recovery',error));
+        }
+      }catch(error){
+        console.warn('DCC client startup recovery',error);
+      }finally{
+        setTimeout(()=>{repairing=false},300);
+      }
+      return;
+    }
 
     const screen=String(window.currentScreen||'home');
     if(screen!=='home')return;
