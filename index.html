@@ -6578,7 +6578,7 @@ const notificationState =
   </style>
 
   <div class="dch-wrap">
-    <div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div>
+    <div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO A DCC FITNESS</div><h1 class="dch-name">${esc(c.name)}</h1><p class="dch-home-sub">Aquí tienes tu resumen de hoy.</p></div>
 
     <section class="dch-stats">
       <div class="dch-stat" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="6" width="14" height="13" rx="3"/><path d="M9 9.5c1.9-1.5 4.1-1.5 6 0"/><path d="M12 9.5v3"/></svg></div><div><div class="dch-stat-label">PESO ACTUAL</div><div class="dch-stat-value">${currentWeight > 0 ? money(currentWeight) : "—"}<span> kg</span></div></div><div class="dch-chevron">›</div></div>
@@ -16584,6 +16584,8 @@ async function sendClientCheckin(){
 }
 </script>
 <script src="./client-admin-premium.js?v=20260910-2405"></script>
+<script src="./client-home-premium-v4.js?v=20260922-approved-light1"></script>
+<script src="./client-nutrition-premium-v2.js?v=20260922-approved-light1"></script>
 <script src="./nutrition-plan-premium-v2.js?v=20260911-1"></script>
 <script src="./nutrition-plan-premium-v1.js?v=20260916-audit1"></script>
 
@@ -16667,7 +16669,7 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260916-audit2"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260922-client-repair1"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260922-approved-client1"></script>
 <script src="./dcc-theme-system-v1.js?v=20260922-client-light2"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 
