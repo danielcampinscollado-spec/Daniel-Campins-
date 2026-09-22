@@ -353,6 +353,7 @@
       window.__dccClientPremiumScreen=screen;
       if(screen!=='messages')stopMessagePolling();
       const r=base.apply(this,arguments);
+      if(r===false||!window.__dccClientReady)return r;
       if(screen==='checkin')requestAnimationFrame(()=>renderClientCheckin(false));
       if(screen==='messages')requestAnimationFrame(()=>renderClientMessages());
       return r;
