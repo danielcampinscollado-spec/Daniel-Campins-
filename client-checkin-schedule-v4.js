@@ -126,9 +126,18 @@
     const locked=!st||st.locked;
     if(!st)return '<div class="dcc-ci4-loading">Cargando tu próxima revisión…</div>';
     if(locked){
+      const normal=st.next_checkin_date||null,photo=st.next_photo_checkin_date||null;
+      const nd=dateObj(normal),pd=dateObj(photo),photoFirst=!!photo&&(!normal||(pd&&nd&&pd<=nd));
+      if(photoFirst){
+        const sameDay=normal&&photo&&String(normal).slice(0,10)===String(photo).slice(0,10);
+        return `<div class="dcc-ci4-status">
+          <section class="dcc-ci4-status-card primary"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Próximo check-in completo</div><div class="dcc-ci4-status-main">${esc(dateLong(photo))}</div><div class="dcc-ci4-status-copy">Ese día se habilitarán preguntas, peso y las 3 fotos de progreso.</div></div><span class="dcc-ci4-badge">▣ Bloqueado</span></section>
+          <section class="dcc-ci4-status-card"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Siguiente revisión</div><div class="dcc-ci4-status-main">${sameDay?'Incluida ese día':esc(dateShort(normal))}</div><div class="dcc-ci4-status-copy">${sameDay?'El check-in completo sustituirá a la revisión normal.':normal?'Tu check-in normal se abrirá en esa fecha.':'Pendiente de programación por tu entrenador.'}</div></div></section>
+        </div>`;
+      }
       return `<div class="dcc-ci4-status">
-        <section class="dcc-ci4-status-card primary"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Próxima revisión</div><div class="dcc-ci4-status-main">${esc(dateLong(st.next_checkin_date))}</div><div class="dcc-ci4-status-copy">${st.next_checkin_date?'Tu check-in de seguimiento se habilitará ese día.':'Tu entrenador todavía no ha programado la próxima revisión.'}</div></div><span class="dcc-ci4-badge">▣ Bloqueado</span></section>
-        <section class="dcc-ci4-status-card"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Próximo check-in completo</div><div class="dcc-ci4-status-main">${esc(dateShort(st.next_photo_checkin_date))}</div><div class="dcc-ci4-status-copy">${st.next_photo_checkin_date?'Incluirá peso, preguntas y 3 fotos de progreso.':'Pendiente de programación por tu entrenador.'}</div></div></section>
+        <section class="dcc-ci4-status-card primary"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Próxima revisión</div><div class="dcc-ci4-status-main">${esc(dateLong(normal))}</div><div class="dcc-ci4-status-copy">${normal?'Tu check-in de seguimiento se habilitará ese día.':'Tu entrenador todavía no ha programado la próxima revisión.'}</div></div><span class="dcc-ci4-badge">▣ Bloqueado</span></section>
+        <section class="dcc-ci4-status-card"><div class="dcc-ci4-cal">${calendarSvg}</div><div><div class="dcc-ci4-status-label">Próximo check-in completo</div><div class="dcc-ci4-status-main">${esc(dateShort(photo))}</div><div class="dcc-ci4-status-copy">${photo?'Incluirá peso, preguntas y 3 fotos de progreso.':'Pendiente de programación por tu entrenador.'}</div></div></section>
       </div>`;
     }
     const complete=st.due_type==='complete';
@@ -165,7 +174,8 @@
     const main=document.getElementById('client-main'),id=activeId(),c=clientById(id);if(!main||!id||!c)return;
     const y=window.scrollY,st=stateCache[id]||null,d=draft(id),locked=!st||!!st.locked,complete=st?.due_type==='complete';
     const prevWeight=num(c.weight),prevFat=latestBodyFat(id,c);
-    const days=st?.today&&st?.next_checkin_date?dayDiff(st.today,st.next_checkin_date):null;
+    const nextDueDate=st?.next_photo_checkin_date&&(!st?.next_checkin_date||dateObj(st.next_photo_checkin_date)<=dateObj(st.next_checkin_date))?st.next_photo_checkin_date:st?.next_checkin_date;
+    const days=st?.today&&nextDueDate?dayDiff(st.today,nextDueDate):null;
     main.className='dcc-checkin-v4';
     main.innerHTML=`<div class="dcc-ci4">
       <header class="dcc-ci4-head"><div class="dcc-ci4-kicker">CHECK-IN</div><h1>Tu seguimiento</h1><p class="dcc-ci4-sub">${locked?'Consulta tu próxima revisión y complétala cuando se active.':complete?'Tu revisión completa ya está disponible.':'Tu revisión de seguimiento ya está disponible.'}</p></header>
