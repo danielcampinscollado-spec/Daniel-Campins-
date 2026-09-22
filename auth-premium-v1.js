@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (Google OAuth RC) */
 (function(){
   'use strict';
-  const BUILD='20260922-auth-light-premium1';
+  const BUILD='20260922-auth-shell-isolated2';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -24,13 +24,14 @@
       html.dcc-theme-light-premium body{background:#f6efe3!important;color:#17191d!important}
       #login.dcc-auth-light-ready{
         min-height:100dvh!important;width:100%!important;padding:18px 14px 30px!important;
-        display:flex!important;align-items:flex-start!important;justify-content:center!important;
+        display:flex;align-items:flex-start!important;justify-content:center!important;
         background:
           radial-gradient(circle at 88% 4%,rgba(201,145,38,.14),transparent 24%),
           radial-gradient(circle at 6% 94%,rgba(201,145,38,.08),transparent 24%),
           linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%)!important;
         box-sizing:border-box!important;
       }
+      #login.dcc-auth-light-ready.dcc-auth-hidden{display:none!important}
       #login.dcc-auth-light-ready .login-box{
         width:100%!important;max-width:460px!important;margin:0 auto!important;padding:18px 14px 24px!important;
         background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
@@ -107,10 +108,23 @@
     `;document.head.appendChild(style);
   }
 
+  function hideLogin(){
+    const login=document.getElementById('login');if(!login)return;
+    login.classList.add('dcc-auth-light-ready','dcc-auth-hidden');
+    login.style.setProperty('display','none','important');
+  }
+  function showLogin(){
+    const login=document.getElementById('login');if(!login)return;
+    login.classList.add('dcc-auth-light-ready');
+    login.classList.remove('dcc-auth-hidden');
+    login.style.removeProperty('display');
+  }
+
   function renderLogin(){
     installStyles();
     const login=document.getElementById('login');if(!login)return;
     login.classList.add('dcc-auth-light-ready');
+    login.classList.remove('dcc-auth-hidden');
     const box=login.querySelector('.login-box')||login.firstElementChild||login;
     const choices=box.querySelector('.choices');
     let section=document.getElementById(ROOT_ID);
@@ -140,9 +154,37 @@
   }
 
   function sessionBadge(role){let badge=document.querySelector('.dcc-secure-session-badge');if(!badge){badge=document.createElement('div');badge.className='dcc-secure-session-badge';document.body.appendChild(badge)}badge.textContent=role==='coach'?'SESIÓN SEGURA · ENTRENADOR':'SESIÓN SEGURA · CLIENTE'}
-  function showPending(user){renderLogin();const root=document.getElementById(ROOT_ID);if(!root)return;let pending=root.querySelector('.dcc-auth-pending');if(!pending){pending=document.createElement('div');pending.className='dcc-auth-pending';root.appendChild(pending)}pending.innerHTML=`Cuenta autenticada como <b>${escapeHtml(user?.email||'usuario')}</b>.<br>La cuenta existe correctamente, pero todavía falta asignarle el rol o vincularla a un cliente.`;status('Cuenta autenticada. Falta completar la vinculación.','ok')}
-  async function routeSession(session){const db=database(),user=session?.user;if(!db||!user)return false;try{const {data:profile,error:profileError}=await db.from('app_profiles').select('role').eq('user_id',user.id).maybeSingle();if(profileError)throw profileError;if(profile?.role==='coach'){window.__dccSecureRole='coach';sessionBadge('coach');if(!(window.currentApp==='coach'&&document.getElementById('coach')?.style.display==='block')&&typeof window.openApp==='function'){try{window.dccTheme?.set('light-premium')}catch(_){}await window.openApp('coach')}return true}const {data:clientRow,error:clientError}=await db.from('clients').select('id').eq('auth_user_id',user.id).maybeSingle();if(clientError)throw clientError;let clientId=clientRow?.id||null;if(!clientId){const {data:claimedId,error:claimError}=await db.rpc('dcc_claim_client_access');if(claimError)throw claimError;clientId=claimedId||null}if(clientId){setCurrentClient(clientId);window.__dccSecureRole='client';sessionBadge('client');if(!(window.currentApp==='client'&&document.getElementById('client')?.style.display==='block')&&typeof window.openApp==='function')await window.openApp('client');return true}showPending(user);return false}catch(error){console.error('DCC Auth — resolviendo sesión:',error);status('La sesión existe, pero no se pudo resolver su acceso.','error');return false}}
-  function patchLogout(){if(window.__dccSecureLogoutV1)return;const base=window.logout;window.logout=async function(){try{await database()?.auth?.signOut()}catch(error){console.warn('DCC Auth — cierre de sesión:',error)}document.querySelector('.dcc-secure-session-badge')?.remove();window.__dccSecureRole=null;if(typeof base==='function')return base.apply(this,arguments);document.getElementById('login')?.style.setProperty('display','flex');document.getElementById('client')?.style.setProperty('display','none');document.getElementById('coach')?.style.setProperty('display','none')};window.__dccSecureLogoutV1=true;}
-  async function init(){renderLogin();patchLogout();const db=database();if(!db?.auth)return;try{const {data,error}=await db.auth.getSession();if(error)throw error;if(data?.session)await routeSession(data.session)}catch(error){console.warn('DCC Auth — sesión inicial:',error)}db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.querySelector('.dcc-secure-session-badge')?.remove();return}if(session)setTimeout(()=>routeSession(session),0)});}
+  function showPending(user){renderLogin();showLogin();const root=document.getElementById(ROOT_ID);if(!root)return;let pending=root.querySelector('.dcc-auth-pending');if(!pending){pending=document.createElement('div');pending.className='dcc-auth-pending';root.appendChild(pending)}pending.innerHTML=`Cuenta autenticada como <b>${escapeHtml(user?.email||'usuario')}</b>.<br>La cuenta existe correctamente, pero todavía falta asignarle el rol o vincularla a un cliente.`;status('Cuenta autenticada. Falta completar la vinculación.','ok')}
+  async function routeSession(session){const db=database(),user=session?.user;if(!db||!user)return false;try{const {data:profile,error:profileError}=await db.from('app_profiles').select('role').eq('user_id',user.id).maybeSingle();if(profileError)throw profileError;if(profile?.role==='coach'){window.__dccSecureRole='coach';sessionBadge('coach');if(!(window.currentApp==='coach'&&document.getElementById('coach')?.style.display==='block')&&typeof window.openApp==='function'){try{window.dccTheme?.set('light-premium')}catch(_){}await window.openApp('coach')}hideLogin();return true}const {data:clientRow,error:clientError}=await db.from('clients').select('id').eq('auth_user_id',user.id).maybeSingle();if(clientError)throw clientError;let clientId=clientRow?.id||null;if(!clientId){const {data:claimedId,error:claimError}=await db.rpc('dcc_claim_client_access');if(claimError)throw claimError;clientId=claimedId||null}if(clientId){setCurrentClient(clientId);window.__dccSecureRole='client';sessionBadge('client');if(!(window.currentApp==='client'&&document.getElementById('client')?.style.display==='block')&&typeof window.openApp==='function')await window.openApp('client');hideLogin();return true}showPending(user);return false}catch(error){console.error('DCC Auth — resolviendo sesión:',error);status('La sesión existe, pero no se pudo resolver su acceso.','error');return false}}
+  function patchLogout(){if(window.__dccSecureLogoutV1)return;const base=window.logout;window.logout=async function(){try{await database()?.auth?.signOut()}catch(error){console.warn('DCC Auth — cierre de sesión:',error)}document.querySelector('.dcc-secure-session-badge')?.remove();window.__dccSecureRole=null;if(typeof base==='function')base.apply(this,arguments);renderLogin();showLogin();document.getElementById('client')?.style.setProperty('display','none');document.getElementById('coach')?.style.setProperty('display','none')};window.__dccSecureLogoutV1=true;}
+  async function init(){
+    installStyles();patchLogout();
+    const db=database();
+    if(!db?.auth){renderLogin();showLogin();return}
+    hideLogin();
+    try{
+      const {data,error}=await db.auth.getSession();
+      if(error)throw error;
+      if(data?.session){
+        const routed=await routeSession(data.session);
+        if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
+      }else{
+        renderLogin();showLogin();
+      }
+    }catch(error){
+      console.warn('DCC Auth — sesión inicial:',error);
+      renderLogin();showLogin();
+    }
+    db.auth.onAuthStateChange((event,session)=>{
+      if(event==='SIGNED_OUT'||!session){
+        document.querySelector('.dcc-secure-session-badge')?.remove();
+        renderLogin();showLogin();
+        document.getElementById('client')?.style.setProperty('display','none');
+        document.getElementById('coach')?.style.setProperty('display','none');
+        return;
+      }
+      setTimeout(()=>routeSession(session),0);
+    });
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
