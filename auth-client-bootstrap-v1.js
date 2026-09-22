@@ -3,7 +3,7 @@
    del script principal de la aplicación. */
 (function(){
   'use strict';
-  const BUILD='20260922-auth-bootstrap1';
+  const BUILD='20260922-auth-bootstrap2';
   if(window.__dccAuthClientBootstrap===BUILD)return;
   window.__dccAuthClientBootstrap=BUILD;
 
@@ -18,7 +18,11 @@
         auth:{
           persistSession:true,
           autoRefreshToken:true,
-          detectSessionInUrl:true
+          // DCC controla explícitamente el retorno OAuth/Magic Link en index.html.
+          // Evita que supabase-js inicialice en paralelo y que Safari quede
+          // esperando initializePromise antes de que la app pueda pintar.
+          detectSessionInUrl:false,
+          skipAutoInitialize:true
         }
       });
       window.__dccAuthBootstrapReady=true;
