@@ -4433,55 +4433,93 @@ body{
 }
 
 
-/* DCC CLIENT NAV — LIGHT PREMIUM APPROVED 2026-09-22 */
+/* DCC CLIENT NAV — SINGLE FINAL MOBILE AUTHORITY 2026-09-22 */
 @media (max-width:700px){
-  html.dcc-theme-light-premium #client-nav,
-  #client-nav{
-    left:5px !important;
-    right:5px !important;
-    bottom:5px !important;
+  /* La carcasa fija ocupa todo el ancho útil y no recorta el borde del nav. */
+  html body #client > .side{
+    position:fixed !important;
+    left:8px !important;
+    right:8px !important;
+    bottom:max(6px,env(safe-area-inset-bottom)) !important;
+    top:auto !important;
     width:auto !important;
-    box-sizing:border-box !important;
-    padding:5px 6px max(5px,env(safe-area-inset-bottom)) !important;
-    border:3px solid #b8790d !important;
-    border-radius:29px !important;
-    background:linear-gradient(180deg,#fffefb 0%,#fbf7ef 100%) !important;
-    box-shadow:0 0 0 1px #f3d17b,0 -7px 24px rgba(96,65,18,.13),inset 0 1px 0 rgba(255,255,255,.95) !important;
-    overflow:hidden !important;
-    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-    gap:2px !important;
-  }
-  html.dcc-theme-light-premium #client-nav button,
-  #client-nav button{
-    min-width:0 !important;
-    min-height:67px !important;
-    padding:7px 2px 6px !important;
-    border:1px solid transparent !important;
-    border-radius:20px !important;
+    height:82px !important;
+    min-height:82px !important;
+    padding:0 !important;
+    margin:0 !important;
     background:transparent !important;
-    color:#697383 !important;
+    border:0 !important;
     box-shadow:none !important;
+    overflow:visible !important;
+    z-index:99999 !important;
+  }
+  html body #client > .side > h2,
+  html body #client > .side > .out{display:none !important}
+
+  html body #client #client-nav{
+    position:absolute !important;
+    inset:0 !important;
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:3px !important;
+    width:100% !important;
+    height:82px !important;
+    min-height:82px !important;
+    padding:5px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    border:2px solid #c58b1c !important;
+    border-radius:25px !important;
+    background:linear-gradient(180deg,#fffefb 0%,#fbf7ef 100%) !important;
+    box-shadow:0 0 0 1px rgba(239,199,100,.52),0 -6px 22px rgba(96,65,18,.11) !important;
+    overflow:hidden !important;
+  }
+
+  html body #client #client-nav > button{
+    position:relative !important;
+    width:100% !important;
+    min-width:0 !important;
+    height:68px !important;
+    min-height:68px !important;
+    margin:0 !important;
+    padding:7px 1px 6px !important;
     display:flex !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
     gap:4px !important;
+    border:1px solid transparent !important;
+    border-radius:18px !important;
+    background:transparent !important;
+    color:#737b88 !important;
+    box-shadow:none !important;
+    outline:0 !important;
   }
-  html.dcc-theme-light-premium #client-nav button svg,
-  #client-nav button svg{width:24px !important;height:24px !important;color:#697383 !important;stroke:currentColor !important}
-  html.dcc-theme-light-premium #client-nav button span,
-  #client-nav button span{color:#697383 !important;font-size:10px !important;line-height:1 !important;font-weight:700 !important;white-space:nowrap !important}
-  html.dcc-theme-light-premium #client-nav button.active,
-  #client-nav button.active{
+  html body #client #client-nav > button svg{
+    width:23px !important;height:23px !important;flex:0 0 23px !important;
+    color:currentColor !important;stroke:currentColor !important;
+  }
+  html body #client #client-nav > button span{
+    display:block !important;width:100% !important;margin:0 !important;padding:0 !important;
+    color:currentColor !important;font-size:9.5px !important;line-height:1 !important;
+    font-weight:700 !important;letter-spacing:-.15px !important;text-align:center !important;white-space:nowrap !important;
+  }
+
+  /* Mantener el estado seleccionado también durante hover/focus/tap de Safari. */
+  html body #client #client-nav > button.active,
+  html body #client #client-nav > button.active:hover,
+  html body #client #client-nav > button.active:focus,
+  html body #client #client-nav > button.active:focus-visible,
+  html body #client #client-nav > button.active:active{
     color:#17191d !important;
     background:linear-gradient(145deg,#fff0b6 0%,#f4cb62 56%,#e8b23f 100%) !important;
     border:1.5px solid #bd8017 !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 3px 10px rgba(173,112,14,.18) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.82),0 3px 10px rgba(173,112,14,.18) !important;
   }
-  html.dcc-theme-light-premium #client-nav button.active svg,
-  html.dcc-theme-light-premium #client-nav button.active span,
-  #client-nav button.active svg,#client-nav button.active span{color:#17191d !important}
-  #client-main{padding-bottom:102px !important}
+  html body #client #client-nav > button.active svg,
+  html body #client #client-nav > button.active span{color:#17191d !important}
+
+  #client-main{padding-bottom:108px !important}
 }
 </style>
 </head>
@@ -6503,7 +6541,7 @@ const icons={
 
 const svg=icons[icon]||icons["⌂"];
 
-return `<button class="${text==="Inicio"||text==="Panel"?"active":""}" data-nav-label="${text}" onclick="${fn}">${svg}<span>${text}</span></button>`;}
+return `<button class="${text==="Inicio"||text==="Panel"?"active":""}" data-nav-label="${text}" onclick="if(this.closest('#client-nav')){this.parentElement.querySelectorAll('button').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-current','false')});this.classList.add('active');this.setAttribute('aria-current','page')};${fn}">${svg}<span>${text}</span></button>`;}
 function buildClientNav(){
 document.getElementById("client-nav").innerHTML=
 navButton("⌂","Inicio","showClient('home')")+
