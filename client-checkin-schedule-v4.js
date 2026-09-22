@@ -41,16 +41,16 @@
     const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
       html.dcc-theme-light-premium #client-main.dcc-checkin-v4,
       #client-main.dcc-checkin-v4{
-        min-height:100dvh!important;padding:18px 14px 112px!important;
+        min-height:100dvh!important;padding:0 14px 112px!important;
         background:radial-gradient(circle at 88% 0%,rgba(208,153,48,.11),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9db 100%)!important;
         color:#17191d!important;
       }
       .dcc-ci4{max-width:820px;margin:0 auto}.dcc-ci4 *{box-sizing:border-box}
-      .dcc-ci4-head{margin:2px 0 16px}.dcc-ci4-kicker{color:#aa7417;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
-      .dcc-ci4-head h1{margin:8px 0 2px!important;color:#111827!important;font-size:32px!important;line-height:1.05!important;letter-spacing:-1.2px!important}
-      .dcc-ci4-sub{margin:0;color:#667085;font-size:15px;line-height:1.4}
+      .dcc-ci4-head{margin:0 0 12px}.dcc-ci4-kicker{display:block;margin:0 0 8px;color:#a66d0d;font-size:11px;line-height:1;font-weight:850;letter-spacing:3.2px;text-transform:uppercase}
+      .dcc-ci4-head h1{margin:0 0 7px!important;color:#17191d!important;font-family:inherit!important;font-size:30px!important;line-height:1.02!important;font-weight:850!important;letter-spacing:-1px!important}
+      .dcc-ci4-sub{margin:0;color:#707782;font-size:13px;line-height:1.35;font-weight:500}
       .dcc-ci4-status{display:grid;gap:9px;margin-bottom:13px}
-      .dcc-ci4-status-card{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 14px;border:1px solid rgba(190,132,28,.25);border-radius:19px;background:rgba(255,253,248,.93);box-shadow:0 9px 24px rgba(85,62,27,.06)}
+      .dcc-ci4-status-card{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 14px;border:1px solid rgba(190,132,28,.25);border-radius:21px;background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%);box-shadow:0 10px 26px rgba(78,58,28,.07)}
       .dcc-ci4-status-card.primary{border-color:rgba(200,140,28,.38);background:linear-gradient(145deg,#fffdf9,#fff6e7)}
       .dcc-ci4-cal{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#fff0d4;color:#a86f0b}
       .dcc-ci4-cal svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8}
@@ -62,8 +62,8 @@
       .dcc-ci4-badge.available{background:#fff1c9;color:#916000}
       .dcc-ci4-info{display:flex;align-items:flex-start;gap:8px;margin:1px 1px 13px;padding:0 2px;color:#727c8e;font-size:10.5px;line-height:1.45}
       .dcc-ci4-info svg{width:17px;height:17px;flex:none;margin-top:1px;fill:none;stroke:#8b95a5;stroke-width:1.8}
-      .dcc-ci4-card{margin:0 0 10px;padding:14px;border:1px solid rgba(190,132,28,.24);border-radius:19px;background:rgba(255,254,250,.95);box-shadow:0 9px 24px rgba(85,62,27,.055),inset 0 1px 0 rgba(255,255,255,.95)}
-      .dcc-ci4-card-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px;color:#a86f0b;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+      .dcc-ci4-card{margin:0 0 10px;padding:14px;border:1px solid rgba(183,123,19,.24);border-radius:21px;background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%);box-shadow:0 10px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.95)}
+      .dcc-ci4-card-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px;color:#a66d0d;font-size:10px;font-weight:850;letter-spacing:2.4px;text-transform:uppercase}
       .dcc-ci4-card-title small{color:#80899a;font-size:8px;font-weight:650;letter-spacing:0;text-transform:none}
       .dcc-ci4-metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
       .dcc-ci4-metric{padding:2px 12px;min-width:0;border-right:1px solid #e6e1d8}.dcc-ci4-metric:last-child{border-right:0}
@@ -104,7 +104,7 @@
       .dcc-ci4-lock-note{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:2px;padding:14px;border:1px solid #d8d9dd;border-radius:16px;background:#e8e9ec;color:#858d9b;font-size:12px;font-weight:850}
       @media(max-width:430px){
         #client-main.dcc-checkin-v4{padding-left:12px!important;padding-right:12px!important}
-        .dcc-ci4-head h1{font-size:29px!important}.dcc-ci4-sub{font-size:13px}
+        .dcc-ci4-head h1{font-size:30px!important}.dcc-ci4-sub{font-size:13px}
         .dcc-ci4-status-card{grid-template-columns:42px minmax(0,1fr) auto;padding:12px 11px;gap:9px}.dcc-ci4-cal{width:42px;height:42px}
         .dcc-ci4-status-main{font-size:17px}.dcc-ci4-badge{padding:6px 8px;font-size:8.5px}
         .dcc-ci4-card{padding:12px}.dcc-ci4-metric{padding:2px 8px}.dcc-ci4-value{font-size:18px}
