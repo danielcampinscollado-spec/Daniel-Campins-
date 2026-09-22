@@ -61,7 +61,13 @@
   }
   function isCoachDashboard(root){return root.id==='coach-main'&&(window.currentScreen==='dashboard'||root.classList.contains('dcc-p9-dashboard')||!!root.querySelector('.dcc-p9-stat'))}
   function isClientHome(root){if(root.id!=='client-main'&&root.id!=='client-content'&&root.id!=='client')return false;if(root.id==='client'&&!visible(root))return false;const screen=String(window.currentScreen||window.clientScreen||'').toLowerCase();return !screen||screen==='home'||screen==='dashboard'||screen==='inicio'}
-  function targetRoot(){const coach=document.getElementById('coach-main');if(coach&&visible(coach)&&isCoachDashboard(coach))return coach;for(const id of ['client-main','client-content','client']){const el=document.getElementById(id);if(el&&visible(el)&&isClientHome(el))return el}return null}
+  function targetRoot(){
+    /* El saludo dinámico pertenece al panel entrenador. En cliente interfería
+       con la pantalla Inicio aprobada y podía quedar como único contenido. */
+    const coach=document.getElementById('coach-main');
+    if(coach&&visible(coach)&&isCoachDashboard(coach))return coach;
+    return null;
+  }
   function render(){
     css();const root=targetRoot();document.querySelectorAll('.dcc-time-greeting').forEach(el=>{if(!root||!root.contains(el))el.remove()});if(!root)return;
     let box=root.querySelector(':scope > .dcc-time-greeting');if(!box){box=document.createElement('div');box.className='dcc-time-greeting';box.setAttribute('aria-live','polite');const anchor=root.firstElementChild;if(anchor)root.insertBefore(box,anchor);else root.appendChild(box)}
