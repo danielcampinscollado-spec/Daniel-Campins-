@@ -1,7 +1,7 @@
-/* DCC — Router cliente autoritativo final v2 */
+/* DCC — Router cliente autoritativo final v3 */
 (function(){
   'use strict';
-  const BUILD='20260922-client-final-router-v2';
+  const BUILD='20260922-client-final-router-v3';
   if(window.__dccClientFinalRouter===BUILD)return;
   window.__dccClientFinalRouter=BUILD;
 
@@ -25,6 +25,19 @@
 
   function route(screen){
     const target=String(screen||'home');
+
+    /* En una recarga Safari puede restaurar el DOM anterior antes de que
+       Supabase haya recuperado el cliente. No cambiar la pestaña activa ni
+       reutilizar ese HTML antiguo: guardar el destino y esperar al bootstrap. */
+    if(window.currentApp==='client'&&(!window.__dccClientReady||!window.currentClientId)){
+      window.__dccPendingClientScreen=target;
+      const main=document.getElementById('client-main');
+      if(main){
+        main.className='';
+        main.innerHTML='<div style="padding:28px 20px;color:#6f747c;font-weight:700">Cargando tu perfil…</div>';
+      }
+      return false;
+    }
 
     if(target==='home'){
       setScreen('home');
