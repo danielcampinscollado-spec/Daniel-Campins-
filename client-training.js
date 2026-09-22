@@ -16,35 +16,6 @@
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const activeClientId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
 
-  const GOLD_MUSCLE_SPRITE='./assets/muscles/anatomy-male-final.svg?v=20260921-client-gold1';
-  const GOLD_MUSCLE_POS={
-    pectoral:[0,0],pecho:[0,0],
-    dorsal:[1,0],dorsales:[1,0],espalda:[1,0],
-    hombro:[2,0],hombros:[2,0],deltoide:[2,0],deltoides:[2,0],
-    trapecio:[0,1],trapecios:[0,1],lumbar:[0,1],lumbares:[0,1],
-    biceps:[1,1],
-    triceps:[2,1],
-    antebrazo:[0,2],antebrazos:[0,2],
-    core:[1,2],abdomen:[1,2],abdominales:[1,2],
-    cuadriceps:[2,2],
-    femoral:[0,3],femorales:[0,3],isquio:[0,3],isquios:[0,3],isquiotibiales:[0,3],
-    gluteo:[1,3],gluteos:[1,3],
-    gemelo:[2,3],gemelos:[2,3],pantorrilla:[2,3],pantorrillas:[2,3]
-  };
-
-  function goldMuscle(value){
-    const n=norm(value);
-    if(!n)return null;
-    for(const [key,pos] of Object.entries(GOLD_MUSCLE_POS)){
-      if(n.includes(key)){
-        const x=[0,50,100][pos[0]]??50;
-        const y=[0,33.333,66.667,100][pos[1]]??50;
-        return {key,pos,x,y};
-      }
-    }
-    return null;
-  }
-
   function exerciseVideo(ex){
     const direct=String(ex?.videoUrl||ex?.video_url||ex?.video||'').trim();
     if(direct)return direct;
@@ -95,96 +66,103 @@
     return items;
   }
 
-  const MUSCLE_ASSETS={
-    pectoral:'assets/muscles/pectoral-reference-premium.webp',pecho:'assets/muscles/pectoral-reference-premium.webp',
-    espalda:'assets/muscles/espalda.png',dorsal:'assets/muscles/espalda.png',dorsales:'assets/muscles/espalda.png',
-    hombro:'assets/muscles/hombros.png',hombros:'assets/muscles/hombros.png',deltoide:'assets/muscles/hombros.png',deltoides:'assets/muscles/hombros.png',
-    biceps:'assets/muscles/biceps.png',triceps:'assets/muscles/triceps-reference-premium.webp',
-    cuadriceps:'assets/muscles/cuadriceps.png',
-    femoral:'assets/muscles/isquios.png',femorales:'assets/muscles/isquios.png',isquios:'assets/muscles/isquios.png',isquiotibiales:'assets/muscles/isquios.png',
-    gluteo:'assets/muscles/gluteos.png',gluteos:'assets/muscles/gluteos.png',
-    gemelo:'assets/muscles/gemelos.png',gemelos:'assets/muscles/gemelos.png',pantorrilla:'assets/muscles/gemelos.png',pantorrillas:'assets/muscles/gemelos.png',
-    core:'assets/muscles/core.png',abdomen:'assets/muscles/core.png',abdominales:'assets/muscles/core.png',
-    lumbar:'assets/muscles/lumbar-cuello.png',lumbares:'assets/muscles/lumbar-cuello.png',trapecio:'assets/muscles/lumbar-cuello.png'
+  const FEMALE_MUSCLE_ATLAS='assets/muscles/anatomy-female-premium-v1.webp';
+  const FEMALE_TRAP='assets/muscles/client-trapecio-female-premium-v1.webp';
+  const FEMALE_FOREARMS='assets/muscles/client-antebrazos-female-premium-v1.webp';
+  const FEMALE_FULL_LEG='assets/muscles/client-pierna-completa-female-premium-v1.webp';
+  const FEMALE_FALLBACK_ATLAS='assets/muscles/anatomy-female-final.svg';
+  const FEMALE_MUSCLE_POS={
+    pectoral:[0,0],pecho:[0,0],
+    dorsal:[50,0],dorsales:[50,0],espalda:[50,0],
+    hombro:[100,0],hombros:[100,0],deltoide:[100,0],deltoides:[100,0],
+    biceps:[50,34],triceps:[100,34],
+    core:[50,67],abdomen:[50,67],abdominales:[50,67],
+    cuadriceps:[100,67],
+    femoral:[0,100],femorales:[0,100],isquio:[0,100],isquios:[0,100],isquiotibiales:[0,100],
+    gluteo:[50,100],gluteos:[50,100],
+    gemelo:[100,100],gemelos:[100,100],pantorrilla:[100,100],pantorrillas:[100,100]
+  };
+  const FEMALE_FALLBACK_POS={lumbar:[0,34],lumbares:[0,34]};
+
+  function dayAnatomy(day){
+    return String(day?.anatomy||'male').toLowerCase()==='female'?'female':'male';
+  }
+
+  const APPROVED_CLIENT_MUSCLE_ASSETS={
+    pectoral:'assets/muscles/client-pectoral-premium-v5.webp',
+    pecho:'assets/muscles/client-pectoral-premium-v5.webp',
+    triceps:'assets/muscles/client-triceps-premium-v5.webp',
+    dorsal:'assets/muscles/client-dorsal-premium-v5.webp',
+    dorsales:'assets/muscles/client-dorsal-premium-v5.webp',
+    espalda:'assets/muscles/client-dorsal-premium-v5.webp',
+    hombro:'assets/muscles/client-hombros-premium-v5.webp',
+    hombros:'assets/muscles/client-hombros-premium-v5.webp',
+    deltoide:'assets/muscles/client-hombros-premium-v5.webp',
+    deltoides:'assets/muscles/client-hombros-premium-v5.webp',
+    trapecio:'assets/muscles/client-trapecio-premium.svg',
+    trapecios:'assets/muscles/client-trapecio-premium.svg',
+    lumbar:'assets/muscles/client-trapecio-premium.svg',
+    lumbares:'assets/muscles/client-trapecio-premium.svg',
+    biceps:'assets/muscles/client-biceps-premium-v5.webp',
+    antebrazo:'assets/muscles/client-antebrazos-premium.svg',
+    antebrazos:'assets/muscles/client-antebrazos-premium.svg',
+    'pierna completa':'assets/muscles/client-pierna-completa-premium-v5.webp',
+    pierna:'assets/muscles/client-pierna-completa-premium-v5.webp',
+    piernas:'assets/muscles/client-pierna-completa-premium-v5.webp',
+    'tren inferior':'assets/muscles/client-pierna-completa-premium-v5.webp',
+    core:'assets/muscles/client-core-premium-v5.webp',
+    abdomen:'assets/muscles/client-core-premium-v5.webp',
+    abdominales:'assets/muscles/client-core-premium-v5.webp',
+    cuadriceps:'assets/muscles/client-cuadriceps-premium-v5.webp',
+    femoral:'assets/muscles/client-femoral-premium-v5.webp',
+    femorales:'assets/muscles/client-femoral-premium-v5.webp',
+    isquio:'assets/muscles/client-femoral-premium-v5.webp',
+    isquios:'assets/muscles/client-femoral-premium-v5.webp',
+    isquiotibiales:'assets/muscles/client-femoral-premium-v5.webp',
+    gluteo:'assets/muscles/client-gluteos-premium-v5.webp',
+    gluteos:'assets/muscles/client-gluteos-premium-v5.webp',
+    gemelo:'assets/muscles/client-gemelos-premium-v5.webp',
+    gemelos:'assets/muscles/client-gemelos-premium-v5.webp',
+    pantorrilla:'assets/muscles/client-gemelos-premium-v5.webp',
+    pantorrillas:'assets/muscles/client-gemelos-premium-v5.webp'
   };
 
-  const OVERVIEW_PREMIUM_ASSETS={
-    pectoral:'assets/muscles/pectoral-reference-premium.webp',
-    pecho:'assets/muscles/pectoral-reference-premium.webp',
-    triceps:'assets/muscles/triceps-reference-premium.webp'
-  };
-
-  const CLIENT_GOLD_ATLAS='./assets/muscles/anatomy-male-final.svg?v=20260921-approved-atlas1';
-  const CLIENT_GOLD_POS={
-    dorsal:[1,0],espalda:[1,0],dorsales:[1,0],
-    hombro:[2,0],hombros:[2,0],deltoide:[2,0],deltoides:[2,0],
-    trapecio:[0,1],trapecios:[0,1],lumbar:[0,1],lumbares:[0,1],
-    biceps:[1,1],
-    antebrazo:[0,2],antebrazos:[0,2],
-    core:[1,2],abdomen:[1,2],abdominales:[1,2],
-    cuadriceps:[2,2],
-    femoral:[0,3],femorales:[0,3],isquio:[0,3],isquios:[0,3],isquiotibiales:[0,3],
-    gluteo:[1,3],gluteos:[1,3],
-    gemelo:[2,3],gemelos:[2,3],pantorrilla:[2,3],pantorrillas:[2,3]
-  };
-
-  function approvedMuscleVisual(name){
+  function approvedMuscleVisual(name,anatomy){
     const n=norm(name);
     if(!n)return null;
-    if(n.includes('pectoral')||n.includes('pecho')){
-      return {kind:'image',path:OVERVIEW_PREMIUM_ASSETS.pectoral,key:'pectoral'};
-    }
-    if(n.includes('triceps')){
-      return {kind:'image',path:OVERVIEW_PREMIUM_ASSETS.triceps,key:'triceps'};
-    }
-    for(const [key,pos] of Object.entries(CLIENT_GOLD_POS)){
-      if(n.includes(key)){
-        const scale=1.15;
-        const cellW=98*scale;
-        const cellH=52.5*scale;
-        return {
-          kind:'sprite',
-          key,
-          path:CLIENT_GOLD_ATLAS,
-          x:-(pos[0]*cellW),
-          y:-(pos[1]*cellH),
-          cellW,
-          cellH,
-          atlasW:294*scale,
-          atlasH:210*scale
-        };
+
+    if(anatomy==='female'){
+      if(n.includes('trapec'))return {kind:'image',path:FEMALE_TRAP,key:'trapecio'};
+      if(n.includes('antebrazo'))return {kind:'image',path:FEMALE_FOREARMS,key:'antebrazos'};
+      if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',path:FEMALE_FULL_LEG,key:'pierna completa'};
+      for(const [key,pos] of Object.entries(FEMALE_MUSCLE_POS)){
+        if(n.includes(key))return {kind:'female-sprite',path:FEMALE_MUSCLE_ATLAS,pos,key};
       }
+      for(const [key,pos] of Object.entries(FEMALE_FALLBACK_POS)){
+        if(n.includes(key))return {kind:'female-fallback',path:FEMALE_FALLBACK_ATLAS,pos,key};
+      }
+    }
+
+    for(const [key,path] of Object.entries(APPROVED_CLIENT_MUSCLE_ASSETS)){
+      if(n.includes(key))return {kind:'image',path,key};
     }
     return null;
   }
 
-  function overviewMuscleAsset(value){
-    const n=norm(value);
-    if(!n)return '';
-    for(const [key,path] of Object.entries(OVERVIEW_PREMIUM_ASSETS))if(n.includes(key))return path;
-    return muscleAsset(value);
-  }
-
-  function muscleAsset(value){
-    const n=norm(value);
-    if(!n)return '';
-    for(const [key,path] of Object.entries(MUSCLE_ASSETS))if(n.includes(key))return path;
-    return '';
-  }
-
   function dayMuscles(day){
+    const anatomy=dayAnatomy(day);
     const raw=Array.isArray(day?.muscleGroups)&&day.muscleGroups.length
       ? day.muscleGroups
       : String(day?.muscle||'').split(/[·+,&/]/);
     const out=[];
     raw.map(x=>String(x||'').trim()).filter(Boolean).forEach(name=>{
-      const visual=approvedMuscleVisual(name);
+      const visual=approvedMuscleVisual(name,anatomy);
       if(visual&&!out.some(x=>x.visual.key===visual.key)){
         out.push({name,visual});
       }
     });
     if(!out.length&&day?.muscle){
-      const visual=approvedMuscleVisual(day.muscle);
+      const visual=approvedMuscleVisual(day.muscle,anatomy);
       if(visual)out.push({name:day.muscle,visual});
     }
     return out.slice(0,3);
@@ -192,18 +170,18 @@
 
   function muscleRegion(muscles){
     const names=(muscles||[]).map(x=>norm(x?.name)).join(' ');
-    if(/cuadriceps|femoral|isquio|glute|gemelo|pantorrilla/.test(names))return 'TREN INFERIOR';
+    if(/pierna|tren inferior|cuadriceps|femoral|isquio|glute|gemelo|pantorrilla/.test(names))return 'TREN INFERIOR';
     if(/core|abdomen|lumbar/.test(names))return 'CORE Y ESTABILIDAD';
     return 'TREN SUPERIOR';
   }
 
   function exerciseMuscle(ex,day){
-    if(ex?.muscle)return ex.muscle;
     const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
     const id=String(ex?.id??ex?.exerciseId??ex?.exercise_id??'');
     if(id){const hit=list.find(x=>String(x?.id??'')===id);if(hit?.muscle)return hit.muscle;}
     const name=norm(ex?.name??ex?.nombre??'');
     if(name){const hit=list.find(x=>norm(x?.name)===name);if(hit?.muscle)return hit.muscle;}
+    if(ex?.muscle)return ex.muscle;
     return day?.muscle||'';
   }
 
@@ -264,24 +242,13 @@
                 : 'Bloqueado'
         );
 
-    const totalDays=Math.min(routine.length,7);
-    const windowStart=totalDays>5&&dayIndex>=5?Math.max(0,totalDays-5):0;
-    const visibleDays=routine.slice(windowStart,windowStart+5);
-    const dayButtons=visibleDays.map((x,offset)=>{
-      const i=windowStart+offset;
-      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`;
-    }).join('');
-    const hasMoreRight=windowStart+5<totalDays;
-    const hasMoreLeft=windowStart>0;
-    const dayArrow=(hasMoreRight||hasMoreLeft)
-      ? `<button type="button" class="dct3-days-arrow" data-shift="${hasMoreRight?'next':'prev'}" aria-label="${hasMoreRight?'Ver días siguientes':'Ver primeros días'}">${hasMoreRight?'›':'‹'}</button>`
-      : '';
+    const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
       const art=v.kind==='image'
-        ? `<div class="dct3-muscle is-approved"><img src="./${esc(v.path)}?v=20260921-approved-only1" alt="${esc(x.name)}"></div>`
-        : `<div class="dct3-muscle is-approved-sprite"><span class="dct3-approved-sprite" style="width:${v.cellW}px;height:${v.cellH}px;background-size:${v.atlasW}px ${v.atlasH}px;background-position:${v.x}px ${v.y}px" role="img" aria-label="${esc(x.name)}"></span></div>`;
-      return `<div class="dct3-muscle-wrap">${art}<span>${esc(x.name)}</span></div>`;
+        ? `<img src="./${esc(v.path)}?v=20260921-female-premium2" alt="${esc(x.name)}" loading="eager" decoding="async">`
+        : `<span class="dcc-female-muscle-sprite ${v.kind==='female-fallback'?'is-fallback':''}" style="background-image:url('./${esc(v.path)}?v=20260921-female-premium2');background-position:${v.pos[0]}% ${v.pos[1]}%"></span>`;
+      return `<div class="dct3-muscle-wrap"><div class="dct3-muscle is-artwork">${art}</div><span>${esc(x.name)}</span></div>`;
     }).join('');
     const rows=exercises.map(ex=>{
       const video=exerciseVideo(ex);
@@ -309,35 +276,19 @@
           letter-spacing:3.4px!important;
           text-transform:uppercase!important
         }
-        html.dcc-theme-light-premium body #client #client-main .dct3-plan-head{
-          margin:0 0 8px!important;
-          color:#a66d0d!important;
-          font-size:8.5px!important;
-          line-height:1!important;
-          font-weight:850!important;
-          letter-spacing:2.1px!important;
-          text-transform:uppercase!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-days-row{
-          display:grid!important;
-          grid-template-columns:minmax(0,1fr) auto!important;
-          gap:7px!important;
-          align-items:stretch!important;
-          margin:0 0 14px!important
-        }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
-          display:grid!important;
-          grid-template-columns:repeat(5,minmax(0,1fr))!important;
+          display:flex!important;
           gap:6px!important;
-          overflow:visible!important;
-          margin:0!important;
+          overflow-x:auto!important;
+          margin:0 0 14px!important;
           padding:1px 1px 3px!important;
           scrollbar-width:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days::-webkit-scrollbar{display:none!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day{
-          width:100%!important;
-          min-width:0!important;
+          flex:0 0 58px!important;
+          width:58px!important;
+          min-width:58px!important;
           height:56px!important;
           padding:6px 4px!important;
           border:1px solid rgba(183,123,19,.22)!important;
@@ -374,19 +325,6 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active span{color:#9f6c0f!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#30291e!important}
-        html.dcc-theme-light-premium body #client #client-main .dct3-days-arrow{
-          width:34px!important;
-          min-width:34px!important;
-          border:1px solid rgba(183,123,19,.34)!important;
-          border-radius:13px!important;
-          background:linear-gradient(145deg,#fffefa,#f5ead7)!important;
-          color:#a66d0d!important;
-          box-shadow:0 5px 14px rgba(78,58,28,.06)!important;
-          font-size:25px!important;
-          line-height:1!important;
-          display:grid!important;
-          place-items:center!important
-        }
         html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="6"] .dct3-day,
         html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="7"] .dct3-day{
           flex-basis:46px!important;
@@ -474,46 +412,42 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
           position:relative!important;
           width:92px!important;
-          height:92px!important;
-          border:0!important;
+          height:72px!important;
+          border:1px solid rgba(183,123,19,.20)!important;
           border-radius:14px!important;
           overflow:hidden!important;
-          background:#151514!important;
-          box-shadow:none!important
+          background:#fff7e8!important;
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)!important;
+          display:grid!important;
+          place-items:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle img{
           display:block!important;
           width:100%!important;
           height:100%!important;
           max-width:none!important;
+          object-position:center center!important;
           border:0!important;
-          border-radius:14px!important;
-          background:#151514!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved img{
-          object-fit:cover!important;
-          object-position:center!important;
+          border-radius:13px!important;
+          background:#fff7e8!important;
           filter:none!important;
-          transform:scale(1.075)!important;
-          transform-origin:center!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-approved-sprite{
-          height:92px!important;
-          display:grid!important;
-          place-items:center!important;
-          background:#121312!important;
-          border:1px solid rgba(183,123,19,.22)!important;
-          overflow:hidden!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-approved-sprite{
-          display:block!important;
-          flex:none!important;
-          background-image:url('${CLIENT_GOLD_ATLAS}')!important;
-          background-repeat:no-repeat!important;
-          border-radius:0!important;
-          mix-blend-mode:normal!important;
           transform:none!important;
-          filter:none!important
+          image-rendering:auto!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle .dcc-female-muscle-sprite{
+          display:block!important;
+          width:100%!important;
+          height:100%!important;
+          background-repeat:no-repeat!important;
+          background-size:300% auto!important;
+          background-color:#fffaf1!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle .dcc-female-muscle-sprite.is-fallback{
+          background-size:300% 400%!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-muscle.is-artwork img{
+          object-fit:contain!important;
+          object-position:center center!important
         }
 
         /* Tres músculos: misma familia visual, compacta y legible en móvil. */
@@ -532,18 +466,11 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{
           width:58px!important;
-          height:64px!important;
+          height:46px!important;
           border-radius:11px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle img{
           border-radius:11px!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle.is-approved-sprite{
-          height:64px!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-approved-sprite{
-          transform:scale(.56)!important;
-          transform-origin:center!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap>span{
           margin-top:5px!important;
@@ -572,11 +499,7 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{
           width:110px!important;
-          height:116px!important
-        }
-        html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-approved-sprite{
-          transform:scale(1.08)!important;
-          transform-origin:center!important
+          height:86px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="0"]{
           grid-template-columns:1fr!important
@@ -850,16 +773,16 @@
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:172px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:83px!important;width:83px!important;min-width:83px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:83px!important;height:92px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:83px!important;height:66px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 164px!important;gap:7px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:164px!important;gap:4px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:52px!important;width:52px!important;min-width:52px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:58px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:42px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:132px!important;font-size:15.5px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 112px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:112px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle-wrap{flex-basis:98px!important;width:98px!important;min-width:98px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:98px!important;height:116px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:98px!important;height:78px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:18px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-routine h3{font-size:18px!important;max-width:57%!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-actions{
@@ -875,33 +798,30 @@
           }
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:198px!important;gap:6px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{flex-basis:96px!important;width:96px!important;min-width:96px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:96px!important;height:104px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-muscle{width:96px!important;height:76px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 198px!important;gap:9px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:198px!important;gap:4px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:63px!important;width:63px!important;min-width:63px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:69px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:50px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:160px!important;font-size:17px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="1"]{grid-template-columns:minmax(0,1fr) 136px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"]{width:136px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle-wrap{flex-basis:118px!important;width:118px!important;min-width:118px!important}
-          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:118px!important;height:132px!important}
+          html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:118px!important;height:92px!important}
           html.dcc-theme-light-premium body #client #client-main .dct3-title{font-size:20px!important}
         }
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
-        <div class="dct3-plan-head">TU PLAN DE ESTA SEMANA</div>
-        <div class="dct3-days-row"><div class="dct3-days" data-count="${visibleDays.length}">${dayButtons}</div>${dayArrow}</div>
+        <div class="dct3-days" data-count="${Math.min(routine.length,7)}">${dayButtons}</div>
         ${day?`
           <section class="dct3-card dct3-muscles" data-muscles="${muscles.length}"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals" data-count="${muscles.length}">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-user.webp?v=20260920-userdisk1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}" ${access.allowed?'':`disabled aria-disabled="true" title="${esc(access.reason)}"`}>${startLabel}</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-user.webp?v=20260920-userdisk1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}" ${access.allowed?'':`disabled aria-disabled="true" title="${esc(access.reason)}"`}>${startLabel}</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
-    main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
-    const dayShift=main.querySelector('.dct3-days-arrow');
-    if(dayShift)dayShift.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.trainingDayTab=dayShift.dataset.shift==='next'?Math.min(totalDays-1,5):0;window.showClient('training');});
+    main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.__dccManualTrainingDaySelection=true;window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
     const view=main.querySelector('.dct3-view');
     if(view)view.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const card=view.closest('.dct3-routine');const open=card?.classList.toggle('open');view.setAttribute('aria-expanded',String(!!open));view.textContent=open?'Ocultar ejercicios':'Ver ejercicios';});
     main.querySelectorAll('.dct3-video').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const url=btn.dataset.video;if(url)window.open(url,'_blank','noopener');}));
@@ -924,10 +844,17 @@
 })();
 
 (()=>{const s=document.createElement('style');s.id='dcc-training-muscle-alignment-hotfix';s.textContent=`
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{display:flex!important;flex-direction:column!important;align-items:center!important}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:92px!important}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:92px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{display:flex!important;flex-direction:column!important;align-items:center!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:92px!important;height:72px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:58px!important;height:46px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:110px!important;height:86px!important}
 @media(max-width:389px){
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{height:86px!important}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle.is-approved-sprite{height:86px!important}
-}`;document.head.appendChild(s)})();
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:83px!important;height:66px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:52px!important;height:42px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:104px!important;height:82px!important}
+}
+@media(min-width:420px){
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:96px!important;height:76px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle{width:63px!important;height:50px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:118px!important;height:92px!important}
+}`;document.head.appendChild(s)})();;
