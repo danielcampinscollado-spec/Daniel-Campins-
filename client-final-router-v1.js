@@ -1,7 +1,7 @@
-/* DCC — Router cliente autoritativo final v1 */
+/* DCC — Router cliente autoritativo final v2 */
 (function(){
   'use strict';
-  const BUILD='20260922-client-final-router-v1';
+  const BUILD='20260922-client-final-router-v2';
   if(window.__dccClientFinalRouter===BUILD)return;
   window.__dccClientFinalRouter=BUILD;
 
@@ -17,17 +17,11 @@
     if(i!==undefined&&buttons[i])buttons[i].classList.add('active');
   }
 
-  function unwrap(fn){
-    let current=fn,guard=0;
-    while(current&&current.__base&&current.__base!==current&&guard<12){
-      current=current.__base;
-      guard++;
-    }
-    return current;
-  }
-
-  const legacy=unwrap(window.showClient);
-  if(typeof legacy!=='function')return;
+  /* Mantener la cadena funcional ya instalada.
+     El router anterior la "desenvolvía" hasta showClient legado y con ello
+     saltaba las autoridades de Check-in, Mensajes y otras pantallas. */
+  const delegated=window.showClient;
+  if(typeof delegated!=='function')return;
 
   function route(screen){
     const target=String(screen||'home');
@@ -46,7 +40,7 @@
       }catch(error){
         console.error('DCC final router home',error);
       }
-      return legacy.apply(this,arguments);
+      return delegated.apply(this,arguments);
     }
 
     if(target==='training'&&!window.activeWorkout){
@@ -59,15 +53,15 @@
       }catch(error){
         console.error('DCC final router training',error);
       }
-      return legacy.apply(this,arguments);
+      return delegated.apply(this,arguments);
     }
 
     setScreen(target);
-    return legacy.apply(this,arguments);
+    return delegated.apply(this,arguments);
   }
 
   route.__dccFinalClientRouter=true;
-  route.__base=legacy;
+  route.__base=delegated;
   window.showClient=route;
 
   let repairing=false;
