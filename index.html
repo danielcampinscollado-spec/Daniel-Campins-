@@ -6106,24 +6106,27 @@ function getTrainingNextDayIndex(clientId,totalDays){
 
   ensureTrainingProgressWeek(clientId);
 
+  /* La rutina es una rueda continua. next_day_index es la autoridad:
+     al cambiar de semana se limpian solo los bloqueos semanales, nunca
+     la posición de la rueda. Así un día pendiente pasa a ser el primero
+     de la semana siguiente. */
+  const stored=parseInt(data.trainingNextDayIndex[clientId]);
+  if(Number.isInteger(stored)&&stored>=0){
+    return stored%total;
+  }
+
+  /* Compatibilidad para clientes anteriores que todavía no tengan
+     next_day_index persistido: inferir una única vez desde el historial. */
   const history=(data.workoutHistory?.[clientId]||[])
     .filter(w=>Number.isInteger(Number(w?.dayIndex)))
     .slice()
     .sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
 
   if(history.length){
-    const latestIndex=Number(history[0].dayIndex);
-    const inferred=(latestIndex+1)%total;
-    if(data.trainingNextDayIndex[clientId]!==inferred){
-      data.trainingNextDayIndex[clientId]=inferred;
-      saveData();
-    }
+    const inferred=(Number(history[0].dayIndex)+1)%total;
+    data.trainingNextDayIndex[clientId]=inferred;
+    saveData();
     return inferred;
-  }
-
-  const stored=parseInt(data.trainingNextDayIndex[clientId]);
-  if(Number.isInteger(stored)&&stored>=0){
-    return stored%total;
   }
 
   const legacy=getCompletedTrainingDays(clientId);
