@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260922-client-home-authority-week-carousel2';
+const BUILD='20260922-client-home-authority-week-carousel3';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -34,6 +34,9 @@ function css(){
   html.dcc-theme-light-premium body #client #client-main .dcc-home2,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2 *{box-sizing:border-box!important}
 
+  html.dcc-theme-light-premium body #client #client-main > .dcc-time-greeting{
+    display:none!important
+  }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2{
     width:100%!important;max-width:none!important;margin:0!important;padding:12px 0 116px!important;color:#17191d!important
   }
@@ -60,8 +63,8 @@ function css(){
     width:42px!important;height:2px!important;border-radius:999px!important;background:#d3a03a!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-motto{
-    margin-top:11px!important;color:#7f8793!important;font-size:6.8px!important;line-height:1.5!important;
-    font-weight:700!important;letter-spacing:2.2px!important;text-transform:uppercase!important
+    margin-top:10px!important;color:#7f8793!important;font-size:10.5px!important;line-height:1.35!important;
+    font-weight:500!important;letter-spacing:.1px!important;text-transform:none!important
   }
 
   /* CHECK-IN */
@@ -449,7 +452,7 @@ function renderHome(){
   main.innerHTML=`
   <div class="dcc-home2">
     <div class="dcc-home2-top ${checkinSummary?'':'no-checkin'}">
-      <header class="dcc-home2-head"><div><div class="dcc-home2-kicker">BIENVENIDO</div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-home2-line"></div><div class="dcc-home2-motto">DISCIPLINA HOY,<br>RESULTADOS SIEMPRE</div></div></header>
+      <header class="dcc-home2-head"><div><div class="dcc-home2-kicker">BIENVENIDO A DCC FITNESS</div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-home2-line"></div><div class="dcc-home2-motto">Aquí tienes tu resumen de hoy.</div></div></header>
       ${checkinSummary?`<section class="dcc-home2-checkin" onclick="showClient('progress')"><div class="dcc-home2-checkin-icon">${icon('chart')}</div><div class="dcc-home2-checkin-copy"><div class="dcc-home2-label">TU ÚLTIMO CHECK-IN</div><h3>${esc(checkinSummary.title)}</h3><p>${esc(checkinSummary.text)}</p><small>${esc(checkinSummary.foot)}</small></div><div class="dcc-home2-arrow">›</div></section>`:''}
     </div>
     <section class="dcc-home2-card"><div class="dcc-home2-card-head"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div>${taskRows||'<div class="dcc-home2-task"><div></div><div><h3>Todo al día</h3><p>No tienes tareas pendientes ahora mismo.</p></div><div></div></div>'}</section>
