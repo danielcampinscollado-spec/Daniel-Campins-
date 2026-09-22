@@ -1,7 +1,7 @@
 /* DCC — protege el redirect de Supabase Auth en previews de Vercel */
 (function(){
   'use strict';
-  const BUILD='20260915-auth-preview-redirect-v35-navigation-authority';
+  const BUILD='20260922-auth-preview-redirect-v36-stable-origin';
   if(window.__dccAuthPreviewRedirectGuard===BUILD)return;
   window.__dccAuthPreviewRedirectGuard=BUILD;
 
@@ -11,7 +11,7 @@
   function install(){
     const auth=database()?.auth;if(!auth||typeof auth.signInWithOtp!=='function')return false;
     if(auth.signInWithOtp.__dccPreviewRedirectGuard===BUILD)return true;
-    const base=auth.signInWithOtp.bind(auth);const wrapped=async function(args){const next={...(args||{})};next.options={...((args&&args.options)||{})};if(isPreview())next.options.emailRedirectTo=currentRedirect();return base(next)};
+    const base=auth.signInWithOtp.bind(auth);const wrapped=async function(args){const next={...(args||{})};next.options={...((args&&args.options)||{})};if(isPreview()&&!next.options.emailRedirectTo)next.options.emailRedirectTo='https://daniel-campins-git-a-244c40-danielcampinscollado-4962s-projects.vercel.app/?dcc_role=client';return base(next)};
     wrapped.__dccPreviewRedirectGuard=BUILD;wrapped.__base=base;auth.signInWithOtp=wrapped;return true;
   }
   function loadAuthority(src,key){
