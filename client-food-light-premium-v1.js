@@ -24,20 +24,20 @@
 
       html.dcc-theme-light-premium body #client #client-main .client-header .section-eyebrow{
         margin:0 0 8px!important;
-        color:#b77b13!important;
-        font-size:10.5px!important;
-        line-height:1.1!important;
-        font-weight:750!important;
-        letter-spacing:2.7px!important;
+        color:#a66d0d!important;
+        font-size:11px!important;
+        line-height:1!important;
+        font-weight:850!important;
+        letter-spacing:3.2px!important;
         text-transform:uppercase!important;
       }
 
       html.dcc-theme-light-premium body #client #client-main .client-header .muted{
         margin:0!important;
-        color:#6f7782!important;
-        font-size:17px!important;
-        line-height:1.2!important;
-        font-weight:400!important;
+        color:#707782!important;
+        font-size:13px!important;
+        line-height:1.35!important;
+        font-weight:500!important;
       }
 
       /* Selector Entrenamiento / Descanso */
@@ -86,9 +86,9 @@
         margin:0 0 14px!important;
         padding:10px 12px!important;
         border:1px solid rgba(177,119,18,.24)!important;
-        border-radius:18px!important;
+        border-radius:21px!important;
         background:
-          radial-gradient(circle at 100% 0,rgba(214,163,61,.08),transparent 36%),
+          radial-gradient(circle at 100% 0,rgba(214,163,61,.06),transparent 36%),
           linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
         color:#17191d!important;
         box-shadow:0 9px 22px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important;
@@ -171,7 +171,7 @@
       html.dcc-theme-light-premium body #client #client-main .meal-card{
         overflow:hidden!important;
         border:1px solid rgba(177,119,18,.23)!important;
-        border-radius:19px!important;
+        border-radius:21px!important;
         background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
         color:#17191d!important;
         box-shadow:0 8px 20px rgba(78,58,28,.055),inset 0 1px 0 rgba(255,255,255,.96)!important;
@@ -196,10 +196,10 @@
 
       html.dcc-theme-light-premium body #client #client-main .meal-card summary b{
         color:#17191d!important;
-        font-family:Georgia,"Times New Roman",serif!important;
-        font-size:17px!important;
+        font-family:inherit!important;
+        font-size:15px!important;
         line-height:1.15!important;
-        font-weight:500!important;
+        font-weight:800!important;
       }
 
       html.dcc-theme-light-premium body #client #client-main .meal-card summary b::before{
@@ -285,7 +285,7 @@
 
       @media(max-width:390px){
         html.dcc-theme-light-premium body #client #client-main .client-header .muted{
-          font-size:16px!important;
+          font-size:14.5px!important;
         }
         html.dcc-theme-light-premium body #client #client-main .diet-switch{
           min-height:48px!important;
