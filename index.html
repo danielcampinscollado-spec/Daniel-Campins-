@@ -6069,14 +6069,16 @@ async function openApp(app){
         const localMatch=(data.clients||[]).find(row=>String(row?.auth_user_id||"")===authUserId);
         if(localMatch?.id)resolvedClientId=String(localMatch.id);
       }
+      if(!resolvedClientId){
+        const authEmail=String(window.__dccAuthEmail||"").trim().toLowerCase();
+        const emailMatch=authEmail
+          ? (data.clients||[]).find(row=>String(row?.access_email||"").trim().toLowerCase()===authEmail)
+          : null;
+        if(emailMatch?.id)resolvedClientId=String(emailMatch.id);
+      }
 
       if(!resolvedClientId){
-        const claimResult=await Promise.race([
-          supabaseClient.rpc("dcc_claim_client_access"),
-          new Promise(resolve=>setTimeout(()=>resolve({data:null,error:new Error("Tiempo de espera agotado recuperando el perfil")}),8000))
-        ]);
-        const claimedClientId=claimResult?.data;
-        const claimError=claimResult?.error;
+        const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
         if(claimError)throw claimError;
         if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
         resolvedClientId=String(claimedClientId);
@@ -6088,10 +6090,7 @@ async function openApp(app){
       // Si el perfil ya existe localmente, pintar sin bloquear. La copia remota
       // se actualiza después y sigue protegida por las políticas de Supabase.
       if(!client(currentClientId)){
-        await Promise.race([
-          loadClientsFromSupabase(),
-          new Promise((_,reject)=>setTimeout(()=>reject(new Error("Tiempo de espera agotado cargando el cliente")),8000))
-        ]);
+        await loadClientsFromSupabase();
       }else{
         Promise.resolve(loadClientsFromSupabase()).catch(error=>{
           console.warn("DCC actualización de cliente en segundo plano",error);
@@ -6229,6 +6228,7 @@ async function logout(){
   currentScreen="";window.currentScreen="";
   currentClientId=null;window.currentClientId=null;
   window.__dccAuthUserId="";
+  window.__dccAuthEmail="";
   window.__dccClientReady=false;
   window.__dccPendingClientScreen="home";
   window.__dccOpenAppPromise=null;
@@ -17473,30 +17473,52 @@ async function sendClientCheckin(){
         save(r);
         window.__dccSecureRole=r;
         window.__dccAuthUserId=String(session?.user?.id||'');
+        window.__dccAuthEmail=String(session?.user?.email||'').trim().toLowerCase();
         history.replaceState({},document.title,location.pathname);
         await openApp(r);
         return;
       }
 
       let authSubscription=null;
-      const {data:listener}=getAuthClient().auth.onAuthStateChange(async(event,newSession)=>{
+      const {data:listener}=getAuthClient().auth.onAuthStateChange((event,newSession)=>{
         if(!newSession)return;
         authSubscription?.unsubscribe();
 
-        let nextRole=(qp==='client'||qp==='coach')?qp:role();
-        if(nextRole!=='client'&&nextRole!=='coach'){
-          try{
-            const {data:clientId,error:clientRoleError}=await getAuthClient().rpc('dcc_claim_client_access');
-            if(!clientRoleError && clientId)nextRole='client';
-          }catch(_){}
-        }
-        if(nextRole!=='client'&&nextRole!=='coach')return;
+        // IMPORTANTE: no hacer llamadas async a Supabase dentro de este callback.
+        // supabase-js mantiene aquí su lock de Auth; una RPC/consulta awaited en
+        // el callback puede bloquear la siguiente llamada indefinidamente.
+        setTimeout(async()=>{
+          let nextRole=(qp==='client'||qp==='coach')?qp:role();
 
-        save(nextRole);
-        window.__dccSecureRole=nextRole;
-        window.__dccAuthUserId=String(newSession?.user?.id||'');
-        history.replaceState({},document.title,location.pathname);
-        if(!window.currentApp)openApp(nextRole);
+          window.__dccAuthUserId=String(newSession?.user?.id||'');
+          window.__dccAuthEmail=String(newSession?.user?.email||'').trim().toLowerCase();
+
+          if(nextRole!=='client'&&nextRole!=='coach'){
+            try{
+              const localClient=(data.clients||[]).find(row=>
+                String(row?.auth_user_id||"")===window.__dccAuthUserId ||
+                (
+                  window.__dccAuthEmail &&
+                  String(row?.access_email||"").trim().toLowerCase()===window.__dccAuthEmail
+                )
+              );
+              if(localClient?.id)nextRole='client';
+            }catch(_){}
+          }
+
+          if(nextRole!=='client'&&nextRole!=='coach'){
+            try{
+              const {data:clientId,error:clientRoleError}=await getAuthClient().rpc('dcc_claim_client_access');
+              if(!clientRoleError&&clientId)nextRole='client';
+            }catch(_){}
+          }
+          if(nextRole!=='client'&&nextRole!=='coach')return;
+
+          save(nextRole);
+          window.__dccSecureRole=nextRole;
+          history.replaceState({},document.title,location.pathname);
+          if(!window.currentApp)await openApp(nextRole);
+        },0);
       });
       authSubscription=listener?.subscription||null;
     }catch(e){console.error('DCC auth resume',e)}
