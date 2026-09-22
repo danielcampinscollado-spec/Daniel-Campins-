@@ -86,7 +86,7 @@
 
     let visible=false;
     try{visible=getComputedStyle(app).display!=='none'}catch(_){visible=true}
-    if(!visible||window.currentApp!=='client'||!window.currentClientId)return;
+    if(!visible||window.currentApp!=='client'||!window.__dccClientReady||!window.currentClientId)return;
 
     const screen=String(window.currentScreen||'home');
     if(screen!=='home')return;
