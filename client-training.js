@@ -264,16 +264,16 @@
         html.dcc-theme-light-premium body #client #client-main .dcc-training-stable-v3{
           max-width:820px!important;
           margin:0 auto!important;
-          padding:3px 0 112px!important;
+          padding:0 0 112px!important;
           color:#17191d!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-eyebrow{
-          margin:0 0 13px!important;
+          margin:0 0 12px!important;
           color:#a66d0d!important;
           font-size:11px!important;
           line-height:1!important;
           font-weight:850!important;
-          letter-spacing:3.4px!important;
+          letter-spacing:3.2px!important;
           text-transform:uppercase!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
