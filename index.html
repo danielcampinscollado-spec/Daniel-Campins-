@@ -14,24 +14,50 @@
 <link rel="apple-touch-icon" href="./dc-logo-portada.svg">
 <title>Daniel Campins</title>
 <script id="dcc-theme-prepaint-v1">
-(function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
+(function(){
+  try{
+    document.documentElement.classList.add('dcc-theme-light-premium');
+    document.documentElement.dataset.dccTheme='light-premium';
+    localStorage.setItem('dcc:theme:v1','light-premium');
+  }catch(e){
+    document.documentElement.classList.add('dcc-theme-light-premium');
+  }
+})();
 </script>
 <style id="dcc-login-prepaint-v1">
-/* Evita el destello oscuro antes de que cargue la portada LIGHT */
-html{background:#f5efe4!important;color-scheme:light!important}
-body{margin:0;background:#f5efe4!important}
+/* Primer pintado siempre LIGHT: evita cualquier flash de la antigua interfaz negra. */
+html,html.dcc-theme-light-premium{background:#f5efe4!important;color-scheme:light!important}
+body{margin:0;background:#f5efe4!important;color:#17191d!important}
 #login{min-height:100vh;min-height:100dvh;background:#f5efe4!important}
+#login.dcc-login-light{background:linear-gradient(180deg,#fbf8f1 0%,#f5efe4 100%)!important;color:#17191d!important}
 #login>*{visibility:hidden!important}
-#client,#coach{display:none}
+#client,#coach{display:none;background:#f5efe4!important;color:#17191d!important}
+#client-main,#coach-main{background:#f5efe4!important;color:#17191d!important}
 </style>
 <style id="dcc-nav-prepaint-v1">
+/* La barra cliente nace ya con el mismo aspecto que su autoridad Light definitiva. */
 html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
-#client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
-#client-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}
-#client-nav button svg{color:#e8b94f!important;stroke:currentColor!important}
-#client-nav button span{color:#e5c778!important}
-#client-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}
-#client-nav button.active *{color:#1d1608!important}
+@media(max-width:700px){
+  html.dcc-theme-light-premium body #client>.side{
+    background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+  }
+  html.dcc-theme-light-premium body #client-nav{
+    background:#fffdf9!important;background-image:none!important;
+    border:1px solid rgba(166,126,59,.26)!important;border-radius:22px!important;
+    box-shadow:0 10px 28px rgba(93,67,25,.12)!important;
+  }
+  html.dcc-theme-light-premium body #client-nav button{
+    color:#707782!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;
+  }
+  html.dcc-theme-light-premium body #client-nav button svg,
+  html.dcc-theme-light-premium body #client-nav button span{color:currentColor!important;stroke:currentColor!important}
+  html.dcc-theme-light-premium body #client-nav button.active{
+    color:#17140d!important;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;
+    border:1px solid #d9a43a!important;box-shadow:0 5px 14px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+  }
+  html.dcc-theme-light-premium body #client-nav button.active svg,
+  html.dcc-theme-light-premium body #client-nav button.active span{color:#17140d!important;stroke:currentColor!important}
+}
 </style>
 
 <style>
