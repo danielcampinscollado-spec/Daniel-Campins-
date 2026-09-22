@@ -71,8 +71,8 @@ function css(){
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin{
     display:grid!important;grid-template-columns:38px minmax(0,1fr) 12px!important;gap:8px!important;
     align-items:center!important;padding:10px!important;border:1px solid rgba(189,130,26,.22)!important;
-    border-radius:17px!important;background:linear-gradient(145deg,#fffefa,#fbf6ed)!important;
-    box-shadow:0 6px 16px rgba(80,58,25,.03)!important
+    border-radius:21px!important;background:linear-gradient(145deg,#fffefa,#fbf5eb)!important;
+    box-shadow:0 10px 26px rgba(78,58,28,.07)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin-icon,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-icon,
@@ -106,7 +106,7 @@ function css(){
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
     width:100%!important;margin:0 0 10px!important;border:1px solid rgba(189,130,26,.22)!important;
-    border-radius:18px!important;background:#fffdf8!important;box-shadow:0 6px 16px rgba(80,58,25,.03)!important
+    border-radius:21px!important;background:linear-gradient(145deg,#fffefa,#fbf5eb)!important;box-shadow:0 10px 26px rgba(78,58,28,.07)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card{overflow:hidden!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card-head{
