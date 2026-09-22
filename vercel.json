@@ -63,5 +63,15 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/vendor/supabase-primary.js",
+      "destination": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/dist/umd/supabase.js"
+    },
+    {
+      "source": "/vendor/supabase-fallback.js",
+      "destination": "https://unpkg.com/@supabase/supabase-js@2.108.2/dist/umd/supabase.js"
+    }
   ]
 }
