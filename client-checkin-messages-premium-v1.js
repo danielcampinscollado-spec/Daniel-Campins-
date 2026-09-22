@@ -59,10 +59,10 @@
       .dcc-cc-send{width:100%;min-height:53px;margin-top:4px;border:1px solid #f2ce69;border-radius:17px;background:linear-gradient(135deg,#f2cd67,#dca73c 62%,#edc25b);color:#12100b;font-size:15px;font-weight:900;box-shadow:0 10px 25px rgba(217,170,74,.16),inset 0 1px 0 rgba(255,255,255,.28)}.dcc-cc-send:disabled{opacity:.55}.dcc-cc-sent{margin-top:8px;color:#7f8994;font-size:9px;text-align:center}
 
       /* ================= MENSAJES CLIENTE ================= */
-      #client-main.dcc-client-messages-v1{background:radial-gradient(circle at 88% 0,rgba(224,173,76,.07),transparent 25%),#06090c!important;color:#f7f5f0!important;padding:13px 14px 178px!important;min-height:100dvh}
-      .dcc-cm{max-width:820px;margin:0 auto}.dcc-cm *{box-sizing:border-box}.dcc-cm-kicker{margin:4px 1px 8px;color:${GOLD2};font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}.dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 1px 13px;padding:8px 0 13px;border-bottom:1px solid #242d35}.dcc-cm-avatar{width:47px;height:47px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.67);border-radius:50%;background:#0a0e11;color:${GOLD2};font-size:15px;font-weight:850}.dcc-cm-person h1{margin:0;color:#f7f5f0;font-size:22px;letter-spacing:-.55px}.dcc-cm-role{display:flex;align-items:center;gap:6px;margin-top:5px;color:#8f98a3;font-size:9px}.dcc-cm-dot{width:6px;height:6px;border-radius:50%;background:#5bd879;box-shadow:0 0 9px rgba(91,216,121,.36)}
-      .dcc-cm-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 12px}.dcc-cm-day{display:flex;align-items:center;gap:8px;margin:5px 0;color:#747e89;font-size:8.5px}.dcc-cm-day:before,.dcc-cm-day:after{content:'';height:1px;flex:1;background:#242d35}.dcc-cm-row{display:flex;align-items:flex-end;gap:7px}.dcc-cm-row.mine{justify-content:flex-end}.dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.55);border-radius:50%;background:#090d10;color:${GOLD2};font-size:8px;font-weight:850}.dcc-cm-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid #2a333b;border-radius:15px;background:linear-gradient(145deg,#11171c,#0b1014);color:#f3f1ed;font-size:12px;line-height:1.42;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}.dcc-cm-row.mine .dcc-cm-bubble{border-color:#b6862e;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.12),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)}.dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#b99a57}.dcc-cm-check{color:${GOLD2}}.dcc-cm-empty{padding:28px 15px;border:1px solid rgba(224,173,76,.32);border-radius:17px;background:linear-gradient(145deg,#10151a,#080c0f);color:#8f98a3;text-align:center;font-size:10px}
-      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(224,173,76,.42);border-radius:18px;background:rgba(10,14,18,.97);box-shadow:0 -10px 30px rgba(0,0,0,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.dcc-cm-input{min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#6f7984}.dcc-cm-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none}.dcc-cm-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905;font-size:19px}.dcc-cm-send:disabled{opacity:.45}
+      #client-main.dcc-client-messages-v1{background:radial-gradient(circle at 88% 0,rgba(224,173,76,.07),transparent 25%),#06090c!important;color:#f7f5f0!important;padding:13px 14px 0!important;height:calc(100dvh - 86px)!important;min-height:0!important;overflow:hidden!important}
+      .dcc-cm{max-width:820px;height:100%;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}.dcc-cm *{box-sizing:border-box}.dcc-cm-kicker{margin:4px 1px 8px;color:${GOLD2};font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}.dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 1px 13px;padding:8px 0 13px;border-bottom:1px solid #242d35}.dcc-cm-avatar{width:47px;height:47px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.67);border-radius:50%;background:#0a0e11;color:${GOLD2};font-size:15px;font-weight:850}.dcc-cm-person h1{margin:0;color:#f7f5f0;font-size:22px;letter-spacing:-.55px}.dcc-cm-role{display:flex;align-items:center;gap:6px;margin-top:5px;color:#8f98a3;font-size:9px}.dcc-cm-dot{width:6px;height:6px;border-radius:50%;background:#5bd879;box-shadow:0 0 9px rgba(91,216,121,.36)}
+      .dcc-cm-stream{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;gap:8px;padding:3px 0 88px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}.dcc-cm-stream::-webkit-scrollbar{display:none}.dcc-cm-day{display:flex;align-items:center;gap:8px;margin:5px 0;color:#747e89;font-size:8.5px}.dcc-cm-day:before,.dcc-cm-day:after{content:'';height:1px;flex:1;background:#242d35}.dcc-cm-row{display:flex;align-items:flex-end;gap:7px}.dcc-cm-row.mine{justify-content:flex-end}.dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.55);border-radius:50%;background:#090d10;color:${GOLD2};font-size:8px;font-weight:850}.dcc-cm-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid #2a333b;border-radius:15px;background:linear-gradient(145deg,#11171c,#0b1014);color:#f3f1ed;font-size:12px;line-height:1.42;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}.dcc-cm-row.mine .dcc-cm-bubble{border-color:#b6862e;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.12),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)}.dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#b99a57}.dcc-cm-check{color:${GOLD2}}.dcc-cm-empty{padding:28px 15px;border:1px solid rgba(224,173,76,.32);border-radius:17px;background:linear-gradient(145deg,#10151a,#080c0f);color:#8f98a3;text-align:center;font-size:10px}
+      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(224,173,76,.42);border-radius:18px;background:rgba(10,14,18,.97);box-shadow:0 -10px 30px rgba(0,0,0,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.dcc-cm-input{min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#6f7984}.dcc-cm-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none}.dcc-cm-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905;font-size:19px}.dcc-cm-send:disabled{opacity:.45}
 
       /* El chat premium del entrenador también mantiene el compositor abajo y evita zoom en iPhone. */
       html body #coach #coach-main.dcc-premium-chat .dcc-chat{padding-bottom:110px!important}
@@ -212,15 +212,20 @@
     const coach=msgIsCoach(m);const d=msgDate(m);
     return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓✓</span>'}</div></div></div>`;
   }
+  function scrollClientChatToBottom(smooth=false){
+    const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
+    requestAnimationFrame(()=>{stream.scrollTo({top:stream.scrollHeight,behavior:smooth?'smooth':'auto'});});
+  }
+
   function messagesHtml(id){
     const t=thread(id);if(!t.length)return'<div class="dcc-cm-empty">Todavía no hay mensajes. Puedes escribirle a tu entrenador abajo.</div>';
     let last='';return t.map(m=>{const label=dayFmt(msgDate(m));const sep=label&&label!==last?`<div class="dcc-cm-day"><span>${esc(label)}</span></div>`:'';if(label)last=label;return sep+messageBubble(m)}).join('');
   }
   function refreshClientThread(id){
     const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
+    const follow=stream.scrollHeight-stream.scrollTop-stream.clientHeight<90;
     stream.innerHTML=messagesHtml(id);
-    /* No mover la página al refrescar mensajes. La pantalla del cliente
-       debe conservar la cabecera arriba; el usuario decide cuándo bajar. */
+    if(follow)scrollClientChatToBottom(false);
   }
 
   async function syncMessages(){
@@ -237,15 +242,20 @@
   function renderClientMessages(){
     injectCss();const main=document.getElementById('client-main');const id=activeClientId();if(!main||!id)return;
     main.className='dcc-client-messages-v1';
-    main.innerHTML=`<div class="dcc-cm"><div class="dcc-cm-kicker">MENSAJES</div><header class="dcc-cm-person"><div class="dcc-cm-avatar">DC</div><div><h1>Daniel</h1><div class="dcc-cm-role"><span class="dcc-cm-dot"></span>Tu entrenador</div></div></header><div class="dcc-cm-stream" id="dccClientMessageStream">${messagesHtml(id)}</div></div><div class="dcc-cm-composer"><textarea id="dccClientMessageInput" class="dcc-cm-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccClientSendPremium()}"></textarea><button id="dccClientMessageSend" type="button" class="dcc-cm-send" onclick="dccClientSendPremium()" aria-label="Enviar">➤</button></div>`;
-    /* Al entrar en Mensajes, empezar siempre desde la cabecera. */
+    main.innerHTML=`<div class="dcc-cm"><div class="dcc-cm-kicker">MENSAJES</div><header class="dcc-cm-person"><div class="dcc-cm-avatar">DC</div><div><h1>Daniel</h1><div class="dcc-cm-role"><span class="dcc-cm-dot"></span>Tu entrenador</div></div></header><div class="dcc-cm-stream" id="dccClientMessageStream">${messagesHtml(id)}</div></div><div class="dcc-cm-composer"><textarea id="dccClientMessageInput" class="dcc-cm-input" rows="1" placeholder="Escribe un mensaje..." onfocus="setTimeout(()=>scrollClientChatToBottom(false),120)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccClientSendPremium()}"></textarea><button id="dccClientMessageSend" type="button" class="dcc-cm-send" onclick="dccClientSendPremium()" aria-label="Enviar">➤</button></div>`;
     window.scrollTo(0,0);
-    requestAnimationFrame(()=>window.scrollTo(0,0));
-    setTimeout(()=>{if(window.__dccClientPremiumScreen==='messages')window.scrollTo(0,0)},80);
-    syncMessages().then(ok=>{if(ok&&window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id))refreshClientThread(id)});
+    scrollClientChatToBottom(false);
+    setTimeout(()=>{if(window.__dccClientPremiumScreen==='messages')scrollClientChatToBottom(false)},80);
+    syncMessages().then(ok=>{
+      if(ok&&window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id)){
+        refreshClientThread(id);scrollClientChatToBottom(false);
+      }
+    });
     startMessagePolling();
     try{if(typeof markClientNotificationSeen==='function')markClientNotificationSeen('message',id)}catch(e){}
   }
+
+  window.scrollClientChatToBottom=scrollClientChatToBottom;
 
   window.dccClientSendPremium=async function(){
     const id=activeClientId();const c=clientById(id);const input=document.getElementById('dccClientMessageInput');const text=input?.value.trim();if(!id||!c||!text)return;
@@ -254,7 +264,7 @@
     try{
       const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',message:text});
       if(error)throw error;
-      if(input)input.value='';await syncMessages();refreshClientThread(id);toastSafe('Mensaje enviado');
+      if(input)input.value='';await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);toastSafe('Mensaje enviado');
     }catch(e){console.error('DCC mensaje cliente:',e);toastSafe('No se pudo enviar el mensaje')}
     finally{if(send)send.disabled=false}
   };
