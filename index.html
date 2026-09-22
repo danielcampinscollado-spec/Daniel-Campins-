@@ -6086,6 +6086,7 @@ async function openApp(app){
 
       currentClientId=resolvedClientId;
       window.currentClientId=currentClientId;
+      try{localStorage.setItem("dcc:last-client-id",currentClientId)}catch(_){}
 
       // Si el perfil ya existe localmente, pintar sin bloquear. La copia remota
       // se actualiza después y sigue protegida por las políticas de Supabase.
@@ -6113,14 +6114,42 @@ async function openApp(app){
         const target=String(screen||"home");
         if(currentApp!=="client"||!currentClientId||!window.__dccClientReady)return false;
         try{
-          if(target==="home"&&typeof window.dccClientGoHome==="function"){
-            window.dccClientGoHome();
+          if(target==="home"){
+            // Inicio se pinta directamente desde su autoridad aprobada.
+            // No depende de la cadena histórica de wrappers de showClient.
+            currentScreen="home";
+            window.currentScreen="home";
+            if(typeof window.dccRenderClientHomeApproved==="function"){
+              window.dccRenderClientHomeApproved();
+            }else if(typeof window.dccClientGoHome==="function"){
+              window.dccClientGoHome();
+            }else{
+              showClient("home");
+            }
+
+            const homeMain=document.getElementById("client-main");
+            if(!homeMain?.querySelector(".dcc-home2")){
+              throw new Error("La autoridad de Inicio no generó su contenido");
+            }
+
+            const nav=document.getElementById("client-nav");
+            if(nav){
+              const buttons=nav.querySelectorAll("button");
+              buttons.forEach(b=>b.classList.remove("active"));
+              buttons[0]?.classList.add("active");
+            }
           }else{
             showClient(target);
           }
           return true;
         }catch(error){
-          console.warn("DCC client first paint",error);
+          console.error("DCC client first paint",error);
+          const failedMain=document.getElementById("client-main");
+          if(target==="home"&&failedMain){
+            const safeClient=typeof client==="function"?client(currentClientId):null;
+            failedMain.className="";
+            failedMain.innerHTML='<div style="padding:24px 18px 120px;color:#17191d"><div style="color:#a66d0d;font-size:10px;font-weight:900;letter-spacing:2.4px">BIENVENIDO A DCC FITNESS</div><h1 style="margin:9px 0 8px;font:500 31px/1 Georgia,serif">'+esc(safeClient?.name||"Cliente")+'</h1><p style="margin:0;color:#6f747c">Recuperando tu resumen de hoy…</p></div>';
+          }
           return false;
         }
       };
@@ -6231,6 +6260,7 @@ async function logout(){
   window.__dccAuthEmail="";
   window.__dccClientReady=false;
   window.__dccPendingClientScreen="home";
+  try{localStorage.removeItem("dcc:last-client-id")}catch(_){}
   window.__dccOpenAppPromise=null;
   window.__dccAuthResumed=false;
   window.__dccCoachChatV2=null;window.openCoachMessageClientId=null;
@@ -17264,7 +17294,7 @@ async function sendClientCheckin(){
 <script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
 <script src="./client-training.js?v=20260922-direct-router1"></script>
-<script src="./client-home-authority-final-v1.js?v=20260922-week-carousel5"></script>
+<script src="./client-home-authority-final-v1.js?v=20260922-home-render2"></script>
 
 
 
