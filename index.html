@@ -6049,6 +6049,7 @@ async function openApp(app){
 
     const clientMain=document.getElementById("client-main");
     if(clientMain){
+      clientMain.className="";
       clientMain.innerHTML='<div style="padding:28px 20px;color:#6f747c;font-weight:700">Cargando tu perfil…</div>';
     }
 
@@ -6060,37 +6061,26 @@ async function openApp(app){
       currentClientId=String(claimedClientId);
       window.currentClientId=currentClientId;
 
-      await loadClientsFromSupabase();
+      // Si ya existe el perfil en la caché local de esta misma sesión,
+      // no bloquear Inicio esperando toda la sincronización remota.
+      // En un primer acceso, cargar primero el cliente porque es imprescindible.
+      if(!client(currentClientId)){
+        await loadClientsFromSupabase();
+      }else{
+        Promise.resolve(loadClientsFromSupabase()).catch(error=>{
+          console.warn("DCC actualización de cliente en segundo plano",error);
+        });
+      }
 
       if(!client(currentClientId)){
         throw new Error("No se pudo cargar el perfil del cliente");
       }
 
-      // Inicio depende de rutina, check-in, historial, métricas, mensajes y
-      // notificaciones. Antes se pintaba Inicio antes de que esos datos
-      // estuvieran listos y Safari/iOS podía dejar el contenedor sin pintar
-      // hasta que el usuario cambiaba de pestaña.
       currentScreen="home";
       window.currentScreen="home";
 
-      await Promise.allSettled([
-        loadDietsFromSupabase(),
-        loadRoutinesFromSupabase(),
-        loadWorkoutHistoryFromSupabase(),
-        loadTrainingProgressFromSupabase(),
-        loadWeightsFromSupabase(),
-        loadNotificationStateFromSupabase(),
-        loadMessagesFromSupabase(),
-        loadCheckinHistoryFromSupabase(),
-        loadCheckinsFromSupabase()
-      ]);
-
-      const loadedRoutine=Array.isArray(data.routines?.[currentClientId])?data.routines[currentClientId]:[];
-      if(loadedRoutine.length){
-        window.trainingDayTab=getTrainingNextDayIndex(currentClientId,loadedRoutine.length);
-      }
-
-      // Inicio cliente: pintar directamente la autoridad aprobada.
+      // Única autoridad de Inicio: pintar en cuanto existe el cliente.
+      // Dieta, rutina, progreso, mensajes y check-in se sincronizan después.
       const paintApprovedHome=()=>{
         if(
           currentApp!=="client" ||
@@ -6113,9 +6103,31 @@ async function openApp(app){
       paintApprovedHome();
       setupMessageRealtime();
 
-      // Safari/BFCache puede restaurar el shell antes que el contenido.
-      // Reintentar solo mientras Inicio siga realmente vacío.
-      [0,60,180,500,1200].forEach(delay=>{
+      // La sincronización secundaria ya no puede dejar la pantalla Inicio vacía.
+      const clientSync=Promise.allSettled([
+        loadDietsFromSupabase(),
+        loadRoutinesFromSupabase(),
+        loadWorkoutHistoryFromSupabase(),
+        loadTrainingProgressFromSupabase(),
+        loadWeightsFromSupabase(),
+        loadNotificationStateFromSupabase(),
+        loadMessagesFromSupabase(),
+        loadCheckinHistoryFromSupabase(),
+        loadCheckinsFromSupabase()
+      ]);
+
+      clientSync.then(()=>{
+        const loadedRoutine=Array.isArray(data.routines?.[currentClientId])?data.routines[currentClientId]:[];
+        if(loadedRoutine.length){
+          window.trainingDayTab=getTrainingNextDayIndex(currentClientId,loadedRoutine.length);
+        }
+        paintApprovedHome();
+      }).catch(error=>{
+        console.warn("DCC sincronización secundaria cliente",error);
+      });
+
+      // Recuperación visual limitada: solo si Inicio sigue vacío.
+      [80,250,700,1800,4000].forEach(delay=>{
         setTimeout(()=>{
           const main=document.getElementById("client-main");
           if(
@@ -17455,9 +17467,29 @@ async function sendClientCheckin(){
     }catch(e){console.error('DCC auth resume',e)}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resumeOnce,{once:true});else resumeOnce();
+
+  window.addEventListener('pageshow',function(event){
+    if(!event.persisted)return;
+
+    if(window.currentApp==='client'&&window.currentClientId){
+      const main=document.getElementById('client-main');
+      if(String(window.currentScreen||'home')==='home'&&main&&!main.querySelector('.dcc-home2')){
+        try{
+          if(typeof window.dccClientGoHome==='function')window.dccClientGoHome();
+          else if(typeof window.dccRenderClientHomeApproved==='function')window.dccRenderClientHomeApproved();
+        }catch(error){console.warn('DCC restoring client home',error)}
+      }
+      return;
+    }
+
+    if(!window.currentApp){
+      window.__dccAuthResumed=false;
+      resumeOnce();
+    }
+  });
 })();
 </script>
-<script src="./client-final-router-v1.js?v=20260922-router1"></script>
+<script src="./client-final-router-v1.js?v=20260922-router2"></script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
 <script>
 (function(){
