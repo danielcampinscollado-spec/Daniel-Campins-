@@ -4433,49 +4433,6 @@ body{
 }
 
 </style>
-
-<style id="dcc-secure-login-source-light">
-  html,body{background:#f6efe3}
-  #login.login{
-    min-height:100vh;min-height:100dvh;width:100%;box-sizing:border-box;
-    display:flex;align-items:flex-start;justify-content:center;
-    padding:16px 14px 30px;
-    background:
-      radial-gradient(circle at 88% 4%,rgba(201,145,38,.14),transparent 24%),
-      radial-gradient(circle at 6% 94%,rgba(201,145,38,.08),transparent 24%),
-      linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%) !important;
-    color:#17191d;overflow:auto;
-  }
-  #login.login:before{display:none!important}
-  #login.login .login-box{
-    width:100%;max-width:460px;margin:0 auto;padding:12px 8px 22px;
-    background:transparent!important;border:0!important;border-radius:0!important;
-    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-    overflow:visible!important;
-  }
-  #login.login .login-box:before,#login.login .login-box:after{display:none!important}
-  #login.login .brand-logo{
-    width:104px!important;height:104px!important;margin:4px auto 5px!important;
-    display:flex!important;align-items:center!important;justify-content:center!important;
-  }
-  #login.login .brand-logo img{
-    display:block!important;width:92px!important;height:92px!important;object-fit:contain!important;
-    margin:0 auto!important;border-radius:18px!important;filter:none!important;
-    box-shadow:0 8px 24px rgba(77,54,18,.10)!important;
-  }
-  #login.login .brand-line{
-    width:52px!important;height:2px!important;margin:7px auto 14px!important;border-radius:999px!important;
-    background:linear-gradient(90deg,#b77b16,#efc55c,#b77b16)!important;
-    box-shadow:none!important;
-  }
-  #login.login .choices{display:none!important}
-  @media(max-width:620px){
-    #login.login{padding:8px 10px 24px}
-    #login.login .login-box{max-width:100%;padding:8px 6px 20px}
-    #login.login .brand-logo{width:96px!important;height:96px!important;margin-top:2px!important}
-    #login.login .brand-logo img{width:86px!important;height:86px!important;border-radius:17px!important}
-  }
-</style>
 </head>
 
 <body>
@@ -4486,7 +4443,7 @@ body{
 
     <div class="brand-logo">
   <img
-    src="./dc-logo-app-cuadrado.svg?v=20260922-user-approved1"
+    src="./dc-logo-portada.svg?v=20260922-approved1"
     alt="DCC Fitness"
     style="
       display:block;
@@ -4498,6 +4455,70 @@ body{
 </div>
 
     <div class="brand-line"></div>
+
+
+    <div class="choices">
+
+
+      <button
+        class="choice choice-client"
+        type="button"
+        onclick="openApp('client')">
+
+        <div class="choice-icon">
+          <span>♙</span>
+        </div>
+
+        <b>ÁREA CLIENTE</b>
+
+        <div class="choice-line"></div>
+
+        <div class="choice-icons">
+          <span>⚑</span>
+          <span>⚖</span>
+          <span>↗</span>
+          <span>✓</span>
+          <span>💬</span>
+        </div>
+
+        <span class="choice-description">
+          Alimentación, entrenamiento,<br>
+          progreso, check-in y mensajes.
+        </span>
+
+      </button>
+
+
+      <button
+        class="choice choice-admin"
+        type="button"
+        onclick="openApp('coach')">
+
+        <div class="choice-icon admin-icon">
+          <span>▥</span>
+        </div>
+
+        <b>PANEL ENTRENADOR</b>
+
+        <div class="choice-line"></div>
+
+        <div class="choice-icons">
+          <span>♙♙</span>
+          <span>▤</span>
+          <span>⚊</span>
+          <span>✓</span>
+          <span>💬</span>
+        </div>
+
+        <span class="choice-description">
+          Clientes, dietas, rutinas,<br>
+          check-ins y mensajes.
+        </span>
+
+      </button>
+
+
+    </div>
 
   </div>
 
@@ -16627,7 +16648,7 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260916-audit2"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260922-auth-shell3"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260922-login-light1"></script>
 <script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 
