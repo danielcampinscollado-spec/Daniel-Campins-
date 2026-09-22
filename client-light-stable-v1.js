@@ -79,6 +79,33 @@ html.dcc-theme-light-premium body #client #client-main textarea::placeholder{
 }
 html.dcc-theme-light-premium body #client #client-main hr{border-color:rgba(183,123,19,.14)}
 
+/* Superficies Light explícitas: evita que reglas legacy oscuras ganen por especificidad. */
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-metric,
+html.dcc-theme-light-premium body #client #client-main .dcc-performance-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-card{
+  background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
+  background-color:var(--dcc-client-surface)!important;
+  color:var(--dcc-client-text)!important;
+  border-color:var(--dcc-client-line)!important;
+  box-shadow:var(--dcc-client-shadow)!important;
+}
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-card.primary{
+  background:linear-gradient(145deg,#fffdf9 0%,#fff6e7 100%)!important;
+}
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card h2,
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card b,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-card .dcc-ci4-value,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-main{
+  color:var(--dcc-client-text)!important;
+}
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card p,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-copy,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-metric label{
+  color:var(--dcc-client-muted)!important;
+}
+
 @media(max-width:700px){
   html.dcc-theme-light-premium body #client #client-main{
     padding-left:20px;
