@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (Google OAuth RC) */
 (function(){
   'use strict';
-  const BUILD='20260922-auth-shell-isolated2';
+  const BUILD='20260922-auth-shell-isolated3';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -161,6 +161,24 @@
     installStyles();patchLogout();
     const db=database();
     if(!db?.auth){renderLogin();showLogin();return}
+
+    // Entrada explícita para cambiar de cuenta desde móvil.
+    // Cierra únicamente la sesión Supabase del navegador y vuelve al acceso seguro.
+    const params=new URLSearchParams(window.location.search);
+    if(params.get('logout')==='1'){
+      hideLogin();
+      try{await db.auth.signOut()}catch(error){console.warn('DCC Auth — cambio de cuenta:',error)}
+      window.__dccSecureRole=null;
+      document.querySelector('.dcc-secure-session-badge')?.remove();
+      document.getElementById('client')?.style.setProperty('display','none');
+      document.getElementById('coach')?.style.setProperty('display','none');
+      params.delete('logout');
+      const cleanQuery=params.toString();
+      history.replaceState({},'',window.location.pathname+(cleanQuery?'?'+cleanQuery:'')+window.location.hash);
+      renderLogin();showLogin();
+      return;
+    }
+
     hideLogin();
     try{
       const {data,error}=await db.auth.getSession();
