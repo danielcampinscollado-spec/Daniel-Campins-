@@ -869,15 +869,15 @@
    Mantiene soporte explícito para 1, 2 y 3 músculos; no altera lógica ni assets. */
 (()=>{const old=document.getElementById('dcc-training-muscle-alignment-hotfix');if(old)old.remove();const s=document.createElement('style');s.id='dcc-training-muscle-alignment-hotfix';s.textContent=`
 html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
-  min-height:102px!important;
-  padding:7px 12px!important;
+  min-height:88px!important;
+  padding:5px 10px!important;
   grid-template-columns:minmax(0,1fr) 178px!important;
   gap:8px!important
 }
 html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap{display:flex!important;flex-direction:column!important;align-items:center!important}
 html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:178px!important;gap:5px!important}
 html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{flex-basis:86px!important;width:86px!important;min-width:86px!important}
-html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:86px!important;height:60px!important}
+html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:86px!important;height:54px!important}
 html.dcc-theme-light-premium body #client #client-main .dct3-muscle-wrap>span{margin-top:4px!important}
 html.dcc-theme-light-premium body #client #client-main .dct3-label{margin-bottom:4px!important}
 html.dcc-theme-light-premium body #client #client-main .dct3-region{margin-top:6px!important}
@@ -903,10 +903,10 @@ html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count=
 html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="1"] .dct3-muscle{width:102px!important;height:76px!important}
 
 @media(max-width:389px){
- html.dcc-theme-light-premium body #client #client-main .dct3-muscles{min-height:100px!important;grid-template-columns:minmax(0,1fr) 164px!important;padding:7px 10px!important;gap:7px!important}
+ html.dcc-theme-light-premium body #client #client-main .dct3-muscles{min-height:86px!important;grid-template-columns:minmax(0,1fr) 164px!important;padding:5px 9px!important;gap:7px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:164px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{flex-basis:79px!important;width:79px!important;min-width:79px!important}
- html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:79px!important;height:57px!important}
+ html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:79px!important;height:52px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 156px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:156px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:50px!important;width:50px!important;min-width:50px!important}
@@ -914,10 +914,10 @@ html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count=
  html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"] .dct3-title{max-width:125px!important;font-size:15px!important}
 }
 @media(min-width:420px){
- html.dcc-theme-light-premium body #client #client-main .dct3-muscles{min-height:108px!important;grid-template-columns:minmax(0,1fr) 188px!important;padding:8px 14px!important}
+ html.dcc-theme-light-premium body #client #client-main .dct3-muscles{min-height:92px!important;grid-template-columns:minmax(0,1fr) 188px!important;padding:5px 11px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals{width:188px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle-wrap{flex-basis:91px!important;width:91px!important;min-width:91px!important}
- html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:91px!important;height:64px!important}
+ html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="2"] .dct3-muscle{width:91px!important;height:56px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 188px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"]{width:188px!important;gap:4px!important}
  html.dcc-theme-light-premium body #client #client-main .dct3-visuals[data-count="3"] .dct3-muscle-wrap{flex-basis:60px!important;width:60px!important;min-width:60px!important}
