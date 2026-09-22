@@ -4437,17 +4437,16 @@ body{
 @media (max-width:700px){
   html.dcc-theme-light-premium #client-nav,
   #client-nav{
-    left:0 !important;
-    right:0 !important;
-    bottom:0 !important;
-    width:100% !important;
+    left:5px !important;
+    right:5px !important;
+    bottom:5px !important;
+    width:auto !important;
     box-sizing:border-box !important;
-    padding:6px 7px max(6px,env(safe-area-inset-bottom)) !important;
-    border:2px solid #c58a1d !important;
-    border-bottom-width:2px !important;
-    border-radius:28px 28px 0 0 !important;
+    padding:5px 6px max(5px,env(safe-area-inset-bottom)) !important;
+    border:3px solid #b8790d !important;
+    border-radius:29px !important;
     background:linear-gradient(180deg,#fffefb 0%,#fbf7ef 100%) !important;
-    box-shadow:0 -7px 24px rgba(96,65,18,.12),inset 0 1px 0 rgba(255,255,255,.95) !important;
+    box-shadow:0 0 0 1px #f3d17b,0 -7px 24px rgba(96,65,18,.13),inset 0 1px 0 rgba(255,255,255,.95) !important;
     overflow:hidden !important;
     grid-template-columns:repeat(6,minmax(0,1fr)) !important;
     gap:2px !important;
@@ -6504,7 +6503,7 @@ const icons={
 
 const svg=icons[icon]||icons["⌂"];
 
-return `<button class="${text==="Inicio"||text==="Panel"?"active":""}" onclick="${fn};this.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active')">${svg}<span>${text}</span></button>`;}
+return `<button class="${text==="Inicio"||text==="Panel"?"active":""}" data-nav-label="${text}" onclick="${fn}">${svg}<span>${text}</span></button>`;}
 function buildClientNav(){
 document.getElementById("client-nav").innerHTML=
 navButton("⌂","Inicio","showClient('home')")+
@@ -6563,23 +6562,20 @@ function showClient(screen){
   if(clientNav){
 
     const buttons=clientNav.querySelectorAll("button");
+    const navLabel={
+      home:"Inicio",
+      food:"Alimentación",
+      training:"Entrenamiento",
+      progress:"Progreso",
+      checkin:"Check-in",
+      messages:"Mensajes"
+    }[screen];
 
-    buttons.forEach(b=>b.classList.remove("active"));
-
-    const navIndex={
-      home:0,
-      food:1,
-      training:2,
-      progress:3,
-      checkin:4,
-      messages:5
-    };
-
-    const index=navIndex[screen];
-
-    if(index!==undefined && buttons[index]){
-      buttons[index].classList.add("active");
-    }
+    buttons.forEach(b=>{
+      const active=b.dataset.navLabel===navLabel;
+      b.classList.toggle("active",active);
+      b.setAttribute("aria-current",active?"page":"false");
+    });
 
   }
 
