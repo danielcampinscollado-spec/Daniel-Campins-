@@ -7394,10 +7394,25 @@ if(screen==="food"){
     currentClientId
   );
 
-  const dietType=window.clientDietType||"training";
+  const clientDietPlan=data.diets[currentClientId]||{};
+  const hasTrainingDiet=Array.isArray(clientDietPlan.training?.meals)&&clientDietPlan.training.meals.length>0;
+  const hasRestDiet=Array.isArray(clientDietPlan.rest?.meals)&&clientDietPlan.rest.meals.length>0;
+  const availableDietTypes=[
+    ...(hasTrainingDiet?["training"]:[]),
+    ...(hasRestDiet?["rest"]:[])
+  ];
+
+  let dietType=window.clientDietType||"training";
+
+  // El cliente solo navega entre dietas realmente asignadas.
+  // Si existe una sola, se selecciona automáticamente y no aparece una pestaña vacía.
+  if(availableDietTypes.length && !availableDietTypes.includes(dietType)){
+    dietType=availableDietTypes[0];
+    window.clientDietType=dietType;
+  }
 
   const diet=
-    data.diets[currentClientId]?.[dietType]
+    clientDietPlan[dietType]
     || {
       calories:"",
       protein:"",
@@ -7405,6 +7420,7 @@ if(screen==="food"){
     };
 
   const meals=diet.meals||[];
+  const showDietSwitch=availableDietTypes.length>1;
 
   html=`
 
@@ -7427,7 +7443,7 @@ if(screen==="food"){
   </div>
 
 
-  <div class="diet-switch">
+  ${showDietSwitch?`\n<div class="diet-switch">
 
     <button
       class="${dietType==="training"?"active":""}"
@@ -7449,7 +7465,7 @@ if(screen==="food"){
       Descanso
     </button>
 
-  </div>
+  </div>\n  `:""}
 
 
   <div class="diet-pdf-card">
