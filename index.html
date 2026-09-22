@@ -17237,13 +17237,36 @@ async function sendClientCheckin(){
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setStatus('Introduce un correo válido.');input?.focus();return}
       if(busy)return;busy=true;send.disabled=true;setStatus('Enviando enlace de activación…');save('client');
       try{
-        const {error}=await getAuthClient().auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirect('client')}});
-        if(error)throw error;
+        const redirect=authRedirect('client');
+        const endpoint=SUPABASE_URL+'/auth/v1/otp?redirect_to='+encodeURIComponent(redirect);
+        const response=await fetch(endpoint,{
+          method:'POST',
+          headers:{
+            'apikey':SUPABASE_KEY,
+            'Authorization':'Bearer '+SUPABASE_KEY,
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            email,
+            create_user:true,
+            data:{}
+          })
+        });
+        let payload={};
+        try{payload=await response.json()}catch(_){}
+        if(!response.ok){
+          const message=String(payload?.msg||payload?.message||payload?.error_description||payload?.error||('HTTP '+response.status));
+          const error=new Error(message);
+          error.status=response.status;
+          error.code=payload?.code||'';
+          throw error;
+        }
         setStatus('Enlace enviado. Ábrelo una sola vez para activar este dispositivo. Después la sesión se mantendrá guardada mientras no cierres sesión.');
       }catch(e){
         console.error('DCC client email auth',e);
         const msg=String(e?.message||'').toLowerCase();
-        if(msg.includes('rate')||msg.includes('limit')||msg.includes('too many')){
+        const code=String(e?.code||'').toLowerCase();
+        if(e?.status===429||msg.includes('rate')||msg.includes('limit')||msg.includes('too many')||code.includes('rate')){
           setStatus('Supabase ha limitado temporalmente los correos por exceso de solicitudes. No sigas pidiendo enlaces; espera a que se restablezca el límite.');
         }else if(msg.includes('not authorized')||msg.includes('unauthorized')){
           setStatus('El servidor de correo de prueba de Supabase no permite enviar ahora a esta dirección.');
