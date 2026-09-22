@@ -21,17 +21,16 @@
 html{background:#f5efe4!important;color-scheme:light!important}
 body{margin:0;background:#f5efe4!important}
 #login{min-height:100vh;min-height:100dvh;background:#f5efe4!important}
-#login>*{visibility:hidden!important}
 #client,#coach{display:none}
 </style>
 <style id="dcc-nav-prepaint-v1">
 html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
-#client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
-#client-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}
-#client-nav button svg{color:#e8b94f!important;stroke:currentColor!important}
-#client-nav button span{color:#e5c778!important}
-#client-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}
-#client-nav button.active *{color:#1d1608!important}
+#client-nav{background:#fffdf9!important;border:1.5px solid rgba(190,132,28,.82)!important;box-shadow:0 10px 28px rgba(93,67,25,.12),0 0 0 1px rgba(222,176,77,.08)!important}
+#client-nav button{color:#707782!important;background:transparent!important;border-color:transparent!important}
+#client-nav button svg{color:currentColor!important;stroke:currentColor!important}
+#client-nav button span{color:currentColor!important}
+#client-nav button.active{color:#b57d16!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+#client-nav button.active *{color:#b57d16!important}
 </style>
 
 <style>
@@ -17186,7 +17185,7 @@ async function sendClientCheckin(){
 <script src="./client-checkin-final-v3.js?v=20260918-audit-final1"></script>
 <script src="./coach-premium-v8.js?v=20260916-audit2"></script>
 <script src="./coach-client-plan-status-v1.js?v=20260919-audit-bootstrap9-clients-premium"></script>
-<script src="./dcc-theme-system-v1.js?v=20260916-audit1"></script>
+<script src="./dcc-theme-system-v1.js?v=20260922-client-nav-reload1"></script>
 <script src="./coach-light-stable-v1.js?v=20260919-audit4-clients"></script>
 <script src="./client-light-stable-v1.js?v=20260920-client-light-stable1"></script>
 <script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>
@@ -17200,8 +17199,13 @@ async function sendClientCheckin(){
 <script id="dcc-auth-flow-v4">
 (function(){
   const ROLE_KEY='dcc:selected-access-role';
-  const AUTH_ORIGIN='https://daniel-campins-git-a-244c40-danielcampinscollado-4962s-projects.vercel.app';
-  const authRedirect=r=>AUTH_ORIGIN+'/?dcc_role='+encodeURIComponent(r);
+  const authRedirect=r=>{
+    const url=new URL(window.location.href);
+    url.search='';
+    url.hash='';
+    url.searchParams.set('dcc_role',r);
+    return url.toString();
+  };
   let busy=false;
   const getAuthClient=()=>{
     let client=window.supabaseClient;
@@ -17429,6 +17433,11 @@ async function sendClientCheckin(){
     }catch(e){console.error('DCC auth resume',e)}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',resumeOnce,{once:true});else resumeOnce();
+  window.addEventListener('pageshow',function(event){
+    if(!event.persisted)return;
+    window.__dccAuthResumed=false;
+    resumeOnce();
+  });
 })();
 </script>
 <script src="./client-final-router-v1.js?v=20260922-router1"></script>
