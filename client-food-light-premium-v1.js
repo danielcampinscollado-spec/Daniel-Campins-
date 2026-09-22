@@ -75,39 +75,6 @@
         box-shadow:0 5px 13px rgba(185,126,18,.15),inset 0 1px 0 rgba(255,255,255,.86)!important;
       }
 
-      html.dcc-theme-light-premium body #client #client-main .diet-dual-notice{
-        display:grid!important;
-        grid-template-columns:24px minmax(0,1fr)!important;
-        align-items:center!important;
-        gap:9px!important;
-        margin:-3px 0 12px!important;
-        padding:9px 11px!important;
-        border:1px solid rgba(183,123,19,.24)!important;
-        border-radius:14px!important;
-        background:linear-gradient(145deg,#fff9eb 0%,#f8ecd3 100%)!important;
-        color:#646b74!important;
-        box-shadow:0 7px 18px rgba(78,58,28,.05)!important;
-        font-size:10.5px!important;
-        line-height:1.35!important;
-        font-weight:500!important;
-      }
-      html.dcc-theme-light-premium body #client #client-main .diet-dual-notice b{
-        color:#8d5c08!important;
-        font-weight:800!important;
-      }
-      html.dcc-theme-light-premium body #client #client-main .diet-dual-notice-icon{
-        width:24px!important;
-        height:24px!important;
-        display:grid!important;
-        place-items:center!important;
-        border:1px solid rgba(183,123,19,.35)!important;
-        border-radius:50%!important;
-        background:#fff4d7!important;
-        color:#a66d0d!important;
-        font-size:11px!important;
-        font-weight:900!important;
-      }
-
       /* Tarjeta PDF: deja de ser un bloque negro desconectado del Light */
       html.dcc-theme-light-premium body #client #client-main .diet-pdf-card{
         display:grid!important;
