@@ -8505,808 +8505,208 @@ ${exerciseVisual(ex.name)}
 }
 if(screen==="progress"){
 
-  const weightHistory =
-    data.weights?.[c.id] || [c.initial,c.weight];
+  const weightHistory=(data.weights?.[c.id]||[])
+    .map(Number).filter(Number.isFinite);
+  const initialWeight=Number(c.initial)||0;
+  const currentWeight=Number(c.weight)||0;
+  const totalChange=currentWeight-initialWeight;
+  const totalPercent=initialWeight?(totalChange/initialWeight)*100:0;
 
-  const initialWeight =
-    Number(c.initial)||0;
-
-  const currentWeight =
-    Number(c.weight)||0;
-
-  const totalChange =
-    currentWeight-initialWeight;
-
-  const totalPercent =
-    initialWeight
-      ? (totalChange/initialWeight)*100
-      : 0;
-
-
-  /*
-    % DE GRASA
-
-    El proyecto todavía no guarda este dato.
-    Por eso queda preparado y muestra — hasta
-    que añadamos las mediciones reales.
-  */
-
-  const initialBodyFat =
-    c.bodyFatInitial != null
-      ? Number(c.bodyFatInitial)
-      : null;
-
-  const progressCheckin =
-    data.checkins?.[c.id] || {};
-
-  const currentBodyFat =
-    progressCheckin.bodyFat !== undefined &&
-    progressCheckin.bodyFat !== null &&
-    progressCheckin.bodyFat !== ""
+  const initialBodyFat=c.bodyFatInitial!=null?Number(c.bodyFatInitial):null;
+  const progressCheckin=data.checkins?.[c.id]||{};
+  const currentBodyFat=
+    progressCheckin.bodyFat!==undefined &&
+    progressCheckin.bodyFat!==null &&
+    progressCheckin.bodyFat!==""
       ? Number(progressCheckin.bodyFat)
       : null;
-
-  const bodyFatChange =
-    initialBodyFat !== null &&
-    currentBodyFat !== null
+  const bodyFatChange=
+    initialBodyFat!==null && currentBodyFat!==null
       ? currentBodyFat-initialBodyFat
       : null;
 
+  const bodyFatHistory=(data.checkinHistory?.[c.id]||[])
+    .map(x=>({value:Number(x?.bodyFat),date:x?.sentAt||null}))
+    .filter(x=>Number.isFinite(x.value));
 
-  /*
-    GRÁFICA DE PESO
-  */
+  const weightSeries=weightHistory.length
+    ? weightHistory
+    : [initialWeight,currentWeight].filter(Number.isFinite);
 
-  const chartValues =
-    weightHistory
-      .map(Number)
-      .filter(Number.isFinite);
-
-
-  const chartPoints =
-    chartValues.length > 1
-
-      ? (()=>{
-
-          const min =
-            Math.min(...chartValues);
-
-          const max =
-            Math.max(...chartValues);
-
-          const range =
-            max-min || 1;
-
-          return chartValues
-            .map((value,index)=>{
-
-              const x =
-                chartValues.length===1
-                  ? 50
-                  : (index/(chartValues.length-1))*100;
-
-              const y =
-                88 -
-                ((value-min)/range)*68;
-
-              return `${x},${y}`;
-
-            })
-            .join(" ");
-
-        })()
-
-      : "";
-
-
-  /*
-    MEJORA DE FUERZA
-
-    Comparamos los dos últimos entrenamientos
-    reales guardados para el cliente.
-
-    Cada serie utiliza kg × repeticiones.
-  */
-
-  const workoutHistory =
-    (data.workoutHistory?.[c.id] || [])
-      .slice()
-      .sort(
-        (a,b)=>
-          new Date(a.date)-new Date(b.date)
-      );
-
-
-  const currentWorkout =
-    workoutHistory.length >= 1
-      ? workoutHistory[workoutHistory.length-1]
-      : null;
-
-  const previousWorkout =
-    workoutHistory.length >= 2
-      ? workoutHistory[workoutHistory.length-2]
-      : null;
-
-
+  const workoutHistory=(data.workoutHistory?.[c.id]||[])
+    .slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const currentWorkout=workoutHistory.length?workoutHistory[workoutHistory.length-1]:null;
+  const previousWorkout=workoutHistory.length>=2?workoutHistory[workoutHistory.length-2]:null;
   const strengthRows=[];
 
-
-  if(currentWorkout && previousWorkout){
-
-    (currentWorkout.exercises || []).forEach(ex=>{
-
-      const previousExercise =
-        (previousWorkout.exercises || []).find(
-          item =>
-            item.name === ex.name
-        );
-
-
-      if(!previousExercise){
-        return;
-      }
-
-
-      const currentSets =
-        Array.isArray(ex.sets)
-          ? ex.sets
-          : [];
-
-      const previousSets =
-        Array.isArray(previousExercise.sets)
-          ? previousExercise.sets
-          : [];
-
-
-      if(
-        !currentSets.length ||
-        !previousSets.length
-      ){
-        return;
-      }
-
-
-      const bestCurrent =
-        currentSets.reduce(
-          (best,set)=>{
-
-            const kg =
-              Number(set.kg)||0;
-
-            const reps =
-              Number(set.reps)||0;
-
-            const value =
-              kg*reps;
-
-            return value>best.value
-              ? {
-                  kg:kg,
-                  reps:reps,
-                  value:value
-                }
-              : best;
-
-          },
-          {
-            kg:0,
-            reps:0,
-            value:0
-          }
-        );
-
-
-      const bestPrevious =
-        previousSets.reduce(
-          (best,set)=>{
-
-            const kg =
-              Number(set.kg)||0;
-
-            const reps =
-              Number(set.reps)||0;
-
-            const value =
-              kg*reps;
-
-            return value>best.value
-              ? {
-                  kg:kg,
-                  reps:reps,
-                  value:value
-                }
-              : best;
-
-          },
-          {
-            kg:0,
-            reps:0,
-            value:0
-          }
-        );
-
-
-      if(
-        bestPrevious.value>0 &&
-        bestCurrent.value>0
-      ){
-
-        const improvement =
-          (
-            (
-              bestCurrent.value-
-              bestPrevious.value
-            ) /
-            bestPrevious.value
-          )*100;
-
-
+  if(currentWorkout&&previousWorkout){
+    (currentWorkout.exercises||[]).forEach(ex=>{
+      const previousExercise=(previousWorkout.exercises||[]).find(item=>item.name===ex.name);
+      if(!previousExercise)return;
+      const currentSets=Array.isArray(ex.sets)?ex.sets:[];
+      const previousSets=Array.isArray(previousExercise.sets)?previousExercise.sets:[];
+      if(!currentSets.length||!previousSets.length)return;
+      const best=s=>s.reduce((acc,set)=>{
+        const kg=Number(set.kg)||0,reps=Number(set.reps)||0,value=kg*reps;
+        return value>acc.value?{kg,reps,value}:acc;
+      },{kg:0,reps:0,value:0});
+      const a=best(previousSets),b=best(currentSets);
+      if(a.value>0&&b.value>0){
         strengthRows.push({
-
-          name:ex.name || "Ejercicio",
-
-          previous:bestPrevious,
-
-          current:bestCurrent,
-
-          improvement:improvement
-
+          name:ex.name||"Ejercicio",previous:a,current:b,
+          improvement:((b.value-a.value)/a.value)*100
         });
-
       }
-
     });
-
   }
 
+  const averageStrength=strengthRows.length
+    ? strengthRows.reduce((sum,row)=>sum+row.improvement,0)/strengthRows.length
+    : null;
 
-  const averageStrength =
-    strengthRows.length
-
-      ? strengthRows.reduce(
-          (total,row)=>
-            total+row.improvement,
-          0
-        )/strengthRows.length
-
-      : null;
-
+  const fmtMetric=(value,unit)=>Number.isFinite(Number(value))
+    ? Number(value).toFixed(1).replace(".",",")+unit
+    : "—";
 
   html=`
-
-  <!-- CABECERA -->
-
-  <div class="client-header">
-
-    <div>
-
-      <span class="section-eyebrow">
-        PROGRESO
-      </span>
-
-      <h1>
-        Tu progreso
-      </h1>
-
-      <p class="muted">
-        Así evolucionas semana a semana.
-      </p>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       PESO
-  ========================== -->
-
-  <div style="
-    margin-bottom:8px;
-  ">
-
-    <span class="section-eyebrow">
-      PESO
-    </span>
-
-  </div>
-
-
-  <div class="profile-grid">
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        Peso inicial
-      </span>
-
-      <strong style="
-        color:#f5f5f2;
-        font-size:20px;
-      ">
-        ${money(initialWeight)} kg
-      </strong>
-
-    </div>
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        Peso actual
-      </span>
-
-      <strong style="
-        color:#f5f5f2;
-        font-size:20px;
-      ">
-        ${money(currentWeight)} kg
-      </strong>
-
-    </div>
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        Cambio total
-      </span>
-
-      <strong style="
-        color:${totalChange<=0?"#39b982":"#d9aa4a"};
-        font-size:20px;
-      ">
-        ${totalChange>=0?"+":""}${money(totalChange)} kg
-      </strong>
-
-      <span style="
-        color:#8b929c;
-        margin-top:4px;
-      ">
-        ${totalPercent>=0?"+":""}${totalPercent.toFixed(1).replace(".",",")}%
-      </span>
-
-    </div>
-
-
-  </div>
-
-
-  <!-- =========================
-       % DE GRASA
-  ========================== -->
-
-  <div style="
-    margin-top:4px;
-    margin-bottom:8px;
-  ">
-
-    <span class="section-eyebrow">
-      % DE GRASA
-    </span>
-
-  </div>
-
-
-  <div class="profile-grid">
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        % grasa inicial
-      </span>
-
-      <strong style="
-        color:#f5f5f2;
-        font-size:20px;
-      ">
-        ${
-          initialBodyFat !== null
-            ? initialBodyFat.toFixed(1).replace(".",",")+"%"
-            : "—"
-        }
-      </strong>
-
-    </div>
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        % grasa actual
-      </span>
-
-      <strong style="
-        color:#f5f5f2;
-        font-size:20px;
-      ">
-        ${
-          currentBodyFat !== null
-            ? currentBodyFat.toFixed(1).replace(".",",")+"%"
-            : "—"
-        }
-      </strong>
-
-    </div>
-
-
-    <div
-      class="profile-stat"
-      style="
-        background:
-          radial-gradient(
-            circle at 100% 0%,
-            rgba(217,170,74,.08),
-            transparent 60%
-          ),
-          linear-gradient(
-            145deg,
-            #181b23,
-            #101218
-          );
-        color:#f5f5f2;
-        border:1px solid rgba(255,255,255,.10);
-        box-shadow:
-          0 14px 35px rgba(0,0,0,.20),
-          inset 0 1px 0 rgba(255,255,255,.04);
-      "
-    >
-
-      <span style="
-        color:#8b929c;
-      ">
-        Cambio total
-      </span>
-
-      <strong style="
-        color:${
-          bodyFatChange !== null &&
-          bodyFatChange<=0
-            ? "#39b982"
-            : "#d9aa4a"
-        };
-        font-size:20px;
-      ">
-        ${
-          bodyFatChange !== null
-            ? (
-                bodyFatChange>=0
-                  ? "+"
-                  : ""
-              )+
-              bodyFatChange.toFixed(1).replace(".",",")+"%"
-            : "—"
-        }
-      </strong>
-
-    </div>
-
-
-  </div>
-
-
-  <!-- =========================
-       EVOLUCIÓN DEL PESO
-  ========================== -->
-
-  <div
-    class="card profile-card"
-    style="
-      margin-top:16px;
-    "
-  >
-
-    <div class="section-title-row">
-
+  <div class="dcc-progress-premium">
+    <div class="client-header dcc-progress-head">
       <div>
-
-        <span class="section-eyebrow">
-          EVOLUCIÓN DEL PESO
-        </span>
-
-        <h2>
-          Peso
-        </h2>
-
+        <span class="section-eyebrow">PROGRESO</span>
+        <h1>Tu progreso</h1>
+        <p class="muted">Así evolucionas semana a semana.</p>
       </div>
-
-
-      <strong
-        class="progress-value"
-        style="
-          font-size:18px;
-        "
-      >
-        ${totalChange>=0?"+":""}${money(totalChange)} kg
-      </strong>
-
     </div>
 
-
-    <div class="weight-chart">
-
-      ${
-        chartPoints
-
-        ? `
-
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
-
-            <polyline
-              points="${chartPoints}"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              vector-effect="non-scaling-stroke"
-            />
-
-          </svg>
-
-        `
-
-        : `
-
-          <div class="chart-empty">
-            Necesitamos más registros para mostrar tu evolución.
-          </div>
-
-        `
-      }
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       MEJORA DE FUERZA
-  ========================== -->
-
-  <div
-    class="card profile-card"
-    style="
-      margin-top:16px;
-    "
-  >
-
-    <div class="section-title-row">
-
-      <div>
-
-        <span class="section-eyebrow">
-          RENDIMIENTO
-        </span>
-
-        <h2>
-          Mejora de fuerza esta semana
-        </h2>
-
-      </div>
-
-
-      ${
-        averageStrength !== null
-
-        ? `
-
-          <strong
-            style="
-              color:${averageStrength>=0?"#39b982":"#d9aa4a"};
-              font-size:18px;
-              white-space:nowrap;
-            "
-          >
-            ${averageStrength>=0?"+":""}${averageStrength.toFixed(1).replace(".",",")}%
-          </strong>
-
-        `
-
-        : ""
-
-      }
-
-    </div>
-
-
-    <p class="muted">
-      Comparado con tu entrenamiento anterior.
-    </p>
-
-
-    ${
-      strengthRows.length
-
-      ? strengthRows
-          .slice(0,4)
-          .map(row=>`
-
-            <div
-              class="history-exercise"
-              style="
-                border-left:0;
-                border-bottom:1px solid rgba(255,255,255,.08);
-                padding-left:0;
-              "
-            >
-
-              <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                gap:12px;
-              ">
-
-                <b>
-                  ${esc(row.name)}
-                </b>
-
-                <strong
-                  style="
-                    color:${row.improvement>=0?"#39b982":"#d9aa4a"};
-                    white-space:nowrap;
-                  "
-                >
-                  ${row.improvement>=0?"+":""}${row.improvement.toFixed(1).replace(".",",")}%
-                </strong>
-
-              </div>
-
-
-              <div
-                class="muted"
-                style="
-                  margin-top:5px;
-                  font-size:12px;
-                "
-              >
-
-                ${row.previous.kg} kg ×
-                ${row.previous.reps}
-
-                →
-
-                ${row.current.kg} kg ×
-                ${row.current.reps}
-
-              </div>
-
-            </div>
-
-          `)
-          .join("")
-
-      : `
-
-        <div class="empty compact-empty">
-
-          Todavía no hay suficientes entrenamientos
-          registrados para comparar tu fuerza.
-
+    <div class="dcc-progress-summary">
+      <div class="dcc-progress-metric">
+        <div class="dcc-progress-metric-icon">⌁</div>
+        <div>
+          <span>PESO ACTUAL</span>
+          <strong>${fmtMetric(currentWeight," kg")}</strong>
+          <small>${Math.abs(totalChange)<.05?"—  Sin cambios":(totalChange<0?"↓ ":"↑ ")+fmtMetric(Math.abs(totalChange)," kg")}</small>
         </div>
+      </div>
+      <div class="dcc-progress-metric">
+        <div class="dcc-progress-metric-icon">%</div>
+        <div>
+          <span>% GRASA ACTUAL</span>
+          <strong>${fmtMetric(currentBodyFat,"%")}</strong>
+          <small>${bodyFatChange===null?"Sin datos anteriores":Math.abs(bodyFatChange)<.05?"—  Sin cambios":(bodyFatChange<0?"↓ ":"↑ ")+fmtMetric(Math.abs(bodyFatChange),"%")}</small>
+        </div>
+      </div>
+    </div>
 
-      `
-    }
+    <section class="dcc-progress-card dcc-evolution-card">
+      <div class="dcc-progress-card-head">
+        <div>
+          <span class="section-eyebrow">EVOLUCIÓN</span>
+          <p>Consulta la evolución de tu peso o % de grasa.</p>
+        </div>
+        <div class="dcc-metric-tabs" role="tablist">
+          <button type="button" data-metric="weight" class="active">Peso</button>
+          <button type="button" data-metric="fat">% Grasa</button>
+        </div>
+      </div>
+      <div class="dcc-range-tabs">
+        <button type="button" data-range="4" class="active">4S</button>
+        <button type="button" data-range="12">3M</button>
+        <button type="button" data-range="24">6M</button>
+        <button type="button" data-range="52">1A</button>
+      </div>
+      <div class="dcc-chart" id="dcc-progress-chart"></div>
+    </section>
 
+    <section class="dcc-progress-card dcc-performance-card">
+      <div class="dcc-performance-title">
+        <span class="dcc-performance-icon">▥</span>
+        <div>
+          <span class="section-eyebrow">RENDIMIENTO</span>
+          <h2>Mejora de fuerza esta semana</h2>
+          <p>Tu esfuerzo se refleja en cada entrenamiento.</p>
+        </div>
+        ${averageStrength!==null?`<strong>${averageStrength>=0?"+":""}${averageStrength.toFixed(1).replace(".",",")}%</strong>`:""}
+      </div>
+      ${strengthRows.length
+        ? `<div class="dcc-strength-list">${strengthRows.slice(0,4).map(row=>`
+            <div class="dcc-strength-row"><div><b>${esc(row.name)}</b><small>${row.previous.kg} kg × ${row.previous.reps} → ${row.current.kg} kg × ${row.current.reps}</small></div><strong>${row.improvement>=0?"+":""}${row.improvement.toFixed(1).replace(".",",")}%</strong></div>`).join("")}</div>`
+        : `<div class="dcc-progress-empty"><span>🏋</span><div><b>Aún no hay datos suficientes.</b><p>Completa más entrenamientos para ver tu progreso aquí.</p></div></div>`}
+    </section>
   </div>
 
-
+  <style id="dcc-progress-premium-css">
+    .dcc-progress-premium{padding-bottom:112px;color:#17191d}
+    .dcc-progress-head{margin-bottom:14px}
+    .dcc-progress-head h1{font-size:34px;line-height:1;margin:7px 0 4px;letter-spacing:-1.2px}
+    .dcc-progress-head p{font-size:16px;margin:0}
+    .dcc-progress-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .dcc-progress-metric{min-height:104px;padding:16px 14px;display:flex;align-items:center;gap:12px;border:1px solid rgba(181,126,29,.22);border-radius:20px;background:#fffdf8;box-shadow:0 8px 22px rgba(69,48,20,.04)}
+    .dcc-progress-metric-icon{flex:0 0 44px;width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:#fbf1dc;color:#ad7718;font-size:25px;font-weight:800}
+    .dcc-progress-metric span{display:block;color:#a66d0d;font-size:9px;font-weight:900;letter-spacing:1.6px}
+    .dcc-progress-metric strong{display:block;margin-top:5px;font-size:24px;line-height:1;color:#17191d}
+    .dcc-progress-metric small{display:block;margin-top:8px;color:#667260;font-size:11px}
+    .dcc-progress-card{border:1px solid rgba(181,126,29,.22);border-radius:22px;background:#fffdf8;box-shadow:0 8px 22px rgba(69,48,20,.04);padding:16px;margin-top:12px}
+    .dcc-progress-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .dcc-progress-card-head p,.dcc-performance-title p{margin:6px 0 0;color:#707887;font-size:12px}
+    .dcc-metric-tabs,.dcc-range-tabs{display:flex;border:1px solid #eadfc9;border-radius:15px;overflow:hidden;background:#fbf7ef}
+    .dcc-metric-tabs button,.dcc-range-tabs button{border:0;background:transparent;color:#17191d;font-weight:800}
+    .dcc-metric-tabs button{padding:10px 14px;white-space:nowrap}
+    .dcc-range-tabs{margin:14px auto 4px;max-width:330px}
+    .dcc-range-tabs button{flex:1;padding:9px}
+    .dcc-metric-tabs button.active,.dcc-range-tabs button.active{background:linear-gradient(135deg,#c38b20,#e1b84e);color:#fff}
+    .dcc-chart{min-height:215px;margin-top:8px;position:relative}
+    .dcc-chart svg{display:block;width:100%;height:185px;overflow:visible}
+    .dcc-chart-grid{stroke:#e7e9ed;stroke-width:1}
+    .dcc-chart-line{fill:none;stroke:#b47a13;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+    .dcc-chart-dot{fill:#b47a13}
+    .dcc-chart-label{fill:#737b89;font-size:8px}
+    .dcc-chart-empty{min-height:185px;display:grid;place-items:center;text-align:center;color:#777f8d;padding:30px;font-size:13px;line-height:1.5}
+    .dcc-chart-note{margin-top:5px;padding:11px 13px;border-radius:13px;background:#f8f5ef;color:#747c89;font-size:11px;text-align:center}
+    .dcc-performance-title{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:10px}
+    .dcc-performance-title h2{font-size:20px;line-height:1.08;margin:5px 0 0}
+    .dcc-performance-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#fbf1dc;color:#ad7718;font-size:22px}
+    .dcc-progress-empty{display:flex;align-items:center;gap:12px;margin-top:14px;padding:14px;border-radius:15px;background:#f8f6f1;color:#17191d}
+    .dcc-progress-empty span{font-size:22px}.dcc-progress-empty b{font-size:12px}.dcc-progress-empty p{margin:4px 0 0;color:#737b89;font-size:11px}
+    .dcc-strength-list{margin-top:12px}.dcc-strength-row{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-top:1px solid #eee7db}
+    .dcc-strength-row b,.dcc-strength-row small{display:block}.dcc-strength-row small{margin-top:3px;color:#747c89;font-size:10px}.dcc-strength-row>strong{color:#a66d0d}
+    @media(max-width:390px){.dcc-progress-metric{padding:13px 10px;gap:8px}.dcc-progress-metric-icon{width:38px;height:38px;flex-basis:38px}.dcc-progress-metric strong{font-size:21px}.dcc-metric-tabs button{padding:9px 10px}}
+  </style>
   `;
 
+  requestAnimationFrame(()=>{
+    let metric="weight",range=4;
+    const weightData=weightSeries.map((value,i)=>({value:Number(value),label:""})).filter(x=>Number.isFinite(x.value));
+    const fatData=bodyFatHistory.map(x=>({value:x.value,label:x.date?new Date(x.date).toLocaleDateString("es-ES",{day:"2-digit",month:"short"}):""}));
+
+    function draw(){
+      const box=document.getElementById("dcc-progress-chart"); if(!box)return;
+      const source=metric==="weight"?weightData:fatData;
+      const points=source.slice(-Math.max(2,range));
+      const unit=metric==="weight"?" kg":"%";
+      if(points.length<2){
+        box.innerHTML=`<div class="dcc-chart-empty">Necesitamos más registros para mostrar tu evolución.</div><div class="dcc-chart-note">Sigue realizando tus check-ins para construir tu historial.</div>`;
+        return;
+      }
+      const vals=points.map(x=>x.value),min=Math.min(...vals),max=Math.max(...vals),pad=Math.max((max-min)*.25,metric==="weight"?1:.5);
+      const lo=min-pad,hi=max+pad,span=hi-lo||1;
+      const xy=points.map((p,i)=>({x:8+(i/(points.length-1))*84,y:82-((p.value-lo)/span)*62,value:p.value,label:p.label}));
+      const poly=xy.map(p=>p.x+","+p.y).join(" ");
+      const grids=[20,40,60,80].map(y=>`<line class="dcc-chart-grid" x1="8" y1="${y}" x2="92" y2="${y}"/>`).join("");
+      const dots=xy.map(p=>`<circle class="dcc-chart-dot" cx="${p.x}" cy="${p.y}" r="1.8"/>`).join("");
+      const first=xy[0],last=xy[xy.length-1];
+      box.innerHTML=`<svg viewBox="0 0 100 100" preserveAspectRatio="none">${grids}<polyline class="dcc-chart-line" points="${poly}"/>${dots}</svg><div class="dcc-chart-note">${metric==="weight"?"Peso":"% de grasa"}: ${points[points.length-1].value.toFixed(1).replace(".",",")}${unit} · ${points.length} registros mostrados</div>`;
+    }
+
+    document.querySelectorAll(".dcc-metric-tabs button").forEach(btn=>btn.onclick=()=>{
+      metric=btn.dataset.metric;
+      document.querySelectorAll(".dcc-metric-tabs button").forEach(x=>x.classList.toggle("active",x===btn));draw();
+    });
+    document.querySelectorAll(".dcc-range-tabs button").forEach(btn=>btn.onclick=()=>{
+      range=Number(btn.dataset.range)||4;
+      document.querySelectorAll(".dcc-range-tabs button").forEach(x=>x.classList.toggle("active",x===btn));draw();
+    });
+    draw();
+  });
 }
 
 if(screen==="checkin"){
