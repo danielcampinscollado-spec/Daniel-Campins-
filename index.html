@@ -5901,15 +5901,65 @@ async function openApp(app){
     return;
   }
 
-  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block";
+  if(window.__dccOpenAppPromise){
+    const pendingMain=app==="client"
+      ? document.getElementById("client-main")
+      : document.getElementById("coach-main");
+    const clientReady=
+      app==="client" &&
+      currentApp==="client" &&
+      currentClientId &&
+      typeof client==="function" &&
+      !!client(currentClientId);
+
+    if(clientReady && pendingMain && !pendingMain.querySelector(".dcc-home2")){
+      try{
+        if(typeof window.dccClientGoHome==="function"){
+          window.dccClientGoHome();
+        }else{
+          showClient("home");
+        }
+      }catch(error){
+        console.warn("DCC openApp pending repaint",error);
+      }
+    }
+
+    return window.__dccOpenAppPromise;
+  }
+
+  const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
+  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
+
   if(alreadyOpen){
+    if(app==="client"){
+      const clientMain=document.getElementById("client-main");
+      const targetScreen=String(currentScreen||"home");
+      const homeMissing=
+        targetScreen==="home" &&
+        clientMain &&
+        !clientMain.querySelector(".dcc-home2");
+
+      if(currentClientId && homeMissing){
+        try{
+          if(typeof window.dccClientGoHome==="function"){
+            window.dccClientGoHome();
+          }else{
+            showClient("home");
+          }
+        }catch(error){
+          console.warn("DCC openApp restored home repaint",error);
+        }
+      }
+    }
     return true;
   }
 
+  window.__dccOpenAppPromise=Promise.resolve(true);
   currentApp = app;
   window.currentApp = app;
 
-  setupMessageRealtime();
+  // La entrada debe pintar una sola vez. Realtime y la sincronización
+  // pesada arrancan después, sin competir con el retorno OAuth en Safari.
 
   const login =
     document.getElementById("login");
@@ -5928,42 +5978,107 @@ async function openApp(app){
   coachApp.style.display =
     app === "coach" ? "block" : "none";
 
+  // Al cambiar del login a la aplicación, no conservar la posición
+  // de scroll de la pantalla de acceso.
+  window.scrollTo(0,0);
+
 
   if(app === "client"){
 
     buildClientNav();
 
-    // La ficha del cliente es lo único imprescindible para la primera pintura.
-    // Ninguna sincronización secundaria debe dejar Inicio en blanco.
-    try{ await loadClientsFromSupabase(); }catch(error){
-      console.error("No se pudo cargar la ficha del cliente:",error);
+    const clientMain=document.getElementById("client-main");
+    if(clientMain){
+      clientMain.innerHTML='<div style="padding:28px 20px;color:#6f747c;font-weight:700">Cargando tu perfil…</div>';
     }
 
-    const paintClientHome=()=>{
-      if(currentApp==="client" && currentScreen==="home" && client(currentClientId)){
-        try{showClient("home")}catch(error){console.error("Error pintando Inicio cliente:",error)}
+    try{
+      const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
+      if(claimError)throw claimError;
+      if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
+
+      currentClientId=String(claimedClientId);
+      window.currentClientId=currentClientId;
+
+      await loadClientsFromSupabase();
+
+      if(!client(currentClientId)){
+        throw new Error("No se pudo cargar el perfil del cliente");
       }
-    };
 
-    if(client(currentClientId)){
-      showClient("home");
+      // Inicio depende de rutina, check-in, historial, métricas, mensajes y
+      // notificaciones. Antes se pintaba Inicio antes de que esos datos
+      // estuvieran listos y Safari/iOS podía dejar el contenedor sin pintar
+      // hasta que el usuario cambiaba de pestaña.
+      currentScreen="home";
+      window.currentScreen="home";
+
+      await Promise.allSettled([
+        loadDietsFromSupabase(),
+        loadRoutinesFromSupabase(),
+        loadWorkoutHistoryFromSupabase(),
+        loadTrainingProgressFromSupabase(),
+        loadWeightsFromSupabase(),
+        loadNotificationStateFromSupabase(),
+        loadMessagesFromSupabase(),
+        loadCheckinHistoryFromSupabase(),
+        loadCheckinsFromSupabase()
+      ]);
+
+      const loadedRoutine=Array.isArray(data.routines?.[currentClientId])?data.routines[currentClientId]:[];
+      if(loadedRoutine.length){
+        window.trainingDayTab=getTrainingNextDayIndex(currentClientId,loadedRoutine.length);
+      }
+
+      // Inicio cliente: pintar directamente la autoridad aprobada.
+      const paintApprovedHome=()=>{
+        if(
+          currentApp!=="client" ||
+          !currentClientId ||
+          String(window.currentScreen||currentScreen||"home")!=="home"
+        )return;
+        try{
+          if(typeof window.dccClientGoHome==="function"){
+            window.dccClientGoHome();
+          }else if(typeof window.dccRenderClientHomeApproved==="function"){
+            window.dccRenderClientHomeApproved();
+          }else{
+            showClient("home");
+          }
+        }catch(error){
+          console.warn("DCC approved home paint",error);
+        }
+      };
+
+      paintApprovedHome();
+      setupMessageRealtime();
+
+      // Safari/BFCache puede restaurar el shell antes que el contenido.
+      // Reintentar solo mientras Inicio siga realmente vacío.
+      [0,60,180,500,1200].forEach(delay=>{
+        setTimeout(()=>{
+          const main=document.getElementById("client-main");
+          if(
+            currentApp==="client" &&
+            String(window.currentScreen||currentScreen||"home")==="home" &&
+            currentClientId &&
+            main &&
+            !main.querySelector(".dcc-home2")
+          ){
+            paintApprovedHome();
+          }
+        },delay);
+      });
+
+    }catch(error){
+      console.error("Error accediendo al perfil cliente:",error);
+      window.__dccOpenAppPromise=null;
+      currentClientId=null;
+      window.currentClientId=null;
+      if(clientMain){
+        clientMain.innerHTML='<div style="margin:24px;padding:20px;border:1px solid rgba(183,123,19,.25);border-radius:18px;background:#fffdf9;color:#17191d"><h2 style="margin:0 0 8px">No se pudo abrir el perfil de cliente</h2><p style="margin:0 0 14px;color:#6f747c;line-height:1.45">Entra con la cuenta de Google cuyo correo está asignado al cliente en el panel del entrenador.</p><button type="button" onclick="logout()" style="width:100%;min-height:46px;border:1px solid #d9aa4a;border-radius:12px;background:#f4d16f;font-weight:850">Cambiar cuenta</button></div>';
+      }
     }
-
-    // Reintentos cortos independientes de sincronizaciones secundarias.
-    // Evitan que un módulo/red lenta deje únicamente la cabecera sobre fondo vacío.
-    [120,450,1100].forEach(ms=>setTimeout(paintClientHome,ms));
-
-    Promise.allSettled([
-      loadDietsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase(),
-      loadNotificationStateFromSupabase(),
-      loadMessagesFromSupabase(),
-      loadCheckinsFromSupabase()
-    ]).then(()=>{
-      paintClientHome();
-    });
 
   }else{
 
@@ -5973,23 +6088,29 @@ async function openApp(app){
     // no debe bloquear la primera pintura del entrenador.
     showCoach("dashboard");
 
-    Promise.allSettled([
-      loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
-      loadRoutinesFromSupabase(),
-      loadWorkoutHistoryFromSupabase(),
-      loadWeightsFromSupabase(),
-      loadMessagesFromSupabase(),
-      loadCheckinsFromSupabase()
-    ]).then(()=>{
-      if(currentScreen==="dashboard"){
-        const coachMain=document.getElementById("coach-main");
-        if(coachMain) coachMain.dataset.dccInstant="1";
-        showCoach("dashboard");
-      }
-    });
+    setTimeout(()=>{
+      setupMessageRealtime();
+      Promise.allSettled([
+        loadDietsFromSupabase(),
+        loadClientsFromSupabase(),
+        loadRoutinesFromSupabase(),
+        loadWorkoutHistoryFromSupabase(),
+        loadWeightsFromSupabase(),
+        loadMessagesFromSupabase(),
+        loadCheckinsFromSupabase()
+      ]).then(()=>{
+        // Los datos quedan sincronizados sin forzar una segunda entrada/render
+        // del panel inmediatamente después del OAuth.
+      });
+    },700);
 
   }
+
+  // La promesa solo bloquea aperturas concurrentes. No debe quedar
+  // permanente, porque Safari/iOS puede restaurar la app desde caché
+  // y necesitar una nueva pintura de Inicio.
+  window.__dccOpenAppPromise=null;
+  return true;
 
 }
 function logout(){
@@ -6135,6 +6256,7 @@ function getWeeklyWorkoutCount(clientId){
 function showClient(screen){
 
   currentScreen=screen;
+  window.currentScreen=screen;
 
   /* Actualizar pestaña activa aunque se llegue desde una alerta */
   const clientNav=document.getElementById("client-nav");
@@ -6172,7 +6294,6 @@ function showClient(screen){
   }
 
   const main=document.getElementById("client-main");
-  if(main) main.dataset.dccScreen=screen;
   const c=client(currentClientId);
 
   let html="";
@@ -6347,11 +6468,34 @@ const routine =
   const weeklyWorkouts =
     getWeeklyWorkoutCount(c.id);
 
+  const nextTrainingDayIndex =
+    routine.length
+      ? getTrainingNextDayIndex(c.id,routine.length)
+      : 0;
+
   const nextWorkout =
     routine.length > 0 &&
     weeklyWorkouts < routine.length
-      ? routine[weeklyWorkouts]
+      ? routine[nextTrainingDayIndex]
       : null;
+
+  const nextWorkoutLabel =
+    nextWorkout
+      ? (
+          Array.isArray(nextWorkout.muscleGroups) &&
+          nextWorkout.muscleGroups.length
+            ? nextWorkout.muscleGroups
+                .map(group => String(group || "").trim())
+                .filter(Boolean)
+                .join(" · ")
+            : (
+                nextWorkout.muscle &&
+                !/^sin\s+grupos?/i.test(String(nextWorkout.muscle))
+                  ? String(nextWorkout.muscle)
+                  : "Rutina disponible"
+              )
+        )
+      : "";
 
 
   /* =====================================================
@@ -6505,7 +6649,7 @@ const notificationState =
 
   const unreadMessages =
     lastMessage &&
-    lastMessage[0] === "Daniel" &&
+    (typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(lastMessage):String(lastMessage?.[0]||"").trim().toLowerCase()===String(typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador").trim().toLowerCase()) &&
     (
       !messageSeenAt ||
       (
@@ -6578,7 +6722,7 @@ const notificationState =
   </style>
 
   <div class="dch-wrap">
-    <div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO A DCC FITNESS</div><h1 class="dch-name">${esc(c.name)}</h1><p class="dch-home-sub">Aquí tienes tu resumen de hoy.</p></div>
+    <div class="dch-welcome"><div class="dch-eyebrow">BIENVENIDO</div><h1 class="dch-name">${esc(c.name)}</h1></div>
 
     <section class="dch-stats">
       <div class="dch-stat" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="6" width="14" height="13" rx="3"/><path d="M9 9.5c1.9-1.5 4.1-1.5 6 0"/><path d="M12 9.5v3"/></svg></div><div><div class="dch-stat-label">PESO ACTUAL</div><div class="dch-stat-value">${currentWeight > 0 ? money(currentWeight) : "—"}<span> kg</span></div></div><div class="dch-chevron">›</div></div>
@@ -6592,7 +6736,7 @@ const notificationState =
 
     <section class="dch-card dch-progress" onclick="showClient('progress')"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 18v-5M11 18V9M16 18V5"/></svg></div><div><div class="dch-progress-label">PROGRESO DE FUERZA</div>${strengthRows.length ? `<div class="dch-progress-title">Has mejorado en ${strengthRows.length} ${strengthRows.length === 1 ? "ejercicio" : "ejercicios"}</div><div class="dch-progress-sub">Tu rendimiento está avanzando. Consulta el detalle en Progreso.</div>` : `<div class="dch-progress-title">Sigue dándolo todo</div><div class="dch-progress-sub">Todavía no hay mejoras registradas. Cada entrenamiento te acerca a tu mejor versión.</div>`}</div><div class="dch-chevron">›</div></section>
 
-    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc(nextWorkout.muscle || "Entrenamiento")}</div><div class="dch-next-day">Día ${weeklyWorkouts + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
+    ${nextWorkout ? `<section class="dch-card dch-next"><div class="dch-next-content"><div class="dch-iconbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 9h16"/><circle cx="12" cy="14" r="2"/></svg></div><div><div class="dch-next-label">TU PRÓXIMO ENTRENAMIENTO</div><div class="dch-next-name">${esc(nextWorkoutLabel)}</div><div class="dch-next-day">Día ${nextTrainingDayIndex + 1}</div></div></div><button type="button" class="dch-routine-btn" onclick="showClient('training')">Ver rutina&nbsp; →</button></section>` : ''}
 
     <div class="dch-slogan"><span>UNA VERSIÓN MÁS FUERTE<br>DE TI, CADA DÍA</span></div>
   </div>
@@ -8940,7 +9084,7 @@ html=`
     <p class="muted">Área cliente</p>
     <h1>Check-in semanal</h1>
     <p class="muted">
-      Cuéntale a Daniel cómo ha ido tu semana.
+      Cuéntale a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cómo ha ido tu semana.
     </p>
   </div>
 
@@ -9135,7 +9279,7 @@ html=`
       margin:6px 0 12px;
       font-size:14px;
     ">
-      Cuéntale a Daniel cualquier cosa importante de esta semana.
+      Cuéntale a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cualquier cosa importante de esta semana.
     </p>
 
     <textarea
@@ -9159,7 +9303,7 @@ html=`
     "
     onclick="sendClientCheckin()">
 
-    ➤ Enviar check-in a Daniel
+    ➤ Enviar check-in a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")}
 
   </button>
 
@@ -9168,7 +9312,7 @@ html=`
     margin:10px 0 0;
     font-size:12px;
   ">
-    Tu check-in será visible para Daniel cuando lo envíes.
+    Tu check-in será visible para ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} cuando lo envíes.
   </p>
 
 </div>
@@ -9214,7 +9358,7 @@ if(screen==="messages"){
         font-weight:750;
         letter-spacing:-1px;
       ">
-        Habla con Daniel
+        Habla con ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")}
       </h1>
 
       <p style="
@@ -9237,13 +9381,13 @@ if(screen==="messages"){
         msgs.length
         ? msgs.map(m=>{
 
-            const isDaniel = m[0] === "Daniel";
+            const isCoachMessage = typeof window.dccIsCoachMessage==="function"?window.dccIsCoachMessage(m):String(m?.[0]||"").trim().toLowerCase()===String(typeof window.dccCoachName==="function"?window.dccCoachName():"Entrenador").trim().toLowerCase();
 
             return `
 
             <div style="
               display:flex;
-              justify-content:${isDaniel ? "flex-start" : "flex-end"};
+              justify-content:${isCoachMessage ? "flex-start" : "flex-end"};
             ">
 
               <div style="
@@ -9251,7 +9395,7 @@ if(screen==="messages"){
                 align-items:flex-end;
                 gap:9px;
                 max-width:88%;
-                flex-direction:${isDaniel ? "row" : "row-reverse"};
+                flex-direction:${isCoachMessage ? "row" : "row-reverse"};
               ">
 
                 <div style="
@@ -9263,17 +9407,17 @@ if(screen==="messages"){
                   align-items:center;
                   justify-content:center;
                   border:1px solid ${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(217,170,74,.55)"
                     : "rgba(255,255,255,.15)"
                   };
                   background:${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(217,170,74,.07)"
                     : "rgba(255,255,255,.06)"
                   };
                   color:${
-                    isDaniel
+                    isCoachMessage
                     ? "#d9aa4a"
                     : "#d8dbe0"
                   };
@@ -9281,8 +9425,8 @@ if(screen==="messages"){
                   font-weight:800;
                 ">
                   ${
-                    isDaniel
-                    ? "D"
+                    isCoachMessage
+                    ? esc((typeof window.dccCoachName==="function"?window.dccCoachName():"E").charAt(0).toUpperCase())
                     : esc((m[0]||"C").charAt(0).toUpperCase())
                   }
                 </div>
@@ -9291,17 +9435,17 @@ if(screen==="messages"){
                   min-width:0;
                   padding:13px 16px;
                   border-radius:${
-                    isDaniel
+                    isCoachMessage
                     ? "18px 18px 18px 5px"
                     : "18px 18px 5px 18px"
                   };
                   background:${
-                    isDaniel
+                    isCoachMessage
                     ? "#11151c"
                     : "rgba(217,170,74,.08)"
                   };
                   border:1px solid ${
-                    isDaniel
+                    isCoachMessage
                     ? "rgba(255,255,255,.09)"
                     : "rgba(217,170,74,.24)"
                   };
@@ -9311,7 +9455,7 @@ if(screen==="messages"){
                     display:block;
                     margin-bottom:5px;
                     color:${
-                      isDaniel
+                      isCoachMessage
                       ? "#f5f5f2"
                       : "#d9aa4a"
                     };
@@ -9362,7 +9506,7 @@ if(screen==="messages"){
               color:#858b95;
               font-size:14px;
             ">
-              Escribe a Daniel para comenzar la conversación.
+              Escribe a ${esc(typeof window.dccCoachName==="function"?window.dccCoachName():"tu entrenador")} para comenzar la conversación.
             </div>
 
           </div>
