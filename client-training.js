@@ -264,7 +264,18 @@
                 : 'Bloqueado'
         );
 
-    const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
+    const totalDays=Math.min(routine.length,7);
+    const windowStart=totalDays>5&&dayIndex>=5?Math.max(0,totalDays-5):0;
+    const visibleDays=routine.slice(windowStart,windowStart+5);
+    const dayButtons=visibleDays.map((x,offset)=>{
+      const i=windowStart+offset;
+      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`;
+    }).join('');
+    const hasMoreRight=windowStart+5<totalDays;
+    const hasMoreLeft=windowStart>0;
+    const dayArrow=(hasMoreRight||hasMoreLeft)
+      ? `<button type="button" class="dct3-days-arrow" data-shift="${hasMoreRight?'next':'prev'}" aria-label="${hasMoreRight?'Ver días siguientes':'Ver primeros días'}">${hasMoreRight?'›':'‹'}</button>`
+      : '';
     const visuals=muscles.map(x=>{
       const v=x.visual;
       const art=v.kind==='image'
@@ -298,19 +309,35 @@
           letter-spacing:3.4px!important;
           text-transform:uppercase!important
         }
+        html.dcc-theme-light-premium body #client #client-main .dct3-plan-head{
+          margin:0 0 8px!important;
+          color:#a66d0d!important;
+          font-size:8.5px!important;
+          line-height:1!important;
+          font-weight:850!important;
+          letter-spacing:2.1px!important;
+          text-transform:uppercase!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-days-row{
+          display:grid!important;
+          grid-template-columns:minmax(0,1fr) auto!important;
+          gap:7px!important;
+          align-items:stretch!important;
+          margin:0 0 14px!important
+        }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
-          display:flex!important;
+          display:grid!important;
+          grid-template-columns:repeat(5,minmax(0,1fr))!important;
           gap:6px!important;
-          overflow-x:auto!important;
-          margin:0 0 14px!important;
+          overflow:visible!important;
+          margin:0!important;
           padding:1px 1px 3px!important;
           scrollbar-width:none!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days::-webkit-scrollbar{display:none!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day{
-          flex:0 0 58px!important;
-          width:58px!important;
-          min-width:58px!important;
+          width:100%!important;
+          min-width:0!important;
           height:56px!important;
           padding:6px 4px!important;
           border:1px solid rgba(183,123,19,.22)!important;
@@ -347,6 +374,19 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active span{color:#9f6c0f!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day.active b{color:#30291e!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-days-arrow{
+          width:34px!important;
+          min-width:34px!important;
+          border:1px solid rgba(183,123,19,.34)!important;
+          border-radius:13px!important;
+          background:linear-gradient(145deg,#fffefa,#f5ead7)!important;
+          color:#a66d0d!important;
+          box-shadow:0 5px 14px rgba(78,58,28,.06)!important;
+          font-size:25px!important;
+          line-height:1!important;
+          display:grid!important;
+          place-items:center!important
+        }
         html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="6"] .dct3-day,
         html.dcc-theme-light-premium body #client #client-main .dct3-days[data-count="7"] .dct3-day{
           flex-basis:46px!important;
@@ -850,15 +890,18 @@
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
-        <div class="dct3-days" data-count="${Math.min(routine.length,7)}">${dayButtons}</div>
+        <div class="dct3-plan-head">TU PLAN DE ESTA SEMANA</div>
+        <div class="dct3-days-row"><div class="dct3-days" data-count="${visibleDays.length}">${dayButtons}</div>${dayArrow}</div>
         ${day?`
           <section class="dct3-card dct3-muscles" data-muscles="${muscles.length}"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals" data-count="${muscles.length}">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M8.2 14.4A6 6 0 1 1 15.8 14.4c-.8.7-1.3 1.5-1.4 2.6h-4.8c-.1-1.1-.6-1.9-1.4-2.6Z"/></svg></div><div><div class="dct3-label" style="margin-bottom:5px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div><div class="dct3-tip-arrow">›</div></section>
-          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-user.webp?v=20260920-userdisk1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}" ${access.allowed?'':`disabled aria-disabled="true" title="${esc(access.reason)}"`}>${startLabel}</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><img class="dct3-plate" src="./assets/training-reference-disk-user.webp?v=20260920-userdisk1" alt="" aria-hidden="true" loading="eager" decoding="async"><div class="dct3-plate-fade" aria-hidden="true"></div><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}" ${access.allowed?'':`disabled aria-disabled="true" title="${esc(access.reason)}"`}>${startLabel}</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
     main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
+    const dayShift=main.querySelector('.dct3-days-arrow');
+    if(dayShift)dayShift.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.trainingDayTab=dayShift.dataset.shift==='next'?Math.min(totalDays-1,5):0;window.showClient('training');});
     const view=main.querySelector('.dct3-view');
     if(view)view.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const card=view.closest('.dct3-routine');const open=card?.classList.toggle('open');view.setAttribute('aria-expanded',String(!!open));view.textContent=open?'Ocultar ejercicios':'Ver ejercicios';});
     main.querySelectorAll('.dct3-video').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const url=btn.dataset.video;if(url)window.open(url,'_blank','noopener');}));
