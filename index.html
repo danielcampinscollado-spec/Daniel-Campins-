@@ -7467,6 +7467,13 @@ if(screen==="food"){
 
   </div>\n  `:""}
 
+  ${showDietSwitch?`
+  <div class="diet-dual-notice" role="note">
+    <span class="diet-dual-notice-icon">i</span>
+    <span>Tienes dos planes de alimentación. Pulsa <b>Entrenamiento</b> o <b>Descanso</b> para ver el día correspondiente.</span>
+  </div>
+  `:""}
+
 
   <div class="diet-pdf-card">
 
@@ -16624,7 +16631,7 @@ async function sendClientCheckin(){
 <script src="./dcc-theme-system-v1.js?v=20260922-nav-authority-clean1"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 <script src="./client-light-stable-v1.js?v=20260922-light-surfaces2"></script>
-<script src="./client-food-light-premium-v1.js?v=20260922-food-unified1"></script>
+<script src="./client-food-light-premium-v1.js?v=20260922-dual-diet-notice1"></script>
 <script src="./client-diet-print-premium-v1.js?v=20260922-exact-morning1"></script>
 <script src="./training-superset-v1.js?v=20260922-exact-morning1"></script>
 <script src="./client-training.js?v=20260922-training-header-final1"></script>
