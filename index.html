@@ -5933,19 +5933,29 @@ async function openApp(app){
 
     buildClientNav();
 
-    await Promise.all([
-  loadDietsFromSupabase(),
-  loadClientsFromSupabase(),
-  loadRoutinesFromSupabase(),
-  loadWorkoutHistoryFromSupabase(),
-  loadWeightsFromSupabase(),
-  loadNotificationStateFromSupabase(),
-  loadMessagesFromSupabase()
-]);
+    // La ficha del cliente es lo único imprescindible para la primera pintura.
+    // Ninguna sincronización secundaria debe dejar Inicio en blanco.
+    try{ await loadClientsFromSupabase(); }catch(error){
+      console.error("No se pudo cargar la ficha del cliente:",error);
+    }
 
-await loadCheckinsFromSupabase();
+    if(client(currentClientId)){
+      showClient("home");
+    }
 
-showClient("home");
+    Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadNotificationStateFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]).then(()=>{
+      if(currentApp==="client" && currentScreen==="home" && client(currentClientId)){
+        showClient("home");
+      }
+    });
 
   }else{
 
@@ -6154,6 +6164,7 @@ function showClient(screen){
   }
 
   const main=document.getElementById("client-main");
+  if(main) main.dataset.dccScreen=screen;
   const c=client(currentClientId);
 
   let html="";
