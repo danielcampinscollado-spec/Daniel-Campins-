@@ -78,18 +78,26 @@ function syncClientNav(screen){
 function enhance(){
   css();
   const main=document.getElementById('client-main');
-  if(!main||!main.querySelector('.diet-switch'))return;
+  if(!main)return;
   const sw=main.querySelector('.diet-switch');
   const list=main.querySelector('.diet-list');
-  if(!sw||!list)return;
+  if(!list)return;
 
   main.querySelector('.dcc-diet-info-stack')?.remove();
   const notes=String(day()?.notes||'').trim();
-  const stack=document.createElement('div');
-  stack.className='dcc-diet-info-stack';
-  stack.innerHTML=accordion('Aviso sobre las dietas',notice(),'notice')+(notes?accordion('Notas del entrenador',notes,'notes'):'');
-  stack.querySelectorAll('details').forEach(d=>d.open=false);
-  sw.insertAdjacentElement('afterend',stack);
+  const p=allPlan();
+  const hasTraining=Array.isArray(p?.training?.meals)&&p.training.meals.length>0;
+  const hasRest=Array.isArray(p?.rest?.meals)&&p.rest.meals.length>0;
+  const hasBoth=hasTraining&&hasRest;
+  const stackHtml=(hasBoth?accordion('Aviso sobre las dietas',notice(),'notice'):'')+(notes?accordion('Notas del entrenador',notes,'notes'):'');
+  if(stackHtml){
+    const stack=document.createElement('div');
+    stack.className='dcc-diet-info-stack';
+    stack.innerHTML=stackHtml;
+    stack.querySelectorAll('details').forEach(d=>d.open=false);
+    if(sw)sw.insertAdjacentElement('afterend',stack);
+    else list.insertAdjacentElement('beforebegin',stack);
+  }
   syncClientNav('food');
 
   const pdf=main.querySelector('.diet-pdf-card');
