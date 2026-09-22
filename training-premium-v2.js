@@ -99,7 +99,21 @@
     const muscles=dayMuscles(day);
     const title=muscles.length?muscles.map(x=>x.name).join(' · '):(day?.muscle||'Entrenamiento');
 
-    const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
+    const totalDays=Math.min(routine.length,7);
+    const windowStart=totalDays>5&&dayIndex>=5?Math.max(0,totalDays-5):0;
+    const dayButtons=routine.slice(windowStart,windowStart+5).map((x,offset)=>{
+      const i=windowStart+offset;
+      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`;
+    }).join('');
+    const moreRight=windowStart+5<totalDays;
+    const moreLeft=windowStart>0;
+    const dayArrow=(moreRight||moreLeft)?`<button type="button" class="dct3-days-arrow" data-shift="${moreRight?'next':'prev'}" aria-label="${moreRight?'Ver días siguientes':'Ver primeros días'}">${moreRight?'›':'‹'}</button>`:'';
+    const muscleNames=muscles.map(x=>norm(x.name));
+    const lowerKeys=['cuadriceps','femoral','isquios','gluteo','gemelo','pantorrilla'];
+    const upperKeys=['pectoral','pecho','triceps','biceps','espalda','dorsal','hombro','deltoide','trapecio'];
+    const hasLower=muscleNames.some(n=>lowerKeys.some(k=>n.includes(k)));
+    const hasUpper=muscleNames.some(n=>upperKeys.some(k=>n.includes(k)));
+    const zone=hasLower&&hasUpper?'CUERPO COMPLETO':hasLower?'TREN INFERIOR':'TREN SUPERIOR';
     const visuals=muscles.map(x=>`<div class="dct3-muscle"><img src="./${esc(x.path)}" alt="${esc(x.name)}"></div>`).join('');
     const rows=exercises.map(ex=>{
       const muscle=exerciseMuscle(ex,day);
@@ -115,13 +129,18 @@
       <style id="dcc-training-stable-v3-style">
         #client-main .dcc-training-stable-v3{max-width:820px;margin:0 auto;padding:3px 0 112px;color:#f7f5f0}
         #client-main .dct3-eyebrow{margin:0 0 12px;color:#e0ad4c;font-size:11px;font-weight:850;letter-spacing:3px}
-        #client-main .dct3-days{display:grid;grid-template-columns:repeat(${Math.max(1,Math.min(routine.length||1,7))},minmax(0,1fr));gap:5px;margin-bottom:12px}
+        #client-main .dct3-plan-head{margin:0 0 8px;color:#a87518;font-size:9px;font-weight:850;letter-spacing:2.2px;text-transform:uppercase}
+        #client-main .dct3-days-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;align-items:stretch;margin-bottom:12px}
+        #client-main .dct3-days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:0}
         #client-main .dct3-day{height:54px;border:1px solid rgba(255,255,255,.11);border-radius:14px;background:linear-gradient(145deg,#14181f,#0c1015);color:#858d99;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
+        #client-main .dct3-days-arrow{width:34px;min-width:34px;border:1px solid rgba(217,170,74,.45);border-radius:13px;background:#fffaf1;color:#a56d0e;font-size:25px;line-height:1;display:grid;place-items:center}
         #client-main .dct3-day span{font-size:7.5px;font-weight:850;letter-spacing:1.2px}#client-main .dct3-day b{font-size:18px}
         #client-main .dct3-day.active{border-color:#e3b447;background:linear-gradient(145deg,#241d10,#15130e);color:#f0c96b}
         #client-main .dct3-card{position:relative;margin-bottom:10px;border:1px solid rgba(217,170,74,.68);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.09),transparent 40%),linear-gradient(145deg,#171b21,#0b0f14 72%);box-shadow:0 12px 28px rgba(0,0,0,.23);overflow:hidden}
         #client-main .dct3-muscles{min-height:112px;padding:13px 15px;display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.9fr);gap:12px;align-items:center}
         #client-main .dct3-label{margin-bottom:7px;color:#e0ad4c;font-size:9px;font-weight:850;letter-spacing:2.4px}#client-main .dct3-title{margin:0;font-size:22px;line-height:1.08}
+        #client-main .dct3-zone{display:flex;align-items:center;gap:7px;margin-top:10px;color:#9a6a15;font-size:8px;font-weight:800;letter-spacing:1.7px}
+        #client-main .dct3-zone i{display:block;width:24px;height:1px;background:#d5a540}
         #client-main .dct3-visuals{display:flex;justify-content:flex-end;gap:5px}.dct3-muscle{width:50%;max-width:92px;height:86px;border:1px solid rgba(217,170,74,.13);border-radius:13px;overflow:hidden}.dct3-muscle img{width:100%;height:100%;object-fit:contain}
         #client-main .dct3-tip{padding:12px 14px;display:grid;grid-template-columns:38px 1fr;gap:11px;align-items:center}.dct3-tip-icon{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(217,170,74,.34);border-radius:11px;color:#f0c96b}.dct3-tip p{margin:0;color:#c1c7d0;font-size:11.5px;line-height:1.42}
         #client-main .dct3-routine{padding:14px;border:1px solid rgba(217,170,74,.76);border-radius:20px;background:linear-gradient(145deg,#15191f,#0a0e13);position:relative;z-index:1}
@@ -137,15 +156,18 @@
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
-        <div class="dct3-days">${dayButtons}</div>
+        <div class="dct3-plan-head">TU PLAN DE ESTA SEMANA</div>
+        <div class="dct3-days-row"><div class="dct3-days">${dayButtons}</div>${dayArrow}</div>
         ${day?`
-          <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2></div><div class="dct3-visuals">${visuals}</div></section>
+          <section class="dct3-card dct3-muscles"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-zone"><i></i><span>${zone}</span></div></div><div class="dct3-visuals">${visuals}</div></section>
           <section class="dct3-card dct3-tip"><div class="dct3-tip-icon">✦</div><div><div class="dct3-label" style="margin-bottom:4px">CONSEJO DE HOY</div><p>${esc(tip)}</p></div></section>
-          ${exercises.length?`<section class="dct3-routine"><div class="dct3-label">EJERCICIOS</div><h3>Rutina del día</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
+          ${exercises.length?`<section class="dct3-routine"><div class="dct3-label">EJERCICIOS</div><h3>${esc(title)}</h3><div class="dct3-meta">${exercises.length} ${exercises.length===1?'ejercicio':'ejercicios'}</div><div class="dct3-actions"><button type="button" class="dct3-start" data-day="${dayIndex}">▶&nbsp; Empezar entrenamiento</button><button type="button" class="dct3-view" aria-expanded="false">Ver ejercicios</button></div><div class="dct3-list">${rows}</div></section>`:'<div class="dct3-empty">Este día todavía no tiene ejercicios.</div>'}
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
     main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
+    const shift=main.querySelector('.dct3-days-arrow');
+    if(shift)shift.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.trainingDayTab=shift.dataset.shift==='next'?Math.min(totalDays-1,5):0;window.showClient('training');});
     const view=main.querySelector('.dct3-view');
     if(view)view.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const card=view.closest('.dct3-routine');const open=card?.classList.toggle('open');view.setAttribute('aria-expanded',String(!!open));view.textContent=open?'Ocultar ejercicios':'Ver ejercicios';});
     const start=main.querySelector('.dct3-start');
