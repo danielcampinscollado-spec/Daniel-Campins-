@@ -17316,8 +17316,46 @@ async function sendClientCheckin(){
     let r=(qp==='client'||qp==='coach')?qp:role();
 
     try{
-      const {data}=await getAuthClient().auth.getSession();
-      const session=data?.session||null;
+      const authClient=getAuthClient();
+      let callbackSession=null;
+
+      // Consumir de forma explícita el retorno del Magic Link antes de pintar
+      // de nuevo la pantalla de acceso. Safari puede llegar a este punto antes
+      // de que la detección automática del SDK haya persistido la sesión.
+      try{
+        const hashParams=new URLSearchParams(String(location.hash||'').replace(/^#/,''));
+        const accessToken=hashParams.get('access_token');
+        const refreshToken=hashParams.get('refresh_token');
+        const authCode=new URLSearchParams(location.search).get('code');
+
+        if(accessToken&&refreshToken){
+          const {data:setData,error:setError}=await authClient.auth.setSession({
+            access_token:accessToken,
+            refresh_token:refreshToken
+          });
+          if(setError)throw setError;
+          callbackSession=setData?.session||null;
+        }else if(authCode&&typeof authClient.auth.exchangeCodeForSession==='function'){
+          const {data:codeData,error:codeError}=await authClient.auth.exchangeCodeForSession(authCode);
+          if(codeError)throw codeError;
+          callbackSession=codeData?.session||null;
+        }
+
+        if(callbackSession){
+          save('client');
+          r='client';
+          window.__dccSecureRole='client';
+          const cleanUrl=new URL(location.href);
+          cleanUrl.hash='';
+          cleanUrl.search='';
+          history.replaceState({},document.title,cleanUrl.pathname);
+        }
+      }catch(callbackError){
+        console.error('DCC consumiendo retorno de acceso',callbackError);
+      }
+
+      const {data}=await authClient.auth.getSession();
+      const session=callbackSession||data?.session||null;
 
       // Las versiones anteriores borraban el rol tras entrar. Si hay una
       // sesión válida pero no queda rol guardado, detectar automáticamente
