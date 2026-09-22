@@ -217,7 +217,10 @@
     let last='';return t.map(m=>{const label=dayFmt(msgDate(m));const sep=label&&label!==last?`<div class="dcc-cm-day"><span>${esc(label)}</span></div>`:'';if(label)last=label;return sep+messageBubble(m)}).join('');
   }
   function refreshClientThread(id){
-    const stream=document.getElementById('dccClientMessageStream');if(!stream)return;stream.innerHTML=messagesHtml(id);requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+    const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
+    stream.innerHTML=messagesHtml(id);
+    /* No mover la página al refrescar mensajes. La pantalla del cliente
+       debe conservar la cabecera arriba; el usuario decide cuándo bajar. */
   }
 
   async function syncMessages(){
@@ -235,7 +238,10 @@
     injectCss();const main=document.getElementById('client-main');const id=activeClientId();if(!main||!id)return;
     main.className='dcc-client-messages-v1';
     main.innerHTML=`<div class="dcc-cm"><div class="dcc-cm-kicker">MENSAJES</div><header class="dcc-cm-person"><div class="dcc-cm-avatar">DC</div><div><h1>Daniel</h1><div class="dcc-cm-role"><span class="dcc-cm-dot"></span>Tu entrenador</div></div></header><div class="dcc-cm-stream" id="dccClientMessageStream">${messagesHtml(id)}</div></div><div class="dcc-cm-composer"><textarea id="dccClientMessageInput" class="dcc-cm-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccClientSendPremium()}"></textarea><button id="dccClientMessageSend" type="button" class="dcc-cm-send" onclick="dccClientSendPremium()" aria-label="Enviar">➤</button></div>`;
-    requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+    /* Al entrar en Mensajes, empezar siempre desde la cabecera. */
+    window.scrollTo(0,0);
+    requestAnimationFrame(()=>window.scrollTo(0,0));
+    setTimeout(()=>{if(window.__dccClientPremiumScreen==='messages')window.scrollTo(0,0)},80);
     syncMessages().then(ok=>{if(ok&&window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id))refreshClientThread(id)});
     startMessagePolling();
     try{if(typeof markClientNotificationSeen==='function')markClientNotificationSeen('message',id)}catch(e){}
