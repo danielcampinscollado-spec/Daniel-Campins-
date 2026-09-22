@@ -46,7 +46,7 @@
       #client-main .dcc-cc-update{display:flex!important;margin-left:auto!important;margin-right:auto!important}
       #client-main .dcc-cc-send{display:flex;align-items:center;justify-content:center;gap:8px}
       #client-main .dcc-cc-send-icon{font-size:16px;line-height:1}
-      #client-main .dcc-cc-success{margin:10px 0 0;padding:10px 12px;border:1px solid rgba(72,201,142,.45);border-radius:13px;background:rgba(72,201,142,.09);color:#83e7b3;font-size:11px;font-weight:800;text-align:center;letter-spacing:.15px}
+      #client-main .dcc-cc-success{margin:10px 0 0;padding:10px 12px;border:1px solid rgba(52,139,91,.28);border-radius:13px;background:#eef8f2;color:#2f7450;font-size:11px;font-weight:800;text-align:center;letter-spacing:.15px}
       #client-main .dcc-cc-sent{margin-top:8px!important}
       #client-main .dcc-cc-row-name{gap:0!important}
     `;document.head.appendChild(s);
