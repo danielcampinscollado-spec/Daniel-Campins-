@@ -348,8 +348,8 @@
         }
 
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
-          min-height:162px!important;
-          padding:16px 18px!important;
+          min-height:132px!important;
+          padding:12px 16px!important;
           display:grid!important;
           grid-template-columns:minmax(0,1fr) 190px!important;
           gap:12px!important;
@@ -378,7 +378,7 @@
           display:flex!important;
           align-items:center!important;
           gap:9px!important;
-          margin-top:12px!important;
+          margin-top:9px!important;
           color:#7d828a!important;
           font-size:7px!important;
           line-height:1!important;
@@ -412,7 +412,7 @@
         html.dcc-theme-light-premium body #client #client-main .dct3-muscle{
           position:relative!important;
           width:92px!important;
-          height:72px!important;
+          height:68px!important;
           border:1px solid rgba(183,123,19,.20)!important;
           border-radius:14px!important;
           overflow:hidden!important;
