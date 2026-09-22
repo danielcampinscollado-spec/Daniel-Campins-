@@ -831,12 +831,34 @@
 
   window.dccRenderTrainingOverview=renderOverview;
 
-  window.showClient=function(screen){
-    const result=nativeShowClient.apply(this,arguments);
-    if(screen==='training'){
-      if(window.activeWorkout)return result;
-      try{renderOverview();}catch(error){console.error('DCC training: portada',error);}
+  function activateTrainingNav(){
+    try{
+      window.currentScreen='training';
+      if(typeof currentScreen!=='undefined')currentScreen='training';
+    }catch(_){}
+    const nav=document.getElementById('client-nav');
+    if(nav){
+      const buttons=nav.querySelectorAll('button');
+      buttons.forEach(b=>b.classList.remove('active'));
+      buttons[2]?.classList.add('active');
     }
+  }
+
+  window.showClient=function(screen){
+    // La portada Light Premium de Entrenamiento es autoritativa.
+    // Evita ejecutar la rama de entrenamiento antigua antes de pintarla.
+    if(screen==='training' && !window.activeWorkout){
+      activateTrainingNav();
+      try{
+        renderOverview();
+        return true;
+      }catch(error){
+        console.error('DCC training: portada directa',error);
+        // Solo como último recurso intentar el renderer legado.
+      }
+    }
+
+    const result=nativeShowClient.apply(this,arguments);
     return result;
   };
   window.showClient.__dccTrainingStableV3=true;

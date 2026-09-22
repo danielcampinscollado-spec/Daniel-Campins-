@@ -5946,9 +5946,13 @@ async function openApp(app){
       typeof client==="function" &&
       !!client(currentClientId);
 
-    if(clientReady && pendingMain && !pendingMain.textContent.trim()){
+    if(clientReady && pendingMain && !pendingMain.querySelector(".dcc-home2")){
       try{
-        showClient(currentScreen||"home");
+        if(typeof window.dccClientGoHome==="function"){
+          window.dccClientGoHome();
+        }else{
+          showClient("home");
+        }
       }catch(error){
         console.warn("DCC openApp pending repaint",error);
       }
@@ -5967,11 +5971,15 @@ async function openApp(app){
       const homeMissing=
         targetScreen==="home" &&
         clientMain &&
-        !clientMain.querySelector(".dch-wrap");
+        !clientMain.querySelector(".dcc-home2");
 
       if(currentClientId && homeMissing){
         try{
-          showClient("home");
+          if(typeof window.dccClientGoHome==="function"){
+            window.dccClientGoHome();
+          }else{
+            showClient("home");
+          }
         }catch(error){
           console.warn("DCC openApp restored home repaint",error);
         }
@@ -6056,34 +6064,44 @@ async function openApp(app){
         window.trainingDayTab=getTrainingNextDayIndex(currentClientId,loadedRoutine.length);
       }
 
-      showClient("home");
-      try{
-        if(typeof window.dccRenderClientHomeApproved==="function"){
-          window.dccRenderClientHomeApproved();
+      // Inicio cliente: pintar directamente la autoridad aprobada.
+      const paintApprovedHome=()=>{
+        if(
+          currentApp!=="client" ||
+          !currentClientId ||
+          String(window.currentScreen||currentScreen||"home")!=="home"
+        )return;
+        try{
+          if(typeof window.dccClientGoHome==="function"){
+            window.dccClientGoHome();
+          }else if(typeof window.dccRenderClientHomeApproved==="function"){
+            window.dccRenderClientHomeApproved();
+          }else{
+            showClient("home");
+          }
+        }catch(error){
+          console.warn("DCC approved home paint",error);
         }
-      }catch(error){
-        console.warn("DCC approved home first paint",error);
-      }
+      };
+
+      paintApprovedHome();
       setupMessageRealtime();
 
-      // Guardia final para restauraciones de página de Safari.
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
+      // Safari/BFCache puede restaurar el shell antes que el contenido.
+      // Reintentar solo mientras Inicio siga realmente vacío.
+      [0,60,180,500,1200].forEach(delay=>{
+        setTimeout(()=>{
+          const main=document.getElementById("client-main");
           if(
             currentApp==="client" &&
-            currentScreen==="home" &&
+            String(window.currentScreen||currentScreen||"home")==="home" &&
             currentClientId &&
-            !document.querySelector("#client-main .dcc-home2")
+            main &&
+            !main.querySelector(".dcc-home2")
           ){
-            try{
-              if(typeof window.dccRenderClientHomeApproved==="function"){
-                window.dccRenderClientHomeApproved();
-              }else{
-                showClient("home");
-              }
-            }catch(error){console.warn("DCC approved home final paint",error)}
+            paintApprovedHome();
           }
-        });
+        },delay);
       });
 
     }catch(error){
@@ -17174,8 +17192,8 @@ async function sendClientCheckin(){
 <script src="./client-food-light-premium-v1.js?v=20260920-food-light-v1"></script>
 <script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
-<script src="./client-training.js?v=20260921-weekly-lock2-history"></script>
-<script src="./client-home-authority-final-v1.js?v=20260922-week-carousel3"></script>
+<script src="./client-training.js?v=20260922-direct-router1"></script>
+<script src="./client-home-authority-final-v1.js?v=20260922-week-carousel4-router"></script>
 
 
 

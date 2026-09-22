@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260922-client-home-authority-week-carousel3';
+const BUILD='20260922-client-home-authority-week-carousel4-router';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -464,6 +464,26 @@ function renderHome(){
 
 window.dccRenderClientHomeApproved=renderHome;
 
+function activateHomeNav(){
+  try{
+    window.currentScreen='home';
+    if(typeof currentScreen!=='undefined')currentScreen='home';
+  }catch(_){}
+  const nav=document.getElementById('client-nav');
+  if(nav){
+    const buttons=nav.querySelectorAll('button');
+    buttons.forEach(b=>b.classList.remove('active'));
+    buttons[0]?.classList.add('active');
+  }
+}
+
+function goHome(){
+  activateHomeNav();
+  renderHome();
+  return true;
+}
+window.dccClientGoHome=goHome;
+
 function enhanceTraining(){
   css();
   const main=document.getElementById('client-main');
@@ -496,6 +516,14 @@ function install(){
   if(typeof current!=='function'||current.__dccHomePremiumV2)return false;
   const wrapped=function(screen){
     const previous=window.currentScreen;
+
+    // Inicio tiene una única autoridad. No ejecutar primero el Inicio legado:
+    // en Safari podía dejar el contenedor vacío o restaurar HTML antiguo.
+    if(screen==='home'){
+      window.__dccManualTrainingDaySelection=false;
+      return goHome();
+    }
+
     if(screen==='training'&&previous!=='training'&&!window.__dccManualTrainingDaySelection){
       const r=routine();
       if(r.length&&typeof window.dccGetTrainingNextDayIndex==='function'){
@@ -503,8 +531,8 @@ function install(){
       }
     }
     window.__dccManualTrainingDaySelection=false;
+
     const result=current.apply(this,arguments);
-    if(screen==='home')requestAnimationFrame(renderHome);
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
     return result;
   };
@@ -521,5 +549,12 @@ if(!install()){
   document.addEventListener('DOMContentLoaded',install,{once:true});
   setTimeout(install,180);
 }
-window.addEventListener('pageshow',()=>setTimeout(install,20));
+window.addEventListener('pageshow',()=>{
+  setTimeout(()=>{
+    install();
+    if(window.currentApp==='client' && String(window.currentScreen||'home')==='home' && window.currentClientId){
+      try{goHome()}catch(error){console.warn('DCC home pageshow',error)}
+    }
+  },20);
+});
 })();
