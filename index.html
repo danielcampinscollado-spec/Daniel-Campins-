@@ -5167,15 +5167,26 @@ async function loadWorkoutHistoryFromSupabase(){
         data.workoutHistory[row.client_id]=[];
       }
 
+      const storedExercises=Array.isArray(row.exercises)
+        ? row.exercises
+        : [];
+      const meta=storedExercises.find(ex=>ex && ex.__dccMeta===true);
+      const visibleExercises=storedExercises.filter(ex=>!(ex && ex.__dccMeta===true));
+
       data.workoutHistory[row.client_id].push({
 
         date:row.workout_date,
 
         duration:Number(row.duration)||0,
 
-        exercises:Array.isArray(row.exercises)
-          ? row.exercises
-          : []
+        dayIndex:
+          meta && Number.isInteger(Number(meta.dayIndex))
+            ? Number(meta.dayIndex)
+            : undefined,
+
+        dayName:meta?.dayName || "",
+
+        exercises:visibleExercises
 
       });
 
@@ -10875,7 +10886,17 @@ const totalDays =
 
     duration:duration,
 
-    exercises:workout.completedExercises
+    /* Persistimos el día dentro del JSON de ejercicios porque la tabla
+       histórica no tiene una columna day_index. Así el bloqueo semanal
+       puede reconstruirse también después de cerrar sesión o cambiar de dispositivo. */
+    exercises:[
+      {
+        __dccMeta:true,
+        dayIndex:Number(workout.dayIndex),
+        dayName:workout.dayName || ""
+      },
+      ...workout.completedExercises
+    ]
 
   };
 
