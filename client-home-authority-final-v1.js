@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260921-client-home-authority-week-carousel1';
+const BUILD='20260922-client-home-authority-week-carousel2';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -394,8 +394,8 @@ function renderHome(){
   const checkinSummary=lastCheckinSummary();
   const currentWeek=typeof getCurrentWeekKey==='function'?getCurrentWeekKey():'';
   const checkin=d().checkins?.[id()]||{};
-  const weekStart=currentWeek?new Date(currentWeek+'T00:00:00'):null;
-  const sentThisWeek=!!(checkin.sentAt&&weekStart&&new Date(checkin.sentAt)>=weekStart);
+  const checkinWeekStart=currentWeek?new Date(currentWeek+'T00:00:00'):null;
+  const sentThisWeek=!!(checkin.sentAt&&checkinWeekStart&&new Date(checkin.sentAt)>=checkinWeekStart);
 
   const tasks=[];
   if(next.day)tasks.push({
@@ -458,6 +458,8 @@ function renderHome(){
     ${hero}
   </div>`;
 }
+
+window.dccRenderClientHomeApproved=renderHome;
 
 function enhanceTraining(){
   css();

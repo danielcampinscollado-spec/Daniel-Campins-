@@ -6066,9 +6066,15 @@ async function openApp(app){
             currentApp==="client" &&
             currentScreen==="home" &&
             currentClientId &&
-            !document.querySelector("#client-main .dch-wrap")
+            !document.querySelector("#client-main .dcc-home2")
           ){
-            try{showClient("home")}catch(error){console.warn("DCC home final paint",error)}
+            try{
+              if(typeof window.dccRenderClientHomeApproved==="function"){
+                window.dccRenderClientHomeApproved();
+              }else{
+                showClient("home");
+              }
+            }catch(error){console.warn("DCC approved home final paint",error)}
           }
         });
       });
@@ -17162,7 +17168,7 @@ async function sendClientCheckin(){
 <script src="./client-diet-print-premium-v1.js?v=20260921-diet-print3-compact"></script>
 <script src="./training-superset-v1.js?v=20260921-superset-round-flow2"></script>
 <script src="./client-training.js?v=20260921-weekly-lock2-history"></script>
-<script src="./client-home-authority-final-v1.js?v=20260921-week-carousel1"></script>
+<script src="./client-home-authority-final-v1.js?v=20260922-week-carousel2"></script>
 
 
 
