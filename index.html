@@ -5704,9 +5704,7 @@ return data.clients.find(c=>c.id===id);
 }
 async function deleteClient(id){
   const c=client(id);if(!c){toast("No se encontró el cliente");return}
-  if(!confirm("¿Seguro que quieres eliminar a "+c.name+"?
-
-Se eliminarán también sus datos asociados."))return;
+  if(!confirm("¿Seguro que quieres eliminar a "+c.name+"?\n\nSe eliminarán también sus datos asociados."))return;
   try{
     const {data:ok,error}=await supabaseClient.rpc("dcc_delete_client",{p_client_id:String(id)});
     if(error)throw error;if(ok!==true)throw new Error("El servidor no confirmó la eliminación");
