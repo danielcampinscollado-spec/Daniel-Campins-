@@ -6103,6 +6103,18 @@ async function openApp(app){
         if(emailMatch?.id)resolvedClientId=String(emailMatch.id);
       }
 
+      // Safari puede recuperar correctamente la sesión pero dejar pendiente una
+      // llamada de red de Supabase. El cliente ya validado en este mismo origen
+      // se guarda al entrar; usarlo evita bloquear una recarga por esa llamada.
+      if(!resolvedClientId){
+        let lastClientId="";
+        try{lastClientId=String(localStorage.getItem("dcc:last-client-id")||"")}catch(_){}
+        const lastClient=lastClientId
+          ? (data.clients||[]).find(row=>String(row?.id||"")===lastClientId)
+          : null;
+        if(lastClient?.id)resolvedClientId=String(lastClient.id);
+      }
+
       if(!resolvedClientId){
         const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
         if(claimError)throw claimError;
@@ -6114,14 +6126,12 @@ async function openApp(app){
       window.currentClientId=currentClientId;
       try{localStorage.setItem("dcc:last-client-id",currentClientId)}catch(_){}
 
-      // Si el perfil ya existe localmente, pintar sin bloquear. La copia remota
-      // se actualiza después y sigue protegida por las políticas de Supabase.
-      if(!client(currentClientId)){
+      // Si el perfil ya está en la caché local validada, NO iniciar ninguna
+      // petición remota antes de la primera pintura. Primero se abre la app y
+      // después se sincroniza. Esto elimina el bloqueo observado en Safari.
+      const cachedClient=client(currentClientId);
+      if(!cachedClient){
         await loadClientsFromSupabase();
-      }else{
-        Promise.resolve(loadClientsFromSupabase()).catch(error=>{
-          console.warn("DCC actualización de cliente en segundo plano",error);
-        });
       }
 
       if(!client(currentClientId)){
@@ -6185,6 +6195,7 @@ async function openApp(app){
 
       // La sincronización secundaria ya no puede dejar la pantalla Inicio vacía.
       const clientSync=Promise.allSettled([
+        loadClientsFromSupabase(),
         loadDietsFromSupabase(),
         loadRoutinesFromSupabase(),
         loadWorkoutHistoryFromSupabase(),
@@ -17602,7 +17613,7 @@ async function sendClientCheckin(){
   });
 })();
 </script>
-<script src="./client-final-router-v1.js?v=20260922-router4"></script>
+<script src="./client-final-router-v1.js?v=20260922-router5"></script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
 <script>
 (function(){
