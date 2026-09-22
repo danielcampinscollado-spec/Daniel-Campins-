@@ -4515,12 +4515,19 @@ body{
 
 <div id="toast" class="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+if(!window.supabase){
+  document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
+}
+</script>
 <script src="./ejercicio-biblioteca.js?v=20260916-audit2"></script>
 <script>
 const KEY="danielCampinsApp";
 const SUPABASE_URL="https://khrhfurdlbqnlthlkhhp.supabase.co";
 const SUPABASE_KEY="sb_publishable_Dhr67diGFP22g8PKdmUg9A_jbn2EyNZ";
-const supabaseClient=window.supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const supabaseClient=window.supabase?.createClient
+  ? (window.supabaseClient || (window.supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)))
+  : null;
 let data=loadData();
 
 var currentApp="";
@@ -17135,6 +17142,11 @@ async function sendClientCheckin(){
   const AUTH_ORIGIN='https://daniel-campins-git-a-244c40-danielcampinscollado-4962s-projects.vercel.app';
   const authRedirect=r=>AUTH_ORIGIN+'/?dcc_role='+encodeURIComponent(r);
   let busy=false;
+  const getAuthClient=()=>{
+    const client=window.supabaseClient;
+    if(client?.auth)return client;
+    throw new Error('Supabase no se ha cargado correctamente. Recarga esta página e inténtalo de nuevo.');
+  };
   const role=()=>{try{return localStorage.getItem(ROLE_KEY)||''}catch(_){return ''}};
   const save=r=>{try{localStorage.setItem(ROLE_KEY,r)}catch(_){}};
   const clear=()=>{try{localStorage.removeItem(ROLE_KEY)}catch(_){}};
@@ -17152,7 +17164,7 @@ async function sendClientCheckin(){
     document.getElementById('dcc-google-auth-go').onclick=async()=>{
       if(busy)return;busy=true;save(r);
       try{
-        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect(r),skipBrowserRedirect:false}});
+        const {error}=await getAuthClient().auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect(r),skipBrowserRedirect:false}});
         if(error)throw error;
       }catch(e){busy=false;console.error(e);alert('No se pudo iniciar sesión con Google. Inténtalo de nuevo.')}
     };
@@ -17168,7 +17180,7 @@ async function sendClientCheckin(){
     google.onclick=async()=>{
       if(busy)return;busy=true;google.disabled=true;save('client');
       try{
-        const {error}=await supabaseClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect('client'),skipBrowserRedirect:false}});
+        const {error}=await getAuthClient().auth.signInWithOAuth({provider:'google',options:{redirectTo:authRedirect('client'),skipBrowserRedirect:false}});
         if(error)throw error;
       }catch(e){
         console.error('DCC client Google auth',e);
@@ -17182,8 +17194,8 @@ async function sendClientCheckin(){
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.style.display='block';status.textContent='Introduce un correo válido.';return}
       if(busy)return;busy=true;send.disabled=true;status.style.display='block';status.textContent='Enviando enlace…';save('client');
       try{
-        try{await supabaseClient.auth.signOut()}catch(_){}
-        const {error}=await supabaseClient.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirect('client')}});
+        try{await getAuthClient().auth.signOut()}catch(_){}
+        const {error}=await getAuthClient().auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirect('client')}});
         if(error)throw error;
         status.textContent='Enlace enviado. Revisa tu correo y pulsa el enlace para entrar.';
       }catch(e){
@@ -17206,7 +17218,7 @@ async function sendClientCheckin(){
     if(r!=='client'&&r!=='coach'||busy)return;
     if(r==='client'){clientEmailScreen();return}
     try{
-      const {data}=await supabaseClient.auth.getSession();
+      const {data}=await getAuthClient().auth.getSession();
       if(data?.session){save(r);return openApp(r)}
     }catch(_){}
     save(r);googleScreen(r);
@@ -17219,7 +17231,7 @@ async function sendClientCheckin(){
     let r=(qp==='client'||qp==='coach')?qp:role();
 
     try{
-      const {data}=await supabaseClient.auth.getSession();
+      const {data}=await getAuthClient().auth.getSession();
       const session=data?.session||null;
 
       // Las versiones anteriores borraban el rol tras entrar. Si hay una
@@ -17228,7 +17240,7 @@ async function sendClientCheckin(){
       // vuelva a abrir Inicio sin pedir el correo otra vez.
       if(session && r!=='client' && r!=='coach'){
         try{
-          const {data:clientId,error:clientRoleError}=await supabaseClient.rpc('dcc_claim_client_access');
+          const {data:clientId,error:clientRoleError}=await getAuthClient().rpc('dcc_claim_client_access');
           if(!clientRoleError && clientId)r='client';
         }catch(_){}
       }
@@ -17242,14 +17254,14 @@ async function sendClientCheckin(){
       }
 
       let authSubscription=null;
-      const {data:listener}=supabaseClient.auth.onAuthStateChange(async(event,newSession)=>{
+      const {data:listener}=getAuthClient().auth.onAuthStateChange(async(event,newSession)=>{
         if(!newSession)return;
         authSubscription?.unsubscribe();
 
         let nextRole=(qp==='client'||qp==='coach')?qp:role();
         if(nextRole!=='client'&&nextRole!=='coach'){
           try{
-            const {data:clientId,error:clientRoleError}=await supabaseClient.rpc('dcc_claim_client_access');
+            const {data:clientId,error:clientRoleError}=await getAuthClient().rpc('dcc_claim_client_access');
             if(!clientRoleError && clientId)nextRole='client';
           }catch(_){}
         }
