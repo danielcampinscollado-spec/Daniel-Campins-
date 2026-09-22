@@ -48,20 +48,15 @@
         background:linear-gradient(90deg,#d3a64a,#f0c96b)!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-welcome::after{
-        content:'DISCIPLINA\\A HOY, RESULTADOS\\A SIEMPRE'!important;
-        display:block!important;
-        white-space:pre!important;
-        position:absolute!important;
-        right:4px!important;
-        top:10px!important;
-        width:132px!important;
-        color:#777d86!important;
-        font-size:7px!important;
-        line-height:1.55!important;
-        font-weight:500!important;
-        letter-spacing:2.1px!important;
-        text-align:left!important;
-        opacity:.90!important;
+        display:none!important;
+        content:none!important;
+      }
+      html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-home-sub{
+        margin:7px 0 0!important;
+        color:#6f7782!important;
+        font-size:11px!important;
+        line-height:1.3!important;
+        font-weight:450!important;
       }
       html.dcc-theme-light-premium body #client #client-main .dch-wrap .dch-eyebrow{
         margin:0 0 7px!important;
