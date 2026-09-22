@@ -17550,6 +17550,9 @@ async function sendClientCheckin(){
         window.__dccAuthUserId=String(session?.user?.id||'');
         window.__dccAuthEmail=String(session?.user?.email||'').trim().toLowerCase();
         history.replaceState({},document.title,location.pathname);
+        // La inicialización automática está desactivada a propósito; mantener
+        // la renovación de token de forma explícita sin bloquear el primer render.
+        try{Promise.resolve(authClient.auth.startAutoRefresh?.()).catch(()=>{})}catch(_){}
         await openApp(r);
         return;
       }
@@ -17592,6 +17595,7 @@ async function sendClientCheckin(){
           save(nextRole);
           window.__dccSecureRole=nextRole;
           history.replaceState({},document.title,location.pathname);
+          try{Promise.resolve(getAuthClient().auth.startAutoRefresh?.()).catch(()=>{})}catch(_){}
           if(!window.currentApp)await openApp(nextRole);
         },0);
       });
