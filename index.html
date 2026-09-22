@@ -5970,40 +5970,66 @@ async function openApp(app){
     const clientReady=
       app==="client" &&
       currentApp==="client" &&
+      window.__dccClientReady===true &&
       currentClientId &&
       typeof client==="function" &&
       !!client(currentClientId);
 
-    if(clientReady && pendingMain && !pendingMain.querySelector(".dcc-home2")){
-      try{
-        if(typeof window.dccClientGoHome==="function"){
-          window.dccClientGoHome();
-        }else{
-          showClient("home");
+    if(clientReady && pendingMain){
+      if(!pendingMain.querySelector(".dcc-home2") && String(window.currentScreen||currentScreen||"home")==="home"){
+        try{
+          if(typeof window.dccRenderClientHomeApproved==="function"){
+            window.dccRenderClientHomeApproved();
+          }else if(typeof window.dccClientGoHome==="function"){
+            window.dccClientGoHome();
+          }else{
+            showClient("home");
+          }
+        }catch(error){
+          console.warn("DCC openApp pending repaint",error);
         }
-      }catch(error){
-        console.warn("DCC openApp pending repaint",error);
       }
+      return window.__dccOpenAppPromise;
     }
 
-    return window.__dccOpenAppPromise;
+    // Un intento anterior puede haber dejado Safari en estado "app abierta"
+    // antes de resolver el perfil. La antigua promesa era solo un centinela ya
+    // resuelto, por lo que todos los reintentos salían sin volver a arrancar.
+    // Si el cliente aún no está preparado, liberar ese estado incompleto y
+    // ejecutar de nuevo la autoridad real de arranque.
+    if(app==="client"){
+      window.__dccOpenAppPromise=null;
+    }else{
+      return window.__dccOpenAppPromise;
+    }
   }
 
   const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
-  const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
+  const shellOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
+  const alreadyOpen = app==="client"
+    ? (
+        shellOpen &&
+        window.__dccClientReady===true &&
+        !!currentClientId &&
+        typeof client==="function" &&
+        !!client(currentClientId)
+      )
+    : shellOpen;
 
   if(alreadyOpen){
     if(app==="client"){
       const clientMain=document.getElementById("client-main");
-      const targetScreen=String(currentScreen||"home");
+      const targetScreen=String(window.currentScreen||currentScreen||"home");
       const homeMissing=
         targetScreen==="home" &&
         clientMain &&
         !clientMain.querySelector(".dcc-home2");
 
-      if(currentClientId && homeMissing){
+      if(homeMissing){
         try{
-          if(typeof window.dccClientGoHome==="function"){
+          if(typeof window.dccRenderClientHomeApproved==="function"){
+            window.dccRenderClientHomeApproved();
+          }else if(typeof window.dccClientGoHome==="function"){
             window.dccClientGoHome();
           }else{
             showClient("home");
@@ -17576,7 +17602,7 @@ async function sendClientCheckin(){
   });
 })();
 </script>
-<script src="./client-final-router-v1.js?v=20260922-router3"></script>
+<script src="./client-final-router-v1.js?v=20260922-router4"></script>
 <!-- DCC: ocultar Vercel Toolbar en previews de prueba -->
 <script>
 (function(){
