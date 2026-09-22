@@ -6060,18 +6060,38 @@ async function openApp(app){
     }
 
     try{
-      const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
-      if(claimError)throw claimError;
-      if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
+      // Resolver primero el cliente ya autenticado que tenemos en la caché local.
+      // Tras un refresh de Safari no tiene sentido bloquear toda la interfaz
+      // esperando otra llamada RPC si la sesión y el perfil ya estaban validados.
+      const authUserId=String(window.__dccAuthUserId||"");
+      let resolvedClientId="";
+      if(authUserId){
+        const localMatch=(data.clients||[]).find(row=>String(row?.auth_user_id||"")===authUserId);
+        if(localMatch?.id)resolvedClientId=String(localMatch.id);
+      }
 
-      currentClientId=String(claimedClientId);
+      if(!resolvedClientId){
+        const claimResult=await Promise.race([
+          supabaseClient.rpc("dcc_claim_client_access"),
+          new Promise(resolve=>setTimeout(()=>resolve({data:null,error:new Error("Tiempo de espera agotado recuperando el perfil")}),8000))
+        ]);
+        const claimedClientId=claimResult?.data;
+        const claimError=claimResult?.error;
+        if(claimError)throw claimError;
+        if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
+        resolvedClientId=String(claimedClientId);
+      }
+
+      currentClientId=resolvedClientId;
       window.currentClientId=currentClientId;
 
-      // Si ya existe el perfil en la caché local de esta misma sesión,
-      // no bloquear Inicio esperando toda la sincronización remota.
-      // En un primer acceso, cargar primero el cliente porque es imprescindible.
+      // Si el perfil ya existe localmente, pintar sin bloquear. La copia remota
+      // se actualiza después y sigue protegida por las políticas de Supabase.
       if(!client(currentClientId)){
-        await loadClientsFromSupabase();
+        await Promise.race([
+          loadClientsFromSupabase(),
+          new Promise((_,reject)=>setTimeout(()=>reject(new Error("Tiempo de espera agotado cargando el cliente")),8000))
+        ]);
       }else{
         Promise.resolve(loadClientsFromSupabase()).catch(error=>{
           console.warn("DCC actualización de cliente en segundo plano",error);
@@ -6208,6 +6228,7 @@ async function logout(){
   currentApp="";window.currentApp="";
   currentScreen="";window.currentScreen="";
   currentClientId=null;window.currentClientId=null;
+  window.__dccAuthUserId="";
   window.__dccClientReady=false;
   window.__dccPendingClientScreen="home";
   window.__dccOpenAppPromise=null;
@@ -17451,6 +17472,7 @@ async function sendClientCheckin(){
         if(r!=='client'&&r!=='coach')return;
         save(r);
         window.__dccSecureRole=r;
+        window.__dccAuthUserId=String(session?.user?.id||'');
         history.replaceState({},document.title,location.pathname);
         await openApp(r);
         return;
@@ -17472,6 +17494,7 @@ async function sendClientCheckin(){
 
         save(nextRole);
         window.__dccSecureRole=nextRole;
+        window.__dccAuthUserId=String(newSession?.user?.id||'');
         history.replaceState({},document.title,location.pathname);
         if(!window.currentApp)openApp(nextRole);
       });
