@@ -5099,7 +5099,7 @@ async function loadClientsFromSupabase(){
   try{
     const {data:clients,error}=await supabaseClient
       .from("clients")
-      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at")
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at,checkin_frequency,photo_frequency,next_checkin_date,next_photo_checkin_date,followup_configured_at")
       .order("created_at",{ascending:true});
     if(error){console.error("Error cargando clientes:",error);return}
 
@@ -5122,6 +5122,11 @@ async function loadClientsFromSupabase(){
         foods_to_avoid:String(row.foods_to_avoid||""),
         plan:row.plan||"",
         status:row.status||"Pendiente",
+        checkin_frequency:row.checkin_frequency??old.checkin_frequency??null,
+        photo_frequency:row.photo_frequency??old.photo_frequency??null,
+        next_checkin_date:row.next_checkin_date??old.next_checkin_date??null,
+        next_photo_checkin_date:row.next_photo_checkin_date??old.next_photo_checkin_date??null,
+        followup_configured_at:row.followup_configured_at??old.followup_configured_at??null,
         created_at:row.created_at||old.created_at||null
       };
     });
