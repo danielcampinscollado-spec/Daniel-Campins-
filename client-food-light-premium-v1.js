@@ -18,8 +18,8 @@
          ===================================================== */
 
       html.dcc-theme-light-premium body #client #client-main .client-header{
-        margin:0 0 14px!important;
-        align-items:flex-end!important;
+        margin:0 0 12px!important;
+        align-items:flex-start!important;
       }
 
       html.dcc-theme-light-premium body #client #client-main .client-header .section-eyebrow{
@@ -124,7 +124,7 @@
           radial-gradient(circle at 100% 0,rgba(214,163,61,.06),transparent 36%),
           linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
         color:#17191d!important;
-        box-shadow:0 9px 22px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important;
+        box-shadow:0 10px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important;
       }
 
       html.dcc-theme-light-premium body #client #client-main .diet-pdf-icon{
@@ -207,7 +207,7 @@
         border-radius:21px!important;
         background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
         color:#17191d!important;
-        box-shadow:0 8px 20px rgba(78,58,28,.055),inset 0 1px 0 rgba(255,255,255,.96)!important;
+        box-shadow:0 10px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important;
       }
 
       html.dcc-theme-light-premium body #client #client-main .meal-card[open]{
