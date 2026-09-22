@@ -5537,39 +5537,50 @@ function saveData(){
   }
 }
 function getCompletedTrainingDays(clientId){
-  if(!data.completedTrainingDays){
-    data.completedTrainingDays={};
-  }
-
-  if(!data.completedTrainingDays[clientId]){
-    data.completedTrainingDays[clientId]=[];
-  }
-
+  ensureTrainingProgressWeek(clientId);
   return data.completedTrainingDays[clientId];
 }
 
 function isTrainingDayCompleted(clientId,dayIndex){
-  return getCompletedTrainingDays(clientId)
-    .includes(Number(dayIndex));
+  const index=Number(dayIndex);
+  const weekStart=getWeekStart();
+  const now=new Date();
+
+  const history=data.workoutHistory?.[clientId]||[];
+  const found=history.some(w=>{
+    const date=new Date(w?.date||0);
+    return Number(w?.dayIndex)===index && date>=weekStart && date<=now;
+  });
+
+  if(found)return true;
+  return getCompletedTrainingDays(clientId).includes(index);
 }
 
 function markTrainingDayCompleted(clientId,dayIndex,totalDays){
+  const total=Math.max(1,parseInt(totalDays)||1);
+  const index=Math.max(0,Number(dayIndex)||0);
+
+  ensureTrainingProgressWeek(clientId);
 
   const completed=getCompletedTrainingDays(clientId);
-  const index=Number(dayIndex);
-
   if(!completed.includes(index)){
     completed.push(index);
+    completed.sort((a,b)=>a-b);
   }
 
-  if(completed.length>=totalDays){
-    data.completedTrainingDays[clientId]=[];
-    saveData();
-    return true;
-  }
+  const next=(index+1)%total;
+  data.trainingNextDayIndex[clientId]=next;
+  window.trainingDayTab=next;
 
   saveData();
-  return false;
+
+  Promise.resolve(saveTrainingProgressToSupabase(clientId)).then(ok=>{
+    if(!ok){
+      try{toast("El entrenamiento se guardó, pero no se pudo sincronizar el progreso semanal.");}catch(_){}
+    }
+  });
+
+  return getWeeklyWorkoutCount(clientId)>=total;
 }
 async function saveRoutineToSupabase(id){
   try{
@@ -5891,6 +5902,191 @@ function setupMessageRealtime(){
 
   window.clientMessagesRealtimeChannel=channel;
 }
+
+async function loadTrainingProgressFromSupabase(){
+  try{
+    const {data:rows,error}=await supabaseClient
+      .from("client_training_progress")
+      .select("client_id,completed_days,next_day_index,week_start,updated_at");
+
+    if(error){
+      console.error("Error cargando progreso de entrenamiento:",error);
+      return false;
+    }
+
+    data.completedTrainingDays={};
+    data.trainingNextDayIndex={};
+    data.trainingProgressWeekStart={};
+
+    const currentWeek=getCurrentWeekKey();
+    const stale=[];
+
+    (rows||[]).forEach(row=>{
+      const id=String(row.client_id);
+      const rowWeek=String(row.week_start||"");
+      const completed=Array.isArray(row.completed_days)
+        ? [...new Set(row.completed_days.map(Number).filter(Number.isInteger).filter(n=>n>=0))]
+        : [];
+
+      data.trainingNextDayIndex[id]=Math.max(0,parseInt(row.next_day_index)||0);
+
+      if(rowWeek===currentWeek){
+        data.completedTrainingDays[id]=completed;
+        data.trainingProgressWeekStart[id]=currentWeek;
+      }else{
+        data.completedTrainingDays[id]=[];
+        data.trainingProgressWeekStart[id]=currentWeek;
+        stale.push({
+          client_id:id,
+          completed_days:[],
+          next_day_index:data.trainingNextDayIndex[id],
+          week_start:currentWeek,
+          updated_at:new Date().toISOString()
+        });
+      }
+    });
+
+    if(stale.length){
+      const {error:resetError}=await supabaseClient
+        .from("client_training_progress")
+        .upsert(stale,{onConflict:"client_id"});
+      if(resetError)console.error("Error reiniciando progreso semanal:",resetError);
+    }
+
+    saveData();
+    return true;
+
+  }catch(e){
+    console.error("Error conectando con Supabase para progreso de entrenamiento:",e);
+    return false;
+  }
+}
+
+async function saveTrainingProgressToSupabase(clientId){
+  try{
+    if(!clientId)return false;
+
+    if(!data.completedTrainingDays)data.completedTrainingDays={};
+    if(!data.trainingNextDayIndex)data.trainingNextDayIndex={};
+    if(!data.trainingProgressWeekStart)data.trainingProgressWeekStart={};
+
+    const weekKey=getCurrentWeekKey();
+
+    if(data.trainingProgressWeekStart[clientId]!==weekKey){
+      data.completedTrainingDays[clientId]=[];
+      data.trainingProgressWeekStart[clientId]=weekKey;
+    }
+
+    const completed=Array.isArray(data.completedTrainingDays[clientId])
+      ? [...new Set(data.completedTrainingDays[clientId].map(Number).filter(Number.isInteger).filter(n=>n>=0))].sort((a,b)=>a-b)
+      : [];
+
+    const nextDayIndex=Math.max(0,parseInt(data.trainingNextDayIndex[clientId])||0);
+
+    const {error}=await supabaseClient
+      .from("client_training_progress")
+      .upsert({
+        client_id:String(clientId),
+        completed_days:completed,
+        next_day_index:nextDayIndex,
+        week_start:weekKey,
+        updated_at:new Date().toISOString()
+      },{onConflict:"client_id"});
+
+    if(error)throw error;
+    return true;
+  }catch(e){
+    console.error("Error guardando progreso de entrenamiento:",e);
+    return false;
+  }
+}
+
+async function loadCheckinHistoryFromSupabase(){
+  try{
+    const {data:rows,error}=await supabaseClient
+      .from("client_checkin_history")
+      .select("client_id,weight,body_fat,sent_at")
+      .order("sent_at",{ascending:true});
+
+    if(error){
+      console.error("Error cargando historial de check-ins:",error);
+      return;
+    }
+
+    data.checkinHistory={};
+
+    (rows||[]).forEach(row=>{
+      if(!data.checkinHistory[row.client_id])data.checkinHistory[row.client_id]=[];
+      const rawWeight=String(row.weight||"").replace(",",".");
+      const weightMatch=rawWeight.match(/-?\d+(?:\.\d+)?/);
+      data.checkinHistory[row.client_id].push({
+        weight:weightMatch?Number(weightMatch[0]):null,
+        bodyFat:row.body_fat!=null?Number(row.body_fat):null,
+        sentAt:row.sent_at||null
+      });
+    });
+
+    saveData();
+  }catch(e){
+    console.error("Error conectando con Supabase para historial de check-ins:",e);
+  }
+}
+
+function ensureTrainingProgressWeek(clientId){
+  if(!data.completedTrainingDays)data.completedTrainingDays={};
+  if(!data.trainingNextDayIndex)data.trainingNextDayIndex={};
+  if(!data.trainingProgressWeekStart)data.trainingProgressWeekStart={};
+
+  const weekKey=getCurrentWeekKey();
+
+  if(data.trainingProgressWeekStart[clientId]!==weekKey){
+    data.completedTrainingDays[clientId]=[];
+    data.trainingProgressWeekStart[clientId]=weekKey;
+    saveData();
+  }
+
+  if(!Array.isArray(data.completedTrainingDays[clientId])){
+    data.completedTrainingDays[clientId]=[];
+  }
+
+  return weekKey;
+}
+
+function getTrainingNextDayIndex(clientId,totalDays){
+  const total=Math.max(0,parseInt(totalDays)||0);
+  if(!total)return 0;
+
+  ensureTrainingProgressWeek(clientId);
+
+  const history=(data.workoutHistory?.[clientId]||[])
+    .filter(w=>Number.isInteger(Number(w?.dayIndex)))
+    .slice()
+    .sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+
+  if(history.length){
+    const latestIndex=Number(history[0].dayIndex);
+    const inferred=(latestIndex+1)%total;
+    if(data.trainingNextDayIndex[clientId]!==inferred){
+      data.trainingNextDayIndex[clientId]=inferred;
+      saveData();
+    }
+    return inferred;
+  }
+
+  const stored=parseInt(data.trainingNextDayIndex[clientId]);
+  if(Number.isInteger(stored)&&stored>=0){
+    return stored%total;
+  }
+
+  const legacy=getCompletedTrainingDays(clientId);
+  const inferred=Math.max(0,legacy.length)%total;
+  data.trainingNextDayIndex[clientId]=inferred;
+  saveData();
+  return inferred;
+}
+window.dccLoadTrainingProgressFromSupabase=loadTrainingProgressFromSupabase;
+window.dccSaveTrainingProgressToSupabase=saveTrainingProgressToSupabase;
+window.dccGetTrainingNextDayIndex=getTrainingNextDayIndex;
 
 async function openApp(app){
 
