@@ -344,7 +344,7 @@
           border:1px solid rgba(183,123,19,.24)!important;
           border-radius:21px!important;
           background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
-          box-shadow:0 10px 24px rgba(78,58,28,.065),inset 0 1px 0 rgba(255,255,255,.96)!important
+          box-shadow:0 10px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)!important
         }
 
         html.dcc-theme-light-premium body #client #client-main .dct3-muscles{
