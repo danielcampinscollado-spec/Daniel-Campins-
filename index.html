@@ -4471,9 +4471,9 @@ body{
     height:78px !important;
     min-height:78px !important;
     display:grid !important;
-    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
-    gap:2px !important;
-    padding:5px 5px 4px !important;
+    grid-template-columns:1fr 1.18fr 1.34fr 1fr 1fr 1fr !important;
+    gap:1px !important;
+    padding:5px 4px 4px !important;
     margin:0 !important;
     box-sizing:border-box !important;
     border:2px solid #c58b1c !important;
@@ -4490,14 +4490,14 @@ body{
     height:66px !important;
     min-height:66px !important;
     margin:0 !important;
-    padding:6px 1px 5px !important;
+    padding:6px 0 5px !important;
     display:flex !important;
     flex-direction:column !important;
     align-items:center !important;
     justify-content:center !important;
     gap:3px !important;
     border:1px solid transparent !important;
-    border-radius:17px !important;
+    border-radius:16px !important;
     background:transparent !important;
     color:#737b88 !important;
     box-shadow:none !important;
@@ -4511,7 +4511,7 @@ body{
   html body #client #client-nav > button span{
     display:block !important;width:100% !important;margin:0 !important;padding:0 !important;
     color:currentColor !important;font-size:9px !important;line-height:1 !important;
-    font-weight:700 !important;letter-spacing:-.25px !important;text-align:center !important;white-space:nowrap !important;
+    font-weight:700 !important;letter-spacing:-.35px !important;text-align:center !important;white-space:nowrap !important;overflow:visible !important;
   }
 
   html body #client #client-nav > button.active,
@@ -4526,6 +4526,16 @@ body{
   }
   html body #client #client-nav > button.active svg,
   html body #client #client-nav > button.active span{color:#17191d !important}
+
+  /* Entrenamiento necesita algo más de ancho para que texto y cápsula queden centrados. */
+  html body #client #client-nav > button:nth-child(3){
+    justify-self:center !important;
+    width:100% !important;
+  }
+  html body #client #client-nav > button:nth-child(3) span{
+    font-size:8.6px !important;
+    letter-spacing:-.55px !important;
+  }
 
   #client-main{padding-bottom:96px !important}
 }
