@@ -47,24 +47,76 @@
     const s=document.createElement('style');
     s.id='dcc-client-checkin-messages-v1-css';
     s.textContent=`
-      /* ================= CHECK-IN CLIENTE ================= */
-      #client-main.dcc-client-checkin-v1{background:radial-gradient(circle at 88% 0,rgba(224,173,76,.075),transparent 26%),radial-gradient(circle at 0 75%,rgba(217,170,74,.025),transparent 28%),#06090c!important;color:#f7f5f0!important;padding:13px 14px 118px!important}
+      /* ================= CHECK-IN CLIENTE · LIGHT NATIVO ================= */
+      #client-main.dcc-client-checkin-v1{
+        background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;
+        color:#17191d!important;padding:13px 14px 118px!important
+      }
       .dcc-cc{max-width:820px;margin:0 auto}.dcc-cc *{box-sizing:border-box}
-      .dcc-cc-head{margin:4px 1px 17px}.dcc-cc-kicker{color:${GOLD2};font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}.dcc-cc-sub{margin:9px 0 0;color:#969eaa;font-size:13px;line-height:1.4}
-      .dcc-cc-card{margin:0 0 10px;padding:14px;border:1px solid rgba(224,173,76,.72);border-radius:20px;background:radial-gradient(circle at 96% 0,rgba(240,201,107,.09),transparent 32%),linear-gradient(145deg,#11171c,#080c10 72%);box-shadow:0 12px 30px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.03)}
-      .dcc-cc-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.dcc-cc-card-title{display:flex;align-items:center;gap:9px;color:#e9e9e5;font-size:10px;font-weight:820;letter-spacing:2px;text-transform:uppercase}.dcc-cc-card-icon{color:${GOLD2};font-size:17px}.dcc-cc-hint{color:#7f8994;font-size:9px}
-      .dcc-cc-data-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.dcc-cc-data{min-width:0;padding:12px;border:1px solid #2a333b;border-radius:16px;background:linear-gradient(145deg,#10151a,#0a0e12);text-align:center}.dcc-cc-data-top{display:flex;align-items:center;gap:9px;text-align:left}.dcc-cc-data-icon{width:38px;height:38px;min-width:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.42);border-radius:12px;background:rgba(217,170,74,.055);color:${GOLD2};font-size:18px}.dcc-cc-data-label{color:#98a1ac;font-size:9px;text-transform:uppercase;letter-spacing:1.2px}.dcc-cc-data-value{margin-top:3px;color:#f8f6f1;font-size:22px;font-weight:820;letter-spacing:-.5px}.dcc-cc-update{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:min(210px,100%);min-height:38px;margin:11px auto 0;padding:0 12px;border:1px solid #e4b44a;border-radius:999px;background:radial-gradient(circle at 50% 50%,rgba(217,170,74,.16),rgba(14,13,10,.92));color:${GOLD2};font-size:10px;font-weight:820;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
-      .dcc-cc-week{display:grid;gap:8px}.dcc-cc-row{display:grid;grid-template-columns:minmax(116px,.75fr) minmax(0,1.5fr);align-items:center;gap:10px}.dcc-cc-row-name{display:flex;align-items:center;gap:8px;color:#f5f3ee;font-size:12px;font-weight:760}.dcc-cc-row-ico{width:25px;color:${GOLD2};font-size:18px;text-align:center}.dcc-cc-options{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border:1px solid #343d46;border-radius:999px;background:#0b1014}.dcc-cc-option{min-height:35px;border:1px solid transparent;border-radius:999px;background:transparent;color:#a8afb8;font-size:10px}.dcc-cc-option.active{border-color:#e4b44a;background:radial-gradient(circle at 50% 50%,rgba(240,201,107,.26),rgba(44,34,15,.75));color:${GOLD2};font-weight:850;box-shadow:0 0 13px rgba(217,170,74,.13)}
-      .dcc-cc-comment-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.dcc-cc-comment-title{display:flex;align-items:center;gap:8px;color:#e9e9e5;font-size:10px;font-weight:820;letter-spacing:1.8px;text-transform:uppercase}.dcc-cc-comment-hint{color:#7f8994;font-size:9px}.dcc-cc-comment{width:100%;min-height:105px;resize:vertical;border:1px solid #303a43;border-radius:15px;background:#0b1014;color:#f5f3ef;padding:12px;outline:0;font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%}.dcc-cc-comment::placeholder{color:#6f7984}.dcc-cc-comment:focus{border-color:rgba(224,173,76,.75);box-shadow:0 0 0 2px rgba(217,170,74,.08)}
-      .dcc-cc-send{width:100%;min-height:53px;margin-top:4px;border:1px solid #f2ce69;border-radius:17px;background:linear-gradient(135deg,#f2cd67,#dca73c 62%,#edc25b);color:#12100b;font-size:15px;font-weight:900;box-shadow:0 10px 25px rgba(217,170,74,.16),inset 0 1px 0 rgba(255,255,255,.28)}.dcc-cc-send:disabled{opacity:.55}.dcc-cc-sent{margin-top:8px;color:#7f8994;font-size:9px;text-align:center}
+      .dcc-cc-head{margin:4px 1px 17px}
+      .dcc-cc-kicker{color:#a66f12;font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}
+      .dcc-cc-sub{margin:9px 0 0;color:#6f7782;font-size:13px;line-height:1.4}
+      .dcc-cc-card{
+        margin:0 0 10px;padding:14px;border:1px solid rgba(177,119,18,.28);border-radius:20px;
+        background:radial-gradient(circle at 96% 0,rgba(217,170,74,.10),transparent 32%),linear-gradient(145deg,#fffefa,#fbf5eb 72%);
+        box-shadow:0 10px 26px rgba(78,58,28,.07),inset 0 1px 0 rgba(255,255,255,.96)
+      }
+      .dcc-cc-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+      .dcc-cc-card-title{display:flex;align-items:center;gap:9px;color:#17191d;font-size:10px;font-weight:820;letter-spacing:2px;text-transform:uppercase}
+      .dcc-cc-card-icon{color:#b77b13;font-size:17px}.dcc-cc-hint{color:#7b818a;font-size:9px}
+      .dcc-cc-data-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+      .dcc-cc-data{min-width:0;padding:12px;border:1px solid rgba(177,119,18,.20);border-radius:16px;background:#fffdf8;text-align:center}
+      .dcc-cc-data-top{display:flex;align-items:center;gap:9px;text-align:left}
+      .dcc-cc-data-icon{width:38px;height:38px;min-width:38px;display:grid;place-items:center;border:1px solid rgba(177,119,18,.32);border-radius:12px;background:#fff5dc;color:#a66f12;font-size:18px}
+      .dcc-cc-data-label{color:#747b86;font-size:9px;text-transform:uppercase;letter-spacing:1.2px}
+      .dcc-cc-data-value{margin-top:3px;color:#17191d;font-size:22px;font-weight:820;letter-spacing:-.5px}
+      .dcc-cc-update{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:min(210px,100%);min-height:38px;margin:11px auto 0;padding:0 12px;border:1px solid rgba(177,119,18,.36);border-radius:999px;background:#fffaf1;color:#8d5b08;font-size:10px;font-weight:820;box-shadow:none}
+      .dcc-cc-week{display:grid;gap:8px}
+      .dcc-cc-row{display:grid;grid-template-columns:minmax(116px,.75fr) minmax(0,1.5fr);align-items:center;gap:10px}
+      .dcc-cc-row-name{display:flex;align-items:center;gap:8px;color:#17191d;font-size:12px;font-weight:760}
+      .dcc-cc-row-ico{width:25px;color:#b77b13;font-size:18px;text-align:center}
+      .dcc-cc-options{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border:1px solid rgba(177,119,18,.22);border-radius:999px;background:#f7f0e5}
+      .dcc-cc-option{min-height:35px;border:1px solid transparent;border-radius:999px;background:transparent;color:#6f7782;font-size:10px}
+      .dcc-cc-option.active{border-color:#d9a43a;background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%);color:#17140d;font-weight:850;box-shadow:0 4px 11px rgba(185,126,18,.12)}
+      .dcc-cc-comment-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+      .dcc-cc-comment-title{display:flex;align-items:center;gap:8px;color:#17191d;font-size:10px;font-weight:820;letter-spacing:1.8px;text-transform:uppercase}
+      .dcc-cc-comment-hint{color:#7b818a;font-size:9px}
+      .dcc-cc-comment{width:100%;min-height:105px;resize:vertical;border:1px solid rgba(177,119,18,.28);border-radius:15px;background:#fffefa;color:#17191d;-webkit-text-fill-color:#17191d;padding:12px;outline:0;font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%;box-shadow:none}
+      .dcc-cc-comment::placeholder{color:#858c96;-webkit-text-fill-color:#858c96}
+      .dcc-cc-comment:focus{border-color:#c08a2a;box-shadow:0 0 0 3px rgba(185,122,17,.08)}
+      .dcc-cc-send{width:100%;min-height:53px;margin-top:4px;border:1px solid #e5b64d;border-radius:17px;background:linear-gradient(135deg,#f5d581,#dca83e);color:#18140c;font-size:15px;font-weight:900;box-shadow:0 8px 20px rgba(185,125,20,.14),inset 0 1px 0 rgba(255,255,255,.52)}
+      .dcc-cc-send:disabled{opacity:.55}.dcc-cc-sent{margin-top:8px;color:#767d87;font-size:9px;text-align:center}
 
-      /* ================= MENSAJES CLIENTE ================= */
-      #client-main.dcc-client-messages-v1{background:radial-gradient(circle at 88% 0,rgba(224,173,76,.07),transparent 25%),#06090c!important;color:#f7f5f0!important;padding:13px 14px 178px!important;min-height:100dvh}
-      .dcc-cm{max-width:820px;margin:0 auto}.dcc-cm *{box-sizing:border-box}.dcc-cm-kicker{margin:4px 1px 8px;color:${GOLD2};font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}.dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 1px 13px;padding:8px 0 13px;border-bottom:1px solid #242d35}.dcc-cm-avatar{width:47px;height:47px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.67);border-radius:50%;background:#0a0e11;color:${GOLD2};font-size:15px;font-weight:850}.dcc-cm-person h1{margin:0;color:#f7f5f0;font-size:22px;letter-spacing:-.55px}.dcc-cm-role{display:flex;align-items:center;gap:6px;margin-top:5px;color:#8f98a3;font-size:9px}.dcc-cm-dot{width:6px;height:6px;border-radius:50%;background:#5bd879;box-shadow:0 0 9px rgba(91,216,121,.36)}
-      .dcc-cm-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 12px}.dcc-cm-day{display:flex;align-items:center;gap:8px;margin:5px 0;color:#747e89;font-size:8.5px}.dcc-cm-day:before,.dcc-cm-day:after{content:'';height:1px;flex:1;background:#242d35}.dcc-cm-row{display:flex;align-items:flex-end;gap:7px}.dcc-cm-row.mine{justify-content:flex-end}.dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.55);border-radius:50%;background:#090d10;color:${GOLD2};font-size:8px;font-weight:850}.dcc-cm-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid #2a333b;border-radius:15px;background:linear-gradient(145deg,#11171c,#0b1014);color:#f3f1ed;font-size:12px;line-height:1.42;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}.dcc-cm-row.mine .dcc-cm-bubble{border-color:#b6862e;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.12),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)}.dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#b99a57}.dcc-cm-check{color:${GOLD2}}.dcc-cm-empty{padding:28px 15px;border:1px solid rgba(224,173,76,.32);border-radius:17px;background:linear-gradient(145deg,#10151a,#080c0f);color:#8f98a3;text-align:center;font-size:10px}
-      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(224,173,76,.42);border-radius:18px;background:rgba(10,14,18,.97);box-shadow:0 -10px 30px rgba(0,0,0,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.dcc-cm-input{min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#6f7984}.dcc-cm-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none}.dcc-cm-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905;font-size:19px}.dcc-cm-send:disabled{opacity:.45}
+      /* ================= MENSAJES CLIENTE · LIGHT NATIVO ================= */
+      #client-main.dcc-client-messages-v1{
+        background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;
+        color:#17191d!important;padding:13px 14px 178px!important;min-height:100dvh
+      }
+      .dcc-cm{max-width:820px;margin:0 auto}.dcc-cm *{box-sizing:border-box}
+      .dcc-cm-kicker{margin:4px 1px 8px;color:#a66f12;font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}
+      .dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 1px 13px;padding:8px 0 13px;border-bottom:1px solid rgba(177,119,18,.18)}
+      .dcc-cm-avatar{width:47px;height:47px;display:grid;place-items:center;border:1px solid rgba(177,119,18,.40);border-radius:50%;background:#fff5dc;color:#9b660d;font-size:15px;font-weight:850}
+      .dcc-cm-person h1{margin:0;color:#17191d;font-size:22px;letter-spacing:-.55px}
+      .dcc-cm-role{display:flex;align-items:center;gap:6px;margin-top:5px;color:#6f7782;font-size:9px}
+      .dcc-cm-dot{width:6px;height:6px;border-radius:50%;background:#45a66d;box-shadow:0 0 0 3px rgba(69,166,109,.10)}
+      .dcc-cm-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 12px}
+      .dcc-cm-day{display:flex;align-items:center;gap:8px;margin:5px 0;color:#858c96;font-size:8.5px}
+      .dcc-cm-day:before,.dcc-cm-day:after{content:'';height:1px;flex:1;background:rgba(177,119,18,.14)}
+      .dcc-cm-row{display:flex;align-items:flex-end;gap:7px}.dcc-cm-row.mine{justify-content:flex-end}
+      .dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(177,119,18,.30);border-radius:50%;background:#fff7e4;color:#9b660d;font-size:8px;font-weight:850}
+      .dcc-cm-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid rgba(177,119,18,.18);border-radius:15px;background:#fffefa;color:#17191d;font-size:12px;line-height:1.42;box-shadow:0 5px 14px rgba(78,58,28,.045)}
+      .dcc-cm-row.mine .dcc-cm-bubble{border-color:rgba(177,119,18,.30);background:linear-gradient(145deg,#fff4d3,#f9e6ac);color:#17140d}
+      .dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#858c96;font-size:7.5px}
+      .dcc-cm-row.mine .dcc-cm-time{color:#8f6c2b}.dcc-cm-check{color:#a66f12}
+      .dcc-cm-empty{padding:28px 15px;border:1px solid rgba(177,119,18,.22);border-radius:17px;background:#fffdf8;color:#6f7782;text-align:center;font-size:10px}
+      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(177,119,18,.28);border-radius:18px;background:rgba(255,253,248,.97);box-shadow:0 -8px 24px rgba(78,58,28,.12);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+      .dcc-cm-input{min-height:44px;max-height:105px;resize:none;border:1px solid rgba(177,119,18,.24);border-radius:13px;background:#fffefa;color:#17191d;-webkit-text-fill-color:#17191d;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation;box-shadow:none}
+      .dcc-cm-input::placeholder{color:#858c96;-webkit-text-fill-color:#858c96}
+      .dcc-cm-input:focus{border-color:#c08a2a;box-shadow:0 0 0 3px rgba(185,122,17,.08)}
+      .dcc-cm-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #e5b64d;border-radius:50%;background:linear-gradient(135deg,#f5d581,#dca83e);color:#18140c;font-size:19px;box-shadow:0 5px 13px rgba(185,125,20,.13)}
+      .dcc-cm-send:disabled{opacity:.45}
 
-      /* El chat premium del entrenador también mantiene el compositor abajo y evita zoom en iPhone. */
+      /* Chat del entrenador: solo posición/teclado; no altera su tema visual. */
       html body #coach #coach-main.dcc-premium-chat .dcc-chat{padding-bottom:110px!important}
       html body #coach #coach-main.dcc-premium-chat .dcc-chat-composer{position:fixed!important;left:50%!important;right:auto!important;bottom:calc(80px + env(safe-area-inset-bottom))!important;z-index:95!important;width:min(790px,calc(100vw - 26px))!important;transform:translateX(-50%)!important}
       html body #coach #coach-main.dcc-premium-chat .dcc-chat-input{font-size:16px!important;-webkit-text-size-adjust:100%!important}
