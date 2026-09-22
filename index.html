@@ -5939,9 +5939,19 @@ async function openApp(app){
       console.error("No se pudo cargar la ficha del cliente:",error);
     }
 
+    const paintClientHome=()=>{
+      if(currentApp==="client" && currentScreen==="home" && client(currentClientId)){
+        try{showClient("home")}catch(error){console.error("Error pintando Inicio cliente:",error)}
+      }
+    };
+
     if(client(currentClientId)){
       showClient("home");
     }
+
+    // Reintentos cortos independientes de sincronizaciones secundarias.
+    // Evitan que un módulo/red lenta deje únicamente la cabecera sobre fondo vacío.
+    [120,450,1100].forEach(ms=>setTimeout(paintClientHome,ms));
 
     Promise.allSettled([
       loadDietsFromSupabase(),
@@ -5952,9 +5962,7 @@ async function openApp(app){
       loadMessagesFromSupabase(),
       loadCheckinsFromSupabase()
     ]).then(()=>{
-      if(currentApp==="client" && currentScreen==="home" && client(currentClientId)){
-        showClient("home");
-      }
+      paintClientHome();
     });
 
   }else{
@@ -16659,8 +16667,8 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260916-audit2"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260922-auth-shell-prod2"></script>
-<script src="./dcc-theme-system-v1.js?v=20260922-client-light1"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260922-client-repair1"></script>
+<script src="./dcc-theme-system-v1.js?v=20260922-client-light2"></script>
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 
 <script src="./client-checkin-schedule-v4.js?v=20260922-2"></script>
