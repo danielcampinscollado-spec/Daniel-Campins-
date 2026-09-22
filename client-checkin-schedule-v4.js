@@ -178,7 +178,7 @@
     const days=st?.today&&nextDueDate?dayDiff(st.today,nextDueDate):null;
     main.className='dcc-checkin-v4';
     main.innerHTML=`<div class="dcc-ci4">
-      <header class="dcc-ci4-head"><div class="dcc-ci4-kicker">CHECK-IN</div><h1>Tu seguimiento</h1><p class="dcc-ci4-sub">${locked?'Consulta tu próxima revisión y complétala cuando se active.':complete?'Tu revisión completa ya está disponible.':'Tu revisión de seguimiento ya está disponible.'}</p></header>
+      <header class="dcc-ci4-head"><div class="dcc-ci4-kicker">CHECK-IN</div><p class="dcc-ci4-sub">${locked?'Consulta tu próxima revisión y complétala cuando se active.':complete?'Tu revisión completa ya está disponible.':'Tu revisión de seguimiento ya está disponible.'}</p></header>
       ${success[id]?'<div class="dcc-ci4-success">✓ Check-in enviado correctamente. Ya puedes ver tu próxima fecha.</div>':''}
       ${statusCards(st)}
       <div class="dcc-ci4-info">${infoSvg}<span>${locked?(st?.next_checkin_date&&days!=null&&days>0?`Puedes consultar esta pantalla cuando quieras. El formulario se desbloqueará en ${days} día${days===1?'':'s'}.`:'Puedes consultar esta pantalla cuando quieras, pero solo podrás enviarla cuando llegue la fecha programada por tu entrenador.'):'Completa todos los apartados antes de enviar. Una vez enviado, quedará cerrado hasta la siguiente revisión.'}</span></div>
