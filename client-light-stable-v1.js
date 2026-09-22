@@ -165,54 +165,9 @@ html.dcc-theme-light-premium body #client #client-main [class*="bubble"]{
   box-shadow:none!important;
 }
 
-/* Barra inferior cliente: una única apariencia Light Premium */
-@media(max-width:700px){
-  html.dcc-theme-light-premium body #client > .side{
-    position:fixed!important;
-    left:10px!important;right:10px!important;
-    bottom:max(10px,env(safe-area-inset-bottom))!important;top:auto!important;
-    width:auto!important;height:68px!important;min-height:68px!important;
-    padding:0!important;margin:0!important;border:0!important;border-radius:22px!important;
-    background:transparent!important;background-image:none!important;
-    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-    overflow:visible!important;z-index:99999!important;
-  }
-  html.dcc-theme-light-premium body #client > .side > h2,
-  html.dcc-theme-light-premium body #client > .side > .out{display:none!important}
-  html.dcc-theme-light-premium body #client-nav{
-    display:grid!important;
-    grid-template-columns:repeat(6,minmax(0,1fr))!important;
-    width:100%!important;height:68px!important;
-    gap:0!important;padding:4px!important;margin:0!important;
-    border:1px solid rgba(166,126,59,.26)!important;
-    border-radius:22px!important;
-    background:#fffdf9!important;background-image:none!important;
-    box-shadow:0 10px 28px rgba(93,67,25,.12)!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button{
-    height:60px!important;margin:0!important;padding:4px 1px!important;
-    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;
-    border:0!important;border-radius:16px!important;background:transparent!important;background-image:none!important;
-    color:#707782!important;box-shadow:none!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button span{
-    color:currentColor!important;font-size:9px!important;line-height:1!important;font-weight:650!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button svg{
-    color:currentColor!important;stroke:currentColor!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button.active{
-    color:#17140d!important;
-    background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;
-    border:1px solid #d9a43a!important;
-    box-shadow:0 5px 14px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button.active *{
-    color:#17140d!important;stroke:currentColor!important;
-  }
-}
+/* CLIENTE NAV: estilos retirados. La única autoridad visual es index.html. */
 
-/* Modal compartido cuando está visible el perfil cliente */
+/* Modal compartido cuando está visible el perfil cliente *//* Modal compartido cuando está visible el perfil cliente */
 body.dcc-client-mode #modal{
   background:rgba(31,25,17,.38)!important;
   backdrop-filter:blur(9px)!important;
