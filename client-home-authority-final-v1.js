@@ -52,12 +52,12 @@ function css(){
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-kicker,
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-label{
-    color:#a66d0d!important;font-size:8.6px!important;line-height:1!important;font-weight:900!important;
-    letter-spacing:2.8px!important;text-transform:uppercase!important
+    color:#a66d0d!important;font-size:11px!important;line-height:1!important;font-weight:850!important;
+    letter-spacing:3.2px!important;text-transform:uppercase!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{
-    margin:8px 0 10px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
-    font-size:32px!important;line-height:.98!important;font-weight:500!important;letter-spacing:-1px!important
+    margin:8px 0 9px!important;color:#17191d!important;font-family:inherit!important;
+    font-size:30px!important;line-height:1.02!important;font-weight:850!important;letter-spacing:-1px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-line{
     width:42px!important;height:2px!important;border-radius:999px!important;background:#d3a03a!important
@@ -89,8 +89,8 @@ function css(){
     min-width:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin h3{
-    margin:4px 0 2px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
-    font-size:17px!important;line-height:1.03!important;font-weight:500!important
+    margin:4px 0 2px!important;color:#17191d!important;font-family:inherit!important;
+    font-size:15.5px!important;line-height:1.08!important;font-weight:800!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin p{
     margin:0!important;color:#687181!important;font-size:9.6px!important;line-height:1.3!important
@@ -124,8 +124,8 @@ function css(){
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task:last-child{border-bottom:0!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .main{
-    display:block!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
-    font-size:16px!important;line-height:1.05!important;font-weight:500!important
+    display:block!important;color:#17191d!important;font-family:inherit!important;
+    font-size:15px!important;line-height:1.08!important;font-weight:780!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-copy .sub{
     display:block!important;margin-top:3px!important;color:#667083!important;font-size:9.8px!important;line-height:1.2!important
@@ -143,8 +143,8 @@ function css(){
     align-items:center!important;min-height:80px!important;padding:10px 12px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
-    margin:5px 0 3px!important;color:#17191d!important;font-family:Georgia,"Times New Roman",serif!important;
-    font-size:17.5px!important;line-height:1.03!important;font-weight:500!important
+    margin:5px 0 3px!important;color:#17191d!important;font-family:inherit!important;
+    font-size:15.5px!important;line-height:1.08!important;font-weight:800!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress p{
     margin:0!important;color:#707989!important;font-size:9.2px!important;line-height:1.3!important
