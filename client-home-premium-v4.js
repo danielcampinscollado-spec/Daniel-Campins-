@@ -39,16 +39,17 @@
         content:'';position:absolute;left:2px;bottom:0;width:24px;height:1.5px;border-radius:99px;
         background:linear-gradient(90deg,#f2c65f,#d6a744);
       }
-      #client-main .dch-welcome::after{
-        content:'DISCIPLINA\\A HOY, RESULTADOS\\A SIEMPRE';white-space:pre;position:absolute;right:2px;top:7px;width:104px;
-        color:#858b95;font-size:6px;line-height:1.72;font-weight:500;letter-spacing:1.9px;text-align:left;opacity:.76;
+      #client-main .dch-welcome::after{display:none!important;content:none!important}
+      #client-main .dch-home-sub{
+        margin:7px 0 0!important;color:#777f8b!important;font-size:11px!important;line-height:1.3!important;font-weight:450!important;letter-spacing:.01px!important;
       }
+      html.dcc-theme-light-premium #client-main .dch-home-sub{color:#68717e!important}
       #client-main .dch-eyebrow{
         margin:0 0 7px!important;color:var(--dcc-gold)!important;font-size:10.5px!important;line-height:1.1!important;
         font-weight:650!important;letter-spacing:3px!important;text-transform:uppercase!important;
       }
       #client-main .dch-name,#client-main .dch-welcome .dch-name{
-        margin:0!important;max-width:68%!important;color:var(--dcc-text)!important;font-size:22px!important;line-height:1.12!important;
+        margin:0!important;max-width:100%!important;color:var(--dcc-text)!important;font-size:22px!important;line-height:1.12!important;
         font-weight:400!important;letter-spacing:-.15px!important;text-shadow:none!important;
       }
 
