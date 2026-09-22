@@ -1,7 +1,7 @@
 /* DCC — Inicio cliente premium v2 + tarjeta entrenamiento compartida */
 (function(){
 'use strict';
-const BUILD='20260922-client-home-authority-week-carousel4-router';
+const BUILD='20260922-client-home-authority-week-carousel5';
 if(window.__dccClientHomePremium===BUILD)return;
 window.__dccClientHomePremium=BUILD;
 
@@ -150,24 +150,24 @@ function css(){
     margin:0!important;color:#707989!important;font-size:9.2px!important;line-height:1.3!important
   }
 
-  /* WEEK: five visible cards, 6-7 available by carousel */
+  /* WEEK: máximo cinco visibles; días 6-7 entran en la ventana dinámica */
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week{
-    padding:11px 10px 12px!important
+    padding:9px 9px 10px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-head{
     display:flex!important;align-items:center!important;justify-content:space-between!important;
-    gap:10px!important;margin-bottom:9px!important
+    gap:10px!important;margin-bottom:7px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-week-link{
     color:#a66d0d!important;font-size:7px!important;font-weight:850!important;letter-spacing:1.45px!important;
     text-transform:uppercase!important;white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-week-carousel{
-    display:grid!important;grid-template-columns:18px minmax(0,1fr) 18px!important;
-    align-items:center!important;gap:5px!important;width:100%!important
+    display:grid!important;grid-template-columns:16px minmax(0,1fr) 16px!important;
+    align-items:center!important;gap:4px!important;width:100%!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-week-arrow{
-    width:18px!important;height:38px!important;display:grid!important;place-items:center!important;
+    width:16px!important;height:34px!important;display:grid!important;place-items:center!important;
     padding:0!important;border:0!important;background:transparent!important;color:#aa7411!important;
     font-family:Georgia,"Times New Roman",serif!important;font-size:24px!important;line-height:1!important;
     cursor:pointer!important;opacity:1!important
@@ -177,23 +177,23 @@ function css(){
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-days{
     display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
-    gap:6px!important;width:100%!important;min-width:0!important
+    gap:5px!important;width:100%!important;min-width:0!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day{
-    min-width:0!important;min-height:82px!important;padding:9px 4px 8px!important;
-    border:1px solid rgba(177,127,38,.17)!important;border-radius:13px!important;
-    background:#fbf8f2!important;text-align:center!important;overflow:hidden!important
+    min-width:0!important;min-height:74px!important;padding:8px 5px 7px!important;
+    border:1px solid rgba(177,127,38,.17)!important;border-radius:12px!important;
+    background:#fbf8f2!important;text-align:left!important;overflow:hidden!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day b{
-    display:block!important;color:#17191d!important;font-size:10.5px!important;line-height:1!important;font-weight:850!important
+    display:block!important;color:#17191d!important;font-size:10.2px!important;line-height:1!important;font-weight:850!important;text-align:left!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day .muscle{
-    display:block!important;min-height:24px!important;margin-top:6px!important;color:#737b86!important;
-    font-size:7.1px!important;line-height:1.12!important;overflow:hidden!important
+    display:block!important;min-height:22px!important;margin-top:5px!important;color:#737b86!important;
+    font-size:7px!important;line-height:1.12!important;overflow:hidden!important;text-align:left!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day em{
     display:inline-flex!important;align-items:center!important;justify-content:center!important;
-    min-width:23px!important;height:21px!important;margin:6px auto 0!important;padding:0 6px!important;
+    min-width:23px!important;height:20px!important;margin:5px 0 0!important;padding:0 6px!important;
     border-radius:999px!important;background:#f1ece2!important;color:#91794d!important;
     font-size:8px!important;line-height:1!important;font-style:normal!important;font-weight:850!important
   }
@@ -429,7 +429,10 @@ function renderHome(){
 
   const totalPlanDays=allDays.length;
   const maxStart=Math.max(0,totalPlanDays-5);
-  const autoStart=totalPlanDays>5 && next.index>=5 ? maxStart : 0;
+  // Con 6-7 días, la primera vista enseña 1-5. Al llegar al Día 5,
+  // la ventana se desplaza para mantener visibles los últimos entrenamientos:
+  // en una rutina de 7 días pasa a 3-7, ocultando Día 1-2 a la izquierda.
+  const autoStart=totalPlanDays>5 && next.index>=4 ? maxStart : 0;
 
   if(!Number.isInteger(window.__dccWeekPlanStart)){
     window.__dccWeekPlanStart=autoStart;
