@@ -20,6 +20,8 @@ function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 async function refreshPlans(id){
   try{
+    if(!id)return;
+    if(!window.supabaseClient&&typeof window.ensureSupabaseClient==='function')await window.ensureSupabaseClient();
     if(!window.supabaseClient)return;
     const {data:rows,error}=await window.supabaseClient.from('client_diets').select('client_id,diet_type,calories,protein,meals,updated_at').eq('client_id',String(id));
     if(error)throw error;
