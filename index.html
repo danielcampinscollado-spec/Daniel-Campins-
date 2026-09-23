@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daniel Campins</title>
 <script id="dcc-theme-prepaint-v1">
-(function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
+(function(){try{document.documentElement.classList.add('dcc-theme-light-premium');localStorage.setItem('dcc:theme:v1','light-premium')}catch(e){document.documentElement.classList.add('dcc-theme-light-premium')}})();
 </script>
 <style id="dcc-nav-prepaint-v1">
+html,body{background:#f5efe4!important;color:#17191d!important}
 html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
-#client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
-#client-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}
-#client-nav button svg{color:#e8b94f!important;stroke:currentColor!important}
-#client-nav button span{color:#e5c778!important}
-#client-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}
-#client-nav button.active *{color:#1d1608!important}
+@media(max-width:900px){body #coach#coach>.side{background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;border-color:#d9a43a!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important}body #coach#coach #coach-nav#coach-nav{background:transparent!important;background-image:none!important}}
+#client-nav{background:#fffdf9!important;border:1.5px solid rgba(190,132,28,.82)!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important}
+#client-nav button{color:#707782!important;background:transparent!important;border-color:transparent!important}
+#client-nav button svg,#client-nav button span{color:currentColor!important;stroke:currentColor!important}
+#client-nav button.active{color:#b57d16!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
 </style>
 
 <style>
