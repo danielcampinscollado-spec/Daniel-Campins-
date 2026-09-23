@@ -1,78 +1,28 @@
-/* DCC — integración visual músculos entrenamiento activo, estable */
-(function(){'use strict';if(window.__dccWorkoutMuscleVisualFixV20)return;window.__dccWorkoutMuscleVisualFixV20=true;
+/* DCC — integración visual músculos entrenamiento activo + portada, estable */
+(function(){'use strict';if(window.__dccWorkoutMuscleVisualFixV8)return;window.__dccWorkoutMuscleVisualFixV8=true;
 const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 function primary(name){const n=norm(name);if(/press banca|press inclinado|press declinado|apertura|cruce|pec deck|pullover|flexion/.test(n))return'Pectoral';if(/elevacion lateral|elevaciones laterales|elevacion frontal|press militar|press hombro|pajaro|face pull/.test(n))return'Hombro';if(/triceps|extension de triceps|extension triceps|patada/.test(n))return'Tríceps';if(/curl|biceps/.test(n))return'Bíceps';if(/remo|jalon|dominada|dorsal/.test(n))return'Espalda';if(/sentadilla|prensa|cuadriceps/.test(n))return'Cuádriceps';if(/femoral|isquio|peso muerto rumano/.test(n))return'Femoral';if(/hip thrust|gluteo|abduccion/.test(n))return'Glúteo';if(/gemelo|pantorrilla/.test(n))return'Gemelo';if(/abdominal|core|plancha|crunch/.test(n))return'Core';return''}
-function pretty(m){const n=norm(m);if(/pecho|pectoral/.test(n))return'Pectoral';if(/hombro|deltoid/.test(n))return'Hombros';if(/tricep/.test(n))return'Tríceps';if(/bicep/.test(n))return'Bíceps';if(/espalda|dorsal/.test(n))return'Dorsal';if(/trapec/.test(n))return'Trapecio';if(/antebrazo/.test(n))return'Antebrazos';if(/cuadr/.test(n))return'Cuádriceps';if(/femoral|isquio/.test(n))return'Femoral';if(/glute/.test(n))return'Glúteos';if(/gemelo|pantorrilla/.test(n))return'Gemelos';if(/core|abdomen/.test(n))return'Core';if(/lumbar/.test(n))return'Lumbar';return String(m||'').trim()}
-const FEMALE_ATLAS='./assets/muscles/anatomy-female-premium-v1.webp?v=20260921-female-premium1';
-const FEMALE_TRAP='./assets/muscles/client-trapecio-female-premium-v1.webp?v=20260921-female-premium2';
-const FEMALE_FOREARMS='./assets/muscles/client-antebrazos-female-premium-v1.webp?v=20260921-female-premium2';
-const FEMALE_FULL_LEG='./assets/muscles/client-pierna-completa-female-premium-v1.webp?v=20260921-female-premium1';
-const FEMALE_FALLBACK='./assets/muscles/anatomy-female-final.svg?v=20260918-final2';
-const FEMALE_POS={
-  pectoral:[0,5],pecho:[0,5],
-  dorsal:[50,5],espalda:[50,5],
-  hombro:[100,5],hombros:[100,5],deltoide:[100,5],
-  biceps:[50,35],triceps:[100,35],
-  core:[50,65],abdomen:[50,65],
-  cuadriceps:[100,65],
-  femoral:[0,95],isquio:[0,95],isquiotibiales:[0,95],
-  gluteo:[50,95],gluteos:[50,95],
-  gemelo:[100,95],gemelos:[100,95],pantorrilla:[100,95]
-};
-const FEMALE_FALLBACK_POS={lumbar:[0,35]};
-const ACTIVE_APPROVED_ASSETS={
-  pectoral:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
-  pecho:'./assets/muscles/client-pectoral-premium-v5.webp?v=20260921-user-muscles-v5',
-  triceps:'./assets/muscles/client-triceps-premium-v5.webp?v=20260921-user-muscles-v5',
-  dorsal:'./assets/muscles/client-dorsal-premium-v5.webp?v=20260921-user-muscles-v5',
-  espalda:'./assets/muscles/client-dorsal-premium-v5.webp?v=20260921-user-muscles-v5',
-  hombro:'./assets/muscles/client-hombros-premium-v5.webp?v=20260921-user-muscles-v5',
-  hombros:'./assets/muscles/client-hombros-premium-v5.webp?v=20260921-user-muscles-v5',
-  deltoide:'./assets/muscles/client-hombros-premium-v5.webp?v=20260921-user-muscles-v5',
-  trapecio:'./assets/muscles/client-trapecio-premium.svg?v=20260921-user-muscles-v5',
-  lumbar:'./assets/muscles/client-trapecio-premium.svg?v=20260921-user-muscles-v5',
-  biceps:'./assets/muscles/client-biceps-premium-v5.webp?v=20260921-user-muscles-v5',
-  antebrazo:'./assets/muscles/client-antebrazos-premium.svg?v=20260921-user-muscles-v5',
-  antebrazos:'./assets/muscles/client-antebrazos-premium.svg?v=20260921-user-muscles-v5',
-  'pierna completa':'./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',
-  pierna:'./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',
-  piernas:'./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',
-  'tren inferior':'./assets/muscles/client-pierna-completa-premium-v5.webp?v=20260921-user-muscles-v5',
-  core:'./assets/muscles/client-core-premium-v5.webp?v=20260921-user-muscles-v5',
-  abdomen:'./assets/muscles/client-core-premium-v5.webp?v=20260921-user-muscles-v5',
-  cuadriceps:'./assets/muscles/client-cuadriceps-premium-v5.webp?v=20260921-user-muscles-v5',
-  femoral:'./assets/muscles/client-femoral-premium-v5.webp?v=20260921-user-muscles-v5',
-  isquio:'./assets/muscles/client-femoral-premium-v5.webp?v=20260921-user-muscles-v5',
-  isquiotibiales:'./assets/muscles/client-femoral-premium-v5.webp?v=20260921-user-muscles-v5',
-  gluteo:'./assets/muscles/client-gluteos-premium-v5.webp?v=20260921-user-muscles-v5',
-  gluteos:'./assets/muscles/client-gluteos-premium-v5.webp?v=20260921-user-muscles-v5',
-  gemelo:'./assets/muscles/client-gemelos-premium-v5.webp?v=20260921-user-muscles-v5',
-  gemelos:'./assets/muscles/client-gemelos-premium-v5.webp?v=20260921-user-muscles-v5',
-  pantorrilla:'./assets/muscles/client-gemelos-premium-v5.webp?v=20260921-user-muscles-v5'
-};
-function visualFor(m,anatomy){
-  const n=norm(m);
-  if(!n)return null;
-  if(anatomy==='female'){
-    if(n.includes('trapec'))return {kind:'image',src:FEMALE_TRAP};
-    if(n.includes('antebrazo'))return {kind:'image',src:FEMALE_FOREARMS};
-    if(/pierna completa|tren inferior|^pierna$|^piernas$/.test(n))return {kind:'image',src:FEMALE_FULL_LEG};
-    for(const [key,pos] of Object.entries(FEMALE_POS))if(n.includes(key))return {kind:'sprite',src:FEMALE_ATLAS,pos};
-    for(const [key,pos] of Object.entries(FEMALE_FALLBACK_POS))if(n.includes(key))return {kind:'fallback',src:FEMALE_FALLBACK,pos};
-  }
-  for(const [key,src] of Object.entries(ACTIVE_APPROVED_ASSETS)){
-    if(n.includes(key))return {kind:'image',src,artwork:true};
-  }
-  return null;
-}
-
-function libraryMuscle(ex){const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];const id=String(ex?.libraryId??ex?.id??ex?.exerciseId??ex?.exercise_id??'');if(id){const hit=list.find(x=>String(x?.id??'')===id);if(hit?.muscle)return hit.muscle;}const name=norm(ex?.name??ex?.exercise??ex?.title??'');if(name){const hit=list.find(x=>norm(x?.name)===name);if(hit?.muscle)return hit.muscle;}return''}
-function exerciseMuscle(ex){return pretty(libraryMuscle(ex)||ex?.muscle||primary(ex?.name||ex?.exercise||ex?.title||''))}
+function pretty(m){const n=norm(m);if(/pecho|pectoral/.test(n))return'Pectoral';if(/hombro|deltoid/.test(n))return'Hombro';if(/tricep/.test(n))return'Tríceps';if(/bicep/.test(n))return'Bíceps';if(/espalda|dorsal/.test(n))return'Espalda';if(/cuadr/.test(n))return'Cuádriceps';if(/femoral|isquio/.test(n))return'Femoral';if(/glute/.test(n))return'Glúteo';if(/gemelo|pantorrilla/.test(n))return'Gemelo';if(/core|abdomen/.test(n))return'Core';return String(m||'').trim()}
+function imgFor(m){const n=norm(m);if(n==='pectoral')return'./assets/muscles/pecho.png';if(n==='hombro')return'./assets/muscles/hombros.png';if(n==='triceps')return'./assets/muscles/triceps.png';if(n==='biceps')return'./assets/muscles/biceps.png';if(n==='espalda')return'./assets/muscles/espalda.png';if(n==='cuadriceps')return'./assets/muscles/cuadriceps.png';if(n==='femoral')return'./assets/muscles/isquios.png';if(n==='gluteo')return'./assets/muscles/gluteos.png';if(n==='gemelo')return'./assets/muscles/gemelos.png';if(n==='core')return'./assets/muscles/core.png';return''}
 const style=document.createElement('style');style.id='dcc-workout-muscle-visual-fix-v8';style.textContent=`
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 100px!important;gap:8px 10px!important;padding:11px 12px!important;background:linear-gradient(145deg,#fffdf8,#f7efe2)!important;border:1px solid rgba(181,126,29,.35)!important;border-radius:22px!important;box-shadow:0 12px 28px rgba(93,67,24,.08)!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media{width:96px!important;height:64px!important;align-self:center!important;justify-self:center!important;border:1px solid rgba(181,126,29,.22)!important;border-radius:14px!important;overflow:hidden!important;padding:0!important;background:#fff7e8!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)!important;display:grid!important;place-items:center!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media img{display:block!important;width:100%!important;height:100%!important;object-position:center center!important;background:#fff7e8!important;border:0!important;border-radius:13px!important;filter:none!important;transform:none!important;image-rendering:auto!important}
-html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media img.dcc-muscle-artwork{object-fit:contain!important;object-position:center center!important}
+html.dcc-theme-light-premium #client-main .dct3-muscles,html[data-dcc-theme="dark"] #client-main .dct3-muscles{grid-template-columns:minmax(0,1fr) 154px!important}
+html.dcc-theme-light-premium #client-main .dct3-visuals,html[data-dcc-theme="dark"] #client-main .dct3-visuals{display:flex!important;gap:5px!important;align-items:center!important;justify-content:flex-end!important}
+html.dcc-theme-light-premium #client-main .dct3-muscle,html[data-dcc-theme="dark"] #client-main .dct3-muscle{width:48px!important;max-width:48px!important;height:64px!important;flex:0 0 48px!important;border:0!important;border-radius:12px!important;overflow:hidden!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+html.dcc-theme-light-premium #client-main .dct3-muscle img,html[data-dcc-theme="dark"] #client-main .dct3-muscle img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center 24%!important;border-radius:12px!important;border:1px solid rgba(181,126,29,.28)!important;background:#0d1115!important}
+#client-main .dcc-training-stable-v3 .dct3-ex-img{display:none!important}
+#client-main .dcc-training-stable-v3 .dct3-exercise{grid-template-columns:1fr!important}
+html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"],html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 142px!important;gap:8px!important}
+html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-title,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-title{font-size:17px!important;line-height:1.16!important}
+html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals{gap:4px!important;width:142px!important}
+html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle{width:44px!important;max-width:44px!important;height:59px!important;flex:0 0 44px!important}
+html[data-dcc-theme="dark"] #client-main .dct3-routine{min-height:138px!important;padding:14px!important;border-radius:22px!important;overflow:hidden!important;background-image:linear-gradient(90deg,#171b21 0%,#11151a 31%,rgba(17,21,26,.97) 43%,rgba(17,21,26,.80) 52%,rgba(17,21,26,.38) 62%,rgba(8,10,13,.05) 74%),url('./assets/next-workout-plate.jpg')!important;background-size:100% 100%,auto 150%!important;background-position:center,right center!important;background-repeat:no-repeat,no-repeat!important;border-color:rgba(217,170,74,.68)!important}
+html[data-dcc-theme="dark"] #client-main .dct3-routine h3{max-width:54%!important;font-size:20px!important;line-height:1.12!important;font-weight:650!important;color:#f7f5f0!important}
+html[data-dcc-theme="dark"] #client-main .dct3-routine .dct3-meta{max-width:54%!important;color:#959eaa!important}
+html[data-dcc-theme="dark"] #client-main .dct3-start{background:linear-gradient(135deg,#f4cf70,#dca63a)!important;color:#15110a!important;border-color:#f1c967!important}
+html[data-dcc-theme="dark"] #client-main .dct3-view{background:rgba(13,17,22,.92)!important;color:#e7bd5b!important;border-color:rgba(217,170,74,.42)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 112px!important;gap:8px 10px!important;padding:11px 12px!important;background:linear-gradient(145deg,#fffdf8,#f7efe2)!important;border:1px solid rgba(181,126,29,.35)!important;border-radius:22px!important;box-shadow:0 12px 28px rgba(93,67,24,.08)!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media{width:108px!important;height:100px!important;align-self:center!important;justify-self:center!important;border:0!important;border-radius:15px!important;overflow:hidden!important;padding:0!important;background:transparent!important;box-shadow:none!important;display:grid!important;place-items:center!important}
+html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-media img{width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;object-position:center 22%!important;border:1px solid rgba(181,126,29,.24)!important;border-radius:15px!important;background:#0d1115!important;padding:0!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-title{color:#17191d!important;text-shadow:none!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker span{color:#a56f12!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-kicker small{color:#6f6a60!important}
@@ -86,55 +36,11 @@ html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed-icon{background:#f5e8c9!important}
 html.dcc-theme-light-premium body.dcc-workout-mode #client-main .dwa3-top .dwa3-elapsed strong{color:#17191d!important}
 body.dcc-workout-mode #client-main .dwa3-history.first{min-height:60px!important;padding:8px 12px!important;grid-template-columns:32px minmax(0,1fr)!important;gap:9px!important}
+@media(max-width:390px){html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"],html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"]{grid-template-columns:minmax(0,1fr) 128px!important}html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-visuals{width:128px!important;gap:3px!important}html.dcc-theme-light-premium #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle,html[data-dcc-theme="dark"] #client-main .dct3-muscles[data-muscles="3"] .dct3-muscle{width:40px!important;max-width:40px!important;height:54px!important;flex-basis:40px!important}}
 `;document.head.appendChild(style);
 function getData(){try{return data||{}}catch(_){return window.data||{}}}function getClient(){try{return currentClientId||null}catch(_){return window.currentClientId||null}}
-function fix(){
-  const root=document.querySelector('#client-main');
-  if(!root)return;
-  const workout=window.activeWorkout;
-  const ex=workout?.exercises?.[Number(workout?.currentExercise)||0];
-  if(!ex)return;
-
-  const m=exerciseMuscle(ex);
-  if(!m)return;
-
-  root.querySelectorAll('.dwa3-badge.gold').forEach(el=>{
-    if(el.textContent!==m)el.textContent=m;
-  });
-
-  const box=root.querySelector('.dwa3-media');
-  const media=box?.querySelector('img');
-  if(!box||!media)return;
-
-  media.classList.remove('dcc-muscle-reference','dcc-muscle-artwork');
-
-  const anatomy=String(workout?.anatomy||'male').toLowerCase()==='female'?'female':'male';
-  const visual=visualFor(m,anatomy);
-  if(!visual){
-    media.style.visibility='hidden';
-    box.style.backgroundImage='';
-    return;
-  }
-
-  if(visual.kind==='sprite'||visual.kind==='fallback'){
-    media.style.display='none';
-    media.style.visibility='hidden';
-    box.style.backgroundImage=`url("${visual.src}")`;
-    box.style.backgroundRepeat='no-repeat';
-    box.style.backgroundSize=visual.kind==='fallback'?'300% 400%':'300% auto';
-    box.style.backgroundPosition=`${visual.pos[0]}% ${visual.pos[1]}%`;
-    box.style.backgroundColor='#fff7e8';
-    return;
-  }
-
-  box.style.backgroundImage='';
-  box.style.backgroundSize='';
-  box.style.backgroundPosition='';
-  media.style.display='block';
-  if(media.getAttribute('src')!==visual.src)media.src=visual.src;
-  media.style.visibility='visible';
-  media.alt=m;
-  media.classList.add('dcc-muscle-artwork');
-}
+function overviewMuscles(){const id=getClient(),d=getData();const rr=d?.routines?.[id],routine=Array.isArray(rr)?rr:Array.isArray(rr?.routine)?rr.routine:[];const day=routine[Number(window.trainingDayTab)||0];if(!day)return[];const out=[];const add=v=>{const p=pretty(v);if(p&&imgFor(p)&&!out.includes(p))out.push(p)};if(Array.isArray(day.muscleGroups))day.muscleGroups.forEach(add);String(day.muscle||'').split(/[·+,&/]/).forEach(add);(Array.isArray(day.exercises)?day.exercises:[]).forEach(ex=>add(ex?.muscle||ex?.group||ex?.grupo||primary(ex?.name||ex?.nombre||'')));return out.slice(0,4)}
+function fixOverview(root){const section=root.querySelector('.dcc-training-stable-v3 .dct3-muscles');if(!section)return;const ms=overviewMuscles();if(!ms.length)return;const label=ms.join(' · ');if(section.dataset.muscles!==String(ms.length))section.dataset.muscles=String(ms.length);const title=section.querySelector('.dct3-title');if(title&&title.textContent!==label)title.textContent=label;const routineTitle=root.querySelector('.dcc-training-stable-v3 .dct3-routine h3');if(routineTitle&&routineTitle.textContent!==label)routineTitle.textContent=label;const visuals=section.querySelector('.dct3-visuals');if(visuals){const key=ms.join('|');if(visuals.dataset.dccMuscles!==key){visuals.dataset.dccMuscles=key;visuals.innerHTML=ms.map(m=>`<div class="dct3-muscle"><img src="${imgFor(m)}" alt="${m}"></div>`).join('')}}}
+function fix(){const root=document.querySelector('#client-main');if(!root)return;fixOverview(root);const workout=window.activeWorkout;const ex=workout?.exercises?.[Number(workout?.currentExercise)||0];if(ex){const m=primary(ex.name||ex.exercise||ex.title||'')||pretty(ex.muscle||'');root.querySelectorAll('.dwa3-badge.gold').forEach(el=>{const v=m||'Pectoral';if(el.textContent!==v)el.textContent=v});const media=root.querySelector('.dwa3-media img');const src=imgFor(m);if(media&&src&&media.getAttribute('src')!==src){media.src=src;media.alt=m}}}
 let queued=false;function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;fix()})}
 const main=document.getElementById('client-main');if(main)new MutationObserver(queue).observe(main,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(queue,0),true);window.addEventListener('dcc:themechange',queue);queue();})();
