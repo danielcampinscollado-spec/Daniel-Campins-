@@ -4,25 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daniel Campins</title>
-<script id="dcc-theme-prepaint-v1">
-(function(){try{document.documentElement.classList.add('dcc-theme-light-premium');localStorage.setItem('dcc:theme:v1','light-premium')}catch(e){document.documentElement.classList.add('dcc-theme-light-premium')}})();
-</script>
-<style id="dcc-nav-prepaint-v1">
-html,body{background:#f5efe4!important;color:#17191d!important}
-html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
-@media(max-width:900px){body #coach#coach>.side{background:#fffdf9!important;background-color:#fffdf9!important;background-image:none!important;border-color:#d9a43a!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important}body #coach#coach #coach-nav#coach-nav{background:transparent!important;background-image:none!important}}
-#client-nav{background:#fffdf9!important;border:1.5px solid rgba(190,132,28,.82)!important;box-shadow:0 10px 28px rgba(93,67,25,.12)!important}
-#client-nav button{color:#707782!important;background:transparent!important;border-color:transparent!important}
-#client-nav button svg,#client-nav button span{color:currentColor!important;stroke:currentColor!important}
-#client-nav button.active{color:#b57d16!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
 
-/* Light Premium is the only visual authority during boot and authenticated shells. */
-:root{--bg:#f6efe3!important;--bg2:#fffaf1!important;--panel:#fffdf9!important;--panel2:#fbf3e6!important;--text:#17191d!important;--muted:#737b86!important;--line:rgba(183,123,19,.20)!important}
-html,body,.app,#coach,#client{background:#f6efe3!important;background-color:#f6efe3!important;color:#17191d!important}
-.login{background:linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%)!important;color:#17191d!important}
-.login:before{display:none!important}
-.login-box{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
-</style>
 
 <style>
 *{
@@ -30,13 +12,13 @@ html,body,.app,#coach,#client{background:#f6efe3!important;background-color:#f6e
 }
 
 :root{
-  --bg:#080a0e;
-  --bg2:#0d1117;
-  --panel:#11151c;
-  --panel2:#151a22;
-  --text:#f5f5f2;
-  --muted:#9299a5;
-  --line:rgba(255,255,255,.09);
+  --bg:#f6efe3;
+  --bg2:#fffaf1;
+  --panel:#fffdf9;
+  --panel2:#fbf3e6;
+  --text:#17191d;
+  --muted:#737b86;
+  --line:rgba(183,123,19,.20);
   --gold:#d9aa4a;
   --gold-light:#f0c96b;
   --blue:#4d8dff;
@@ -85,18 +67,16 @@ button{
   position:relative;
   overflow:hidden;
   background:
-    radial-gradient(circle at 78% 8%,rgba(57,72,95,.48),transparent 35%),
-    radial-gradient(circle at 12% 92%,rgba(217,170,74,.09),transparent 30%),
-    linear-gradient(145deg,#18202b 0%,#090c11 52%,#040507 100%);
+    radial-gradient(circle at 88% 4%,rgba(201,145,38,.14),transparent 24%),
+    radial-gradient(circle at 6% 94%,rgba(201,145,38,.08),transparent 24%),
+    linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%);
 }
 
 .login:before{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    radial-gradient(circle at 50% 45%,transparent 0,rgba(0,0,0,.35) 75%),
-    linear-gradient(120deg,rgba(255,255,255,.025),transparent 35%);
+  background:transparent;
   pointer-events:none;
 }
 
@@ -105,11 +85,8 @@ button{
   position:relative;
   z-index:2;
   padding:46px 30px 30px;
-  background:
-    linear-gradient(145deg,
-      rgba(25,29,37,.96),
-      rgba(9,11,15,.94));
-  border:1px solid rgba(255,255,255,.11);
+  background:transparent;
+  border:1px solid transparent;
   border-radius:32px;
   box-shadow:
     0 35px 100px rgba(0,0,0,.58),
@@ -265,11 +242,9 @@ button{
   bottom:0;
   width:250px;
   padding:28px 14px;
-  background:
-    radial-gradient(circle at 85% 0%,rgba(217,170,74,.09),transparent 30%),
-    linear-gradient(180deg,#11151b 0%,#080a0d 100%);
-  color:#fff;
-  border-right:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(180deg,#fffaf1 0%,#f1e7d7 100%);
+  color:#17191d;
+  border-right:1px solid rgba(186,126,20,.24);
   z-index:20;
 }
 
@@ -420,11 +395,9 @@ h3{
 
 .card{
   position:relative;
-  background:
-    radial-gradient(circle at 100% 0%,rgba(217,170,74,.08),transparent 35%),
-    linear-gradient(145deg,#181b23,#101218);
-  color:#f5f5f2;
-  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(145deg,#fffefa 0%,#fbf6ec 100%);
+  color:#17191d;
+  border:1px solid rgba(198,139,32,.34);
   border-radius:26px;
   padding:24px;
   margin-bottom:18px;
@@ -16543,8 +16516,8 @@ async function sendClientCheckin(){
     }
 }
 </script>
-<script src="./client-admin-premium.js?v=20260923-coach-flow-recovery2"></script>
-<script src="./nutrition-plan-premium-v2.js?v=20260923-coach-flow-recovery2"></script>
+<script src="./client-admin-premium.js?v=20260923-coach-canonical1"></script>
+<script src="./nutrition-plan-premium-v2.js?v=20260923-server-first-canonical1"></script>
 <!-- retired legacy nutrition-plan-premium-v1: v2 is canonical -->
 
 <style id="dcc-diet-pdf-compact">
@@ -16626,7 +16599,7 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260922-client-entry-fix1"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260923-functional-recovery5"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260923-clean-authority6"></script>
 <!-- retired legacy global theme authority: Light Premium is canonical -->
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 <script src="./client-light-stable-v1.js?v=20260922-light-surfaces2"></script>
