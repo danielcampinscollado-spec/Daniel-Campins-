@@ -44,11 +44,11 @@
     return m?[m]:[];
   }
   function dayMuscles(day){
-    const raw=(Array.isArray(day?.muscleGroups)&&day.muscleGroups.length)?day.muscleGroups:(day?.muscles??day?.muscle??day?.group??'');
+    const raw=day?.muscles??day?.muscle??day?.group??'';
     const input=Array.isArray(raw)?raw:String(raw).split(/[·,]/);
     return [...new Set(input.flatMap(expandMuscle).filter(x=>x&&!/^sin grupos/i.test(x)))];
   }
-  function writeMuscles(day,ms){const clean=[...new Set(ms.flatMap(expandMuscle).filter(Boolean))];day.muscleGroups=clean;day.muscles=clean;day.muscle=clean.length?clean.join(' · '):'Sin grupos musculares'}
+  function writeMuscles(day,ms){const clean=[...new Set(ms.flatMap(expandMuscle).filter(Boolean))];day.muscles=clean;day.muscle=clean.length?clean.join(' · '):'Sin grupos musculares'}
   function persist(){try{if(typeof window.saveData==='function')window.saveData()}catch(e){console.error(e)}}
 
   function ensureCss(){
