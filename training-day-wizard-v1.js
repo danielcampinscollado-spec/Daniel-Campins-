@@ -36,7 +36,8 @@
 
   function apply(){
     css();if(!window.__dccTrainingEdit){document.querySelector('[data-dcc-tdw="1"]')?.remove();state.lastSig='';return}
-    const ds=days(),wrap=document.querySelector('#coach-main .dcc-tr-days');if(!wrap||!ds.length)return;
+    let ds=days(),wrap=document.querySelector('#coach-main .dcc-tr-days');if(!wrap)return;
+    if(!ds.length){setDays([blankDay(0)]);ds=days();window.__dccTrainingOpen=0;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}return}
     state.active=Math.max(0,Math.min(state.active,ds.length-1));
     const sig=signature(ds);let top=document.querySelector('[data-dcc-tdw="1"]');
     if(!top){wrap.insertAdjacentHTML('beforebegin',html(ds));top=document.querySelector('[data-dcc-tdw="1"]');state.lastSig=sig}
