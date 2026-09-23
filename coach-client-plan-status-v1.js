@@ -1,7 +1,7 @@
 /* DCC bootstrap — núcleo consolidado y carga por función. */
 (function(){
 'use strict';
-const BUILD='20260923-support-bootstrap-v38-clean-coach';
+const BUILD='20260923-support-bootstrap-v39-client-freeze';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
@@ -19,7 +19,7 @@ function renderCalendarIfActive(){if(window.currentApp==='coach'&&window.current
 function loadGroup(name){if(!groups[name])return Promise.resolve();if(loadedGroups.has(name)){if(name==='calendar')renderCalendarIfActive();return Promise.resolve()}loadedGroups.add(name);return loadMany(groups[name]).then(()=>{document.dispatchEvent(new CustomEvent('dcc:feature-ready',{detail:{feature:name}}));if(name==='calendar')renderCalendarIfActive()})}
 function routeFeature(raw){const s=String(raw||'').toLowerCase();if(/calendar/.test(s))return'calendar';if(/diet|food|nutrition|aliment/.test(s))return'diet';if(/routine|training|workout|entren/.test(s))return'training';if(/message|chat|mensaje/.test(s))return'messages';if(/client|note|resumen|profile|checkin|check-in/.test(s))return'profile';return''}
 function featureFromEvent(e){const d=e?.detail;return routeFeature(typeof d==='string'?d:(d?.screen||d?.route||d?.name||window.currentScreen||''))}
-function warmFeature(name){if(!name)return Promise.resolve();return loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
+function warmFeature(name){if(!name||window.currentApp==='client')return Promise.resolve();return loadGroup(name).catch(e=>console.error('DCC feature '+name+':',e))}
 function featureFromElement(el){if(!el)return'';return routeFeature((el.getAttribute('onclick')||'')+' '+(el.dataset?.screen||'')+' '+(el.dataset?.route||'')+' '+(el.textContent||''))}
 document.addEventListener('dcc:coach-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('dcc:client-screen',e=>warmFeature(featureFromEvent(e)));document.addEventListener('pointerdown',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]');warmFeature(featureFromElement(el))},{capture:true,passive:true});document.addEventListener('click',e=>{const el=e.target?.closest?.('button,[onclick],[data-screen],[data-route]'),feature=featureFromElement(el);if(!feature)return;setTimeout(()=>warmFeature(feature),0)},false);
 function idle(fn,timeout=1800){if('requestIdleCallback' in window){requestIdleCallback(fn,{timeout});return}setTimeout(fn,400)}
