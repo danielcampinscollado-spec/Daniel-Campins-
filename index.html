@@ -6617,6 +6617,11 @@ function showClient(screen){
   const main=document.getElementById("client-main");
   const c=client(currentClientId);
 
+  if(screen==="checkin" && typeof window.dccOpenCheckinV4==="function"){
+    window.dccOpenCheckinV4(false);
+    return;
+  }
+
   let html="";
   // Recuperar entrenamiento que estaba en curso
   if(screen==="training" && window.activeWorkout){
