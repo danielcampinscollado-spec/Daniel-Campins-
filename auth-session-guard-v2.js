@@ -1,7 +1,7 @@
 /* DCC — bloqueo de sesión y entrada autenticada v2 */
 (function(){
   'use strict';
-  const BUILD='20260912-auth-session-guard-v2';
+  const BUILD='20260923-auth-session-guard-v2-isolation';
   if(window.__dccAuthSessionGuard===BUILD)return;
   window.__dccAuthSessionGuard=BUILD;
 
@@ -39,6 +39,20 @@
 
   function showLogin(message){
     clearAuthoritativeState(true);
+    // Una sesión terminada no puede dejar rutas, selecciones ni una sesión
+    // de entrenamiento en memoria para la siguiente cuenta. No borrar
+    // historiales del servidor ni cambiar el render de los perfiles.
+    window.currentApp='';
+    window.currentScreen='';
+    window.selectedClient=null;
+    window.__dccCoachChatV2=null;
+    window.activeWorkout=null;
+    window.workoutPausedScreen=null;
+    window.trainingDayTab=0;
+    clearInterval(window.restTimerInterval);
+    clearInterval(window.dccWorkoutElapsedInterval);
+    window.restTimerInterval=null;
+    window.dccWorkoutElapsedInterval=null;
     try{currentClientId=null}catch(_){}
     try{window.currentClientId=null}catch(_){}
     window.__dccSecureRole=null;
