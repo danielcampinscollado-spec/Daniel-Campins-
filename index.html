@@ -4,18 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Daniel Campins</title>
-<script id="dcc-theme-prepaint-v1">
-(function(){try{var t=localStorage.getItem('dcc:theme:v1');if(t==='light-premium')document.documentElement.classList.add('dcc-theme-light-premium')}catch(e){}})();
-</script>
-<style id="dcc-nav-prepaint-v1">
-html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!important}
-#client-nav{background:linear-gradient(145deg,#28251f,#151513 58%,#222019)!important;border:1px solid rgba(231,181,73,.78)!important;box-shadow:0 12px 34px rgba(68,49,18,.26),0 0 0 1px rgba(255,211,108,.10),inset 0 1px 0 rgba(255,230,157,.10)!important}
-#client-nav button{color:#e8b94f!important;background:transparent!important;border-color:transparent!important}
-#client-nav button svg{color:#e8b94f!important;stroke:currentColor!important}
-#client-nav button span{color:#e5c778!important}
-#client-nav button.active{color:#1d1608!important;background:linear-gradient(145deg,#ffe8a4 0%,#e6af3d 72%,#c88920 100%)!important;border-color:#ffe39a!important;box-shadow:0 0 0 2px rgba(177,119,18,.42),0 0 18px rgba(237,187,72,.52),0 8px 20px rgba(0,0,0,.24)!important}
-#client-nav button.active *{color:#1d1608!important}
-</style>
+
 
 <style>
 *{
@@ -23,13 +12,13 @@ html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!imp
 }
 
 :root{
-  --bg:#080a0e;
-  --bg2:#0d1117;
-  --panel:#11151c;
-  --panel2:#151a22;
-  --text:#f5f5f2;
-  --muted:#9299a5;
-  --line:rgba(255,255,255,.09);
+  --bg:#f6efe3;
+  --bg2:#fffaf1;
+  --panel:#fffdf9;
+  --panel2:#fbf3e6;
+  --text:#17191d;
+  --muted:#737b86;
+  --line:rgba(183,123,19,.20);
   --gold:#d9aa4a;
   --gold-light:#f0c96b;
   --blue:#4d8dff;
@@ -78,18 +67,16 @@ button{
   position:relative;
   overflow:hidden;
   background:
-    radial-gradient(circle at 78% 8%,rgba(57,72,95,.48),transparent 35%),
-    radial-gradient(circle at 12% 92%,rgba(217,170,74,.09),transparent 30%),
-    linear-gradient(145deg,#18202b 0%,#090c11 52%,#040507 100%);
+    radial-gradient(circle at 88% 4%,rgba(201,145,38,.14),transparent 24%),
+    radial-gradient(circle at 6% 94%,rgba(201,145,38,.08),transparent 24%),
+    linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%);
 }
 
 .login:before{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    radial-gradient(circle at 50% 45%,transparent 0,rgba(0,0,0,.35) 75%),
-    linear-gradient(120deg,rgba(255,255,255,.025),transparent 35%);
+  background:transparent;
   pointer-events:none;
 }
 
@@ -98,11 +85,8 @@ button{
   position:relative;
   z-index:2;
   padding:46px 30px 30px;
-  background:
-    linear-gradient(145deg,
-      rgba(25,29,37,.96),
-      rgba(9,11,15,.94));
-  border:1px solid rgba(255,255,255,.11);
+  background:transparent;
+  border:1px solid transparent;
   border-radius:32px;
   box-shadow:
     0 35px 100px rgba(0,0,0,.58),
@@ -258,11 +242,9 @@ button{
   bottom:0;
   width:250px;
   padding:28px 14px;
-  background:
-    radial-gradient(circle at 85% 0%,rgba(217,170,74,.09),transparent 30%),
-    linear-gradient(180deg,#11151b 0%,#080a0d 100%);
-  color:#fff;
-  border-right:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(180deg,#fffaf1 0%,#f1e7d7 100%);
+  color:#17191d;
+  border-right:1px solid rgba(186,126,20,.24);
   z-index:20;
 }
 
@@ -413,11 +395,9 @@ h3{
 
 .card{
   position:relative;
-  background:
-    radial-gradient(circle at 100% 0%,rgba(217,170,74,.08),transparent 35%),
-    linear-gradient(145deg,#181b23,#101218);
-  color:#f5f5f2;
-  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(145deg,#fffefa 0%,#fbf6ec 100%);
+  color:#17191d;
+  border:1px solid rgba(198,139,32,.34);
   border-radius:26px;
   padding:24px;
   margin-bottom:18px;
@@ -888,7 +868,7 @@ label{
   background:
     radial-gradient(circle at 50% 12%,rgba(217,170,74,.10),transparent 32%),
     radial-gradient(circle at 15% 85%,rgba(217,170,74,.045),transparent 30%),
-    #07090d;
+    #f6efe3;
   position:relative;
   overflow:auto;
 }
@@ -898,13 +878,8 @@ label{
   max-width:620px;
   box-sizing:border-box;
   padding:38px 30px 32px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(31,35,43,.96),
-      rgba(17,20,26,.97)
-    );
-  border:1px solid rgba(255,255,255,.13);
+  background:linear-gradient(145deg,rgba(255,253,249,.98),rgba(248,240,227,.98));
+  border:1px solid rgba(183,123,19,.18);
   border-radius:30px;
   box-shadow:
     0 30px 90px rgba(0,0,0,.58),
@@ -1022,14 +997,9 @@ label{
   box-sizing:border-box;
   padding:27px 22px 25px;
   border-radius:23px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(31,35,43,.96),
-      rgba(17,20,26,.97)
-    );
-  border:1px solid rgba(255,255,255,.16);
-  color:#f5f5f2;
+  background:linear-gradient(145deg,#fffdf9,#f8f0e3);
+  border:1px solid rgba(183,123,19,.22);
+  color:#17191d;
   position:relative;
   overflow:hidden;
   display:flex;
@@ -1205,7 +1175,7 @@ label{
     min-height:100dvh;
     width:100%;
     padding:18px 0 24px;
-    background:#050608;
+    background:#f6efe3;
     box-sizing:border-box;
   }
 
@@ -3801,17 +3771,17 @@ label{
 
 :root{
 
-  --dcc-bg:#080a0e;
+  --dcc-bg:#f6efe3;
 
-  --dcc-panel:#11151c;
+  --dcc-panel:#fffdf9;
 
-  --dcc-panel-2:#151a22;
+  --dcc-panel-2:#fbf3e6;
 
-  --dcc-text:#f5f5f2;
+  --dcc-text:#17191d;
 
-  --dcc-muted:#9299a5;
+  --dcc-muted:#737b86;
 
-  --dcc-line:rgba(255,255,255,.09);
+  --dcc-line:rgba(183,123,19,.20);
 
   --dcc-gold:#d9aa4a;
 
@@ -6642,14 +6612,6 @@ function showClient(screen){
     screen!=="training"
   ){
     window.workoutPausedScreen=screen;
-  }
-
-  // Check-in v4 es la única autoridad visual de esta pantalla.
-  // Delegar antes del render legacy evita que aparezca una pantalla y,
-  // un frame después, sea sustituida por otra.
-  if(screen==="checkin" && typeof window.dccOpenCheckinV4==="function"){
-    window.dccOpenCheckinV4(false);
-    return;
   }
 
   const main=document.getElementById("client-main");
@@ -16544,9 +16506,9 @@ async function sendClientCheckin(){
     }
 }
 </script>
-<script src="./client-admin-premium.js?v=20260910-2405"></script>
-<script src="./nutrition-plan-premium-v2.js?v=20260911-1"></script>
-<script src="./nutrition-plan-premium-v1.js?v=20260916-audit1"></script>
+<script src="./client-admin-premium.js?v=20260923-coherent-closed-coach1"></script>
+<script src="./nutrition-plan-premium-v2.js?v=20260923-coherent-closed-coach1"></script>
+<!-- retired legacy nutrition-plan-premium-v1: v2 is canonical -->
 
 <style id="dcc-diet-pdf-compact">
 .diet-pdf-card{
@@ -16617,7 +16579,8 @@ async function sendClientCheckin(){
 
 <!-- retired legacy training-actions-hotfix-v1 -->
 <!-- retired legacy training-actions-hotfix-v2 -->
-<script src="./workout-muscle-visual-fix-v1.js?v=20260923-explicit-client-final-backup1"></script>
+<script src="./training-actions-hotfix-v2.js?v=20260923-client-final-runtime1"></script>
+<script src="./workout-muscle-visual-fix-v1.js?v=20260923-client-final-runtime1"></script>
 
 <script src="./client-checkin-messages-premium-v1.js?v=20260922-final-visual-audit1"></script>
 
@@ -16627,7 +16590,7 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260922-client-entry-fix1"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260922-approved-client1"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260923-client-freeze10"></script>
 <!-- retired legacy global theme authority: Light Premium is canonical -->
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 <script src="./client-light-stable-v1.js?v=20260923-explicit-client-final-backup1"></script>
@@ -16637,7 +16600,7 @@ async function sendClientCheckin(){
 <script src="./client-training.js?v=20260923-explicit-client-final-backup1"></script>
 <script src="./client-home-authority-final-v1.js?v=20260922-home-surfaces-final1"></script>
 
-<script src="./client-checkin-schedule-v4.js?v=20260922-single-render1"></script>
+<script src="./client-checkin-schedule-v4.js?v=20260922-remove-redundant-title1"></script>
 <script src="./coach-checkin-schedule-v1.js?v=20260922-1"></script>
 </body>
 </html>
