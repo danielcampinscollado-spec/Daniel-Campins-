@@ -102,21 +102,6 @@
   window.dccDraftMuscle=(btn,m)=>{state.muscleDraft=state.muscleDraft.includes(m)?state.muscleDraft.filter(x=>x!==m):[...state.muscleDraft,m];btn.classList.toggle('on')};
   window.dccSaveRoutineMuscles=(id,di)=>{const d=routineDays(id)[di];if(!d)return;writeMuscles(d,state.muscleDraft);window.__dccTrainingOpen=di;dccCloseTrainingModal();window.dccClientAdmin(id,'training')};
 
-  function exerciseModalHtml(id,di){
-    const d=routineDays(id)[di],ms=dayMuscles(d);if(!ms.length)return'';
-    if(!ms.includes(state.exerciseTab))state.exerciseTab=ms[0]||'';
-    const filtered=library().filter(x=>normMuscle(x.muscle)===state.exerciseTab);
-    return `<div class="dcc-tr-modal-card"><div class="dcc-tr-modal-head"><h3>Añadir ejercicio · Día ${di+1}</h3><button class="dcc-tr-modal-close" onclick="dccCloseTrainingModal()">×</button></div><p class="dcc-tr-modal-sub">Elige el grupo muscular del día y después el ejercicio.</p><div class="dcc-tr-tabs">${ms.map(m=>`<button class="dcc-tr-tabx ${state.exerciseTab===m?'on':''}" onclick="dccSetExerciseTab('${esc(id)}',${di},'${esc(m)}')">${esc(m)}</button>`).join('')}</div><div class="dcc-tr-ex-list">${filtered.map(ex=>`<button class="dcc-tr-choice" onclick="dccChooseRoutineExercise('${esc(id)}',${di},'${esc(ex.id)}')"><span><b>${esc(ex.name)}</b><small>${esc(normMuscle(ex.muscle))}</small></span><strong>＋</strong></button>`).join('')||'<div class="dcc-diet-empty">No hay ejercicios disponibles en esta categoría.</div>'}</div><button class="dcc-tr-manual" onclick="dccAddManualRoutineExercise('${esc(id)}',${di})">＋ Añadir ejercicio manual</button></div>`;
-  }
-  window.dccOpenExerciseModal=async(id,di)=>{
-    try{if(window.exerciseLibraryReady)await window.exerciseLibraryReady;}catch(error){console.error('DCC — biblioteca de ejercicios:',error)}
-    const ms=dayMuscles(routineDays(id)[di]);
-    state.exerciseTab=ms[0]||'';
-    const html=exerciseModalHtml(id,di);if(!html)return window.dccOpenMuscleModal(id,di);modal(html)
-  };
-  window.dccSetExerciseTab=(id,di,m)=>{state.exerciseTab=normMuscle(m);modal(exerciseModalHtml(id,di))};
-  window.dccChooseRoutineExercise=(id,di,eid)=>{const d=routineDays(id)[di],hit=library().find(x=>String(x.id)===String(eid));if(!d||!hit)return;d.exercises=Array.isArray(d.exercises)?d.exercises:[];d.exercises.push({id:hit.id,name:hit.name,muscle:normMuscle(hit.muscle),sets:'4',reps:'10-12'});window.__dccTrainingOpen=di;dccCloseTrainingModal();window.dccClientAdmin(id,'training')};
-  window.dccAddManualRoutineExercise=(id,di)=>{const d=routineDays(id)[di],ms=dayMuscles(d);if(!d||!ms.length)return;const name=prompt('Nombre del ejercicio','');if(!name)return;const muscle=ms.length===1?ms[0]:(prompt('Grupo muscular ('+ms.join(' / ')+')',ms[0])||ms[0]);d.exercises=d.exercises||[];d.exercises.push({name,muscle:normMuscle(muscle),sets:'4',reps:'10-12',manual:true});window.__dccTrainingOpen=di;dccCloseTrainingModal();window.dccClientAdmin(id,'training')};
   window.dccTogglePreviousRoutineInline=id=>{state.previousOpen=!state.previousOpen;document.querySelector('[data-dcc-history="1"]')?.remove();decorate()};
 
   function archive(id){const raw=window.__dccTrainingBackup;if(raw===undefined)return;try{const b=JSON.parse(raw),old=Array.isArray(b)?b:Array.isArray(b?.routine)?b.routine:[],cur=routineDays(id);if(old.length&&JSON.stringify(old)!==JSON.stringify(cur)){if(!window.data.previousRoutines)window.data.previousRoutines={};window.data.previousRoutines[id]={routine:clone(old),savedAt:new Date().toISOString()};persist()}}catch(e){console.warn(e)}}
