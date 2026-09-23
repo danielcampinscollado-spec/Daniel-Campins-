@@ -15,6 +15,13 @@ html.dcc-theme-light-premium body{background:#f5efe4!important;color:#17191d!imp
 #client-nav button{color:#707782!important;background:transparent!important;border-color:transparent!important}
 #client-nav button svg,#client-nav button span{color:currentColor!important;stroke:currentColor!important}
 #client-nav button.active{color:#b57d16!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+
+/* Light Premium is the only visual authority during boot and authenticated shells. */
+:root{--bg:#f6efe3!important;--bg2:#fffaf1!important;--panel:#fffdf9!important;--panel2:#fbf3e6!important;--text:#17191d!important;--muted:#737b86!important;--line:rgba(183,123,19,.20)!important}
+html,body,.app,#coach,#client{background:#f6efe3!important;background-color:#f6efe3!important;color:#17191d!important}
+.login{background:linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9dc 100%)!important;color:#17191d!important}
+.login:before{display:none!important}
+.login-box{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
 </style>
 
 <style>
@@ -16619,7 +16626,7 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-final-v3.js?v=1"></script>
 <script src="./coach-premium-v8.js?v=20260922-client-entry-fix1"></script>
-<script src="./coach-client-plan-status-v1.js?v=20260923-final-coach-authority3"></script>
+<script src="./coach-client-plan-status-v1.js?v=20260923-coach-authority4"></script>
 <!-- retired legacy global theme authority: Light Premium is canonical -->
 <script src="./coach-light-stable-v1.js?v=20260916-audit3"></script>
 <script src="./client-light-stable-v1.js?v=20260922-light-surfaces2"></script>
