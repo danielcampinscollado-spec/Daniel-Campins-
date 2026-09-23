@@ -311,15 +311,9 @@
     }
   };
 
-  function install(){
-    const base=window.showClient;if(typeof base!=='function'||base.__dccCheckinScheduleV4)return false;
-    const wrapped=function(screen){
-      const r=base.apply(this,arguments);
-      if(screen==='checkin')requestAnimationFrame(()=>open(false));
-      return r;
-    };
-    wrapped.__dccCheckinScheduleV4=true;wrapped.__base=base;window.showClient=wrapped;return true;
-  }
+  // Autoridad directa de Check-in. showClient delega aquí antes de pintar
+  // el render legacy, evitando el flash/cambio visual al entrar.
+  window.dccOpenCheckinV4=function(preserve=false){return open(!!preserve)};
 
-  injectCss();install();setTimeout(install,350);setTimeout(install,1100);window.addEventListener('load',()=>setTimeout(install,150));
+  injectCss();
 })();
