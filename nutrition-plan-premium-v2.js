@@ -18,9 +18,19 @@ function avoid(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToA
 function plan(id){return window.data?.diets?.[id]||null}
 function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>Array.isArray(p?.[k]?.meals)&&p[k].meals.length)))}
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
-async function refreshPlans(){try{if(typeof loadDietsFromSupabase==='function')await loadDietsFromSupabase()}catch(error){console.error('DCC nutrition — server refresh:',error)}}
-async function openOverview(id){await refreshPlans();return overview(id)}
-async function openEditor(id){await refreshPlans();return editor(id)}
+async function refreshPlans(id){
+  try{
+    if(!window.supabaseClient)return;
+    const {data:rows,error}=await window.supabaseClient.from('client_diets').select('client_id,diet_type,calories,protein,meals,updated_at').eq('client_id',String(id));
+    if(error)throw error;
+    window.data=window.data||{};window.data.diets=window.data.diets||{};
+    const current=window.data.diets[id]||{training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};
+    (rows||[]).forEach(row=>{current[row.diet_type]={calories:row.calories||'',protein:row.protein||'',meals:Array.isArray(row.meals)?row.meals:[],updated_at:row.updated_at||null}});
+    window.data.diets[id]=current;
+  }catch(error){console.error('DCC nutrition — server refresh:',error)}
+}
+async function openOverview(id){await refreshPlans(id);return overview(id)}
+async function openEditor(id){await refreshPlans(id);return editor(id)}
 let mealAuthorityPromise=null;
 function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
