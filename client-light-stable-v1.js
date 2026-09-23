@@ -25,194 +25,97 @@
     s.id=ID;
     s.textContent=`
 /* =========================================================
-   DCC CLIENT — LIGHT PREMIUM ESTABLE
+   DCC CLIENT — LIGHT PREMIUM / AUTORIDAD GLOBAL ÚNICA
+   Esta capa solo define lenguaje compartido. Cada pantalla conserva
+   únicamente sus reglas estructurales específicas.
    ========================================================= */
 html.dcc-theme-light-premium body #client{
   --dcc-client-bg:#f5efe4;
   --dcc-client-surface:#fffdf8;
   --dcc-client-surface-2:#fbf5eb;
   --dcc-client-text:#17191d;
-  --dcc-client-muted:#6f7782;
-  --dcc-client-gold:#b77b13;
+  --dcc-client-muted:#707782;
+  --dcc-client-gold:#a66d0d;
   --dcc-client-gold-2:#d9aa4a;
-  --dcc-client-line:rgba(177,119,18,.24);
-  --dcc-client-shadow:0 10px 26px rgba(78,58,28,.07);
-  background:radial-gradient(circle at 88% 0,rgba(214,163,61,.09),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;
-  color:var(--dcc-client-text)!important;
+  --dcc-client-line:rgba(183,123,19,.22);
+  --dcc-client-radius:21px;
+  --dcc-client-shadow:0 8px 22px rgba(78,58,28,.055),inset 0 1px 0 rgba(255,255,255,.96);
+  background:linear-gradient(180deg,#fffaf1 0%,#f5efe4 64%,#f0e8dc 100%);
+  color:var(--dcc-client-text);
 }
-
 html.dcc-theme-light-premium body #client #client-main{
-  min-height:100dvh!important;
-  background:radial-gradient(circle at 88% 0,rgba(214,163,61,.08),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f0e8dc 100%)!important;
-  background-color:#f5efe4!important;
-  color:var(--dcc-client-text)!important;
-  padding-bottom:118px!important;
+  min-height:100dvh;
+  background:linear-gradient(180deg,#fffaf1 0%,#f5efe4 64%,#f0e8dc 100%);
+  color:var(--dcc-client-text);
+  padding-bottom:100px;
 }
-
-/* Tipografía: elimina herencias del antiguo tema oscuro */
 html.dcc-theme-light-premium body #client #client-main h1,
 html.dcc-theme-light-premium body #client #client-main h2,
 html.dcc-theme-light-premium body #client #client-main h3,
 html.dcc-theme-light-premium body #client #client-main h4,
 html.dcc-theme-light-premium body #client #client-main b,
 html.dcc-theme-light-premium body #client #client-main strong{
-  color:var(--dcc-client-text)!important;
-  text-shadow:none!important;
+  color:var(--dcc-client-text);
+  text-shadow:none;
 }
 html.dcc-theme-light-premium body #client #client-main p,
 html.dcc-theme-light-premium body #client #client-main .muted,
-html.dcc-theme-light-premium body #client #client-main small,
-html.dcc-theme-light-premium body #client #client-main [class*="sub"],
-html.dcc-theme-light-premium body #client #client-main [class*="meta"]{
-  color:var(--dcc-client-muted)!important;
+html.dcc-theme-light-premium body #client #client-main small{
+  color:var(--dcc-client-muted);
 }
-html.dcc-theme-light-premium body #client #client-main [class*="kicker"],
-html.dcc-theme-light-premium body #client #client-main [class*="eyebrow"],
-html.dcc-theme-light-premium body #client #client-main [class*="accent"]{
-  color:var(--dcc-client-gold)!important;
+html.dcc-theme-light-premium body #client #client-main input,
+html.dcc-theme-light-premium body #client #client-main textarea,
+html.dcc-theme-light-premium body #client #client-main select{
+  background:#fffefa;
+  color:var(--dcc-client-text);
+  -webkit-text-fill-color:var(--dcc-client-text);
+  border-color:var(--dcc-client-line);
 }
+html.dcc-theme-light-premium body #client #client-main input::placeholder,
+html.dcc-theme-light-premium body #client #client-main textarea::placeholder{
+  color:#858c96;
+  -webkit-text-fill-color:#858c96;
+  opacity:1;
+}
+html.dcc-theme-light-premium body #client #client-main hr{border-color:rgba(183,123,19,.14)}
 
-/* Superficies comunes */
-html.dcc-theme-light-premium body #client #client-main .card,
-html.dcc-theme-light-premium body #client #client-main section,
-html.dcc-theme-light-premium body #client #client-main .meal-card,
-html.dcc-theme-light-premium body #client #client-main .exercise,
-html.dcc-theme-light-premium body #client #client-main .food,
-html.dcc-theme-light-premium body #client #client-main .item,
-html.dcc-theme-light-premium body #client #client-main .client-row,
-html.dcc-theme-light-premium body #client #client-main .dc-premium-card-inner,
-html.dcc-theme-light-premium body #client #client-main .dc-home-next{
+/* Superficies Light explícitas: evita que reglas legacy oscuras ganen por especificidad. */
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-metric,
+html.dcc-theme-light-premium body #client #client-main .dcc-performance-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-card,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-card{
   background:linear-gradient(145deg,#fffefa 0%,#fbf5eb 100%)!important;
   background-color:var(--dcc-client-surface)!important;
   color:var(--dcc-client-text)!important;
   border-color:var(--dcc-client-line)!important;
-  box-shadow:var(--dcc-client-shadow),inset 0 1px 0 rgba(255,255,255,.96)!important;
+  box-shadow:var(--dcc-client-shadow)!important;
 }
-
-/* Tarjetas internas que aún venían con negro inline */
-html.dcc-theme-light-premium body #client #client-main .dc-home > section > div,
-html.dcc-theme-light-premium body #client #client-main .dc-home > div,
-html.dcc-theme-light-premium body #client #client-main [class*="stat"],
-html.dcc-theme-light-premium body #client #client-main [class*="summary"],
-html.dcc-theme-light-premium body #client #client-main [class*="panel"],
-html.dcc-theme-light-premium body #client #client-main [class*="box"],
-html.dcc-theme-light-premium body #client #client-main [class*="tile"]{
-  background-color:#fffdf8!important;
-  color:var(--dcc-client-text)!important;
-  border-color:rgba(177,119,18,.20)!important;
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-card.primary{
+  background:linear-gradient(145deg,#fffdf9 0%,#fff6e7 100%)!important;
 }
-
-/* Formularios */
-html.dcc-theme-light-premium body #client #client-main input,
-html.dcc-theme-light-premium body #client #client-main textarea,
-html.dcc-theme-light-premium body #client #client-main select{
-  background:#fffefa!important;
-  color:var(--dcc-client-text)!important;
-  -webkit-text-fill-color:var(--dcc-client-text)!important;
-  border:1px solid rgba(177,119,18,.28)!important;
-  box-shadow:none!important;
-}
-html.dcc-theme-light-premium body #client #client-main input::placeholder,
-html.dcc-theme-light-premium body #client #client-main textarea::placeholder{
-  color:#858c96!important;
-  -webkit-text-fill-color:#858c96!important;
-  opacity:1!important;
-}
-
-/* Botones */
-html.dcc-theme-light-premium body #client #client-main .btn{
-  background:linear-gradient(135deg,#f5d581,#dca83e)!important;
-  color:#18140c!important;
-  border:1px solid #e5b64d!important;
-  box-shadow:0 8px 20px rgba(185,125,20,.14)!important;
-}
-html.dcc-theme-light-premium body #client #client-main .ghost{
-  background:#fffaf1!important;
-  color:#8d5b08!important;
-  border:1px solid rgba(177,119,18,.32)!important;
-  box-shadow:none!important;
-}
-html.dcc-theme-light-premium body #client #client-main .pill{
-  background:#fff5dc!important;
-  color:#98640b!important;
-  border-color:rgba(177,119,18,.26)!important;
-}
-
-/* Separadores y filas */
-html.dcc-theme-light-premium body #client #client-main .item,
-html.dcc-theme-light-premium body #client #client-main table,
-html.dcc-theme-light-premium body #client #client-main th,
-html.dcc-theme-light-premium body #client #client-main td{
-  border-color:rgba(177,119,18,.16)!important;
-}
-html.dcc-theme-light-premium body #client #client-main hr{
-  border-color:rgba(177,119,18,.16)!important;
-}
-
-/* Progreso / check-in / mensajes: neutraliza fondos negros residuales */
-html.dcc-theme-light-premium body #client #client-main [class*="progress"],
-html.dcc-theme-light-premium body #client #client-main [class*="checkin"],
-html.dcc-theme-light-premium body #client #client-main [class*="message"],
-html.dcc-theme-light-premium body #client #client-main [class*="chat"],
-html.dcc-theme-light-premium body #client #client-main [class*="training"],
-html.dcc-theme-light-premium body #client #client-main [class*="nutrition"]{
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card h2,
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card b,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-card .dcc-ci4-value,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-main{
   color:var(--dcc-client-text)!important;
 }
-html.dcc-theme-light-premium body #client #client-main [class*="bubble"]{
-  background:#fffefa!important;
-  color:var(--dcc-client-text)!important;
-  border-color:rgba(177,119,18,.20)!important;
-  box-shadow:none!important;
+html.dcc-theme-light-premium body #client #client-main .dcc-progress-card p,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-status-copy,
+html.dcc-theme-light-premium body #client #client-main .dcc-ci4-metric label{
+  color:var(--dcc-client-muted)!important;
 }
 
-/* Barra inferior cliente: una única apariencia Light Premium */
 @media(max-width:700px){
-  html.dcc-theme-light-premium body #client > .side{
-    position:fixed!important;
-    left:10px!important;right:10px!important;
-    bottom:max(10px,env(safe-area-inset-bottom))!important;top:auto!important;
-    width:auto!important;height:68px!important;min-height:68px!important;
-    padding:0!important;margin:0!important;border:0!important;border-radius:22px!important;
-    background:transparent!important;background-image:none!important;
-    box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-    overflow:visible!important;z-index:99999!important;
-  }
-  html.dcc-theme-light-premium body #client > .side > h2,
-  html.dcc-theme-light-premium body #client > .side > .out{display:none!important}
-  html.dcc-theme-light-premium body #client-nav{
-    display:grid!important;
-    grid-template-columns:repeat(6,minmax(0,1fr))!important;
-    width:100%!important;height:68px!important;
-    gap:0!important;padding:4px!important;margin:0!important;
-    border:1px solid rgba(166,126,59,.26)!important;
-    border-radius:22px!important;
-    background:#fffdf9!important;background-image:none!important;
-    box-shadow:0 10px 28px rgba(93,67,25,.12)!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button{
-    height:60px!important;margin:0!important;padding:4px 1px!important;
-    display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;
-    border:0!important;border-radius:16px!important;background:transparent!important;background-image:none!important;
-    color:#707782!important;box-shadow:none!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button span{
-    color:currentColor!important;font-size:9px!important;line-height:1!important;font-weight:650!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button svg{
-    color:currentColor!important;stroke:currentColor!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button.active{
-    color:#17140d!important;
-    background:linear-gradient(145deg,#ffe994 0%,#f6cf61 48%,#e2a72f 100%)!important;
-    border:1px solid #d9a43a!important;
-    box-shadow:0 5px 14px rgba(185,126,18,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
-  }
-  html.dcc-theme-light-premium body #client-nav button.active *{
-    color:#17140d!important;stroke:currentColor!important;
+  html.dcc-theme-light-premium body #client #client-main{
+    padding-left:20px;
+    padding-right:20px;
   }
 }
 
-/* Modal compartido cuando está visible el perfil cliente */
+/* CLIENTE NAV: la única autoridad de navegación permanece en index.html. */
+
+/* Modal compartido cuando está visible el perfil cliente *//* Modal compartido cuando está visible el perfil cliente */
 body.dcc-client-mode #modal{
   background:rgba(31,25,17,.38)!important;
   backdrop-filter:blur(9px)!important;
