@@ -270,13 +270,8 @@
       const fn=async function(id,type){
         if(!isEditing(id))return base.apply(this,arguments);
         const diet=window.data?.diets?.[id]?.[type];if(!diet)return;
-        const meals=Array.isArray(diet.meals)?diet.meals:[];
-        if(!meals.length&&typeof window.dccNutritionMealSetupStart==='function'){
-          clearEditState();
-          return window.dccNutritionMealSetupStart(id,type);
-        }
         const name=prompt('Nombre de la comida','');if(name===null||!name.trim())return;
-        diet.meals=meals;
+        diet.meals=Array.isArray(diet.meals)?diet.meals:[];
         const mi=diet.meals.length;
         diet.meals.push({name:name.trim(),options:[{name:'Opción 1',foods:[]}]});
         remember(mi,0);renderDraft(id);restoreEditor(String(id));
@@ -303,7 +298,7 @@
 
     if(typeof window.dccNutritionV2Blank==='function'&&!chainHas(window.dccNutritionV2Blank,'__dccDraftV6')){
       const old=window.dccNutritionV2Blank;
-      const fn=function(id){const sid=String(id),p=window.data?.diets?.[sid],hasAny=['training','rest'].some(t=>Array.isArray(p?.[t]?.meals)&&p[t].meals.length);if(!hasAny&&typeof window.dccNutritionMealSetupStart==='function'){clearEditState();return Promise.resolve(window.dccNutritionMealSetupStart(sid))}return startDerivedDraft(sid,'blank')};
+      const fn=function(id){return startDerivedDraft(id,'blank')};
       fn.__dccDraftV6=true;fn.__base=old;window.dccNutritionV2Blank=fn;
     }
     if(typeof window.dccNutritionV2Renew==='function'&&!chainHas(window.dccNutritionV2Renew,'__dccDraftV6')){
