@@ -12,7 +12,7 @@ function css(){if(document.getElementById('dcc-nutrition-v2-css'))return;const s
 @media(max-width:520px){.dcc-n2-head h2{font-size:19px}.dcc-n2-card{padding:14px}.dcc-n2-btn{min-height:56px}}
 `;document.head.appendChild(s)}
 function base(){return typeof window.dccClientAdmin==='function'?window.dccClientAdmin:null}
-function pane(){const w=document.querySelector('#coach-main .dcc-ca-wrap');return w?w.lastElementChild:null}
+function pane(){return document.getElementById('dcc-coach-client-pane')}
 function client(id){return (window.data?.clients||[]).find(x=>String(x.id)===String(id))||{}}
 function avoid(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToAvoid??'').trim()}
 function plan(id){return window.data?.diets?.[id]||null}
