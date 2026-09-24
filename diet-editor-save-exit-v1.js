@@ -264,25 +264,7 @@
       fn.__dccDraftV6=true;fn.__base=base;window.dccDietRemoveOption=fn;
     }
 
-    const addMeal=window.dccDietAddMeal;
-    if(typeof addMeal==='function'&&!chainHas(addMeal,'__dccDraftV6')){
-      const base=addMeal;
-      const fn=async function(id,type){
-        if(!isEditing(id))return base.apply(this,arguments);
-        const diet=window.data?.diets?.[id]?.[type];if(!diet)return;
-        const meals=Array.isArray(diet.meals)?diet.meals:[];
-        if(!meals.length&&typeof window.dccNutritionMealSetupStart==='function'){
-          clearEditState();
-          return window.dccNutritionMealSetupStart(id,type);
-        }
-        const name=prompt('Nombre de la comida','');if(name===null||!name.trim())return;
-        diet.meals=meals;
-        const mi=diet.meals.length;
-        diet.meals.push({name:name.trim(),options:[{name:'Opción 1',foods:[]}]});
-        remember(mi,0);renderDraft(id);restoreEditor(String(id));
-      };
-      fn.__dccDraftV6=true;fn.__base=base;window.dccDietAddMeal=fn;
-    }
+
   }
 
   function install(){
