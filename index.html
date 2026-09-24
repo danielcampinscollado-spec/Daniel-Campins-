@@ -14861,58 +14861,6 @@ if(counter){
     `Seleccionados: ${day.muscleGroups.length} de 3`;
 }
 }
-async function saveTrainingMuscleGroups(id,dayIndex){
-
-  const day=data.routines[id]?.[dayIndex];
-
-  if(!day)return;
-
-  if(!day.muscleGroups?.length){
-    toast("Selecciona al menos un grupo muscular");
-    return;
-  }
-
-  day.muscle=day.muscleGroups.join(" · ");
-
-  saveData();
-
-  const ok=await saveRoutineToSupabase(id);
-
-  if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
-    return;
-  }
-
-  toast("Grupos musculares guardados");
-
-  showCoach("routines");
-}
-async function createRoutineDays(id,count){
-
-  if(!data.routines){
-    data.routines = {};
-  }
-
-  data.routines[id] = Array.from(
-    {length:count},
-    (_,i) => ({
-      day:i+1,
-      muscle:"",
-      muscleGroups:[],
-      exercises:[]
-    })
-  );
-
-  saveData();
-
-  const ok = await saveRoutineToSupabase(id);
-
-  if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
-  }
-
-  showCoach("routines");
-}
 async function openTrainingExercises(id,dayIndex,preserveScroll=false){
 
   const day=data.routines[id]?.[dayIndex];
