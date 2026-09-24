@@ -14203,18 +14203,6 @@ function modifyRoutine(id){
 
   showCoach("routines");
 
-}
-
-
-
-function modifyRoutine(id){
-
-  if(!id) return;
-
-  window.routineEditMode=true;
-
-  showCoach("routines");
-
   setTimeout(()=>{
     const firstDay=document.querySelector(
       '#coach-main .card[onclick*="openTrainingDay"]'
