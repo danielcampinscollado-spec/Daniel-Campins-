@@ -1,7 +1,7 @@
 /* DCC — asistente premium para configurar comidas y su orden */
 (function(){
   'use strict';
-  const BUILD='20260924-nutrition-meal-setup-v11-ios-pointer';
+  const BUILD='20260924-nutrition-meal-setup-v12-restored-working-click';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
@@ -76,12 +76,11 @@
     if(setupMode==='single')currentType=type;
     chosenCount=0;selected=[];injectCss();const p=pane();if(!p)return false;
     const dayLabel=currentType==='rest'?'día de descanso':'día de entrenamiento';
-    p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" data-dcc-meal="${esc(name)}"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`;
+    p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupDirectToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`;
     return true
   }
-  function toggleMeal(name){name=String(name||'');if(!name)return;if(selected.includes(name))selected=selected.filter(x=>x!==name);else selected.push(name);renderStep1Direct()}
-  window.dccMealSetupDirectToggle=toggleMeal;
-  function renderStep1Direct(){const p=pane();if(!p)return;const id=currentId,dayLabel=currentType==='rest'?'día de descanso':'día de entrenamiento';p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" data-dcc-meal="${esc(name)}"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`}
+  window.dccMealSetupDirectToggle=function(name){if(selected.includes(name))selected=selected.filter(x=>x!==name);else selected.push(name);renderStep1Direct()};
+  function renderStep1Direct(){const p=pane();if(!p)return;const id=currentId,dayLabel=currentType==='rest'?'día de descanso':'día de entrenamiento';p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupDirectToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`}
   window.dccMealSetupDirectContinue=function(){if(!selected.length)return;chosenCount=selected.length;renderStep3()};
 
   function renderStep3(){
@@ -94,10 +93,6 @@
     return true
   }
 
-  function mealButtonFromEvent(e){let n=e.target;while(n&&n!==document){if(n.nodeType===1&&n.matches&&n.matches('#coach-main .dcc-meal-option[data-dcc-meal]'))return n;n=n.parentNode}return null}
-  function handleMealChoice(e){const b=mealButtonFromEvent(e);if(!b)return;e.preventDefault();e.stopPropagation();toggleMeal(b.getAttribute('data-dcc-meal')||'')}
-  document.addEventListener('pointerup',handleMealChoice,true);
-  document.addEventListener('click',function(e){if(e.pointerType)return;handleMealChoice(e)},true);
   window.dccNutritionMealSetupStart=renderStep1;
   window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window.__dccDietType||'training');
   window.dccMealSetupBackToMeals=function(){renderStep1Direct()};
