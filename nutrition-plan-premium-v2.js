@@ -30,6 +30,5 @@ window.dccNutritionV2Blank=async id=>{const next={training:{calories:'',protein:
 window.dccNutritionV2Renew=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · renovación');editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Duplicate=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · antes de duplicar');editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Restore=async(id,i)=>{const x=history(id)[i];if(!x)return;try{await transition(id,clone(x.plan),hasPlan(id)?'Plan anterior · antes de restaurar':null);if(typeof window.toast==='function')window.toast('Plan restaurado');overview(id)}catch(e){nutritionError(e)}};
-function intercept(e){const b=e.target.closest&&e.target.closest('.dcc-ca-tab');if(!b||b.textContent.trim()!=='Alimentación')return;const id=window.selectedClient;if(!id)return;e.preventDefault();e.stopImmediatePropagation();overview(id)}
-document.addEventListener('click',intercept,true);css();
+css();
 })();
