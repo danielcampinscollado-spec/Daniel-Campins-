@@ -86,6 +86,9 @@ function wrap(){
  wrapped.__dccApprovedClients=true;wrapped.__original=original;window.showCoach=wrapped;return true;
 }
 installStyle();
-if(!wrap()){let tries=0;const t=setInterval(()=>{if(wrap()||++tries>80)clearInterval(t)},100);}
-document.addEventListener('DOMContentLoaded',()=>{installStyle();wrap();},{once:true});
+if(!wrap()){
+ document.addEventListener('dcc:profile-critical-ready',wrap,{once:true});
+ document.addEventListener('dcc:support-ready',wrap,{once:true});
+ document.addEventListener('DOMContentLoaded',()=>{installStyle();wrap();},{once:true});
+}
 })();
