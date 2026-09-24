@@ -138,15 +138,5 @@
     try{await persistType(id,type);if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');if(typeof window.toast==='function')window.toast(name+' añadida')}catch(error){console.error('DCC add preset meal:',error);alert('No se pudo guardar la nueva comida.')}
   };
 
-  function install(){
-    const add=window.dccDietAddMeal;
-    if(typeof add==='function'&&!add.__dccPresetMealV9){const wrappedAdd=function(id,type){const t=type||window.__dccDietType||'training',ms=window.data?.diets?.[id]?.[t]?.meals;if(!Array.isArray(ms)||!ms.length)renderStep1(id,t);else renderAddMealPicker(id,t);return Promise.resolve()};wrappedAdd.__dccPresetMealV9=true;wrappedAdd.__base=add;window.dccDietAddMeal=wrappedAdd}
-    return true
-  }
-
   injectCss();
-  let tries=0;const timer=setInterval(()=>{tries++;install();if(tries>120)clearInterval(timer)},75);
-  install();
-  window.addEventListener('pageshow',install);
-  document.addEventListener('dcc:feature-ready',e=>{if(e?.detail?.feature==='diet')setTimeout(install,0)});
 })();
