@@ -87,8 +87,8 @@ function wrap(){
 }
 installStyle();
 if(!wrap()){
- document.addEventListener('dcc:profile-critical-ready',wrap,{once:true});
- document.addEventListener('dcc:support-ready',wrap,{once:true});
+ document.addEventListener('dcc:profile-critical-ready',wrap);
+ document.addEventListener('dcc:support-ready',wrap);
  document.addEventListener('DOMContentLoaded',()=>{installStyle();wrap();},{once:true});
 }
 })();
