@@ -1,5 +1,27 @@
 # Revisión de preservación del CLIENTE
 
+## Regresión de entrenamiento activo confirmada con captura
+
+El usuario confirmó Inicio y Alimentación con solo día de entrenamiento.
+La captura IMG_3718 muestra el render antiguo de `index.html` (Consejo de hoy,
+con consejo nutricional y botón Guardar serie), en lugar de la sesión premium.
+La referencia aprobada cargaba `exercise-guidance-v1.js` y
+`workout-session-premium-v3.js` desde el grupo training del bootstrap compartido.
+El bootstrap posterior retiró esas cargas y dejó de cargar grupos para CLIENTE.
+Los dos módulos conservan exactamente el contenido de la referencia aprobada.
+
+Se restituyen sus dos etiquetas script antes de `client-training.js`, después
+de superseries, sin restaurar módulos del editor del entrenador ni modificar
+el contenido o CSS de la sesión aprobada. La capa Light existente de
+`training-actions-hotfix-v2.js` conserva sus reglas para `.dwa3`.
+
+Prueba aislada ejecutando el renderer original con un jalón: renderiza
+CONSEJOS DEL EJERCICIO, consejo de espalda, serie actual y temporizador;
+no genera Consejo de hoy ni modifica las series. Las cuatro pruebas de sesión
+siguen pasando. Falta validación visual en Safari y recorrido real de series,
+descansos, superseries, rest-pause y finalización. El PDF de dieta y día de
+descanso siguen pendientes de confirmación explícita.
+
 Referencia aprobada: `016dc3e8feee5d3a51fd7a7eb4b55b599ecc5d44`.
 Backup verificado: `backup/cliente-final-2026-09-22`, idéntico a esa referencia.
 Base de esta corrección: `a67894c32af791b45edffc2bb4e3309df2d4c76c`.
