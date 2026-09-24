@@ -88,7 +88,7 @@
           if(de.querySelector('.dcc-tr-inline-trigger'))return;
           const box=de.querySelector('.dcc-tr-exercises'),d=days[di];if(!box||!d)return;
           const ms=dayMuscles(d);
-          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="(window.openTrainingExercises?openTrainingExercises('${esc(id)}',${di}):dccOpenExerciseModal('${esc(id)}',${di}))">＋ Añadir ejercicio</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Añadir músculo</button>`);
+          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="openTrainingExercises('${esc(id)}',${di})">＋ Añadir ejercicio</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Añadir músculo</button>`);
         });
         document.querySelector('.dcc-tr-new')?.remove();
       }
