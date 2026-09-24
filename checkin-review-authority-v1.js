@@ -45,8 +45,4 @@
   }
 
   install();
-  document.addEventListener('DOMContentLoaded',install,{once:true});
-  window.addEventListener('load',install,{once:true});
-  setTimeout(install,250);
-  setTimeout(install,1000);
 })();
