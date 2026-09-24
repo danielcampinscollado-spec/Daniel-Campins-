@@ -20,10 +20,10 @@ function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
 let mealAuthorityPromise=null;
 function ensureMealAuthority(){
-  if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealSetupCount==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
+  if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260922-meal-authority-v9';
+    const wanted='nutrition-meal-setup-v1.js?v=20260923-ordered-meals2';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
