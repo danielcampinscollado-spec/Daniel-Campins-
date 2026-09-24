@@ -83,10 +83,6 @@
   function renderStep1Direct(){const p=pane();if(!p)return;const id=currentId,dayLabel=currentType==='rest'?'día de descanso':'día de entrenamiento';p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupDirectToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`}
   window.dccMealSetupDirectContinue=function(){if(!selected.length)return;chosenCount=selected.length;renderStep3()};
 
-  function renderStep2(){
-    const p=pane();if(!p)return;
-    p.innerHTML=`<div class="dcc-meal-setup">${progress(2)}<div class="dcc-meal-setup-card"><h2>Elige ${chosenCount} ${chosenCount===1?'comida':'comidas'}</h2><p>Selecciona los momentos de comida que quieres incluir.</p><span class="dcc-meal-selected-count">${selected.length} de ${chosenCount} seleccionadas</span><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="dccMealSetupToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?'✓':'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?'Seleccionada':'Toca para seleccionar'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="dccMealSetupBackToCount()">Atrás</button><button type="button" class="dcc-meal-next" ${selected.length===chosenCount?'':'disabled'} onclick="dccMealSetupOrder()">Elegir orden</button></div></div>`
-  }
   function renderStep3(){
     const p=pane();if(!p)return;
     p.innerHTML=`<div class="dcc-meal-setup">${progress(3)}<div class="dcc-meal-setup-card"><h2>Orden de las comidas</h2><p>Este será el orden que verá el cliente. Usa las flechas para colocarlas como quieras.</p><div class="dcc-meal-order">${selected.map((name,i)=>`<div class="dcc-meal-order-row"><span class="dcc-meal-order-num">${i+1}</span><b>${esc(name)}</b><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-move" ${i===0?'disabled':''} onclick="dccMealSetupMove(${i},-1)" aria-label="Subir ${esc(name)}">↑</button><button type="button" class="dcc-meal-move" ${i===selected.length-1?'disabled':''} onclick="dccMealSetupMove(${i},1)" aria-label="Bajar ${esc(name)}">↓</button></span></div>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="dccMealSetupBackToMeals()">Atrás</button><button type="button" class="dcc-meal-next" onclick="dccMealSetupCreate()">Crear plan</button></div></div>`
@@ -99,11 +95,7 @@
 
   window.dccNutritionMealSetupStart=renderStep1;
   window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window.__dccDietType||'training');
-  window.dccMealSetupCount=function(n){chosenCount=n;selected=[];renderStep2()};
-  window.dccMealSetupToggle=function(name){if(selected.includes(name))selected=selected.filter(x=>x!==name);else if(selected.length<chosenCount)selected.push(name);renderStep2()};
-  window.dccMealSetupBackToCount=function(){renderStep1(currentId,setupMode==='single'?currentType:null)};
-  window.dccMealSetupOrder=function(){if(selected.length===chosenCount)renderStep3()};
-  window.dccMealSetupBackToMeals=function(){renderStep2()};
+  window.dccMealSetupBackToMeals=function(){renderStep1Direct()};
   window.dccMealSetupMove=function(index,delta){const to=index+delta;if(to<0||to>=selected.length)return;const next=[...selected],[item]=next.splice(index,1);next.splice(to,0,item);selected=next;renderStep3()};
   window.dccMealSetupCreate=async function(){
     if(!currentId||selected.length!==chosenCount)return;
