@@ -41,6 +41,7 @@ function ensureMealAuthority(){
   });
   return mealAuthorityPromise;
 }
+window.dccNutritionEnsureMealAuthority=ensureMealAuthority;
 function key(id){return 'dcc:diet-history:v2:'+id}
 const historyLoaded={};
 function history(id){const cached=window.data?.dietHistory?.[id];if(Array.isArray(cached))return cached;try{const x=JSON.parse(localStorage.getItem(key(id))||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
