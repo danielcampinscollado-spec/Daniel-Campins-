@@ -23,7 +23,7 @@ function ensureMealAuthority(){
   if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
   if(mealAuthorityPromise)return mealAuthorityPromise;
   mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260924-restored-click1';
+    const wanted='nutrition-meal-setup-v1.js?v=20260924-direct-button1';
     const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
     if(exact){
       if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
