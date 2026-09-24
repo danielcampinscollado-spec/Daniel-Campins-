@@ -1,7 +1,7 @@
 /* DCC — asistente premium para configurar comidas y su orden */
 (function(){
   'use strict';
-  const BUILD='20260922-nutrition-meal-setup-v9-per-day-flow';
+  const BUILD='20260924-nutrition-meal-setup-v10-event-selection';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
