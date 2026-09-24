@@ -14131,16 +14131,19 @@ async function addTrainingDay(id){
   };
 
   days.push(newDay);
-
-  saveData();
+  window.dccMarkTrainingDraftDirty?.(id);
 
   const ok = await saveRoutineToSupabase(id);
 
   if(!ok){
-    toast("Guardado localmente, pero no se pudo sincronizar");
+    days.pop();
+    toast("No se pudo añadir el día porque la rutina no se sincronizó");
+    return false;
   }
 
+  window.__dccClearRoutineDraftState?.();
   showCoach("routines");
+  return true;
 }
 function openTrainingDay(id,dayIndex){
 
