@@ -100,7 +100,7 @@
   window.dccCloseTrainingModal=()=>document.getElementById('dcc-tr-modal')?.remove();
   window.dccOpenMuscleModal=(id,di)=>{const d=routineDays(id)[di];if(!d)return;state.muscleDraft=dayMuscles(d);modal(`<div class="dcc-tr-modal-card"><div class="dcc-tr-modal-head"><h3>Elegir músculos · Día ${di+1}</h3><button class="dcc-tr-modal-close" onclick="dccCloseTrainingModal()">×</button></div><p class="dcc-tr-modal-sub">Selecciona uno o varios grupos musculares.</p><div class="dcc-tr-chiprow">${MUSCLES.map(m=>`<button class="dcc-tr-chip ${state.muscleDraft.includes(m)?'on':''}" onclick="dccDraftMuscle(this,'${esc(m)}')">${esc(m)}</button>`).join('')}</div><button class="dcc-tr-modal-save" onclick="dccSaveRoutineMuscles('${esc(id)}',${di})">Guardar músculos</button></div>`)};
   window.dccDraftMuscle=(btn,m)=>{state.muscleDraft=state.muscleDraft.includes(m)?state.muscleDraft.filter(x=>x!==m):[...state.muscleDraft,m];btn.classList.toggle('on')};
-  window.dccSaveRoutineMuscles=(id,di)=>{const d=routineDays(id)[di];if(!d)return;writeMuscles(d,state.muscleDraft);window.__dccTrainingOpen=di;dccCloseTrainingModal();window.dccClientAdmin(id,'training')};
+  window.dccSaveRoutineMuscles=(id,di)=>{const d=routineDays(id)[di];if(!d)return;window.dccMarkTrainingDraftDirty?.(id);writeMuscles(d,state.muscleDraft);window.__dccTrainingOpen=di;dccCloseTrainingModal();window.dccClientAdmin(id,'training')};
 
   window.dccTogglePreviousRoutineInline=id=>{state.previousOpen=!state.previousOpen;document.querySelector('[data-dcc-history="1"]')?.remove();decorate()};
 
