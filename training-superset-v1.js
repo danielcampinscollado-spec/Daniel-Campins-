@@ -20,7 +20,7 @@
   }
   function dayRef(id,di){return routineDays(id)?.[Number(di)]||null;}
   function library(){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];}
-  function save(){try{if(typeof window.saveData==='function')window.saveData();else if(typeof saveData==='function')saveData();}catch(_){}}
+  function save(){window.dccMarkTrainingDraftDirty?.()}
   function ensureRoutineBackup(id){
     if(window.__dccRoutineUnsavedBackupSet)return;
     window.__dccRoutineUnsavedBackup=JSON.stringify(window.data?.routines?.[id]??null);
