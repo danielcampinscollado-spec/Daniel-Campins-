@@ -15899,27 +15899,6 @@ function removeTrainingExercise(id,dayIndex,index){
   renderTrainingExerciseConfiguration(id,dayIndex);
 
 }
-async function removeTrainingDay(id,dayIndex){
-
-  if(!data.routines[id]) return;
-
-  data.routines[id].splice(dayIndex,1);
-
-  data.routines[id].forEach((day,i)=>{
-    day.day=i+1;
-  });
-
-  saveData();
-
-  const ok=await saveRoutineToSupabase(id);
-
-  if(ok){
-    toast("Día de entrenamiento eliminado");
-  }
-
-  showCoach("routines");
-}
-
 function reviewCheckin(id){
 const c=client(id);
 const x=data.checkins[id]||{
