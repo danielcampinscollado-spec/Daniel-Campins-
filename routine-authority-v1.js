@@ -53,68 +53,6 @@
     }
   };
 
-  const addExerciseServerFirst=async function(id,dayIndex){
-    const currentRoutine=clone(appData().routines?.[id])||[];
-    const day=currentRoutine?.[dayIndex];
-    if(!day){notify('No se encontró el día');return}
-
-    const name=prompt('Nombre del ejercicio:');
-    if(!name?.trim())return;
-    const sets=prompt('Series:');
-    if(!sets?.trim())return;
-    const reps=prompt('Repeticiones:');
-    if(!reps?.trim())return;
-    const restBetweenSets=prompt('Descanso entre series (segundos):','0');
-    if(restBetweenSets===null)return;
-    const restBetweenExercises=prompt('Descanso después del ejercicio (segundos):','0');
-    if(restBetweenExercises===null)return;
-    const video=prompt('Enlace al vídeo del ejercicio (opcional):');
-    if(video===null)return;
-
-    day.exercises=Array.isArray(day.exercises)?day.exercises:[];
-    day.exercises.push({
-      name:name.trim(),
-      sets:sets.trim(),
-      reps:reps.trim(),
-      restBetweenSets:Math.max(0,parseInt(restBetweenSets,10)||0),
-      restBetweenExercises:Math.max(0,parseInt(restBetweenExercises,10)||0),
-      videoUrl:video.trim()
-    });
-
-    try{
-      await writeRoutine(id,currentRoutine);
-      applyRoutine(id,currentRoutine);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
-      notify('Ejercicio guardado');
-    }catch(error){
-      console.error('DCC añadir ejercicio server-first:',error);
-      await reloadRoutines();
-      alert('No se pudo añadir el ejercicio. No se ha aplicado ningún cambio local.\n\n'+(error?.message||'Error del servidor'));
-    }
-  };
-  addExerciseServerFirst.__dccAuditSafeVideoV2=true;
-  addExerciseServerFirst.__dccRoutineAuthorityV5=true;
-  window.addExercise=addExerciseServerFirst;
-
-  window.removeExercise=async function(id,dayIndex,exerciseIndex){
-    const next=clone(appData().routines?.[id])||[];
-    const day=next?.[dayIndex];
-    if(!day||!Array.isArray(day.exercises)||!day.exercises[exerciseIndex])return;
-    const exercise=day.exercises[exerciseIndex];
-    if(!confirm(`¿Eliminar "${exercise.name||'este ejercicio'}" de esta rutina?`))return;
-    day.exercises.splice(exerciseIndex,1);
-    try{
-      await writeRoutine(id,next);
-      applyRoutine(id,next);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
-      notify('Ejercicio eliminado');
-    }catch(error){
-      console.error('DCC eliminar ejercicio server-first:',error);
-      await reloadRoutines();
-      alert('No se pudo eliminar el ejercicio. La rutina se mantiene sin cambios.');
-    }
-  };
-
   window.removeTrainingDay=async function(id,dayIndex){
     const next=clone(appData().routines?.[id])||[];
     if(!next[dayIndex])return;
