@@ -13662,6 +13662,10 @@ async function addTrainingDay(id){
   showCoach("routines");
   return true;
 }
+function setTrainingAnatomy(sex,id,dayIndex){
+  window.__dccTrainingAnatomy=sex==="female"?"female":"male";
+  openTrainingDay(id,dayIndex);
+}
 function openTrainingDay(id,dayIndex){
 
   const day=data.routines[id]?.[dayIndex];
@@ -13708,6 +13712,21 @@ function openTrainingDay(id,dayIndex){
     "Glúteos",
     "Gemelos"
   ];
+
+  const anatomySex=window.__dccTrainingAnatomy||"male";
+  const premiumMuscleImage=(group)=>{
+    const k=String(group||"").toLowerCase();
+    const map={
+      "pectoral":"client-pectoral-premium-v5.webp","dorsal":"client-dorsal-premium-v5.webp","hombros":"client-hombros-premium-v5.webp","trapecio":"client-trapecio-premium.svg","bíceps":"client-biceps-premium-v5.webp","tríceps":"client-triceps-premium-v5.webp","antebrazos":"client-antebrazos-premium.svg","core":"client-core-premium-v5.webp","lumbar":"client-trapecio-premium.svg","pierna completa":"client-pierna-completa-premium-v5.webp","cuádriceps":"client-cuadriceps-premium-v5.webp","femoral":"client-femoral-premium-v5.webp","glúteos":"client-gluteos-premium-v5.webp","gemelos":"client-gemelos-premium-v5.webp"
+    };
+    if(anatomySex==="female"){
+      if(k==="trapecio"||k==="lumbar") return "client-trapecio-female-premium-v1.webp";
+      if(k==="antebrazos") return "client-antebrazos-female-premium-v1.webp";
+      if(["pierna completa","cuádriceps","femoral","glúteos","gemelos"].includes(k)) return "client-pierna-completa-female-premium-v1.webp";
+      return "anatomy-female-premium-v1.webp";
+    }
+    return map[k]||"anatomy-male-final.svg";
+  };
 
   main.innerHTML=`
 
@@ -13799,6 +13818,12 @@ function openTrainingDay(id,dayIndex){
 
     </div>
 
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+      <button type="button" onclick="setTrainingAnatomy('male','${id}',${dayIndex})" style="padding:11px;border-radius:13px;border:1px solid ${anatomySex==='male'?'#d9aa4a':'rgba(217,170,74,.28)'};background:${anatomySex==='male'?'#fff4d2':'#fff'};color:#6a531f;font-weight:800">Hombre</button>
+      <button type="button" onclick="setTrainingAnatomy('female','${id}',${dayIndex})" style="padding:11px;border-radius:13px;border:1px solid ${anatomySex==='female'?'#d9aa4a':'rgba(217,170,74,.28)'};background:${anatomySex==='female'?'#fff4d2':'#fff'};color:#6a531f;font-weight:800">Mujer</button>
+    </div>
+    <div style="height:220px;margin-top:10px;border-radius:18px;border:1px solid rgba(217,170,74,.22);background:#fbf5e9;overflow:hidden"><img src="${anatomySex==='female'?'./assets/muscles/anatomy-female-premium-v1.webp':'./assets/muscles/anatomy-male-final.svg'}" alt="" style="width:100%;height:100%;object-fit:contain"></div>
+
     <div style="
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -13809,7 +13834,7 @@ function openTrainingDay(id,dayIndex){
       ${muscleOptions.map(group=>{
 
         const selected=day.muscleGroups.includes(group);
-        const image=recognizeMuscleImage(group);
+        const image=premiumMuscleImage(group);
 
         return `
 
@@ -13858,7 +13883,7 @@ function openTrainingDay(id,dayIndex){
               image
                 ? `
                   <img
-                    src="./assets/muscles/${image}"
+                    src="${image.startsWith("./")?image:`./assets/muscles/${image}`}"
                     alt=""
                     loading="lazy"
                     style="
