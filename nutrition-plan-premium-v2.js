@@ -18,38 +18,6 @@ function avoid(id){const c=client(id);return String(c.foods_to_avoid??c.foodsToA
 function plan(id){return window.data?.diets?.[id]||null}
 function hasPlan(id){const p=plan(id);return !!(p&&(['training','rest'].some(k=>Array.isArray(p?.[k]?.meals)&&p[k].meals.length)))}
 function counts(id){const p=plan(id)||{};return{t:p?.training?.meals?.length||0,r:p?.rest?.meals?.length||0}}
-let mealAuthorityPromise=null;
-function ensureMealAuthority(){
-  if(typeof window.dccNutritionMealSetupStart==='function'&&typeof window.dccMealAddPreset==='function')return Promise.resolve(true);
-  if(mealAuthorityPromise)return mealAuthorityPromise;
-  mealAuthorityPromise=new Promise(resolve=>{
-    const wanted='nutrition-meal-setup-v1.js?v=20260924-stable-pane2';
-    const exact=[...document.scripts].find(s=>(s.src||'').includes(wanted));
-    if(exact){
-      if(typeof window.dccNutritionMealSetupStart==='function')return resolve(true);
-      exact.addEventListener('load',()=>resolve(typeof window.dccNutritionMealSetupStart==='function'),{once:true});
-      exact.addEventListener('error',()=>resolve(false),{once:true});
-      setTimeout(()=>resolve(typeof window.dccNutritionMealSetupStart==='function'),1200);
-      return;
-    }
-    const s=document.createElement('script');
-    s.src='./'+wanted;
-    s.async=false;
-    s.onload=()=>resolve(typeof window.dccNutritionMealSetupStart==='function');
-    s.onerror=()=>{mealAuthorityPromise=null;resolve(false)};
-    (document.head||document.documentElement).appendChild(s);
-  });
-  return mealAuthorityPromise;
-}
-window.dccNutritionEnsureMealAuthority=ensureMealAuthority;
-function key(id){return 'dcc:diet-history:v2:'+id}
-const historyLoaded={};
-function history(id){const cached=window.data?.dietHistory?.[id];if(Array.isArray(cached))return cached;try{const x=JSON.parse(localStorage.getItem(key(id))||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
-function cacheHistory(id,a){const rows=Array.isArray(a)?a.slice(0,30):[];window.data.dietHistory=window.data.dietHistory||{};window.data.dietHistory[id]=rows;try{localStorage.setItem(key(id),JSON.stringify(rows))}catch(e){};if(typeof window.saveData==='function')window.saveData()}
-async function loadHistory(id){if(!window.supabaseClient)return history(id);const {data:rows,error}=await window.supabaseClient.from('client_diet_history').select('id,label,archived_at,plan').eq('client_id',String(id)).order('archived_at',{ascending:false}).limit(30);if(error)throw error;const a=(rows||[]).map(x=>({id:x.id,label:x.label,archivedAt:x.archived_at,plan:x.plan}));cacheHistory(id,a);historyLoaded[id]=true;return a}
-async function persist(id){const p=clone(plan(id))||{training:{calories:'',protein:'',meals:[]},rest:{calories:'',protein:'',meals:[]}};if(!window.supabaseClient)throw new Error('No hay conexión con Supabase');const {data:ok,error}=await window.supabaseClient.rpc('dcc_save_diet_plan',{p_client_id:String(id),p_training:p.training||{},p_rest:p.rest||{}});if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó el guardado de la dieta');if(typeof window.saveData==='function')window.saveData();return true}
-async function transition(id,newPlan,label){if(!window.supabaseClient)throw new Error('No hay conexión con Supabase');const historyId='diet-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);const {data:ok,error}=await window.supabaseClient.rpc('dcc_transition_diet_plan',{p_client_id:String(id),p_new_plan:newPlan,p_archive_label:label||null,p_history_id:label?historyId:null});if(error)throw error;if(ok!==true)throw new Error('El servidor no confirmó el cambio de dieta');window.data.diets=window.data.diets||{};window.data.diets[id]=clone(newPlan);if(typeof window.saveData==='function')window.saveData();await loadHistory(id);return true}
-function nutritionError(error){console.error('DCC nutrition server-first:',error);alert('No se pudo guardar el cambio de alimentación. No se ha aplicado ningún cambio.\n\n'+(error?.message||'Error del servidor'))}
 function shell(id){const fn=base();if(!fn)return null;fn(id,'food');css();return pane()}
 function overview(id){window.__dccDietEditing=false;const p=shell(id);if(!p)return;if(!historyLoaded[id]&&window.supabaseClient){historyLoaded[id]=true;loadHistory(id).then(()=>overview(id)).catch(e=>console.error('DCC nutrition history:',e))}const ex=hasPlan(id),c=counts(id),h=history(id),a=avoid(id);p.innerHTML=`<div class="dcc-n2">${a?`<div class="dcc-n2-warning">Aviso del cliente · No incluir: <b>${esc(a)}</b></div>`:''}<section class="dcc-n2-card"><div class="dcc-n2-meta" style="margin-top:0"><div><small>Día de entrenamiento</small><b>${c.t} ${c.t===1?'comida':'comidas'}</b></div><div><small>Día de descanso</small><b>${c.r} ${c.r===1?'comida':'comidas'}</b></div></div></section><div class="dcc-n2-actions">${ex?`<button class="dcc-n2-btn primary" onclick="dccNutritionV2Edit('${id}')"><span class="i">✎</span><span>Editar plan actual<small>Modifica comidas, opciones y cantidades</small></span><span class="dcc-n2-arrow">›</span></button>`:''}<button class="dcc-n2-btn ${ex?'secondary':'primary'}" onclick="dccNutritionV2New('${id}')"><span class="i">＋</span><span>${ex?'Crear plan nuevo':'Crear plan de alimentación'}<small>Configura entrenamiento y descanso desde cero</small></span><span class="dcc-n2-arrow">›</span></button>${ex?`<button class="dcc-n2-btn secondary" onclick="dccNutritionV2Duplicate('${id}')"><span class="i">▣</span><span>Duplicar plan actual<small>Copia el plan para modificarlo sin perder la versión anterior</small></span><span class="dcc-n2-arrow">›</span></button>`:''}</div><div class="dcc-n2-title">Historial de planes</div><div class="dcc-n2-history">${h.length?h.slice(0,8).map((x,i)=>`<button class="dcc-n2-h" onclick="dccNutritionV2History('${id}',${i})"><span class="dcc-n2-ico" style="width:38px;height:38px;font-size:16px">↺</span><span><b>${esc(x.label||'Plan anterior')}</b><small>Archivado ${fmt(x.archivedAt)}</small></span><span class="dcc-n2-arrow">›</span></button>`).join(''):`<div class="dcc-n2-empty">Aquí aparecerán las dietas anteriores cuando renueves un plan.</div>`}</div></div>`}
 function menu(id){return window.dccNutritionV2Blank(id)}
@@ -63,5 +31,5 @@ window.dccNutritionV2Renew=async id=>{const next=clone(plan(id));if(!next)return
 window.dccNutritionV2Duplicate=async id=>{const next=clone(plan(id));if(!next)return;try{await transition(id,next,'Plan anterior · antes de duplicar');editor(id)}catch(e){nutritionError(e)}};
 window.dccNutritionV2Restore=async(id,i)=>{const x=history(id)[i];if(!x)return;try{await transition(id,clone(x.plan),hasPlan(id)?'Plan anterior · antes de restaurar':null);if(typeof window.toast==='function')window.toast('Plan restaurado');overview(id)}catch(e){nutritionError(e)}};
 function intercept(e){const b=e.target.closest&&e.target.closest('.dcc-ca-tab');if(!b||b.textContent.trim()!=='Alimentación')return;const id=window.selectedClient;if(!id)return;e.preventDefault();e.stopImmediatePropagation();overview(id)}
-document.addEventListener('click',intercept,true);css();ensureMealAuthority();
+document.addEventListener('click',intercept,true);css();
 })();
