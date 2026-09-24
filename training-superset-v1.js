@@ -584,8 +584,7 @@
       window.__dccRoutineNavBypass=true;
       try{
         const result=await nativeSaveConfiguredTraining.apply(this,arguments);
-        const day=dayRef(arguments[0],arguments[1]);
-        if(day?.trainingSetupStep==='complete')clearRoutineDirty();
+        if(result===true)clearRoutineDirty();
         return result;
       }finally{window.__dccRoutineNavBypass=false;}
     };
