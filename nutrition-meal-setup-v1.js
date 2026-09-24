@@ -141,8 +141,6 @@
   function install(){
     const create=window.dccNutritionV2New;
     if(typeof create==='function'&&!create.__dccMealSetupV9){const wrappedCreate=function(id){if(!hasCurrentPlan(id))return Promise.resolve(renderStep1(id));return create(id)};wrappedCreate.__dccMealSetupV9=true;wrappedCreate.__base=create;window.dccNutritionV2New=wrappedCreate}
-    const blank=window.dccNutritionV2Blank;
-    if(typeof blank==='function'&&!blank.__dccMealSetupV9){const wrapped=function(id){renderStep1(id);return Promise.resolve()};wrapped.__dccMealSetupV9=true;wrapped.__base=blank;window.dccNutritionV2Blank=wrapped}
     const add=window.dccDietAddMeal;
     if(typeof add==='function'&&!add.__dccPresetMealV9){const wrappedAdd=function(id,type){const t=type||window.__dccDietType||'training',ms=window.data?.diets?.[id]?.[t]?.meals;if(!Array.isArray(ms)||!ms.length)renderStep1(id,t);else renderAddMealPicker(id,t);return Promise.resolve()};wrappedAdd.__dccPresetMealV9=true;wrappedAdd.__base=add;window.dccDietAddMeal=wrappedAdd}
     return true
