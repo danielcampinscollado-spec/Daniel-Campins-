@@ -21,6 +21,12 @@
   function dayRef(id,di){return routineDays(id)?.[Number(di)]||null;}
   function library(){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];}
   function save(){window.dccMarkTrainingDraftDirty?.()}
+  window.dccMarkTrainingDraftDirty=function(id){
+    const sid=String(id??window.selectedClient??window.__dccRoutineUnsavedClient??'');
+    ensureRoutineBackup(sid);
+    window.__dccRoutineUnsavedClient=sid;
+    window.__dccRoutineDraftDirty=true;
+  };
   function ensureRoutineBackup(id){
     if(window.__dccRoutineUnsavedBackupSet)return;
     window.__dccRoutineUnsavedBackup=JSON.stringify(window.data?.routines?.[id]??null);
