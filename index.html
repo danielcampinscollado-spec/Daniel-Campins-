@@ -14777,7 +14777,7 @@ function toggleTrainingMuscle(id,dayIndex,group){
 
   }
 
-  saveData();
+  window.dccMarkTrainingDraftDirty?.(id);
 
   /*
    * Actualizamos solo las tarjetas y el contador,
