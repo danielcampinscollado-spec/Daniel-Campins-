@@ -15318,7 +15318,7 @@ function toggleTrainingExercise(id,dayIndex,exerciseId){
 
   const currentScroll=window.scrollY;
 
-saveData();
+window.dccMarkTrainingDraftDirty?.(id);
 
 openTrainingExercises(id,dayIndex,true);
 
@@ -15367,7 +15367,7 @@ function addManualTrainingExercise(id,dayIndex){
 
   });
 
-  saveData();
+  window.dccMarkTrainingDraftDirty?.(id);
 
   toast("Ejercicio añadido");
 
@@ -15428,7 +15428,7 @@ function continueTrainingExerciseSelection(id,dayIndex){
 
   day.selectedExerciseIds=[];
 
-  saveData();
+  window.dccMarkTrainingDraftDirty?.(id);
 
   const ret=window.__dccExercisePickerReturnClientAdmin;
 
@@ -15811,8 +15811,8 @@ if(!main)return;
             inputmode="numeric"
             value="${esc(String(day.restBetweenSetsGlobal))}"
             onchange="
+              window.dccMarkTrainingDraftDirty?.('${id}');
               data.routines['${id}'][${dayIndex}].restBetweenSetsGlobal=Math.max(0,parseInt(this.value)||0);
-              saveData();
             "
             style="
               width:100%;
@@ -15846,8 +15846,8 @@ if(!main)return;
             inputmode="numeric"
             value="${esc(String(day.restBetweenExercisesGlobal))}"
             onchange="
+              window.dccMarkTrainingDraftDirty?.('${id}');
               data.routines['${id}'][${dayIndex}].restBetweenExercisesGlobal=Math.max(0,parseInt(this.value)||0);
-              saveData();
             "
             style="
               width:100%;
@@ -15919,8 +15919,6 @@ async function saveConfiguredTraining(id,dayIndex){
   day.trainingSetupStep="complete";
 day.trainingSetupStarted=false;
 
-saveData();
-
 const ok=await saveRoutineToSupabase(id);
   if(!ok){
     toast("La rutina se guardó localmente, pero no se pudo sincronizar");
@@ -15948,7 +15946,7 @@ function removeTrainingExercise(id,dayIndex,index){
 
   day.exercises.splice(index,1);
 
-  saveData();
+  window.dccMarkTrainingDraftDirty?.(id);
 
   renderTrainingExerciseConfiguration(id,dayIndex);
 
