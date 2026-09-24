@@ -1,7 +1,7 @@
 /* DCC — editor de alimentación con borrador real + guardado explícito */
 (function(){
   'use strict';
-  const BUILD='20260913-diet-editor-save-exit-v6';
+  const BUILD='20260924-diet-editor-save-exit-v7-owned-pane';
   if(window.__dccDietEditorSaveExit===BUILD)return;
   window.__dccDietEditorSaveExit=BUILD;
 
@@ -29,7 +29,7 @@
     while(typeof cur==='function'&&depth++<12){last=cur;if(typeof cur.__base!=='function')break;cur=cur.__base}
     return last;
   }
-  function pane(){const wrap=document.querySelector('#coach-main .dcc-ca-wrap');return wrap?.lastElementChild||null}
+  function pane(){return document.getElementById('dcc-coach-client-pane')}
   function isEditing(id){return editingClientId!==null&&String(editingClientId)===String(id)}
   function renderDraft(id){if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food')}
 
