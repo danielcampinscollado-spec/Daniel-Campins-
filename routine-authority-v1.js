@@ -84,6 +84,10 @@
       applyRoutine(id,draft);
       window.__dccTrainingEdit=false;
       delete window.__dccTrainingBackup;
+      window.__dccRoutineDraftDirty=false;
+      window.__dccRoutineUnsavedBackup=undefined;
+      window.__dccRoutineUnsavedBackupSet=false;
+      window.__dccRoutineUnsavedClient='';
       renderClientRoutine(id);
       notify('Rutina guardada');
     }catch(error){
