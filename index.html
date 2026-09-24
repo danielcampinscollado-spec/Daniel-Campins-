@@ -12439,6 +12439,12 @@ if(screen==="diets"){
 }
 if(screen==="routines"){
 
+  /* Entrenamiento del entrenador: una sola autoridad visual/funcional. */
+  if(window.selectedClient && typeof window.dccClientAdmin==="function"){
+    window.dccClientAdmin(String(window.selectedClient),"training");
+    return;
+  }
+
   if(!window.selectedClient){
 
     html=`
