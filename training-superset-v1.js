@@ -20,7 +20,7 @@
   }
   function dayRef(id,di){return routineDays(id)?.[Number(di)]||null;}
   function library(){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];}
-  function save(){window.dccMarkTrainingDraftDirty?.()}
+  function save(id){window.dccMarkTrainingDraftDirty?.(id)}
   window.dccMarkTrainingDraftDirty=function(id){
     const sid=String(id??window.selectedClient??window.__dccRoutineUnsavedClient??'');
     ensureRoutineBackup(sid);
@@ -258,7 +258,7 @@
     if(!ctx)return;
     const day=dayRef(ctx.id,ctx.di);if(!day)return;
 
-    if(mode(ctx.id,ctx.di)==='normal'&&absorbNormalSelection(day))save();
+    if(mode(ctx.id,ctx.di)==='normal'&&absorbNormalSelection(day))save(ctx.id);
 
     ctx.root.querySelector('.dcc-mode-wrap')?.remove();
     const wrap=document.createElement('div');wrap.className='dcc-mode-wrap';wrap.innerHTML=renderModeBar(ctx.id,ctx.di,day);
@@ -285,7 +285,7 @@
       }
       setMode(ctx.id,ctx.di,next);
       restoreModeDraft(ctx.id,ctx.di,day,next);
-      save();
+      save(ctx.id);
       window.openTrainingExercises?.(ctx.id,ctx.di,true);
     }));
 
@@ -319,7 +319,7 @@
       draftSelections(id,di).superset=[];
       day.trainingSetupStarted=true;
       markRoutineDirty(id);
-      save();
+      save(id);
       if(showSuccess)notify('Superserie añadida');
       return true;
     }
@@ -338,7 +338,7 @@
       draftSelections(id,di).restpause=[];
       day.trainingSetupStarted=true;
       markRoutineDirty(id);
-      save();
+      save(id);
       if(showSuccess)notify('REST-pause añadido');
       return true;
     }
@@ -373,7 +373,7 @@
     const day=dayRef(id,di);if(!day)return;
     const raw=String(value??'').trim(),n=keyName==='rounds'?(raw?Math.max(1,parseInt(raw)||1):''):Math.max(0,parseInt(raw)||0);
     markRoutineDirty(id);
-    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=n===''?'':String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save();
+    (day.exercises||[]).forEach(ex=>{if(ex.supersetId!==supersetId)return;if(keyName==='rounds'){ex.supersetRounds=n;ex.sets=n===''?'':String(n);}else{ex.supersetRest=n;ex.restBetweenSets=0;ex.restBetweenExercises=n;}});save(id);
   }
 
   function updateRestPause(id,di,exerciseIndex,keyName,value){
@@ -386,7 +386,7 @@
       const raw=String(value??'').trim(),n=raw?Math.max(1,parseInt(raw)||1):null;ex.restPauseSeconds=n;ex.restBetweenSets=n??0;
     }else{
       const raw=String(value??'').trim(),n=raw?Math.max(0,parseInt(raw)||0):null;ex.restPauseFinalRest=n;ex.restBetweenExercises=n??0;
-    }save();
+    }save(id);
   }
 
   function decorateConfiguration(id,di){
@@ -399,7 +399,7 @@
         if(ex?.restPause&&String(ex.sets||'')==='4'&&String(ex.reps||'')==='12/10/8/6'&&String(ex.restPauseReps||'')==='12/10/8/6'){ex.sets='';ex.reps='';ex.restPauseReps='';ex.restPauseBlocks=0;normalized=true;}
         if(ex?.restPause&&!String(ex.restPauseReps||ex.reps||'').trim()&&Number(ex.restPauseSeconds)===7&&Number(ex.restPauseFinalRest)===90){ex.restPauseSeconds=null;ex.restPauseFinalRest=null;ex.restBetweenSets=0;ex.restBetweenExercises=0;normalized=true;}
       });
-      if(normalized)save();
+      if(normalized)save(id);
     }
     root.classList.add('dcc-config-active');
     root.querySelectorAll('.dcc-method-config,.dcc-method-badge').forEach(el=>el.remove());root.querySelectorAll('.dcc-exercise-card').forEach(el=>el.style.display='');
@@ -469,7 +469,7 @@
       box.querySelector('[data-reps]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
-      box.querySelector('[data-video]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.videoUrl=e.target.value;save();});
+      box.querySelector('[data-video]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.videoUrl=e.target.value;save(id);});
       box.querySelector('[data-open-video]')?.addEventListener('click',()=>{const url=String(group.ex.videoUrl||'').trim();if(url)window.open(url,'_blank','noopener');else notify('Añade primero el enlace del vídeo');});
       box.querySelector('[data-delete-rest]')?.addEventListener('click',()=>window.removeTrainingExercise?.(id,di,group.exerciseIndex));
     });
@@ -500,7 +500,7 @@
         day.selectedExerciseIds=[];
         window.__dccRoutineDraftDirty=true;
         window.__dccRoutineUnsavedClient=String(id);
-        save();
+        save(id);
         window.openTrainingExercises?.(id,di,true);
         return;
       }
@@ -524,7 +524,7 @@
     window.continueTrainingExerciseSelection=function(id,di){
       const current=mode(id,di);const day=dayRef(id,di);
       if(!day)return;
-      if(current==='normal'&&absorbNormalSelection(day))save();
+      if(current==='normal'&&absorbNormalSelection(day))save(id);
       if((current==='superset'||current==='restpause')&&day.selectedExerciseIds?.length){
         if(!commitSpecialDraft(id,di,day,current,false))return;
       }
