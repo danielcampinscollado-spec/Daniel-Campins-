@@ -1,12 +1,13 @@
 /* DCC — editor de entrenamiento estable: músculo primero y sin saltos de scroll */
 (function(){
   'use strict';
-  const BUILD='20260915-training-editor-stability-v2';
+  const BUILD='20260924-training-editor-stability-v3';
   if(window.__dccTrainingEditorStability===BUILD)return;
   window.__dccTrainingEditorStability=BUILD;
 
   const MUSCLES=['Pectoral','Dorsal','Hombros','Bíceps','Tríceps','Cuádriceps','Femoral','Glúteos','Aductores','Gemelos','Trapecio','Antebrazos','Lumbar','Core'];
-  let raf=0,savedY=null,preserveUntil=0,muscleDraft=[];
+  let raf=0,savedY=null,preserveUntil=0,muscleDraft=[],muscleSex='male';
+  const ANATOMY={male:'./assets/muscles/anatomy-male-final.svg?v=20260924-picker',female:'./assets/muscles/anatomy-female-premium-v1.webp?v=20260924-picker'};
   const main=()=>document.getElementById('coach-main');
   const cid=()=>String(window.selectedClient??'');
   const norm=v=>String(v||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -36,7 +37,7 @@
       .dcc-stable-muscle-modal{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-end;justify-content:center;padding:12px;background:rgba(38,31,21,.28);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
       .dcc-stable-muscle-card{width:min(680px,100%);max-height:78vh;overflow:auto;padding:18px;border:1px solid rgba(183,123,19,.34);border-radius:24px 24px 16px 16px;background:linear-gradient(160deg,#fffdf8,#f7eedf);box-shadow:0 -18px 48px rgba(78,58,28,.18);color:#17191d}
       .dcc-stable-muscle-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.dcc-stable-muscle-head h3{margin:0;font-size:20px}.dcc-stable-muscle-close{width:38px;height:38px;border:1px solid rgba(183,123,19,.3);border-radius:50%;background:#fff8e8;font-size:22px;color:#8d5b08}
-      .dcc-stable-muscle-sub{margin:5px 0 14px;color:#737b86;font-size:12px}.dcc-stable-muscle-grid{display:flex;flex-wrap:wrap;gap:8px}.dcc-stable-muscle-chip{padding:10px 12px;border:1px solid rgba(183,123,19,.28);border-radius:999px;background:#fffdf8;color:#4e5560;font-weight:750}.dcc-stable-muscle-chip.on{border-color:#d9aa4a;background:linear-gradient(135deg,#f7d97f,#e7b13f);color:#17130a}.dcc-stable-muscle-save{width:100%;margin-top:16px;padding:13px;border:1px solid #d9aa4a;border-radius:14px;background:linear-gradient(135deg,#f5cf66,#e5ad36);color:#17130a;font-weight:900;font-size:15px}
+      .dcc-stable-muscle-sub{margin:5px 0 12px;color:#737b86;font-size:12px}.dcc-stable-sex{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.dcc-stable-sex button{padding:10px;border:1px solid rgba(183,123,19,.25);border-radius:13px;background:#fffdf8;font-weight:850;color:#626975}.dcc-stable-sex button.on{border-color:#d9aa4a;background:#fff5d8;color:#8d5b08}.dcc-stable-anatomy{height:210px;margin-bottom:13px;border:1px solid rgba(183,123,19,.18);border-radius:18px;background:#fbf5e9;overflow:hidden}.dcc-stable-anatomy img{width:100%;height:100%;object-fit:contain;display:block}.dcc-stable-muscle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dcc-stable-muscle-chip{padding:11px 10px;border:1px solid rgba(183,123,19,.28);border-radius:13px;background:#fffdf8;color:#4e5560;font-weight:750;text-align:left}.dcc-stable-muscle-chip.on{border-color:#d9aa4a;background:linear-gradient(135deg,#fff4cf,#f5d77f);color:#17130a}.dcc-stable-muscle-save{width:100%;margin-top:16px;padding:13px;border:1px solid #d9aa4a;border-radius:14px;background:linear-gradient(135deg,#f5cf66,#e5ad36);color:#17130a;font-weight:900;font-size:15px}
     `;(document.head||document.documentElement).appendChild(s);
   }
   function closePicker(){document.getElementById('dcc-stable-muscle-modal')?.remove()}
@@ -45,7 +46,9 @@
     remember();ensurePickerCss();closePicker();muscleDraft=dayMuscles(d);
     const modal=document.createElement('div');modal.id='dcc-stable-muscle-modal';modal.className='dcc-stable-muscle-modal';
     const card=document.createElement('div');card.className='dcc-stable-muscle-card';
-    card.innerHTML=`<div class="dcc-stable-muscle-head"><h3>Elegir músculos · Día ${di+1}</h3><button type="button" class="dcc-stable-muscle-close">×</button></div><p class="dcc-stable-muscle-sub">Selecciona uno o varios grupos musculares.</p><div class="dcc-stable-muscle-grid"></div><button type="button" class="dcc-stable-muscle-save">Guardar músculos</button>`;
+    card.innerHTML=`<div class="dcc-stable-muscle-head"><h3>Elegir músculos · Día ${di+1}</h3><button type="button" class="dcc-stable-muscle-close">×</button></div><p class="dcc-stable-muscle-sub">Selecciona Hombre o Mujer y los grupos musculares del día.</p><div class="dcc-stable-sex"><button type="button" data-sex="male" class="on">Hombre</button><button type="button" data-sex="female">Mujer</button></div><div class="dcc-stable-anatomy"><img src="${ANATOMY.male}" alt="Anatomía masculina"></div><div class="dcc-stable-muscle-grid"></div><button type="button" class="dcc-stable-muscle-save">Guardar músculos</button>`;
+    const anatomy=card.querySelector('.dcc-stable-anatomy img');
+    card.querySelectorAll('.dcc-stable-sex button').forEach(b=>b.addEventListener('click',()=>{muscleSex=b.dataset.sex;card.querySelectorAll('.dcc-stable-sex button').forEach(x=>x.classList.toggle('on',x===b));anatomy.src=ANATOMY[muscleSex];anatomy.alt=muscleSex==='female'?'Anatomía femenina':'Anatomía masculina'}));
     const grid=card.querySelector('.dcc-stable-muscle-grid');
     MUSCLES.forEach(m=>{const b=document.createElement('button');b.type='button';b.className='dcc-stable-muscle-chip'+(muscleDraft.includes(m)?' on':'');b.textContent=m;b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();muscleDraft=muscleDraft.includes(m)?muscleDraft.filter(x=>x!==m):[...muscleDraft,m];b.classList.toggle('on')});grid.appendChild(b)});
     card.querySelector('.dcc-stable-muscle-close').addEventListener('click',closePicker);
