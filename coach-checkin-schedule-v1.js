@@ -154,5 +154,5 @@
     wrap('showClientAdmin','summary');
   }
 
-  css();install();setTimeout(install,350);setTimeout(install,1100);window.addEventListener('load',()=>setTimeout(install,180));
+  css();install();
 })();
