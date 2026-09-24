@@ -12444,6 +12444,10 @@ if(screen==="routines"){
     window.dccClientAdmin(String(window.selectedClient),"training");
     return;
   }
+  if(!window.selectedClient){
+    showCoach("clients");
+    return;
+  }
 
   if(!window.selectedClient){
 
