@@ -96,6 +96,10 @@
       else await reloadRoutines();
       window.__dccTrainingEdit=false;
       delete window.__dccTrainingBackup;
+      window.__dccRoutineDraftDirty=false;
+      window.__dccRoutineUnsavedBackup=undefined;
+      window.__dccRoutineUnsavedBackupSet=false;
+      window.__dccRoutineUnsavedClient='';
       renderClientRoutine(id);
       alert('No se pudo guardar la rutina. Se ha restaurado la versión anterior.');
     }
