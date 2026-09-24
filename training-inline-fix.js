@@ -73,7 +73,7 @@
   function decorate(){
     if(state.guard)return;
     const active=[...document.querySelectorAll('.dcc-ca-tab.active')].some(b=>/Entrenamiento/i.test(b.textContent||''));if(!active)return;
-    const id=String(window.selectedClient??'');if(!id||!document.querySelector('.dcc-tr-head'))return;
+    const id=String(window.selectedClient??'');if(!id||!document.querySelector('#coach-main .dcc-tr-days'))return;
     state.guard=true;
     try{
       ensureCss();stripExerciseImages();document.querySelectorAll('button.dcc-tr-history').forEach(x=>x.remove());
@@ -88,7 +88,7 @@
           if(de.querySelector('.dcc-tr-inline-trigger'))return;
           const box=de.querySelector('.dcc-tr-exercises'),d=days[di];if(!box||!d)return;
           const ms=dayMuscles(d);
-          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="openTrainingExercises('${esc(id)}',${di})">＋ Añadir ejercicio</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Añadir músculo</button>`);
+          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="openTrainingExercises('${esc(id)}',${di})">＋ Añadir ejercicio</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Añadir grupos musculares</button>`);
         });
         document.querySelector('.dcc-tr-new')?.remove();
       }
