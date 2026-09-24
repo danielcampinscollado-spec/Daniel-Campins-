@@ -15540,13 +15540,14 @@ day.trainingSetupStarted=false;
 
 const ok=await saveRoutineToSupabase(id);
   if(!ok){
-    toast("La rutina se guardó localmente, pero no se pudo sincronizar");
-    return;
+    toast("No se pudo sincronizar la rutina");
+    return false;
   }
 
   toast("Rutina guardada correctamente");
 
   showCoach("routines");
+  return true;
 }
 function removeTrainingExercise(id,dayIndex,index){
 
