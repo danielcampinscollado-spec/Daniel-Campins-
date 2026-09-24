@@ -9,7 +9,6 @@
   let originalPlan=null;
   let pendingTransition=null;
   let nativeEditor=null;
-  let installTimer=null;
 
   const clone=v=>JSON.parse(JSON.stringify(v??null));
   const db=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
@@ -312,13 +311,6 @@
   function keepInstalled(){install();if(editingClientId!==null)restoreEditor(String(editingClientId))}
 
   install();
-  installTimer=setInterval(()=>{
-    keepInstalled();
-    const editOk=chainHas(window.dccNutritionV2Edit,'__dccDraftV6');
-    const adminOk=chainHas(window.dccClientAdmin,'__dccDraftV6');
-    const foodOk=chainHas(window.dccDietAddFood,'__dccDraftV6');
-    if(editOk&&adminOk&&foodOk){clearInterval(installTimer);installTimer=null}
-  },120);
   document.addEventListener('DOMContentLoaded',keepInstalled,{once:true});
   window.addEventListener('pageshow',keepInstalled);
 })();
