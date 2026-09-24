@@ -1,7 +1,7 @@
 /* DCC — asistente premium para configurar comidas y su orden */
 (function(){
   'use strict';
-  const BUILD='20260924-nutrition-meal-setup-v15-stable-pane';
+  const BUILD='20260924-nutrition-meal-setup-v16-owned-pane';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
@@ -50,7 +50,7 @@
     document.head.appendChild(s);
   }
 
-  function pane(){const w=document.querySelector('#coach-main .dcc-ca-wrap');if(!w)return null;return w.lastElementChild||w}
+  function pane(){return document.getElementById('dcc-coach-client-pane')}
   function meal(name){return{name,options:[{name:'Opción 1',foods:[]}]}}
   function hasCurrentPlan(id){const p=window.data?.diets?.[id];return !!(p&&['training','rest'].some(k=>Array.isArray(p?.[k]?.meals)&&p[k].meals.length))}
   function normalizeMealName(name){const n=String(name||'').trim().toLowerCase().replace(/[-–—]/g,' ').replace(/\s+/g,' ');if(n==='media mañana')return'merienda mañana';if(n==='media tarde')return'merienda tarde';return n}
