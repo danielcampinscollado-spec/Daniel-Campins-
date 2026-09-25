@@ -29,6 +29,20 @@ html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-diet-icon-btn.d
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-diet-empty{color:#81786b!important}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-diet-add-option{background:#fffdf8!important;border-color:rgba(183,123,19,.28)!important;color:#8b6115!important}
 html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-tr-cancel{background:#fffdf8!important;border-color:rgba(183,123,19,.22)!important;color:#655d51!important}
+/* DCC — compact Light Premium action controls */
+#coach-main .dcc-training-overview{padding:10px 12px!important;border-radius:14px!important}
+#coach-main .dcc-training-overview .dcc-ca-title h2{font-size:15px!important}
+#coach-main .dcc-training-overview .pill{font-size:8px!important;padding:5px 8px!important}
+#coach-main .dcc-training-days{gap:5px!important}
+#coach-main .dcc-training-days .dcc-tr-day-head{min-height:38px!important;padding:7px 10px!important}
+#coach-main .dcc-training-days .dcc-tr-day-head b{font-size:10px!important}
+#coach-main .dcc-training-days .dcc-tr-day-head small{font-size:8px!important}
+#coach-main .dcc-tr-actions{gap:6px!important;margin-top:6px!important}
+#coach-main .dcc-tr-actions button,#coach-main .dcc-tr-edit,#coach-main .dcc-tr-new{min-height:36px!important;padding:7px 10px!important;border-radius:11px!important;font-size:10px!important;line-height:1.1!important}
+#coach-main .dcc-followup-overview button,#coach-main .dcc-followup-overview .dcc-ca-save,#coach-main .dcc-followup-overview .dcc-ca-action-primary{min-height:36px!important;padding:7px 10px!important;border-radius:11px!important;font-size:10px!important}
+#coach-main .dcc-ca-card button.dcc-ca-save,#coach-main .dcc-ca-card button.dcc-ca-action-primary{min-height:36px!important;padding:7px 10px!important;border-radius:11px!important;font-size:10px!important}
+#coach-main textarea{font-size:11px}
+
 @media(max-width:520px){#coach-main.dcc-ca{padding-left:12px!important;padding-right:12px!important}.dcc-ca-head h1{font-size:31px}.dcc-ca-metric{padding:10px}.dcc-ca-metric b{font-size:14px}.dcc-ca-tab{font-size:9px}.dcc-ca-grid{grid-template-columns:1fr}.dcc-tr-head h2{font-size:18px}.dcc-tr-ex:not(.dcc-no-img){grid-template-columns:52px minmax(0,1fr) auto}.dcc-tr-ex img{width:48px;height:46px}.dcc-tr-editrow{grid-template-columns:1fr 1fr auto}.dcc-tr-ex.dcc-no-img{grid-template-columns:1fr!important}.dcc-tr-ex.dcc-no-img .dcc-tr-editrow{grid-template-columns:64px minmax(100px,1fr) 42px!important;gap:8px!important}.dcc-tr-ex.dcc-no-img .dcc-tr-spec{text-align:left!important}}
 `;document.head.appendChild(s)}
 function c(id){return(data?.clients||[]).find(x=>String(x.id)===String(id))}function weights(id,cl){const a=data?.weights?.[id]||[],v=a.map(x=>num(typeof x==='object'?(x.weight??x.value):x)).filter(x=>x!==null);return v.length?v:[num(cl?.initial??cl?.initial_weight??cl?.weight)??0]}function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';return`${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} ${u} desde el inicio`}function metric(l,v,s,g=false){return`<div class="dcc-ca-metric"><small>${l}</small><b>${v}</b>${s?`<span class="dcc-ca-trend ${g?'good':''}">${s}</span>`:''}</div>`}function info(a,b){return`<div class="dcc-ca-info"><span>${a}</span><b>${b}</b></div>`}
