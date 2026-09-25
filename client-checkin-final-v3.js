@@ -106,15 +106,9 @@
     }catch(e){console.error('DCC check-in v3:',e);toastSafe('No se pudo enviar el check-in');if(btn)btn.disabled=false}
   };
 
-  function install(){
-    const base=window.showClient;if(typeof base!=='function'||base.__dccCheckinFinalV3)return false;
-    const wrapped=function(screen){const r=base.apply(this,arguments);if(screen==='checkin')requestAnimationFrame(()=>render(false));return r};
-    wrapped.__dccCheckinFinalV3=true;
-    wrapped.__dccClientCheckinMessagesV1=true;
-    wrapped.__base=base;
-    window.showClient=wrapped;
-    return true;
-  }
+  // Legacy v3 remains available for historical compatibility only.
+  // Check-in v4 is the single client render authority; do not wrap showClient here.
+  function install(){return false}
 
-  ensureCss();install();setTimeout(install,350);setTimeout(install,1100);window.addEventListener('load',()=>setTimeout(install,150));
+  ensureCss();
 })();
