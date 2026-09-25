@@ -1,7 +1,7 @@
 /* DCC — restaura tarjeta aprobada de ejercicios y añade arrastre. */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-approved-v6';
+const BUILD='20260925-training-card-approved-v7-allstates';
 if(window.__dccTrainingCardApproved===BUILD)return;window.__dccTrainingCardApproved=BUILD;
 const root=()=>document.getElementById('coach-main');
 const rid=()=>String(window.selectedClient||'');
@@ -30,7 +30,7 @@ function rebuild(card){
  if(card.dataset.dccApproved==='1')return;card.dataset.dccApproved='1';
  const nameNode=[...card.querySelectorAll('div')].find(el=>el.children.length===0&&(el.textContent||'').trim()&&!(el.classList.contains('muted')));
  const muted=card.querySelector('.muted'); const name=(nameNode?.textContent||'Ejercicio').trim(), muscle=(muted?.textContent||'').trim();
- const labels=[...card.querySelectorAll('label')];const series=labels.find(l=>/^Series$/i.test((l.childNodes[0]?.textContent||'').trim()))?.querySelector('input');const reps=labels.find(l=>/^Repeticiones$/i.test((l.childNodes[0]?.textContent||'').trim()))?.querySelector('input');
+ const labels=[...card.querySelectorAll('label')];const series=labels.find(l=>/^Series(?:\s+de\s+superserie)?$/i.test((l.childNodes[0]?.textContent||'').trim()))?.querySelector('input');const reps=labels.find(l=>/^Repeticiones$/i.test((l.childNodes[0]?.textContent||'').trim()))?.querySelector('input');
  const url=card.querySelector('input[type="url"]');const oldDelete=[...card.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));const oldVideo=[...card.querySelectorAll('button')].find(b=>(b.textContent||'').includes('Ver vídeo'));
  if(!series||!reps)return;
  const seriesInput=series.cloneNode(true),repsInput=reps.cloneNode(true),urlInput=url?url.cloneNode(true):document.createElement('input');
@@ -45,7 +45,8 @@ function rebuild(card){
  if(oldDelete)del.addEventListener('click',e=>{e.preventDefault();oldDelete.click()});if(oldVideo)vb.addEventListener('click',e=>{e.preventDefault();oldVideo.click()});
  const h=head.querySelector('.dcc-drag-handle');let active=false;h.addEventListener('pointerdown',e=>{active=true;card.classList.add('dcc-dragging');h.setPointerCapture?.(e.pointerId);e.preventDefault()});h.addEventListener('pointermove',e=>{if(!active)return;const t=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.dcc-exercise-card');if(t&&t!==card&&t.parentElement===card.parentElement)reorder(card,t)});const end=()=>{active=false;card.classList.remove('dcc-dragging')};h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
 }
-function apply(){css();root()?.querySelectorAll('.dcc-exercise-card').forEach(rebuild)}
+function markNativeCards(){const rt=root();if(!rt)return;rt.querySelectorAll('.card').forEach(card=>{if(card.classList.contains('dcc-exercise-card'))return;const hasSeries=[...card.querySelectorAll('label')].some(l=>/^Series(?:\s+de\s+superserie)?$/i.test((l.childNodes[0]?.textContent||'').trim()));const hasReps=[...card.querySelectorAll('label')].some(l=>/^Repeticiones$/i.test((l.childNodes[0]?.textContent||'').trim()));const hasDelete=[...card.querySelectorAll('button')].some(b=>(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(hasSeries&&hasReps&&hasDelete)card.classList.add('dcc-exercise-card')})}
+function apply(){css();markNativeCards();root()?.querySelectorAll('.dcc-exercise-card').forEach(rebuild)}
 let raf=0;function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;apply()})}
 function start(){apply();new MutationObserver(schedule).observe(root()||document.body,{childList:true,subtree:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
