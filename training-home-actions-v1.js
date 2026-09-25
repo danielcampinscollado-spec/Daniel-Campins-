@@ -1,7 +1,7 @@
 /* DCC — acciones de rutina compactas, mismo lenguaje que Cancelar / Guardar */
 (function(){
 'use strict';
-const BUILD='20260916-training-home-actions-v3-save-size';
+const BUILD='20260925-training-home-actions-v4-light-history';
 if(window.__dccTrainingHomeActions===BUILD)return;window.__dccTrainingHomeActions=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -31,7 +31,7 @@ function apply(){
   const buttons=[...root.querySelectorAll('button')];
   const edit=buttons.find(b=>norm(b.textContent).includes('editar rutina'));
   const create=buttons.find(b=>norm(b.textContent).includes('crear nueva rutina'));
-  const actions=commonBox(edit,create),days=root.querySelector('.dcc-tr-days');
+  const actions=commonBox(edit,create),days=root.querySelector('.dcc-tr-days'),history=root.querySelector('[data-dcc-history="1"]');
   if(!edit||!create||!actions||!days||actions===root||actions.contains(days))return;
   compactButton(edit);compactButton(create);
   actions.dataset.dccRoutineHomeActions='1';
@@ -46,12 +46,16 @@ function apply(){
   actions.style.setProperty('max-height','48px','important');
   actions.style.setProperty('position','relative','important');
   actions.style.setProperty('inset','auto','important');
-  if(days.nextElementSibling!==actions)days.insertAdjacentElement('afterend',actions);
+  if(days.nextElementSibling!==actions)days.insertAdjacentElement('afterend',actions);if(history){history.style.setProperty('margin','8px 0 12px','important');if(actions.nextElementSibling!==history)actions.insertAdjacentElement('afterend',history);}
 }
 function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;apply()})}
 const s=document.createElement('style');s.id='dcc-training-home-actions-css';s.textContent=`
 #coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-days{padding-bottom:0!important;margin-bottom:0!important}
 #coach-main [data-dcc-routine-home-actions="1"]{min-height:48px!important;height:48px!important;max-height:48px!important;overflow:visible!important}
+#coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"]{width:100%!important;margin:8px 0 12px!important;background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:14px!important;box-shadow:0 8px 20px rgba(83,63,31,.06)!important;color:#17191d!important}
+#coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-history-head{min-height:48px!important;padding:9px 13px!important;background:transparent!important;color:#17191d!important}
+#coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-history-head small{color:#7b828c!important}
+#coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-arrow{color:#a66d0b!important}
 #coach-main [data-dcc-routine-compact="1"]{min-height:48px!important;height:48px!important;max-height:48px!important;padding:7px 12px!important;margin:0!important;border-radius:14px!important;font-size:14px!important;line-height:1.05!important}
 #coach-main [data-dcc-routine-compact="1"]:active{transform:scale(.98)!important;filter:brightness(.94)!important}
 @media(max-width:390px){#coach-main [data-dcc-routine-home-actions="1"]{gap:7px!important}#coach-main [data-dcc-routine-compact="1"]{font-size:13px!important;padding:7px 8px!important}}
