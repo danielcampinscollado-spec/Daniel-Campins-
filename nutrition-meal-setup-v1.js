@@ -19,15 +19,15 @@
       #coach-main .dcc-meal-progress span{height:4px;flex:1;border-radius:999px;background:rgba(183,123,19,.15)}
       #coach-main .dcc-meal-progress span.on{background:linear-gradient(90deg,#e5b64c,#f3cf72)}
       #coach-main .dcc-meal-step-label{margin:0 2px;color:#8a8173;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
-      #coach-main .dcc-meal-setup-card{padding:18px;border:1px solid rgba(183,123,19,.24);border-radius:22px;background:linear-gradient(145deg,#fffefa,#f8f0e3);box-shadow:0 14px 34px rgba(88,61,17,.07)}
+      #coach-main .dcc-meal-setup-card{padding:14px;border:1px solid rgba(183,123,19,.24);border-radius:22px;background:linear-gradient(145deg,#fffefa,#f8f0e3);box-shadow:0 14px 34px rgba(88,61,17,.07)}
       #coach-main .dcc-meal-setup h2{margin:0;color:#17191d;font-size:21px;letter-spacing:-.45px}
       #coach-main .dcc-meal-setup p{margin:7px 0 0;color:#747c87;font-size:12px;line-height:1.45}
       #coach-main .dcc-meal-counts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
       #coach-main .dcc-meal-count{height:50px;border:1px solid rgba(183,123,19,.24);border-radius:15px;background:#fffdf8;color:#17191d;font-size:16px;font-weight:900;box-shadow:0 4px 12px rgba(88,61,17,.04)}
       #coach-main .dcc-meal-count.active{border-color:#e0ad4c;background:linear-gradient(135deg,#f7dc86,#e5ae40);color:#17110a;box-shadow:0 8px 20px rgba(190,133,31,.16)}
-      #coach-main .dcc-meal-options{display:grid;gap:8px;margin-top:15px}
-      #coach-main .dcc-meal-option{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:11px;min-height:57px;padding:10px 12px;border:1px solid rgba(183,123,19,.22);border-radius:17px;background:#fffdf8;color:#17191d;text-align:left}
-      #coach-main .dcc-meal-option .tick{width:31px;height:31px;display:grid;place-items:center;border:1px solid rgba(121,111,96,.35);border-radius:50%;color:#8a8173;font-size:13px;font-weight:900}
+      #coach-main .dcc-meal-options{display:grid;gap:6px;margin-top:11px}
+      #coach-main .dcc-meal-option{width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;min-height:48px;padding:7px 10px;border:1px solid rgba(183,123,19,.22);border-radius:17px;background:#fffdf8;color:#17191d;text-align:left}
+      #coach-main .dcc-meal-option .tick{width:27px;height:27px;display:grid;place-items:center;border:1px solid rgba(121,111,96,.35);border-radius:50%;color:#8a8173;font-size:13px;font-weight:900}
       #coach-main .dcc-meal-option.selected{border-color:#d8a43d;background:linear-gradient(145deg,#fffaf0,#f8ecd7);box-shadow:0 6px 18px rgba(185,128,26,.08)}
       #coach-main .dcc-meal-option.selected .tick{border-color:#e0ad4c;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17120a}
       #coach-main .dcc-meal-option b{font-size:14px}#coach-main .dcc-meal-option small{display:block;margin-top:3px;color:#7c8490;font-size:10px}
