@@ -110,8 +110,10 @@
         existing.training=existing.training||{calories:'',protein:'',meals:[]};
         existing.rest=existing.rest||{calories:'',protein:'',meals:[]};
         existing[currentType]={...(existing[currentType]||{}),meals:make()};
+        if(window.__dccDietNewPlan&&currentType==='training')existing.rest={calories:'',protein:'',meals:[]};
+        if(window.__dccDietNewPlan&&currentType==='rest'&&!Array.isArray(existing.training?.meals))existing.training={calories:'',protein:'',meals:[]};
         window.data.diets[id]=existing;
-        await persistType(id,currentType);
+        if(window.__dccDietNewPlan)await persistBoth(id,existing);else await persistType(id,currentType);
         try{localStorage.setItem('dcc:diet-meal-template:v5:'+id+':'+currentType,JSON.stringify(names))}catch(_){}
         if(typeof window.dccNutritionV2Edit==='function')window.dccNutritionV2Edit(id);else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
         if(typeof window.toast==='function')window.toast('Comidas configuradas')
