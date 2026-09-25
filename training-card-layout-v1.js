@@ -1,37 +1,28 @@
 /* DCC — tarjetas compactas del editor de rutina + reordenación táctil */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-layout-v3-structure';
+const BUILD='20260925-training-card-layout-v4-approved';
 if(window.__dccTrainingCardLayout===BUILD)return;window.__dccTrainingCardLayout=BUILD;
 const root=()=>document.getElementById('coach-main');
 const id=()=>String(window.selectedClient||'');
 const days=()=>{const r=window.data?.routines?.[id()];return Array.isArray(r)?r:Array.isArray(r?.routine)?r.routine:[]};
 function css(){if(document.getElementById('dcc-training-card-layout-css'))return;const s=document.createElement('style');s.id='dcc-training-card-layout-css';s.textContent=`
-#coach-main .dcc-exercise-card{position:relative!important;display:block!important;min-height:0!important;height:auto!important;padding:11px 12px!important;margin:0 0 9px!important;border:1px solid rgba(183,123,19,.22)!important;border-radius:16px!important;background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;box-shadow:0 7px 18px rgba(83,63,31,.055)!important}
-#coach-main .dcc-exercise-card>div:first-child{display:grid!important;grid-template-columns:minmax(0,1fr) 34px 36px!important;align-items:center!important;gap:6px!important;margin:0 0 8px!important}
-#coach-main .dcc-exercise-card>div:first-child>div:first-child{min-width:0!important}
-#coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:17px!important;line-height:1.15!important;font-weight:850!important}
-#coach-main .dcc-exercise-card>div:first-child .muted{margin-top:3px!important;font-size:10px!important;color:#7b828c!important}
-#coach-main .dcc-exercise-card>div:nth-child(2){display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:0!important}
-#coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:10px!important;font-weight:800!important;color:#4f5660!important}
-#coach-main .dcc-exercise-card input{box-sizing:border-box!important;width:100%!important;min-height:39px!important;margin-top:4px!important;padding:8px 10px!important;border:1px solid rgba(183,123,19,.26)!important;border-radius:11px!important;background:#fffefa!important;color:#17191d!important;font-size:12px!important}
-#coach-main .dcc-exercise-card>div:nth-child(3){display:grid!important;grid-template-columns:minmax(0,1fr) 88px!important;gap:7px!important;margin-top:9px!important}
+#coach-main .dcc-exercise-card{position:relative!important;display:block!important;width:100%!important;min-height:0!important;height:auto!important;box-sizing:border-box!important;padding:12px 13px!important;margin:0 0 9px!important;border:1px solid rgba(183,123,19,.22)!important;border-radius:14px!important;background:#fffdf9!important;box-shadow:none!important;overflow:hidden!important}
+#coach-main .dcc-exercise-card img,#coach-main .dcc-exercise-card .exercise-image,#coach-main .dcc-exercise-card .dcc-exercise-image,#coach-main .dcc-method-badge{display:none!important}
+#coach-main .dcc-exercise-card>div:first-child{width:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr) 32px 38px!important;align-items:start!important;gap:6px!important;margin:0 0 12px!important}
+#coach-main .dcc-exercise-card>div:first-child>div:first-child{min-width:0!important;width:auto!important;max-width:none!important}
+#coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.2!important;font-weight:850!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;text-align:left!important}
+#coach-main .dcc-exercise-card>div:first-child .muted{margin-top:4px!important;font-size:10px!important;color:#7b828c!important}
+#coach-main .dcc-exercise-card>div:nth-child(2){width:100%!important;display:grid!important;grid-template-columns:104px minmax(0,1fr)!important;gap:8px!important;margin:0!important}
+#coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:10px!important;font-weight:800!important;color:#747b85!important}
+#coach-main .dcc-exercise-card input{box-sizing:border-box!important;width:100%!important;min-height:42px!important;margin-top:4px!important;padding:8px 10px!important;border:1px solid rgba(183,123,19,.26)!important;border-radius:12px!important;background:#fffefa!important;color:#17191d!important;font-size:12px!important}
+#coach-main .dcc-exercise-card>div:nth-child(3){width:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr) 88px!important;gap:7px!important;margin-top:9px!important}
 #coach-main .dcc-exercise-card input[type=url]{min-height:39px!important;margin:0!important;font-size:10px!important}
 #coach-main .dcc-exercise-card [data-dcc-video]{min-height:39px!important;border:1px solid #d9aa4a!important;border-radius:11px!important;background:linear-gradient(135deg,#f6d36e,#dda73a)!important;color:#17120a!important;font-size:10px!important;font-weight:900!important}
-#coach-main .dcc-exercise-card [data-dcc-delete]{width:36px!important;height:36px!important;min-width:36px!important;margin:0!important}
-#coach-main .dcc-method-badge{display:none!important}
-#coach-main .dcc-exercise-card img,#coach-main .dcc-exercise-card .exercise-image,#coach-main .dcc-exercise-card .dcc-exercise-image{display:none!important}
+#coach-main .dcc-exercise-card [data-dcc-delete]{width:38px!important;height:38px!important;min-width:38px!important;margin:0!important;align-self:start!important}
+#coach-main .dcc-drag-handle{width:32px;height:38px;display:grid;place-items:center;border:0;background:transparent;color:#737b86;font-size:21px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 #coach-main .dcc-exercise-card>div:empty{display:none!important}
-#coach-main .dcc-exercise-card [style*="height"]{min-height:0!important}
-#coach-main .dcc-drag-handle{width:34px;height:36px;display:grid;place-items:center;border:0;background:transparent;color:#737b86;font-size:21px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
-
-#coach-main .dcc-exercise-card{display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:auto!important;align-items:stretch!important;gap:8px!important;overflow:hidden!important}
-#coach-main .dcc-exercise-card>*{grid-column:1/-1!important;position:static!important;float:none!important;transform:none!important;max-width:100%!important;box-sizing:border-box!important}
-#coach-main .dcc-exercise-card>div:first-child{width:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr) 34px 36px!important;align-items:center!important;gap:6px!important;min-height:38px!important}
-#coach-main .dcc-exercise-card>div:first-child>div:first-child{width:auto!important;max-width:none!important;min-width:0!important;display:block!important;position:static!important}
-#coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{width:auto!important;max-width:100%!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;text-align:left!important}
-#coach-main .dcc-exercise-card>div:nth-child(2),#coach-main .dcc-exercise-card>div:nth-child(3){width:100%!important;position:static!important}
-#coach-main .dcc-exercise-card.dcc-dragging{opacity:.58;transform:scale(.99);box-shadow:0 12px 30px rgba(83,63,31,.15)!important}
+#coach-main .dcc-exercise-card.dcc-dragging{opacity:.58;box-shadow:0 12px 30px rgba(83,63,31,.15)!important}
 `;document.head.appendChild(s)}
 function dayIndexFor(card){const day=card.closest('.dcc-tr-day');if(!day)return -1;return [...root().querySelectorAll('.dcc-tr-days>.dcc-tr-day')].indexOf(day)}
 function cardsInDay(card){const day=card.closest('.dcc-tr-day');return day?[...day.querySelectorAll('.dcc-exercise-card')].filter(x=>x.offsetParent!==null):[]}
