@@ -4509,6 +4509,11 @@ body{
 
   #client-main{padding-bottom:96px !important}
 }
+
+/* Coach check-in review — Light Premium authority */
+html.dcc-theme-light-premium #modal:has(.dcc-checkin-review-light){background:rgba(40,34,25,.28)!important;backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
+html.dcc-theme-light-premium #modal .modal-box:has(.dcc-checkin-review-light){padding:18px!important;background:linear-gradient(145deg,#fffefa,#fbf5eb)!important;color:#17191d!important;border:1px solid rgba(190,143,55,.30)!important;border-radius:20px!important;box-shadow:0 22px 60px rgba(73,55,25,.16)!important}
+.dcc-checkin-review-light .modal-head{margin-bottom:8px!important}.dcc-checkin-review-light .modal-head h2{margin:0!important;font-size:22px!important;line-height:1.05!important;letter-spacing:-.45px!important}.dcc-checkin-review-light .dcc-checkin-close{width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;border:1px solid #dfd3be!important;border-radius:11px!important;background:#fff!important;color:#292b2f!important;font-size:16px!important}.dcc-checkin-review-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:10px 2px!important;border-bottom:1px solid #e8decc!important}.dcc-checkin-review-row b{font-size:12px!important}.dcc-checkin-review-row span{color:#6f685d!important;font-size:12px!important;text-align:right!important}.dcc-checkin-review-action{width:100%!important;min-height:38px!important;margin-top:10px!important;padding:7px 12px!important;border:1px solid #d7a43c!important;border-radius:12px!important;background:linear-gradient(135deg,#f4d16f,#e7b13e)!important;color:#17130a!important;font-size:12px!important;font-weight:850!important;box-shadow:none!important}
 </style>
 </head>
 
@@ -15127,12 +15132,14 @@ reviewed:false
 };
 
 openModal(`
-<div class="modal-head"><h2>Check-in · ${esc(c.name)}</h2><button class="ghost" onclick="closeModal()">✕</button></div>
-<div class="item"><b>Peso</b><br>${esc(x.weight)}</div>
-<div class="item"><b>Alimentación</b><br>${esc(x.diet)}</div>
-<div class="item"><b>Entrenamiento</b><br>${esc(x.training)}</div>
-<div class="item"><b>Comentario</b><br>${esc(x.comment)}</div>
-<button class="btn" onclick="markReviewed('${id}')">✓ Marcar como revisado</button>
+<div class="dcc-checkin-review-light">
+<div class="modal-head"><h2>Check-in · ${esc(c.name)}</h2><button class="ghost dcc-checkin-close" onclick="closeModal()">✕</button></div>
+<div class="dcc-checkin-review-row"><b>Peso</b><span>${esc(x.weight)}</span></div>
+<div class="dcc-checkin-review-row"><b>Alimentación</b><span>${esc(x.diet)}</span></div>
+<div class="dcc-checkin-review-row"><b>Entrenamiento</b><span>${esc(x.training)}</span></div>
+<div class="dcc-checkin-review-row"><b>Comentario</b><span>${esc(x.comment)}</span></div>
+<button class="btn dcc-checkin-review-action" onclick="markReviewed('${id}')">✓ Marcar como revisado</button>
+</div>
 `);
 }
 
