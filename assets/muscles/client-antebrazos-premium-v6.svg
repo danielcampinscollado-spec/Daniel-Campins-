@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="169" height="149" viewBox="0 0 169 149">
+<defs>
+ <filter id="gray"><feColorMatrix type="saturate" values="0"/></filter>
+ <filter id="gold"><feColorMatrix type="matrix" values=".284 .558 .108 0 .08 .194 .382 .074 0 .05 .054 .106 .020 0 .015 0 0 0 1 0"/></filter>
+ <clipPath id="fore"><path d="M22 78 C27 73 35 74 41 82 L46 115 L39 149 L22 149 L18 116 Z M147 78 C142 73 134 74 128 82 L123 115 L130 149 L147 149 L151 116 Z"/></clipPath>
+</defs>
+<rect width="169" height="149" fill="#faf7ee"/>
+<image href="client-pectoral-premium-v5.webp" width="169" height="149" preserveAspectRatio="xMidYMid meet" filter="url(#gray)"/>
+<image href="client-pectoral-premium-v5.webp" width="169" height="149" preserveAspectRatio="xMidYMid meet" clip-path="url(#fore)" filter="url(#gold)"/>
+</svg>
