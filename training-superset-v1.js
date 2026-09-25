@@ -457,15 +457,19 @@
       const card=currentCards().find(c=>(c.textContent||'').includes(group.ex.name||'')&&c.querySelector('input'));if(!card)return;
       const box=document.createElement('div');box.className='dcc-method-config dcc-restpause-single';box.innerHTML=`
         <div class="dcc-method-config-head"><b>REST-pause</b><span>${esc(group.ex.name||'Ejercicio')}</span></div>
-        <div class="dcc-method-fields three">
+        <div class="dcc-method-fields">
+          <label>Series<input data-sets type="number" min="1" inputmode="numeric" value="${esc(group.ex.sets||'')}" placeholder="Ej. 4"></label>
           <label>Repeticiones<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="Ej. 12/10/8/6"></label>
+        </div>
+        <div class="dcc-method-fields">
           <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="Ej. 7"></label>
           <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="Ej. 90"></label>
         </div>
         <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
         <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
       card.parentNode.insertBefore(box,card);
-      card.style.display='none';
+      card.style.setProperty('display','none','important');
+      box.querySelector('[data-sets]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.sets=e.target.value;save(id);});
       box.querySelector('[data-reps]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
