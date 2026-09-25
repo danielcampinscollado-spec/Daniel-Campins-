@@ -43,8 +43,9 @@ html.dcc-theme-light-premium .dcc-v2-card{background:rgba(255,255,255,.46)!impor
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card{padding:9px 10px!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-form{gap:6px!important;margin-top:7px!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field label{margin-bottom:3px!important;font-size:8px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field{min-width:0!important;max-width:100%!important;overflow:hidden!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field select,
-#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field input{box-sizing:border-box!important;height:40px!important;min-height:40px!important;padding:6px 10px!important;border-radius:11px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field input{display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;height:40px!important;min-height:40px!important;padding:6px 10px!important;border-radius:11px!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field textarea{box-sizing:border-box!important;min-height:58px!important;height:58px!important;padding:8px 10px!important;border-radius:11px!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-save{box-sizing:border-box!important;height:42px!important;min-height:42px!important;padding:0 12px!important;border-radius:13px!important;font-size:10px!important;line-height:1!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes>section:nth-child(2)>div[style*="margin-top"]{margin-top:5px!important}
