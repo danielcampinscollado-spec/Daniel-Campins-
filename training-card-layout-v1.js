@@ -1,7 +1,7 @@
 /* DCC — restaura tarjeta aprobada de ejercicios y añade arrastre. */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-approved-v8-header-delete';
+const BUILD='20260925-training-card-approved-v9-actions-right';
 if(window.__dccTrainingCardApproved===BUILD)return;window.__dccTrainingCardApproved=BUILD;
 const root=()=>document.getElementById('coach-main');
 const rid=()=>String(window.selectedClient||'');
@@ -9,8 +9,8 @@ const routine=()=>{const r=window.data?.routines?.[rid()];return Array.isArray(r
 function css(){if(document.getElementById('dcc-training-card-layout-css'))document.getElementById('dcc-training-card-layout-css').remove();const s=document.createElement('style');s.id='dcc-training-card-layout-css';s.textContent=`
 #coach-main .dcc-exercise-card{display:block!important;position:relative!important;width:100%!important;height:auto!important;min-height:0!important;margin:0!important;padding:7px 9px!important;box-sizing:border-box!important;border-radius:11px!important;overflow:visible!important}
 #coach-main .dcc-exercise-card img,#coach-main .dcc-exercise-card .exercise-image,#coach-main .dcc-exercise-card .dcc-exercise-image,#coach-main .dcc-method-badge{display:none!important}
-#coach-main .dcc-exercise-card>.dcc-approved-head{display:grid!important;grid-template-columns:minmax(0,1fr) 32px 30px!important;align-items:start!important;gap:6px!important;margin:0 0 5px!important;width:100%!important}
-#coach-main .dcc-approved-info{display:block!important;min-width:0!important;width:auto!important}
+#coach-main .dcc-exercise-card>.dcc-approved-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:8px!important;margin:0 0 5px!important;width:100%!important}
+#coach-main .dcc-approved-info{display:block!important;min-width:0!important;width:auto!important}\n#coach-main .dcc-approved-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:3px!important;width:auto!important;min-width:65px!important}
 #coach-main .dcc-approved-name{font-size:15px!important;line-height:1.15!important;font-weight:850!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important}
 #coach-main .dcc-approved-muscle{margin-top:2px!important;font-size:10px!important;color:#7b828c!important}
 #coach-main .dcc-approved-fields{display:grid!important;grid-template-columns:104px minmax(0,1fr)!important;gap:6px!important;margin:0!important;width:100%!important}
@@ -37,7 +37,7 @@ function rebuild(card){
  if(!url)urlInput.type='url';urlInput.placeholder='Enlace del vídeo (opcional)';
  const head=document.createElement('div');head.className='dcc-approved-head';head.innerHTML='<div class="dcc-approved-info"><div class="dcc-approved-name"></div><div class="dcc-approved-muscle"></div></div>';
  head.querySelector('.dcc-approved-name').textContent=name;head.querySelector('.dcc-approved-muscle').textContent=muscle;
- const del=oldDelete?oldDelete.cloneNode(true):document.createElement('button');del.classList.add('dcc-approved-delete');if(!oldDelete)del.type='button';head.appendChild(del);const drag=document.createElement('button');drag.type='button';drag.className='dcc-drag-handle';drag.setAttribute('aria-label','Arrastrar para reordenar');drag.title='Arrastrar para reordenar';drag.textContent='⠿';head.appendChild(drag);
+ const del=oldDelete?oldDelete.cloneNode(true):document.createElement('button');del.classList.add('dcc-approved-delete');if(!oldDelete)del.type='button';const actions=document.createElement('div');actions.className='dcc-approved-actions';actions.appendChild(del);const drag=document.createElement('button');drag.type='button';drag.className='dcc-drag-handle';drag.setAttribute('aria-label','Arrastrar para reordenar');drag.title='Arrastrar para reordenar';drag.textContent='⠿';actions.appendChild(drag);head.appendChild(actions);
  const fields=document.createElement('div');fields.className='dcc-approved-fields';const l1=document.createElement('label');l1.append('Series',seriesInput);const l2=document.createElement('label');l2.append('Repeticiones',repsInput);fields.append(l1,l2);
  const video=document.createElement('div');video.className='dcc-approved-video';const vb=oldVideo?oldVideo.cloneNode(true):document.createElement('button');if(!oldVideo){vb.type='button';vb.textContent='Ver vídeo'}video.append(urlInput,vb);
  card.replaceChildren(head,fields,video);
