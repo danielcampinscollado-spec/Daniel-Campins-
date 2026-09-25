@@ -1,8 +1,8 @@
 /* DCC — borrado definitivo verificado de clientes */
 (function(){
   'use strict';
-  if(window.__dccClientDeleteAtomicV8)return;
-  window.__dccClientDeleteAtomicV8=true;
+  if(window.__dccClientDeleteAtomicV9)return;
+  window.__dccClientDeleteAtomicV9=true;
 
   const appData=()=>{try{return data||{}}catch(_){return window.data||{}}};
   const database=()=>{try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(_){}return window.supabaseClient||null};
@@ -57,7 +57,9 @@
     return true;
   }
 
+  let deleting=false;
   async function deleteClient(id,button){
+    if(deleting)return;
     if(id==null||id==='')return;
     const d=appData();
     const client=(d.clients||[]).find(c=>String(c.id)===String(id));
@@ -68,30 +70,34 @@
     if(!db){alert('No hay conexión con el servidor. El cliente no se ha eliminado.');return}
 
     const oldText=button?.textContent;
+    deleting=true;
     if(button){button.disabled=true;button.textContent='Eliminando…'}
 
     try{
       await deleteFromServer(db,id);
       cleanupLocal(id);
-      if(typeof window.dccSyncClientsFromServer==='function'){
-        const ok=await window.dccSyncClientsFromServer({render:false});
-        if(ok===false)throw new Error('El cliente se eliminó, pero no se pudo refrescar la lista desde Supabase');
-      }
+      // El RPC ya confirmó el borrado y la verificación posterior comprobó que la fila no existe.
+      // No bloqueamos la navegación esperando una segunda sincronización: era la causa de que la UI quedara "Eliminando…".
       goClients();
       notify('Cliente eliminado definitivamente');
+      if(typeof window.dccSyncClientsFromServer==='function'){
+        Promise.resolve(window.dccSyncClientsFromServer({render:false})).catch(error=>console.warn('DCC refresco posterior al borrado:',error));
+      }
     }catch(error){
       console.error('DCC borrado definitivo de cliente:',error);
       alert(`No se pudo eliminar el cliente.\n\n${error?.message||'Error desconocido del servidor'}`);
       if(button){button.disabled=false;button.textContent=oldText||'Eliminar cliente'}
+    }finally{
+      deleting=false;
     }
   }
 
   function install(){
     const current=window.dccLegacyDelete;
-    if(typeof current==='function'&&current.__dccDeleteAtomicV8)return true;
+    if(typeof current==='function'&&current.__dccDeleteAtomicV9)return true;
     const previous=typeof current==='function'?current:null;
     const fn=function(id){return deleteClient(id,document.querySelector('#coach-main .dcc-ca-delete'))};
-    fn.__dccDeleteAtomicV8=true;
+    fn.__dccDeleteAtomicV9=true;
     fn.__base=previous;
     window.dccLegacyDelete=fn;
     return true;
