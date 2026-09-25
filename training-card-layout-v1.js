@@ -1,7 +1,7 @@
 /* DCC — restaura tarjeta aprobada de ejercicios y añade arrastre. */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-approved-v7-allstates';
+const BUILD='20260925-training-card-approved-v8-header-delete';
 if(window.__dccTrainingCardApproved===BUILD)return;window.__dccTrainingCardApproved=BUILD;
 const root=()=>document.getElementById('coach-main');
 const rid=()=>String(window.selectedClient||'');
@@ -9,7 +9,7 @@ const routine=()=>{const r=window.data?.routines?.[rid()];return Array.isArray(r
 function css(){if(document.getElementById('dcc-training-card-layout-css'))document.getElementById('dcc-training-card-layout-css').remove();const s=document.createElement('style');s.id='dcc-training-card-layout-css';s.textContent=`
 #coach-main .dcc-exercise-card{display:block!important;position:relative!important;width:100%!important;height:auto!important;min-height:0!important;margin:0!important;padding:7px 9px!important;box-sizing:border-box!important;border-radius:11px!important;overflow:visible!important}
 #coach-main .dcc-exercise-card img,#coach-main .dcc-exercise-card .exercise-image,#coach-main .dcc-exercise-card .dcc-exercise-image,#coach-main .dcc-method-badge{display:none!important}
-#coach-main .dcc-exercise-card>.dcc-approved-head{display:grid!important;grid-template-columns:minmax(0,1fr) 30px 32px!important;align-items:start!important;gap:6px!important;margin:0 0 5px!important;width:100%!important}
+#coach-main .dcc-exercise-card>.dcc-approved-head{display:grid!important;grid-template-columns:minmax(0,1fr) 32px 30px!important;align-items:start!important;gap:6px!important;margin:0 0 5px!important;width:100%!important}
 #coach-main .dcc-approved-info{display:block!important;min-width:0!important;width:auto!important}
 #coach-main .dcc-approved-name{font-size:15px!important;line-height:1.15!important;font-weight:850!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important}
 #coach-main .dcc-approved-muscle{margin-top:2px!important;font-size:10px!important;color:#7b828c!important}
@@ -35,15 +35,15 @@ function rebuild(card){
  if(!series||!reps)return;
  const seriesInput=series.cloneNode(true),repsInput=reps.cloneNode(true),urlInput=url?url.cloneNode(true):document.createElement('input');
  if(!url)urlInput.type='url';urlInput.placeholder='Enlace del vídeo (opcional)';
- const head=document.createElement('div');head.className='dcc-approved-head';head.innerHTML='<div class="dcc-approved-info"><div class="dcc-approved-name"></div><div class="dcc-approved-muscle"></div></div><button type="button" class="dcc-drag-handle" aria-label="Arrastrar para reordenar" title="Arrastrar para reordenar">⠿</button>';
+ const head=document.createElement('div');head.className='dcc-approved-head';head.innerHTML='<div class="dcc-approved-info"><div class="dcc-approved-name"></div><div class="dcc-approved-muscle"></div></div>';
  head.querySelector('.dcc-approved-name').textContent=name;head.querySelector('.dcc-approved-muscle').textContent=muscle;
- const del=oldDelete?oldDelete.cloneNode(true):document.createElement('button');del.classList.add('dcc-approved-delete');if(!oldDelete)del.type='button';head.appendChild(del);
+ const del=oldDelete?oldDelete.cloneNode(true):document.createElement('button');del.classList.add('dcc-approved-delete');if(!oldDelete)del.type='button';head.appendChild(del);const drag=document.createElement('button');drag.type='button';drag.className='dcc-drag-handle';drag.setAttribute('aria-label','Arrastrar para reordenar');drag.title='Arrastrar para reordenar';drag.textContent='⠿';head.appendChild(drag);
  const fields=document.createElement('div');fields.className='dcc-approved-fields';const l1=document.createElement('label');l1.append('Series',seriesInput);const l2=document.createElement('label');l2.append('Repeticiones',repsInput);fields.append(l1,l2);
  const video=document.createElement('div');video.className='dcc-approved-video';const vb=oldVideo?oldVideo.cloneNode(true):document.createElement('button');if(!oldVideo){vb.type='button';vb.textContent='Ver vídeo'}video.append(urlInput,vb);
  card.replaceChildren(head,fields,video);
  const sync=(clone,orig)=>clone.addEventListener('input',()=>{orig.value=clone.value;orig.dispatchEvent(new Event('input',{bubbles:true}))});sync(seriesInput,series);sync(repsInput,reps);if(url)sync(urlInput,url);
  if(oldDelete)del.addEventListener('click',e=>{e.preventDefault();oldDelete.click()});if(oldVideo)vb.addEventListener('click',e=>{e.preventDefault();oldVideo.click()});
- const h=head.querySelector('.dcc-drag-handle');let active=false;h.addEventListener('pointerdown',e=>{active=true;card.classList.add('dcc-dragging');h.setPointerCapture?.(e.pointerId);e.preventDefault()});h.addEventListener('pointermove',e=>{if(!active)return;const t=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.dcc-exercise-card');if(t&&t!==card&&t.parentElement===card.parentElement)reorder(card,t)});const end=()=>{active=false;card.classList.remove('dcc-dragging')};h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
+ const h=drag;let active=false;h.addEventListener('pointerdown',e=>{active=true;card.classList.add('dcc-dragging');h.setPointerCapture?.(e.pointerId);e.preventDefault()});h.addEventListener('pointermove',e=>{if(!active)return;const t=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.dcc-exercise-card');if(t&&t!==card&&t.parentElement===card.parentElement)reorder(card,t)});const end=()=>{active=false;card.classList.remove('dcc-dragging')};h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
 }
 function markNativeCards(){const rt=root();if(!rt)return;rt.querySelectorAll('.card').forEach(card=>{if(card.classList.contains('dcc-exercise-card'))return;const hasSeries=[...card.querySelectorAll('label')].some(l=>/^Series(?:\s+de\s+superserie)?$/i.test((l.childNodes[0]?.textContent||'').trim()));const hasReps=[...card.querySelectorAll('label')].some(l=>/^Repeticiones$/i.test((l.childNodes[0]?.textContent||'').trim()));const hasDelete=[...card.querySelectorAll('button')].some(b=>(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(hasSeries&&hasReps&&hasDelete)card.classList.add('dcc-exercise-card')})}
 function apply(){css();markNativeCards();root()?.querySelectorAll('.dcc-exercise-card').forEach(rebuild)}
