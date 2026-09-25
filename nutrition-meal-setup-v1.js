@@ -6,7 +6,7 @@
   window.__dccNutritionMealSetup=BUILD;
 
   const MEALS=['Desayuno','Merienda mañana','Comida','Merienda tarde','Cena','Pre-entreno','Post-entreno','Pre-cena'];
-  let selected=[],currentId=null,currentType='training',setupMode='both';
+  let selected=[],currentId=null,currentType='training',setupMode='single';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function injectCss(){
@@ -40,12 +40,12 @@
       #coach-main .dcc-meal-move{width:36px;height:36px;border:1px solid rgba(183,123,19,.25);border-radius:11px;background:#fff;color:#7f5a18;font-size:17px;font-weight:900}
       #coach-main .dcc-meal-move:disabled{opacity:.25}
       #coach-main .dcc-meal-actions{display:grid;grid-template-columns:.8fr 1.35fr;gap:8px}
-      #coach-main .dcc-meal-next,#coach-main .dcc-meal-back,#coach-main .dcc-meal-cancel{width:100%;min-height:50px;border-radius:15px;font-weight:900}
+      #coach-main .dcc-meal-next,#coach-main .dcc-meal-back,#coach-main .dcc-meal-cancel{width:100%;min-height:42px;border-radius:13px;font-weight:850;font-size:11px}
       #coach-main .dcc-meal-next{border:1px solid #e3b34f;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a;box-shadow:0 10px 24px rgba(190,133,31,.14)}
       #coach-main .dcc-meal-next:disabled{opacity:.42;box-shadow:none}
       #coach-main .dcc-meal-back,#coach-main .dcc-meal-cancel{border:1px solid rgba(183,123,19,.22);background:#fffdf8;color:#5f6268}
       #coach-main .dcc-meal-hint{padding:12px 13px;border:1px solid rgba(183,123,19,.18);border-radius:15px;background:rgba(245,234,210,.5);color:#776c5d;font-size:10px;line-height:1.45}
-      @media(max-width:520px){#coach-main .dcc-meal-setup-card{padding:16px}#coach-main .dcc-meal-setup h2{font-size:20px}#coach-main .dcc-meal-counts{gap:7px}#coach-main .dcc-meal-count{height:48px}}
+      @media(max-width:520px){#coach-main .dcc-meal-setup-card{padding:13px}#coach-main .dcc-meal-setup h2{font-size:18px}#coach-main .dcc-meal-counts{gap:7px}#coach-main .dcc-meal-count{height:44px}#coach-main .dcc-meal-option{min-height:44px}#coach-main .dcc-meal-option b{font-size:13px}}
     `;
     document.head.appendChild(s);
   }
@@ -72,8 +72,8 @@
 
   function renderStep1(id,type){
     currentId=id;
-    setupMode=(type==='training'||type==='rest')?'single':'both';
-    if(setupMode==='single')currentType=type;
+    setupMode='single';
+    currentType=type==='rest'?'rest':'training';
     selected=[];injectCss();const p=pane();if(!p)return false;
     const dayLabel=currentType==='rest'?'día de descanso':'día de entrenamiento';
     p.innerHTML=`<div class="dcc-meal-setup">${progress(1)}<div class="dcc-meal-setup-card"><h2>Elige las comidas</h2><p>Selecciona las comidas del ${dayLabel}. El número indica el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-options">${MEALS.map(name=>`<button type="button" class="dcc-meal-option ${selected.includes(name)?'selected':''}" onclick="return dccNutritionMealToggle('${name.replace(/'/g,"\\'")}')"><span class="tick">${selected.includes(name)?selected.indexOf(name)+1:'＋'}</span><span><b>${esc(name)}</b><small>${selected.includes(name)?('Posición '+(selected.indexOf(name)+1)):'Toca para añadir'}</small></span><span>›</span></button>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Cancelar</button><button type="button" class="dcc-meal-next" ${selected.length?'':'disabled'} onclick="dccMealSetupDirectContinue()">Continuar con ${selected.length||''} ${selected.length===1?'comida':'comidas'}</button></div></div>`;
@@ -117,7 +117,7 @@
         if(typeof window.toast==='function')window.toast('Comidas configuradas')
         return;
       }
-      const next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:make()}};
+      const next={training:{calories:'',protein:'',meals:make()},rest:{calories:'',protein:'',meals:[]}};
       window.data.diets[id]=next;
       await persistBoth(id,next);
       try{localStorage.setItem('dcc:diet-meal-template:v5:'+id,JSON.stringify(names))}catch(_){}
