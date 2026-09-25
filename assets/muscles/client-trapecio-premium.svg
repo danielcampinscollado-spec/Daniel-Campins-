@@ -7,7 +7,7 @@
         0 0 0 0 0
         .2126 .7152 .0722 0 -.035" result="luma"/>
       <feComponentTransfer in="luma" result="mask">
-        <feFuncA type="gamma" amplitude="1" exponent=".45" offset="0"/>
+        <feFuncA type="gamma" amplitude="1" exponent=".78" offset="0"/>
       </feComponentTransfer>
       <feComposite in="SourceGraphic" in2="mask" operator="in"/>
     </filter>
