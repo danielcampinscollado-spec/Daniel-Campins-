@@ -392,6 +392,7 @@
   function decorateConfiguration(id,di){
     installStyle();
     const day=dayRef(id,di),root=document.getElementById('coach-main');if(!day||!root)return;
+    [...root.querySelectorAll('.muted')].filter(el=>/Define las series y repeticiones de cada ejercicio/i.test(el.textContent||'')).forEach(el=>el.remove());
     if(day.trainingSetupStep!=='complete'){
       let normalized=false;
       (day.exercises||[]).forEach(ex=>{
