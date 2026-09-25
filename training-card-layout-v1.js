@@ -1,7 +1,7 @@
 /* DCC — tarjetas compactas del editor de rutina + reordenación táctil */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-layout-v4-approved';
+const BUILD='20260925-training-card-layout-v5-rebuild';
 if(window.__dccTrainingCardLayout===BUILD)return;window.__dccTrainingCardLayout=BUILD;
 const root=()=>document.getElementById('coach-main');
 const id=()=>String(window.selectedClient||'');
@@ -27,12 +27,12 @@ function css(){if(document.getElementById('dcc-training-card-layout-css'))return
 function dayIndexFor(card){const day=card.closest('.dcc-tr-day');if(!day)return -1;return [...root().querySelectorAll('.dcc-tr-days>.dcc-tr-day')].indexOf(day)}
 function cardsInDay(card){const day=card.closest('.dcc-tr-day');return day?[...day.querySelectorAll('.dcc-exercise-card')].filter(x=>x.offsetParent!==null):[]}
 function reorder(card,target){const di=dayIndexFor(card);if(di<0)return;const list=cardsInDay(card),from=list.indexOf(card),to=list.indexOf(target);if(from<0||to<0||from===to)return;const d=days()[di];if(!d||!Array.isArray(d.exercises))return;const [ex]=d.exercises.splice(from,1);d.exercises.splice(to,0,ex);window.dccMarkTrainingDraftDirty?.(id());try{window.saveData?.()}catch(_){};target.parentNode.insertBefore(card,to>from?target.nextSibling:target)}
-function bind(card){if(card.dataset.dccCompactBound)return;card.dataset.dccCompactBound='1';card.querySelectorAll('img').forEach(img=>img.remove());[...card.children].forEach(el=>{if(el.children.length===0&&!el.textContent.trim()&&!el.matches('input,button'))el.remove()});const head=card.firstElementChild;if(!head)return;const del=[...card.querySelectorAll('button')].find(b=>b.dataset.dccDelete==='1'||(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(del&&!del.dataset.dccDelete)del.dataset.dccDelete='1';let h=document.createElement('button');h.type='button';h.className='dcc-drag-handle';h.innerHTML='⠿';h.setAttribute('aria-label','Arrastrar para reordenar');h.setAttribute('title','Arrastrar para reordenar');if(del)head.insertBefore(h,del);else head.appendChild(h);
+function bind(card){if(card.dataset.dccCompactBound)return;card.dataset.dccCompactBound='1';card.querySelectorAll('img').forEach(img=>img.remove());[...card.children].forEach(el=>{if(el.children.length===0&&!el.textContent.trim()&&!el.matches('input,button'))el.remove()});const head=card.firstElementChild;if(!head)return;head.style.cssText='display:grid!important;grid-template-columns:minmax(0,1fr) 32px 38px!important;width:100%!important;align-items:start!important;gap:6px!important;margin:0 0 12px!important';const info=head.firstElementChild;if(info)info.style.cssText='display:block!important;position:static!important;width:100%!important;max-width:none!important;min-width:0!important;grid-column:auto!important;transform:none!important;float:none!important';const del=[...card.querySelectorAll('button')].find(b=>b.dataset.dccDelete==='1'||(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(del&&!del.dataset.dccDelete)del.dataset.dccDelete='1';let h=document.createElement('button');h.type='button';h.className='dcc-drag-handle';h.innerHTML='⠿';h.setAttribute('aria-label','Arrastrar para reordenar');h.setAttribute('title','Arrastrar para reordenar');if(del)head.insertBefore(h,del);else head.appendChild(h);
 let active=false;
 h.addEventListener('pointerdown',e=>{active=true;card.classList.add('dcc-dragging');h.setPointerCapture?.(e.pointerId);e.preventDefault()});
 h.addEventListener('pointermove',e=>{if(!active)return;const under=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.dcc-exercise-card');if(under&&under!==card&&under.closest('.dcc-tr-day')===card.closest('.dcc-tr-day'))reorder(card,under);e.preventDefault()});
 const end=()=>{active=false;card.classList.remove('dcc-dragging')};h.addEventListener('pointerup',end);h.addEventListener('pointercancel',end);
-const url=card.querySelector('input[type=url]');if(url)url.placeholder='Enlace del vídeo (opcional)';
+card.querySelectorAll('[style]').forEach(el=>{if(el!==head&&el!==head.firstElementChild&&el.tagName!=='INPUT'&&el.tagName!=='BUTTON')el.style.removeProperty('grid-column')});const url=card.querySelector('input[type=url]');if(url)url.placeholder='Enlace del vídeo (opcional)';
 const vb=[...card.querySelectorAll('button')].find(b=>(b.textContent||'').includes('Ver vídeo'));if(vb)vb.dataset.dccVideo='1';
 }
 function apply(){css();root()?.querySelectorAll('.dcc-exercise-card').forEach(bind)}
