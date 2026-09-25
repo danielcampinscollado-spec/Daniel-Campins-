@@ -38,6 +38,17 @@ function css(){if(document.getElementById('dcc-coach-client-profile-v2-css'))ret
 .dcc-v2-form{display:grid;gap:8px;margin-top:9px}.dcc-v2-field label{display:block;margin-bottom:5px;color:#8f98a3;font-size:9px}.dcc-v2-field select,.dcc-v2-field input,.dcc-v2-field textarea{width:100%;border:1px solid #343d45;border-radius:12px;background:#0a0f13;color:#f5f3ef;padding:11px}.dcc-v2-field textarea{min-height:82px;resize:vertical}.dcc-v2-save{width:100%;padding:12px;border:1px solid #f0c96b;border-radius:13px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-weight:900}.dcc-v2-note{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07)}.dcc-v2-note:last-child{border:0}.dcc-v2-note small{display:block;color:#9aa3ad;font-size:8px}.dcc-v2-note p{margin:5px 0 0;font-size:10px;line-height:1.45}.dcc-v2-note button{float:right;border:0;background:transparent;color:#d66;font-size:9px}
 html.dcc-theme-light-premium .dcc-v2-card{background:rgba(255,255,255,.46)!important;border-color:rgba(183,123,22,.26)!important;color:#17191d!important;box-shadow:0 10px 28px rgba(80,56,18,.055)!important}html.dcc-theme-light-premium .dcc-v2-stat,html.dcc-theme-light-premium .dcc-v2-muscle{background:rgba(255,255,255,.38)!important;border-color:rgba(183,123,22,.16)!important}html.dcc-theme-light-premium .dcc-v2-row,html.dcc-theme-light-premium .dcc-v2-action,html.dcc-theme-light-premium .dcc-v2-note{border-color:rgba(100,75,30,.10)!important}html.dcc-theme-light-premium .dcc-v2-field select,html.dcc-theme-light-premium .dcc-v2-field input,html.dcc-theme-light-premium .dcc-v2-field textarea{background:#fffdf8!important;border-color:rgba(183,123,22,.24)!important;color:#17191d!important}
 @media(max-width:390px){.dcc-v2-strength{gap:4px}.dcc-v2-muscle{padding:8px 2px}.dcc-v2-muscle b{font-size:8px}.dcc-v2-muscle strong{font-size:10px}}
+/* DCC compact Notes authority — nutrition action scale */
+#coach-main.dcc-ca .dcc-profile-v2-notes{gap:6px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card{padding:9px 10px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-form{gap:6px!important;margin-top:7px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field label{margin-bottom:3px!important;font-size:8px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field select,
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field input{box-sizing:border-box!important;height:40px!important;min-height:40px!important;padding:6px 10px!important;border-radius:11px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field textarea{box-sizing:border-box!important;min-height:58px!important;height:58px!important;padding:8px 10px!important;border-radius:11px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-save{box-sizing:border-box!important;height:42px!important;min-height:42px!important;padding:0 12px!important;border-radius:13px!important;font-size:10px!important;line-height:1!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes>section:nth-child(2)>div[style*="margin-top"]{margin-top:5px!important}
+
 /* dcc-profile-compact-v2 */
 
 #coach-main.dcc-ca{padding-top:8px!important;padding-left:12px!important;padding-right:12px!important}
