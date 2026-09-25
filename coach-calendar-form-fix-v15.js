@@ -1,7 +1,7 @@
 /* DCC calendar form v22 — editor claro de entrenamientos personales */
 (function(){
   'use strict';
-  const BUILD='20260925-calendar-form-v23-compact-native-picker';
+  const BUILD='20260925-calendar-form-v24-ios-direct-input';
   if(window.__dccCalendarFormBuild===BUILD)return;
   window.__dccCalendarFormBuild=BUILD;
 
@@ -30,10 +30,10 @@
       #${OVERLAY_ID} label{display:block;margin:0 0 9px;color:#25282d!important;font-size:11px;font-weight:750}#${OVERLAY_ID} input,#${OVERLAY_ID} select,#${OVERLAY_ID} textarea{display:block;width:100%;min-width:0;max-width:100%;margin-top:5px;padding:0 11px;border:1px solid rgba(183,123,19,.28)!important;border-radius:12px;background:#fffefa!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;outline:0;font:600 12px/1.2 inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important}#${OVERLAY_ID} select{height:42px;text-align:center;text-align-last:center}#${OVERLAY_ID} textarea{min-height:66px;padding-top:10px;resize:vertical}#${OVERLAY_ID} textarea::placeholder{color:#737c88!important;-webkit-text-fill-color:#737c88!important;opacity:1!important}
       #${OVERLAY_ID} .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;width:100%;min-width:0}
       #${OVERLAY_ID} .picker{position:relative;height:42px;margin-top:5px;border:1px solid rgba(183,123,19,.28)!important;border-radius:12px;background:#fffefa!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.96)!important;overflow:hidden}
-      #${OVERLAY_ID} .picker input{position:absolute;inset:0;width:100%;height:100%;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;text-align:center!important;color:transparent!important;-webkit-text-fill-color:transparent!important;color-scheme:light!important;cursor:pointer}
+      #${OVERLAY_ID} .picker input{position:absolute;inset:0;z-index:3;width:100%;height:100%;margin:0;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;text-align:center!important;color:transparent!important;-webkit-text-fill-color:transparent!important;color-scheme:light!important;cursor:pointer;opacity:.01!important;-webkit-appearance:auto!important;appearance:auto!important}
       #${OVERLAY_ID} .picker input::-webkit-date-and-time-value{text-align:center!important}
       #${OVERLAY_ID} .picker input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
-      #${OVERLAY_ID} .picker-display{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 10px;pointer-events:none;color:#737c88;font-size:12px;font-weight:700;text-align:center}
+      #${OVERLAY_ID} .picker-display{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;padding:0 10px;pointer-events:none;color:#737c88;font-size:12px;font-weight:700;text-align:center}
       #${OVERLAY_ID} .picker.has-value .picker-display{color:#17191d}
       #${OVERLAY_ID} .save{width:100%;height:44px;margin-top:2px;border:1px solid #e5b64d!important;border-radius:13px;background:linear-gradient(135deg,#f5d581 0%,#e1ad3f 100%)!important;color:#18140c!important;font-size:13px;font-weight:900;box-shadow:0 10px 24px rgba(185,125,20,.14)!important}#${OVERLAY_ID} .save:disabled{opacity:.6}body.dcc-session-open{overflow:hidden}
       @media(max-width:390px){#${OVERLAY_ID}{padding:10px}#${OVERLAY_ID} .dcc-session-card{padding:18px;max-height:calc(100dvh - 20px)}#${OVERLAY_ID} h2{font-size:24px}#${OVERLAY_ID} .row{gap:8px}}
@@ -56,7 +56,7 @@
   function syncPicker(inputId,displayId,kind){
     const input=document.getElementById(inputId),display=document.getElementById(displayId),wrap=input?.closest('.picker');if(!input||!display||!wrap)return;
     const paint=()=>{const has=!!input.value;wrap.classList.toggle('has-value',has);display.textContent=kind==='date'?formatDate(input.value):formatTime(input.value)};
-    input.addEventListener('input',paint);input.addEventListener('change',paint);const openNative=()=>{try{if(typeof input.showPicker==='function')input.showPicker();else input.focus()}catch(_){input.focus()}};wrap.addEventListener('click',e=>{if(e.target===input)return;openNative()});display.addEventListener('click',openNative);paint();
+    input.addEventListener('input',paint);input.addEventListener('change',paint);paint();
   }
 
   function openEditor(session){
