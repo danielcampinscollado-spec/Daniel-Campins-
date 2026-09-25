@@ -49,6 +49,14 @@ html.dcc-theme-light-premium .dcc-v2-card{background:rgba(255,255,255,.46)!impor
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field textarea{box-sizing:border-box!important;min-height:58px!important;height:58px!important;padding:8px 10px!important;border-radius:11px!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-save{box-sizing:border-box!important;height:42px!important;min-height:42px!important;padding:0 12px!important;border-radius:13px!important;font-size:10px!important;line-height:1!important}
 #coach-main.dcc-ca .dcc-profile-v2-notes>section:nth-child(2)>div[style*="margin-top"]{margin-top:5px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-form{row-gap:3px!important;margin-top:4px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field{margin:0!important;padding:0!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field label{display:block!important;margin:0 0 2px!important;line-height:1.05!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field textarea{min-height:46px!important;height:46px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-save{margin-top:1px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card+ .dcc-v2-card{margin-top:0!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card p{margin-top:3px!important;margin-bottom:3px!important}
+#coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card textarea[placeholder*="adherencia"]{min-height:54px!important;height:54px!important;margin-top:2px!important}
 
 /* dcc-profile-compact-v2 */
 
