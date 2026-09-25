@@ -19,7 +19,7 @@ function compactButton(btn){
   btn.style.setProperty('padding','7px 12px','important');
   btn.style.setProperty('margin','0','important');
   btn.style.setProperty('border-radius','13px','important');
-  btn.style.setProperty('font-size','13px','important');
+  btn.style.setProperty('font-size','11px','important');
   btn.style.setProperty('line-height','1.05','important');
   btn.style.setProperty('font-weight','850','important');
   btn.style.setProperty('align-self','start','important');
@@ -56,7 +56,7 @@ const s=document.createElement('style');s.id='dcc-training-home-actions-css';s.t
 #coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-history-head{min-height:42px!important;padding:9px 13px!important;background:transparent!important;color:#17191d!important}
 #coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-history-head small{color:#7b828c!important}
 #coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-arrow{color:#a66d0b!important}
-#coach-main [data-dcc-routine-compact="1"]{min-height:42px!important;height:42px!important;max-height:42px!important;padding:7px 12px!important;margin:0!important;border-radius:14px!important;font-size:10px!important;line-height:1.05!important}
+#coach-main [data-dcc-routine-compact="1"]{min-height:42px!important;height:42px!important;max-height:42px!important;padding:7px 12px!important;margin:0!important;border-radius:14px!important;font-size:11px!important;line-height:1.05!important}
 #coach-main [data-dcc-routine-compact="1"]:active{transform:scale(.98)!important;filter:brightness(.94)!important}
 @media(max-width:390px){#coach-main [data-dcc-routine-home-actions="1"]{gap:7px!important}#coach-main [data-dcc-routine-compact="1"]{font-size:10px!important;padding:7px 8px!important}}
 `;document.head.appendChild(s);
