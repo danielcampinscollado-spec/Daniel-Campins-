@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="169" height="149" viewBox="0 0 169 149">
+<defs>
+ <filter id="gray"><feColorMatrix type="saturate" values="0"/></filter>
+ <filter id="gold"><feColorMatrix type="matrix" values=".284 .558 .108 0 .08 .194 .382 .074 0 .05 .054 .106 .020 0 .015 0 0 0 1 0"/></filter>
+ <clipPath id="trap"><path d="M66 8 L103 8 L119 34 L107 50 L85 40 L62 50 L50 34 Z"/></clipPath>
+</defs>
+<rect width="169" height="149" fill="#faf7ee"/>
+<image href="client-dorsal-premium-v5.webp" width="169" height="149" preserveAspectRatio="xMidYMid meet" filter="url(#gray)"/>
+<image href="client-dorsal-premium-v5.webp" width="169" height="149" preserveAspectRatio="xMidYMid meet" clip-path="url(#trap)" filter="url(#gold)"/>
+</svg>
