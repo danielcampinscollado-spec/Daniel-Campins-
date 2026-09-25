@@ -11883,12 +11883,12 @@ if(screen==="checkins"){
   html=`
 
     <div style="
-      margin-bottom:24px;
+      margin-bottom:5px;
     ">
 
       <div style="
         color:#d9aa4a;
-        font-size:13px;
+        font-size:10px;
         font-weight:600;
         letter-spacing:2px;
         text-transform:uppercase;
@@ -11899,15 +11899,15 @@ if(screen==="checkins"){
 
       <h1 style="
         margin:0;
-        font-size:36px;
+        font-size:28px;
         line-height:1.05;
       ">
         Seguimiento de clientes
       </h1>
 
       <p class="muted" style="
-        margin:12px 0 0;
-        font-size:16px;
+        margin:5px 0 0;
+        font-size:12px;
       ">
         Revisa el progreso y las respuestas de tus clientes.
       </p>
@@ -11920,59 +11920,59 @@ if(screen==="checkins"){
       grid-template-columns:1fr 1fr;
       gap:4px;
       padding:4px;
-      margin-bottom:24px;
+      margin-bottom:10px;
       border:1px solid rgba(255,255,255,.12);
       border-radius:22px;
       background:rgba(255,255,255,.025);
     ">
 
       <div style="
-        min-height:54px;
+        min-height:42px;
         display:flex;
         align-items:center;
         justify-content:center;
-        gap:10px;
+        gap:7px;
         border-radius:18px;
         background:rgba(217,170,74,.10);
         color:#f0c96b;
         font-weight:600;
       ">
-        <span style="font-size:20px;">♧</span>
+        <span style="font-size:16px;">♧</span>
         <span>Pendientes</span>
         <span style="
           display:flex;
           align-items:center;
           justify-content:center;
-          min-width:30px;
-          height:30px;
+          min-width:25px;
+          height:25px;
           border-radius:50%;
           background:rgba(217,170,74,.16);
-          font-size:13px;
+          font-size:11px;
         ">
           ${pendingClients.length}
         </span>
       </div>
 
       <div style="
-        min-height:54px;
+        min-height:42px;
         display:flex;
         align-items:center;
         justify-content:center;
-        gap:10px;
+        gap:7px;
         color:#9da4ae;
         font-weight:600;
       ">
-        <span style="font-size:20px;">✓</span>
+        <span style="font-size:16px;">✓</span>
         <span>Revisados</span>
         <span style="
           display:flex;
           align-items:center;
           justify-content:center;
-          min-width:30px;
-          height:30px;
+          min-width:25px;
+          height:25px;
           border-radius:50%;
           background:rgba(255,255,255,.07);
-          font-size:13px;
+          font-size:11px;
         ">
           ${reviewedClients.length}
         </span>
@@ -11984,7 +11984,7 @@ if(screen==="checkins"){
     <div style="
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:7px;
       padding-bottom:110px;
     ">
 
@@ -12005,13 +12005,13 @@ if(screen==="checkins"){
           <div style="
             width:100%;
             box-sizing:border-box;
-            padding:18px;
+            padding:10px 12px;
             border:1px solid ${
               reviewed
                 ? "rgba(255,255,255,.09)"
                 : "rgba(217,170,74,.55)"
             };
-            border-radius:20px;
+            border-radius:16px;
             background:#101319;
           ">
 
@@ -12019,19 +12019,19 @@ if(screen==="checkins"){
               display:flex;
               align-items:flex-start;
               justify-content:space-between;
-              gap:14px;
+              gap:9px;
             ">
 
               <div style="
                 display:flex;
                 align-items:center;
-                gap:16px;
+                gap:10px;
                 min-width:0;
               ">
 
                 <div style="
-                  width:66px;
-                  height:66px;
+                  width:44px;
+                  height:44px;
                   flex:none;
                   border-radius:50%;
                   border:1px solid rgba(217,170,74,.45);
@@ -12039,8 +12039,8 @@ if(screen==="checkins"){
                   align-items:center;
                   justify-content:center;
                   color:#f0c96b;
-                  font-size:22px;
-                  font-weight:600;
+                  font-size:15px;
+                  font-weight:700;
                 ">
                   ${esc(
                     c.name
@@ -12058,21 +12058,21 @@ if(screen==="checkins"){
 
                   <div style="
                     color:#f5f5f2;
-                    font-family:Georgia,serif;
-                    font-size:22px;
+                    font-family:inherit;
+                    font-size:16px;
                     font-weight:600;
                   ">
                     ${esc(c.name)}
                   </div>
 
                   <div style="
-                    margin-top:6px;
+                    margin-top:3px;
                     color:${
                       reviewed
                         ? "#69b66d"
                         : "#c2c7cf"
                     };
-                    font-size:14px;
+                    font-size:11px;
                   ">
                     ${
                       reviewed
@@ -12093,7 +12093,7 @@ if(screen==="checkins"){
                     ? "#9da4ae"
                     : "#f0c96b"
                 };
-                font-size:14px;
+                font-size:10px;
                 white-space:nowrap;
               ">
                 ${reviewed ? "Ayer" : "Hoy"}
@@ -12106,8 +12106,8 @@ if(screen==="checkins"){
               class="btn"
               style="
                 width:100%;
-                margin-top:16px;
-                padding:12px 14px;
+                margin-top:8px;
+                padding:9px 12px;
                 border:1px solid ${
                   reviewed
                     ? "rgba(70,160,95,.55)"
@@ -12119,8 +12119,8 @@ if(screen==="checkins"){
                     ? "#69b66d"
                     : "#f0c96b"
                 };
-                border-radius:13px;
-                font-size:15px;
+                border-radius:11px;
+                font-size:11px;
                 font-weight:700;
               "
               onclick="reviewCheckin('${c.id}')"
