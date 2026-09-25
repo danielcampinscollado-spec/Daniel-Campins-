@@ -37,11 +37,11 @@ html.dcc-theme-light-premium body #coach #coach-main.dcc-ca .dcc-tr-cancel{backg
 #coach-main .dcc-training-days .dcc-tr-day-head{min-height:38px!important;padding:7px 10px!important}
 #coach-main .dcc-training-days .dcc-tr-day-head b{font-size:10px!important}
 #coach-main .dcc-training-days .dcc-tr-day-head small{font-size:8px!important}
-#coach-main .dcc-tr-actions{gap:8px!important;margin-top:8px!important}
+#coach-main .dcc-tr-actions{gap:6px!important;margin-top:6px!important}
 #coach-main .dcc-tr-actions button,#coach-main .dcc-tr-edit,#coach-main .dcc-tr-new,
 #coach-main .dcc-followup-overview button,#coach-main .dcc-followup-overview .dcc-ca-save,#coach-main .dcc-followup-overview .dcc-ca-action-primary,
 #coach-main .dcc-ca-card button.dcc-ca-save,#coach-main .dcc-ca-card button.dcc-ca-action-primary{
-min-height:44px!important;height:44px!important;padding:0 14px!important;border-radius:12px!important;font-size:12px!important;font-weight:850!important;line-height:1!important}
+min-height:34px!important;height:34px!important;padding:0 10px!important;border-radius:10px!important;font-size:10px!important;font-weight:800!important;line-height:1!important}
 #coach-main textarea{font-size:11px}
 
 @media(max-width:520px){#coach-main.dcc-ca{padding-left:12px!important;padding-right:12px!important}.dcc-ca-head h1{font-size:31px}.dcc-ca-metric{padding:10px}.dcc-ca-metric b{font-size:14px}.dcc-ca-tab{font-size:9px}.dcc-ca-grid{grid-template-columns:1fr}.dcc-tr-head h2{font-size:18px}.dcc-tr-ex:not(.dcc-no-img){grid-template-columns:52px minmax(0,1fr) auto}.dcc-tr-ex img{width:48px;height:46px}.dcc-tr-editrow{grid-template-columns:1fr 1fr auto}.dcc-tr-ex.dcc-no-img{grid-template-columns:1fr!important}.dcc-tr-ex.dcc-no-img .dcc-tr-editrow{grid-template-columns:64px minmax(100px,1fr) 42px!important;gap:8px!important}.dcc-tr-ex.dcc-no-img .dcc-tr-spec{text-align:left!important}}
