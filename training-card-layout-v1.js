@@ -1,7 +1,7 @@
 /* DCC — tarjetas compactas del editor de rutina + reordenación táctil */
 (function(){
 'use strict';
-const BUILD='20260925-training-card-layout-v2';
+const BUILD='20260925-training-card-layout-v3-structure';
 if(window.__dccTrainingCardLayout===BUILD)return;window.__dccTrainingCardLayout=BUILD;
 const root=()=>document.getElementById('coach-main');
 const id=()=>String(window.selectedClient||'');
@@ -24,12 +24,19 @@ function css(){if(document.getElementById('dcc-training-card-layout-css'))return
 #coach-main .dcc-exercise-card>div:empty{display:none!important}
 #coach-main .dcc-exercise-card [style*="height"]{min-height:0!important}
 #coach-main .dcc-drag-handle{width:34px;height:36px;display:grid;place-items:center;border:0;background:transparent;color:#737b86;font-size:21px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+
+#coach-main .dcc-exercise-card{display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:auto!important;align-items:stretch!important;gap:8px!important;overflow:hidden!important}
+#coach-main .dcc-exercise-card>*{grid-column:1/-1!important;position:static!important;float:none!important;transform:none!important;max-width:100%!important;box-sizing:border-box!important}
+#coach-main .dcc-exercise-card>div:first-child{width:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr) 34px 36px!important;align-items:center!important;gap:6px!important;min-height:38px!important}
+#coach-main .dcc-exercise-card>div:first-child>div:first-child{width:auto!important;max-width:none!important;min-width:0!important;display:block!important;position:static!important}
+#coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{width:auto!important;max-width:100%!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;text-align:left!important}
+#coach-main .dcc-exercise-card>div:nth-child(2),#coach-main .dcc-exercise-card>div:nth-child(3){width:100%!important;position:static!important}
 #coach-main .dcc-exercise-card.dcc-dragging{opacity:.58;transform:scale(.99);box-shadow:0 12px 30px rgba(83,63,31,.15)!important}
 `;document.head.appendChild(s)}
 function dayIndexFor(card){const day=card.closest('.dcc-tr-day');if(!day)return -1;return [...root().querySelectorAll('.dcc-tr-days>.dcc-tr-day')].indexOf(day)}
 function cardsInDay(card){const day=card.closest('.dcc-tr-day');return day?[...day.querySelectorAll('.dcc-exercise-card')].filter(x=>x.offsetParent!==null):[]}
 function reorder(card,target){const di=dayIndexFor(card);if(di<0)return;const list=cardsInDay(card),from=list.indexOf(card),to=list.indexOf(target);if(from<0||to<0||from===to)return;const d=days()[di];if(!d||!Array.isArray(d.exercises))return;const [ex]=d.exercises.splice(from,1);d.exercises.splice(to,0,ex);window.dccMarkTrainingDraftDirty?.(id());try{window.saveData?.()}catch(_){};target.parentNode.insertBefore(card,to>from?target.nextSibling:target)}
-function bind(card){if(card.dataset.dccCompactBound)return;card.dataset.dccCompactBound='1';card.querySelectorAll('img').forEach(img=>img.remove());const head=card.firstElementChild;if(!head)return;const del=[...card.querySelectorAll('button')].find(b=>b.dataset.dccDelete==='1'||(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(del&&!del.dataset.dccDelete)del.dataset.dccDelete='1';let h=document.createElement('button');h.type='button';h.className='dcc-drag-handle';h.innerHTML='⠿';h.setAttribute('aria-label','Arrastrar para reordenar');h.setAttribute('title','Arrastrar para reordenar');if(del)head.insertBefore(h,del);else head.appendChild(h);
+function bind(card){if(card.dataset.dccCompactBound)return;card.dataset.dccCompactBound='1';card.querySelectorAll('img').forEach(img=>img.remove());[...card.children].forEach(el=>{if(el.children.length===0&&!el.textContent.trim()&&!el.matches('input,button'))el.remove()});const head=card.firstElementChild;if(!head)return;const del=[...card.querySelectorAll('button')].find(b=>b.dataset.dccDelete==='1'||(b.getAttribute('onclick')||'').includes('removeTrainingExercise'));if(del&&!del.dataset.dccDelete)del.dataset.dccDelete='1';let h=document.createElement('button');h.type='button';h.className='dcc-drag-handle';h.innerHTML='⠿';h.setAttribute('aria-label','Arrastrar para reordenar');h.setAttribute('title','Arrastrar para reordenar');if(del)head.insertBefore(h,del);else head.appendChild(h);
 let active=false;
 h.addEventListener('pointerdown',e=>{active=true;card.classList.add('dcc-dragging');h.setPointerCapture?.(e.pointerId);e.preventDefault()});
 h.addEventListener('pointermove',e=>{if(!active)return;const under=document.elementFromPoint(e.clientX,e.clientY)?.closest?.('.dcc-exercise-card');if(under&&under!==card&&under.closest('.dcc-tr-day')===card.closest('.dcc-tr-day'))reorder(card,under);e.preventDefault()});
