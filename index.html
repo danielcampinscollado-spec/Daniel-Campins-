@@ -14911,18 +14911,25 @@ async function markReviewed(id){
 }
 
 function openMessages(id){
-window.openCoachMessageClientId=id;
-const c=client(id);
-const msgs=data.messages[id]||[];
-
-openModal(`
-<div class="modal-head"><h2>${esc(c.name)}</h2></div>
-<div id="conversation">
-${msgs.length?msgs.map(m=>`<div class="item"><b>${esc(m[0])}</b><div>${esc(m[1])}</div></div>`).join(""):`<div class="muted">No hay mensajes.</div>`}
-</div>
-<textarea id="coach-message" placeholder="Escribe tu mensaje..."></textarea>
-<button class="btn" style="margin-top:10px" onclick="sendCoachMessage('${id}')">Enviar</button>
-`);
+  window.openCoachMessageClientId=id;
+  const c=client(id), msgs=data.messages?.[id]||[];
+  const rows=msgs.map(m=>{
+    const mine=String(m?.[0]||'').trim().toLowerCase()==='daniel';
+    const time=m?.[2]?new Date(m[2]).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'';
+    return `<div style="display:flex;justify-content:${mine?'flex-end':'flex-start'};margin:7px 0"><div style="max-width:82%;padding:10px 12px;border-radius:${mine?'17px 17px 5px 17px':'17px 17px 17px 5px'};background:${mine?'#f0c75e':'#fff'};border:1px solid #ead8b7;color:#17191d;box-shadow:0 5px 14px rgba(90,65,25,.05)"><div style="font-size:15px;line-height:1.4;word-break:break-word">${esc(m?.[1]||'')}</div><div style="margin-top:4px;text-align:right;color:#858a91;font-size:10px">${esc(time)}</div></div></div>`;
+  }).join('');
+  openModal(`<div class="dcc-coach-chat-light" style="background:#faf5eb;color:#17191d;margin:-20px;padding:16px;min-height:70vh">
+    <div style="display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1px solid #ead9bb">
+      <button class="ghost" onclick="closeModal()" style="width:38px;height:38px;padding:0;border-color:#dfc89e;color:#9d6c17">‹</button>
+      <div style="width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#f1e3c7;color:#9d6c17;font-weight:800">${esc(String(c?.name||'C').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase())}</div>
+      <div><b style="display:block;font-size:16px">${esc(c?.name||'Cliente')}</b><small style="color:#858a91">${esc(c?.goal||'Cliente DCC Fitness')}</small></div>
+    </div>
+    <div id="conversation" style="padding:12px 0 92px">${rows||'<div style="padding:30px;text-align:center;color:#8b8f96">Todavía no hay mensajes.</div>'}</div>
+    <div style="position:sticky;bottom:0;display:flex;gap:8px;padding:9px;background:rgba(250,245,235,.97);border:1px solid #e7d3ae;border-radius:18px">
+      <textarea id="coach-message" rows="1" placeholder="Escribe un mensaje..." style="flex:1;min-height:42px;max-height:100px;resize:none;border:0!important;background:#fffdf9!important;color:#17191d!important;border-radius:13px!important;padding:11px!important"></textarea>
+      <button class="btn" onclick="sendCoachMessage('${id}')" style="width:46px;height:46px;padding:0;border-radius:50%;background:#e2b53f!important;color:#17191d!important">➤</button>
+    </div>
+  </div>`);
 }
 async function sendCoachMessage(id){
 
@@ -14947,7 +14954,7 @@ async function sendCoachMessage(id){
 
   await loadMessagesFromSupabase();
 
-  closeModal();
+  openMessages(id);
   toast("Mensaje enviado");
 }
 
