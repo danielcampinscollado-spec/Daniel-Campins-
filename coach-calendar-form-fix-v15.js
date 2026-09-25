@@ -1,7 +1,7 @@
 /* DCC calendar form v22 — editor claro de entrenamientos personales */
 (function(){
   'use strict';
-  const BUILD='20260925-calendar-form-v25-ios-visible-native';
+  const BUILD='20260925-calendar-form-v26-custom-date-time';
   if(window.__dccCalendarFormBuild===BUILD)return;
   window.__dccCalendarFormBuild=BUILD;
 
@@ -36,6 +36,16 @@
       #${OVERLAY_ID} .picker-display{display:none!important}
       #${OVERLAY_ID} .picker.has-value .picker-display{color:#17191d}
       #${OVERLAY_ID} .save{width:100%;height:44px;margin-top:2px;border:1px solid #e5b64d!important;border-radius:13px;background:linear-gradient(135deg,#f5d581 0%,#e1ad3f 100%)!important;color:#18140c!important;font-size:13px;font-weight:900;box-shadow:0 10px 24px rgba(185,125,20,.14)!important}#${OVERLAY_ID} .save:disabled{opacity:.6}body.dcc-session-open{overflow:hidden}
+
+      #${OVERLAY_ID} .dcc-custom-picker{display:none;margin:6px 0 9px;padding:10px;border:1px solid rgba(183,123,19,.24);border-radius:13px;background:#fffefa}
+      #${OVERLAY_ID} .dcc-custom-picker.open{display:block}
+      #${OVERLAY_ID} .dcc-custom-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+      #${OVERLAY_ID} .dcc-custom-grid.time{grid-template-columns:repeat(2,minmax(0,1fr))}
+      #${OVERLAY_ID} .dcc-custom-picker select{height:38px!important;margin:0!important;padding:0 6px!important;font-size:11px!important}
+      #${OVERLAY_ID} .dcc-custom-done{width:100%;height:36px;margin-top:7px;border:1px solid #d7a43c;border-radius:10px;background:#f7e4ad;color:#6f4b08;font-size:11px;font-weight:850}
+      #${OVERLAY_ID} .picker{cursor:pointer!important}
+      #${OVERLAY_ID} .picker input{display:none!important}
+      #${OVERLAY_ID} .picker-display{display:flex!important;z-index:2!important}
       @media(max-width:390px){#${OVERLAY_ID}{padding:10px}#${OVERLAY_ID} .dcc-session-card{padding:18px;max-height:calc(100dvh - 20px)}#${OVERLAY_ID} h2{font-size:24px}#${OVERLAY_ID} .row{gap:8px}}
     `;document.head.appendChild(s);
   }
@@ -68,12 +78,26 @@
       const notes=session?.notes||'';
       const isEdit=!!editingId;
       const overlay=document.createElement('div');overlay.id=OVERLAY_ID;
-      overlay.innerHTML=`<div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title"><div class="head"><div><h2 id="dcc-session-title">${isEdit?'Editar entreno':'Nuevo entreno'}</h2><p class="sub">${isEdit?'Actualiza este entrenamiento personal':'Programa un entrenamiento personal'}</p></div><button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="">Cargando clientes…</option></select></label><div class="row"><label>Fecha<div class="picker"><input id="dcc-cal-date" type="date" value="${esc(selectedDate)}"><span class="picker-display" id="dcc-cal-date-display">Seleccionar</span></div></label><label>Hora<div class="picker"><input id="dcc-cal-time" type="time" value="${esc(selectedTime)}"><span class="picker-display" id="dcc-cal-time-display">Seleccionar</span></div></label></div><label>Modalidad<select id="dcc-cal-type"><option value=""${!modality?' selected':''} disabled>Seleccionar</option><option value="En gimnasio"${modality==='En gimnasio'?' selected':''}>En gimnasio</option><option value="A domicilio"${modality==='A domicilio'?' selected':''}>A domicilio</option></select></label><label>Notas <span style="font-weight:500;color:#7b838d">(opcional)</span><textarea id="dcc-cal-notes" maxlength="500" placeholder="Añade alguna nota…">${esc(notes)}</textarea></label><button id="dcc-cal-save" type="button" class="save">${isEdit?'Guardar cambios':'Guardar entreno'} →</button></div>`;
+      overlay.innerHTML=`<div class="dcc-session-card" role="dialog" aria-modal="true" aria-labelledby="dcc-session-title"><div class="head"><div><h2 id="dcc-session-title">${isEdit?'Editar entreno':'Nuevo entreno'}</h2><p class="sub">${isEdit?'Actualiza este entrenamiento personal':'Programa un entrenamiento personal'}</p></div><button type="button" class="close" id="dcc-session-close" aria-label="Cerrar">×</button></div><label>Cliente<select id="dcc-cal-client"><option value="">Cargando clientes…</option></select></label><div class="row"><label>Fecha<div class="picker" id="dcc-date-trigger"><input id="dcc-cal-date" type="hidden" value="${esc(selectedDate)}"><span class="picker-display" id="dcc-cal-date-display">Seleccionar</span></div></label><label>Hora<div class="picker" id="dcc-time-trigger"><input id="dcc-cal-time" type="hidden" value="${esc(selectedTime)}"><span class="picker-display" id="dcc-cal-time-display">Seleccionar</span></div></label></div><div class="dcc-custom-picker" id="dcc-date-picker"><div class="dcc-custom-grid"><select id="dcc-date-day"></select><select id="dcc-date-month"></select><select id="dcc-date-year"></select></div><button type="button" class="dcc-custom-done" id="dcc-date-done">Aceptar fecha</button></div><div class="dcc-custom-picker" id="dcc-time-picker"><div class="dcc-custom-grid time"><select id="dcc-time-hour"></select><select id="dcc-time-minute"></select></div><button type="button" class="dcc-custom-done" id="dcc-time-done">Aceptar hora</button></div><label>Modalidad<select id="dcc-cal-type"><option value=""${!modality?' selected':''} disabled>Seleccionar</option><option value="En gimnasio"${modality==='En gimnasio'?' selected':''}>En gimnasio</option><option value="A domicilio"${modality==='A domicilio'?' selected':''}>A domicilio</option></select></label><label>Notas <span style="font-weight:500;color:#7b838d">(opcional)</span><textarea id="dcc-cal-notes" maxlength="500" placeholder="Añade alguna nota…">${esc(notes)}</textarea></label><button id="dcc-cal-save" type="button" class="save">${isEdit?'Guardar cambios':'Guardar entreno'} →</button></div>`;
       document.body.appendChild(overlay);document.body.classList.add('dcc-session-open');
       document.getElementById('dcc-session-close')?.addEventListener('click',closeStandalone);
       overlay.addEventListener('click',e=>{if(e.target===overlay)closeStandalone()});
       document.getElementById('dcc-cal-save')?.addEventListener('click',saveEditor);
       syncPicker('dcc-cal-date','dcc-cal-date-display','date');syncPicker('dcc-cal-time','dcc-cal-time-display','time');
+      const pad=n=>String(n).padStart(2,'0'), months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'], now=new Date();
+      const day=document.getElementById('dcc-date-day'),month=document.getElementById('dcc-date-month'),year=document.getElementById('dcc-date-year'),hour=document.getElementById('dcc-time-hour'),minute=document.getElementById('dcc-time-minute');
+      day.innerHTML=Array.from({length:31},(_,i)=>'<option value="'+pad(i+1)+'">'+(i+1)+'</option>').join('');
+      month.innerHTML=months.map((m,i)=>'<option value="'+pad(i+1)+'">'+m+'</option>').join('');
+      year.innerHTML=Array.from({length:8},(_,i)=>{const y=now.getFullYear()-1+i;return '<option value="'+y+'">'+y+'</option>'}).join('');
+      hour.innerHTML=Array.from({length:24},(_,i)=>'<option value="'+pad(i)+'">'+pad(i)+'</option>').join('');
+      minute.innerHTML=Array.from({length:12},(_,i)=>{const m=pad(i*5);return '<option value="'+m+'">'+m+'</option>'}).join('');
+      const dv=selectedDate?selectedDate.split('-'):[String(now.getFullYear()),pad(now.getMonth()+1),pad(now.getDate())];year.value=dv[0];month.value=dv[1];day.value=dv[2];
+      const tv=selectedTime?selectedTime.split(':'):[pad(now.getHours()),pad(Math.floor(now.getMinutes()/5)*5)];hour.value=tv[0];minute.value=tv[1];
+      const datePicker=document.getElementById('dcc-date-picker'),timePicker=document.getElementById('dcc-time-picker');
+      document.getElementById('dcc-date-trigger').addEventListener('click',()=>{datePicker.classList.toggle('open');timePicker.classList.remove('open')});
+      document.getElementById('dcc-time-trigger').addEventListener('click',()=>{timePicker.classList.toggle('open');datePicker.classList.remove('open')});
+      document.getElementById('dcc-date-done').addEventListener('click',()=>{const input=document.getElementById('dcc-cal-date');input.value=year.value+'-'+month.value+'-'+day.value;input.dispatchEvent(new Event('change'));datePicker.classList.remove('open')});
+      document.getElementById('dcc-time-done').addEventListener('click',()=>{const input=document.getElementById('dcc-cal-time');input.value=hour.value+':'+minute.value;input.dispatchEvent(new Event('change'));timePicker.classList.remove('open')});
       populateClients(session?.client_id||'');
     }catch(e){console.error('DCC abriendo editor de entreno:',e);notify('No se pudo abrir el entrenamiento')}
   }
