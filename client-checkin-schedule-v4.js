@@ -236,8 +236,11 @@
 
   async function open(preserve=false){
     const id=activeId();if(!id)return;
-    render(preserve);
-    try{await fetchState(id);render(preserve)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true};render(preserve)}
+    // Avoid the visible two-stage render on entry: when state is not cached,
+    // resolve it first and paint the screen once. Cached entries remain instant.
+    if(stateCache[id]){render(preserve);return}
+    try{await fetchState(id)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true}}
+    if(activeId()===id)render(preserve);
   }
 
   window.dccCheckinV4Field=function(key,value){
