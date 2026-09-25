@@ -140,17 +140,17 @@
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
       #coach-main.dcc-config-active{padding-bottom:96px!important}
-      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important}
+      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important;min-height:0!important}
       #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;margin-bottom:3px!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(2){gap:6px!important}
+      #coach-main .dcc-exercise-card>div:nth-child(2){gap:6px!important;margin-top:4px!important;margin-bottom:0!important}
       #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:10px!important}
       #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 84px!important;gap:5px!important;margin-top:4px!important}
       #coach-main .dcc-exercise-card input{min-height:31px!important;margin-top:2px!important;font-size:12px!important;padding-top:5px!important;padding-bottom:5px!important}
       #coach-main .dcc-exercise-card input[type="url"]{min-height:31px!important;font-size:10px!important}
       #coach-main .dcc-exercise-card [data-dcc-delete]{width:32px!important;height:30px!important;min-width:32px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.34)!important;color:#b92f38!important;background:rgba(190,48,55,.025)!important;display:grid!important;place-items:center!important}#coach-main .dcc-exercise-card [data-dcc-delete] svg{width:15px;height:15px}
-      #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
+      #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}\n      #coach-main.dcc-config-active .dcc-exercise-card{display:grid!important;gap:5px!important}\n      #coach-main.dcc-config-active .dcc-exercise-card label{margin:0!important}\n      #coach-main.dcc-config-active .dcc-exercise-card>div{margin-bottom:0!important}\n      #coach-main.dcc-config-active .dcc-method-config{margin:4px 0!important;padding:7px!important}\n      #coach-main.dcc-config-active .dcc-superset-group{gap:4px!important;padding:6px!important}
       #coach-main .dcc-config-save{position:static!important;width:100%!important;min-height:44px!important;margin-top:12px!important;border-radius:12px!important;font-size:13px!important;box-shadow:none!important}
       #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
       #coach-main .dcc-method-config{margin:5px 0;padding:8px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}#coach-main .dcc-superset-group{display:grid!important;gap:5px!important;padding:8px!important}#coach-main .dcc-superset-group>.dcc-exercise-card{background:#fffdf9!important;border-color:rgba(217,170,74,.28)!important;box-shadow:none!important}
@@ -589,7 +589,9 @@
       window.__dccRoutineNavBypass=true;
       try{
         const result=await nativeSaveConfiguredTraining.apply(this,arguments);
-        if(result===true)clearRoutineDirty();
+        // Native save implementations do not consistently return true. If the call
+        // completed without throwing, the routine has been accepted as saved.
+        if(result!==false)clearRoutineDirty();
         return result;
       }finally{window.__dccRoutineNavBypass=false;}
     };
