@@ -1,11 +1,11 @@
 /* DCC — asistente premium para configurar comidas y su orden */
 (function(){
   'use strict';
-  const BUILD='20260924-nutrition-meal-setup-v18-linear-flow';
+  const BUILD='20260925-nutrition-meal-setup-v19-approved-light-flow';
   if(window.__dccNutritionMealSetup===BUILD)return;
   window.__dccNutritionMealSetup=BUILD;
 
-  const MEALS=['Desayuno','Merienda mañana','Comida','Merienda tarde','Cena','Pre-entreno','Post-entreno','Post-cena'];
+  const MEALS=['Desayuno','Merienda mañana','Comida','Merienda tarde','Cena','Pre-entreno','Post-entreno','Pre-cena'];
   let selected=[],currentId=null,currentType='training',setupMode='both';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -87,7 +87,7 @@
 
   function renderStep3(){
     const p=pane();if(!p)return;
-    p.innerHTML=`<div class="dcc-meal-setup">${progress(3)}<div class="dcc-meal-setup-card"><h2>Orden de las comidas</h2><p>Este será el orden que verá el cliente. Usa las flechas para colocarlas como quieras.</p><div class="dcc-meal-order">${selected.map((name,i)=>`<div class="dcc-meal-order-row"><span class="dcc-meal-order-num">${i+1}</span><b>${esc(name)}</b><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-move" ${i===0?'disabled':''} onclick="dccMealSetupMove(${i},-1)" aria-label="Subir ${esc(name)}">↑</button><button type="button" class="dcc-meal-move" ${i===selected.length-1?'disabled':''} onclick="dccMealSetupMove(${i},1)" aria-label="Bajar ${esc(name)}">↓</button></span></div>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="dccMealSetupBackToMeals()">Atrás</button><button type="button" class="dcc-meal-next" onclick="dccMealSetupCreate()">Crear plan</button></div></div>`
+    p.innerHTML=`<div class="dcc-meal-setup">${progress(3)}<div class="dcc-meal-setup-card"><h2>Orden de las comidas</h2><p>Este será el orden que verá el cliente. Usa las flechas para colocarlas como quieras.</p><div class="dcc-meal-order">${selected.map((name,i)=>`<div class="dcc-meal-order-row"><span class="dcc-meal-order-num">${i+1}</span><b>${esc(name)}</b><span class="dcc-meal-order-actions"><button type="button" class="dcc-meal-move" ${i===0?'disabled':''} onclick="dccMealSetupMove(${i},-1)" aria-label="Subir ${esc(name)}">↑</button><button type="button" class="dcc-meal-move" ${i===selected.length-1?'disabled':''} onclick="dccMealSetupMove(${i},1)" aria-label="Bajar ${esc(name)}">↓</button></span></div>`).join('')}</div></div><div class="dcc-meal-actions"><button type="button" class="dcc-meal-back" onclick="dccMealSetupBackToMeals()">Atrás</button><button type="button" class="dcc-meal-next" onclick="dccMealSetupCreate()">Confirmar comidas</button></div></div>`
   }
   function renderAddMealPicker(id,type){
     currentId=id;currentType=type;injectCss();const p=pane();if(!p)return false;const available=remainingMeals(id,type);
