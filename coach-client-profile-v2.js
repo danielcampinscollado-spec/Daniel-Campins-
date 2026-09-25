@@ -55,6 +55,11 @@ html.dcc-theme-light-premium .dcc-v2-card{background:rgba(255,255,255,.46)!impor
 .dcc-v2-bodygrid{gap:6px!important;margin-top:6px!important}.dcc-v2-stat{padding:8px!important;border-radius:12px!important}.dcc-v2-stat small{font-size:8px!important}.dcc-v2-stat b{margin-top:2px!important;font-size:15px!important}.dcc-v2-stat em{margin-top:3px!important;font-size:8px!important}
 .dcc-v2-strength{gap:4px!important;margin-top:6px!important}.dcc-v2-muscle{min-height:68px!important;padding:7px 2px!important;border-radius:11px!important;display:flex!important;flex-direction:column!important;justify-content:space-between!important}.dcc-v2-muscle i{display:none!important}.dcc-v2-muscle b{margin-top:0!important;font-size:8px!important}.dcc-v2-muscle strong{margin-top:4px!important;font-size:10px!important}
 .dcc-v2-photos{gap:5px!important;margin-top:6px!important}.dcc-v2-photo{aspect-ratio:5/4!important;border-radius:10px!important}.dcc-v2-checkfoot{margin-top:5px!important;font-size:8px!important}.dcc-v2-link{font-size:9px!important}
+/* dcc-profile-name-lower-v5 */
+#coach-main.dcc-ca>.top{padding-top:10px!important;margin-bottom:3px!important}
+#coach-main.dcc-ca>.top h1{margin-top:0!important;margin-bottom:0!important}
+#coach-main.dcc-ca>.top p{margin-top:1px!important}
+
 /* dcc-profile-header-authority-v4 */
 #coach-main.dcc-ca>.ghost:first-child{min-height:32px!important;height:32px!important;padding:4px 10px!important;margin:0 0 5px!important;border-radius:12px!important;font-size:11px!important;line-height:1!important}
 #coach-main.dcc-ca>.top{margin:0 0 5px!important;min-height:0!important;padding:0!important;display:flex!important;align-items:flex-end!important}
