@@ -225,7 +225,7 @@
       const wrapped=function(id,tab='summary'){
         const result=admin.apply(this,arguments);
         requestAnimationFrame(()=>patchClientAdmin(id,tab));
-        syncBodyFatClient(id).then(()=>patchClientAdmin(id,tab));
+        syncBodyFatClient(id);
         return result;
       };
       wrapped.__dccBodyFatHistoryV4=true;wrapped.__base=admin;window.dccClientAdmin=wrapped;
@@ -235,7 +235,7 @@
       const wrappedOpen=function(id){
         const result=opener.apply(this,arguments);
         requestAnimationFrame(()=>patchClientAdmin(id,'summary'));
-        syncBodyFatClient(id).then(()=>patchClientAdmin(id,'summary'));
+        syncBodyFatClient(id);
         return result;
       };
       wrappedOpen.__dccBodyFatHistoryV4=true;wrappedOpen.__dccAdmin=!!opener.__dccClientAdminPremium;wrappedOpen.__dccClientAdminPremium=!!opener.__dccClientAdminPremium;wrappedOpen.__base=opener;window.openClient=wrappedOpen;window.showClientAdmin=wrappedOpen;
