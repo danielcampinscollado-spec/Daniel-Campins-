@@ -533,9 +533,11 @@ function install(){
     }
     window.__dccManualTrainingDaySelection=false;
 
+    if(screen!=='messages'&&typeof window.dccStopClientMessagePolling==='function')window.dccStopClientMessagePolling();
     const result=current.apply(this,arguments);
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
     if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(window.dccEnhanceClientDiet));
+    if(screen==='messages'&&typeof window.dccOpenClientMessagesPremium==='function')window.dccOpenClientMessagesPremium();
     return result;
   };
   wrapped.__dccHomePremiumV2=true;
