@@ -12521,7 +12521,21 @@ if(error){
 
 }
 
-/* Guardamos los datos auxiliares solamente en local */
+const {error:weightError}=await supabaseClient
+  .from("client_weights")
+  .insert({
+    client_id:id,
+    weight:weight
+  });
+
+if(weightError){
+  console.error("Error guardando el peso inicial:",weightError);
+  await supabaseClient.from("clients").delete().eq("id",id);
+  toast("No se pudo completar el alta del cliente");
+  return;
+}
+
+/* La caché local refleja únicamente datos confirmados por Supabase. */
 
 data.weights[id]=[weight];
 
