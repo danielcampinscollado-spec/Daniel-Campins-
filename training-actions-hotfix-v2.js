@@ -214,27 +214,17 @@
     script.src='./dcc-theme-system-v1.js';
     script.async=false;
     script.dataset.dccThemeSystem='v1';
-    script.onload=loadPremiumPolish;
+    
     script.onerror=()=>console.warn('DCC theme system: no se pudo cargar');
     document.head.appendChild(script);
   }
 
-  function loadPremiumPolish(){
-    if(window.__dccThemePremiumPolishV6||document.querySelector('script[data-dcc-theme-polish="v3"]'))return;
-    const script=document.createElement('script');
-    script.src='./dcc-theme-premium-polish-v3.js';
-    script.async=false;
-    script.dataset.dccThemePolish='v3';
-    script.onerror=()=>console.warn('DCC premium polish: no se pudo cargar');
-    document.head.appendChild(script);
-  }
 
   installTrainingRefinements();
   loadThemeSystem();
-  loadPremiumPolish();
   window.dccRefineClientTraining=schedule;
   window.addEventListener('dcc:exercise-library-ready',schedule);
-  document.addEventListener('DOMContentLoaded',()=>{installTrainingRefinements();loadThemeSystem();loadPremiumPolish();schedule();});
+  document.addEventListener('DOMContentLoaded',()=>{installTrainingRefinements();loadThemeSystem();schedule();});
   schedule();
 
   window.__dccRuntimeBridgeReady=true;
