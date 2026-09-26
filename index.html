@@ -6189,6 +6189,15 @@ async function openApp(app){
 
       await loadClientsFromSupabase();
 
+      const claimedClient=client(currentClientId);
+      if(claimedClient?.status==='Pendiente de cuestionario'){
+        if(typeof window.dccOpenInitialQuestionnaire==='function'){
+          window.dccOpenInitialQuestionnaire(claimedClient);
+          return;
+        }
+        throw new Error('Cuestionario inicial no disponible');
+      }
+
       if(!client(currentClientId)){
         throw new Error("No se pudo cargar el perfil del cliente");
       }
