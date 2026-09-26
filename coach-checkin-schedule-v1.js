@@ -78,6 +78,7 @@
     firstCard.parentNode.insertBefore(holder.firstElementChild,firstCard);
     try{
       st=await getState(id);
+      if(String(window.selectedClient||'')!==String(id))return;
       const current=document.getElementById('dccCheckinScheduleCard');if(!current)return;
       const replacement=document.createElement('div');replacement.innerHTML=scheduleHtml(id,st);
       current.replaceWith(replacement.firstElementChild);
@@ -121,6 +122,7 @@
       if(!p.front||!p.side||!p.back)return;
       const [front,side,back]=await Promise.all([signed(p.front),signed(p.side),signed(p.back)]);
       if(!front||!side||!back)return;
+      if(String(window.selectedClient||'')!==String(id)||!card.isConnected)return;
       card.innerHTML=`<div class="dcc-ca-section-head"><h2>Evolución física</h2></div>
         <div class="dcc-ca-photo-grid">
           <div class="dcc-ca-photo"><div class="dcc-ca-photo-box has-photo"><img src="${esc(front)}" alt="Frontal"></div><b>Frontal</b></div>
