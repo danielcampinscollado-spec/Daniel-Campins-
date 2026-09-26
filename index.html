@@ -14187,7 +14187,8 @@ const ok=await saveRoutineToSupabase(id);
 
   toast("Rutina guardada correctamente");
 
-  showCoach("routines");
+  if(typeof window.dccClientAdmin==="function")window.dccClientAdmin(String(id),"training");
+  else showCoach("routines");
   return true;
 }
 function removeTrainingExercise(id,dayIndex,index){
