@@ -151,8 +151,8 @@ body.dcc-client-mode #modal .ghost{
   function boot(){
     install();
     syncMode();
-    const observer=new MutationObserver(syncMode);
-    observer.observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['style','class']});
+    // App mode changes are explicit through openApp/logout; a permanent
+    // document-wide observer caused syncMode to run for unrelated DOM changes.
     window.addEventListener('pageshow',syncMode);
   }
 
