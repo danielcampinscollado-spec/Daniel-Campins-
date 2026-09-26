@@ -63,7 +63,7 @@
     try{
       await writeRoutine(id,next);
       applyRoutine(id,next);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
+      renderClientRoutine(id);
       notify('Día de entrenamiento eliminado');
     }catch(error){
       console.error('DCC eliminar día server-first:',error);
@@ -138,7 +138,7 @@
       try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
       await reloadRoutines();
       await loadPrevious(id);
-      if(typeof window.showCoach==='function')window.showCoach('routines');
+      renderClientRoutine(id);
       notify('Nueva rutina creada');
     }catch(error){
       console.error('DCC nueva rutina atómica:',error);
