@@ -5148,25 +5148,23 @@ async function loadDietsFromSupabase(){
 
     if(!diets) return;
 
+    // Supabase is authoritative for diet assignments. Seed empty plans for
+    // current clients, then fill only the diet rows confirmed by the server.
+    data.diets={};
+    (data.clients||[]).forEach(client=>{
+      data.diets[client.id]={
+        training:{calories:"",protein:"",meals:[],updated_at:null},
+        rest:{calories:"",protein:"",meals:[],updated_at:null}
+      };
+    });
+
     diets.forEach(row=>{
 
       if(!data.diets[row.client_id]){
-
         data.diets[row.client_id]={
-          training:{
-            calories:"",
-            protein:"",
-            meals:[],
-            updated_at:null
-          },
-          rest:{
-            calories:"",
-            protein:"",
-            meals:[],
-            updated_at:null
-          }
+          training:{calories:"",protein:"",meals:[],updated_at:null},
+          rest:{calories:"",protein:"",meals:[],updated_at:null}
         };
-
       }
 
       data.diets[row.client_id][row.diet_type]={
