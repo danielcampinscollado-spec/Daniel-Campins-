@@ -12459,7 +12459,8 @@ async function addWeight(id){
         saveData();
 
         if(currentApp === "coach"){
-            showClientAdmin(id);
+            if(typeof window.dccClientAdmin==="function")window.dccClientAdmin(String(id),"summary");
+            else{console.error("DCC client profile: premium admin authority unavailable");toast("No se pudo actualizar la vista del cliente");}
         }
 
         toast("Peso actualizado");
