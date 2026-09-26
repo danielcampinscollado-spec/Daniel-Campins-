@@ -516,6 +516,7 @@ function install(){
   if(typeof current!=='function'||current.__dccHomePremiumV2)return false;
   const wrapped=function(screen){
     const previous=window.currentScreen;
+    if(typeof window.dccCleanupWorkoutMode==='function')window.dccCleanupWorkoutMode();
 
     // Inicio tiene una única autoridad. No ejecutar primero el Inicio legado:
     // en Safari podía dejar el contenedor vacío o restaurar HTML antiguo.
@@ -533,7 +534,6 @@ function install(){
     window.__dccManualTrainingDaySelection=false;
 
     const result=current.apply(this,arguments);
-    if(typeof window.dccCleanupWorkoutMode==='function')window.dccCleanupWorkoutMode();
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
     return result;
   };
