@@ -5,7 +5,7 @@ const BUILD='20260925-support-bootstrap-v45-premium-nutrition-flow';
 if(window.__dccSupportBootstrap===BUILD)return;
 window.__dccSupportBootstrap=BUILD;
 function pathOf(src){return src.replace(/^\.\//,'').split('?')[0]}
-function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname&&got.search===wanted.search}catch(_){return false}})}catch(_){return null}}
+function exactExisting(src){try{const wanted=new URL(src,location.href);return [...document.scripts].find(s=>{try{const got=new URL(s.src,location.href);return got.pathname===wanted.pathname}catch(_){return false}})}catch(_){return null}}
 const pending=new Map();
 function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has(src))return pending.get(src);const job=new Promise(resolve=>{const s=document.createElement('script');s.src=src;s.async=true;s.dataset.dccSupport=pathOf(src);s.onload=resolve;s.onerror=()=>{console.error('DCC: no se pudo cargar '+src);resolve()};(document.head||document.documentElement).appendChild(s)}).finally(()=>pending.delete(src));pending.set(src,job);return job}
 function loadMany(list){return Promise.all(list.map(load))}
