@@ -533,6 +533,7 @@ function install(){
     window.__dccManualTrainingDaySelection=false;
 
     const result=current.apply(this,arguments);
+    if(typeof window.dccCleanupWorkoutMode==='function')window.dccCleanupWorkoutMode();
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
     return result;
   };
