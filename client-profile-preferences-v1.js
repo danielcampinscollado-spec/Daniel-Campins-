@@ -46,27 +46,6 @@
     const span=label?.querySelector('span:last-child');if(span)span.textContent='Grasa corporal inicial';
   }
 
-  function installCreateFlow(){
-    const base=window.createClient;
-    if(typeof base!=='function'||base.__dccProfileFlowV2||base.__dccAuditCreateFlowV11)return;
-    const wrapped=async function(){
-      const before=new Set((appData().clients||[]).map(c=>String(c.id)));
-      const result=await base.apply(this,arguments);
-      const created=(appData().clients||[]).find(c=>!before.has(String(c.id)));
-      if(created){
-        window.selectedClient=created.id;
-        window.__dccClientAdminId=created.id;
-        setTimeout(()=>{
-          try{if(typeof window.openClient==='function')window.openClient(created.id);else window.showClientAdmin?.(created.id)}catch(e){console.warn(e)}
-        },120);
-      }
-      return result;
-    };
-    wrapped.__dccProfileFlowV2=true;
-    wrapped.__base=base;
-    window.createClient=wrapped;
-  }
-
   async function syncProfile(id){
     const db=database();if(!db||!id)return;
     try{
@@ -141,7 +120,6 @@
     if(busy)return;busy=true;
     requestAnimationFrame(()=>{
       busy=false;
-      if(!window.createClient?.__dccAuditCreateFlowV11)installCreateFlow();
       patchNewClientLabel();
     });
   }
