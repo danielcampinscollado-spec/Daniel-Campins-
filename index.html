@@ -6339,6 +6339,12 @@ window.restTimerInterval=null;
 if(typeof window.dccStopClientMessagePolling==="function"){
   window.dccStopClientMessagePolling();
 }
+if(typeof window.dccStopCoachMessagePolling==="function"){
+  window.dccStopCoachMessagePolling();
+}
+if(typeof closeModal==="function"){
+  closeModal();
+}
 window.activeWorkout=null;
 window.workoutPausedScreen=null;
 window.__dccCoachRouteIntent=null;
