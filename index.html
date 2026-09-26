@@ -6397,28 +6397,11 @@ async function openApp(app){
         }
       };
 
+      // All required server data is settled before the first approved Home paint.
+      // A single deterministic paint avoids the old Safari retry chain repainting
+      // stale screens after the user has already navigated elsewhere.
       paintApprovedHome();
-      // Warm the check-in state after the approved Home is visible so opening
-      // Check-in normally requires no network wait and no intermediate screen.
-      setTimeout(()=>{try{window.dccPreloadCheckinV4?.()}catch(_){}},150);
       setupMessageRealtime();
-
-      // Safari/BFCache puede restaurar el shell antes que el contenido.
-      // Reintentar solo mientras Inicio siga realmente vacío.
-      [0,60,180,500,1200].forEach(delay=>{
-        setTimeout(()=>{
-          const main=document.getElementById("client-main");
-          if(
-            currentApp==="client" &&
-            String(window.currentScreen||currentScreen||"home")==="home" &&
-            currentClientId &&
-            main &&
-            !main.querySelector(".dcc-home2")
-          ){
-            paintApprovedHome();
-          }
-        },delay);
-      });
 
     }catch(error){
       console.error("Error accediendo al perfil cliente:",error);
@@ -6438,21 +6421,18 @@ async function openApp(app){
     // no debe bloquear la primera pintura del entrenador.
     showCoach("dashboard");
 
-    setTimeout(()=>{
-      setupMessageRealtime();
-      Promise.allSettled([
-        loadDietsFromSupabase(),
-        loadClientsFromSupabase(),
-        loadRoutinesFromSupabase(),
-        loadWorkoutHistoryFromSupabase(),
-        loadWeightsFromSupabase(),
-        loadMessagesFromSupabase(),
-        loadCheckinsFromSupabase()
-      ]).then(()=>{
-        // Los datos quedan sincronizados sin forzar una segunda entrada/render
-        // del panel inmediatamente después del OAuth.
-      });
-    },700);
+    setupMessageRealtime();
+    Promise.allSettled([
+      loadDietsFromSupabase(),
+      loadClientsFromSupabase(),
+      loadRoutinesFromSupabase(),
+      loadWorkoutHistoryFromSupabase(),
+      loadWeightsFromSupabase(),
+      loadMessagesFromSupabase(),
+      loadCheckinsFromSupabase()
+    ]).then(()=>{
+      // Server data refreshes in place; navigation is not repainted asynchronously.
+    });
 
   }
 
