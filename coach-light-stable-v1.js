@@ -546,12 +546,6 @@ html.dcc-theme-light-premium body #coach #coach-main .dcc-bfh-row small{color:#7
   window.addEventListener('pageshow',syncMode);
   window.addEventListener('load',syncMode,{once:true});
 
-  /* Clientes: composición compacta aprobada. Se carga tras la capa visual estable. */
-  if(![...document.scripts].some(x=>(x.src||'').includes('/coach-clients-approved-v1.js'))){
-    const clientsApproved=document.createElement('script');
-    clientsApproved.src='./coach-clients-approved-v1.js?v=20260924-lifecycle2';
-    clientsApproved.async=false;
-    (document.head||document.documentElement).appendChild(clientsApproved);
-  }
+  /* Clientes se carga desde el bootstrap consolidado. */
 
 })();
