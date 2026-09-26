@@ -119,6 +119,8 @@ function enhance(){
   }
 }
 
+window.dccEnhanceClientDiet=enhance;
+
 function optionsOf(meal){
   try{
     if(typeof ensureMealOptions==='function')return ensureMealOptions(meal)||[];
