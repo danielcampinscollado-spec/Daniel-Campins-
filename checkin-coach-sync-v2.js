@@ -269,7 +269,7 @@
   function install(){installReviewEnhancements();installReviewedSync();installClientAdminEnhancement()}
   injectStyles();install();syncCheckinsFromDatabase();
   
-  window.addEventListener('load',()=>setTimeout(()=>{install();syncCheckinsFromDatabase()},120));
+  window.addEventListener('load',()=>{install();syncCheckinsFromDatabase()},{once:true});
 })();
 
 /* Carga del formulario premium de alta de cliente. */
