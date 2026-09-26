@@ -63,7 +63,6 @@ function render(){
  clients.sort((a,b)=>String(a?.name||'').localeCompare(String(b?.name||''),'es',{sensitivity:'base'})*(asc?1:-1));
  const visible=clients.filter(c=>String(c?.name||'').toLowerCase().includes(query));
  main.innerHTML=`<div class="dcc-ac">
-   <div class="dcc-ac-topline"><div class="dcc-ac-secure">Sesión segura · Entrenador</div></div>
    <div class="dcc-ac-head">
      <div class="dcc-ac-title"><h1>Clientes</h1><p>Gestiona y acompaña su progreso.</p></div>
      <button class="dcc-ac-sort" type="button" id="dcc-ac-sort" aria-label="Cambiar orden"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h12M4 18h8"/></svg><span>Orden ${asc?'A–Z':'Z–A'}</span><span class="chev">⌄</span></button>
@@ -80,7 +79,7 @@ function render(){
 function wrap(){
  const original=window.showCoach;if(typeof original!=='function'||original.__dccApprovedClients)return false;
  function wrapped(screen){
-   if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';render();return;}
+   if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';render();const nav=document.getElementById('coach-nav');nav?.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Clientes'));document.dispatchEvent(new CustomEvent('dcc:coach-screen',{detail:{screen:'clients'}}));return;}
    return original.apply(this,arguments);
  }
  wrapped.__dccApprovedClients=true;wrapped.__original=original;window.showCoach=wrapped;return true;
