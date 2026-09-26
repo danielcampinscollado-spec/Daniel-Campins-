@@ -255,17 +255,6 @@
     wrapped.__dccReviewedSyncV2=true;wrapped.__base=current;window.dccMarkCheckinReviewed=wrapped;return true;
   }
 
-  function installNavigationSync(){
-    const current=window.showCoach;
-    if(typeof current!=='function'||current.__dccCheckinRemoteSyncV4)return false;
-    const wrapped=function(screen){
-      const result=current.apply(this,arguments);
-      if(screen==='checkins')syncCheckinsFromDatabase();
-      return result;
-    };
-    wrapped.__dccCheckinRemoteSyncV3=true;wrapped.__dccCheckinRemoteSyncV4=true;wrapped.__base=current;window.showCoach=wrapped;return true;
-  }
-
   function install(){installReviewEnhancements();installReviewedSync();installClientAdminEnhancement()}
   injectStyles();install();syncCheckinsFromDatabase();
   
