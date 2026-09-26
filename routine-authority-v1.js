@@ -36,8 +36,9 @@
   }
 
   function renderClientRoutine(id){
-    if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'training');
-    else if(typeof window.showCoach==='function')window.showCoach('routines');
+    if(typeof window.dccClientAdmin==='function')return window.dccClientAdmin(id,'training');
+    console.error('DCC training: premium client admin authority unavailable');
+    notify('No se pudo abrir el editor de entrenamiento');
   }
 
   window.saveRoutineToSupabase=async function(id){
