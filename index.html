@@ -15321,7 +15321,7 @@ async function sendClientCheckin(){
 }
 </script>
 <script src="./client-admin-premium.js?v=20260926-training-cleanup1"></script>
-<script src="./coach-client-profile-v2.js?v=20260926-notes-contain2"></script>
+<script src="./coach-client-profile-v2.js?v=20260926-checkin-authority1"></script>
 <script src="./coach-client-profile-light-v1.js?v=20260925-compact-authority1"></script>
 <script src="./coach-followup-hardfix-v1.js?v=20260926-ios-date-overflow1"></script>
 <script src="./training-home-actions-v1.js?v=20260925-type-compact2"></script>
@@ -15422,5 +15422,25 @@ async function sendClientCheckin(){
 
 <script src="./client-checkin-schedule-v4.js?v=20260926-atomic-entry2"></script>
 <script src="./coach-checkin-schedule-v1.js?v=20260924-no-retry1"></script>
+<script>
+(function(){
+  function syncCoachNav(){
+    const nav=document.getElementById('coach-nav');
+    if(!nav||typeof window.navButton!=='function')return;
+    const labels=[...nav.querySelectorAll('button')].map(b=>b.dataset.navLabel||'');
+    if(labels.join('|')==='Panel|Clientes|Mensajes|Calendario')return;
+    nav.innerHTML=
+      navButton('▦','Panel',"showCoach('dashboard')")+
+      navButton('👥','Clientes',"showCoach('clients')")+
+      navButton('💬','Mensajes',"showCoach('messages')")+
+      navButton('▤','Calendario',"showCoach('calendar')");
+  }
+  window.dccSyncCoachMessagesNav=syncCoachNav;
+  const obs=new MutationObserver(()=>{if(document.getElementById('coach')?.style.display!=='none')requestAnimationFrame(syncCoachNav)});
+  function start(){syncCoachNav();const coach=document.getElementById('coach');if(coach)obs.observe(coach,{childList:true,subtree:true})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+  window.addEventListener('pageshow',syncCoachNav);
+})();
+</script>
 </body>
 </html>
