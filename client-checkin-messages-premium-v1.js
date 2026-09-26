@@ -323,16 +323,22 @@
   });
 
   function installShowClient(){
-    const base=window.showClient;if(typeof base!=='function'||base.__dccClientCheckinMessagesV1)return;
+    const base=window.showClient;if(typeof base!=='function'||base.__dccClientMessagesV1)return;
     const wrapped=function(screen){
       window.__dccClientPremiumScreen=screen;
       if(screen!=='messages')stopMessagePolling();
+      // Check-in is owned exclusively by client-checkin-schedule-v4.
+      // Do not call a legacy base renderer before v4, because that creates the old-screen flash.
+      if(screen==='checkin'&&typeof window.dccOpenCheckinV4==='function'){
+        window.currentScreen='checkin';
+        try{currentScreen='checkin'}catch(_){}
+        return window.dccOpenCheckinV4(false);
+      }
       const r=base.apply(this,arguments);
-      if(screen==='checkin')requestAnimationFrame(()=>renderClientCheckin(false));
       if(screen==='messages')requestAnimationFrame(()=>renderClientMessages());
       return r;
     };
-    wrapped.__dccClientCheckinMessagesV1=true;wrapped.__base=base;window.showClient=wrapped;
+    wrapped.__dccClientMessagesV1=true;wrapped.__base=base;window.showClient=wrapped;
   }
 
   function installCheckinLoader(){
