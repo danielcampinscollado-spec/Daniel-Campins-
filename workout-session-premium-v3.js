@@ -322,6 +322,7 @@
       </div>`;
 
     startElapsedTimer(workout);
+    if(typeof window.dccApplyWorkoutMuscleVisual==='function')window.dccApplyWorkoutMuscleVisual();
   }
 
   window.dccWorkoutTechniqueUnavailable=function(){
