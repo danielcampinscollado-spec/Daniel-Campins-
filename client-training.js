@@ -827,6 +827,7 @@
     main.querySelectorAll('.dct3-video').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const url=btn.dataset.video;if(url)window.open(url,'_blank','noopener');}));
     const start=main.querySelector('.dct3-start');
     if(start&&!start.disabled)start.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();callNativeStart(Number(start.dataset.day));});
+    if(typeof window.dccRefineClientTraining==='function')window.dccRefineClientTraining();
   }
 
   window.dccRenderTrainingOverview=renderOverview;
