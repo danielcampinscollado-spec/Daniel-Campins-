@@ -36,17 +36,6 @@
     return num(x.bodyFat??x.body_fat??c?.bodyFat??c?.body_fat);
   }
 
-  function injectLoadingCss(){
-    if(document.getElementById('dcc-ci4-loading-css'))return;
-    const s=document.createElement('style');s.id='dcc-ci4-loading-css';s.textContent=`
-      #client-main.dcc-ci4-loading{min-height:72vh;background:#fbf7ef!important}
-      #client-main .dcc-ci4-loading-shell{max-width:760px;margin:0 auto;padding:20px 4px}
-      #client-main .dcc-ci4-loading-kicker{color:#a87318;font-size:11px;font-weight:850;letter-spacing:2.2px}
-      #client-main .dcc-ci4-loading-line{width:150px;height:20px;margin:10px 0 18px;border-radius:8px;background:#efe5d3}
-      #client-main .dcc-ci4-loading-card{height:160px;border:1px solid #ead9bb;border-radius:18px;background:#fffdf9}
-    `;document.head.appendChild(s);
-  }
-
   function injectCss(){
     document.getElementById(STYLE_ID)?.remove();
     const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
@@ -247,22 +236,9 @@
 
   async function open(preserve=false){
     const id=activeId();if(!id)return;
-    if(stateCache[id]){render(preserve);return}
-    // Atomic transition: never leave the previous client screen visible while
-    // Supabase resolves the authoritative check-in state.
-    const main=document.getElementById('client-main');
-    if(main){
-      main.className='dcc-checkin-v4 dcc-ci4-loading';
-      main.innerHTML='<div class="dcc-ci4-loading-shell" aria-live="polite"><div class="dcc-ci4-loading-kicker">CHECK-IN SEMANAL</div><div class="dcc-ci4-loading-line"></div><div class="dcc-ci4-loading-card"></div></div>';
-    }
-    try{await fetchState(id)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true}}
-    if(activeId()===id && String(window.currentScreen||'checkin')==='checkin')render(preserve);
+    render(preserve);
+    try{await fetchState(id);render(preserve)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true};render(preserve)}
   }
-
-  window.dccPreloadCheckinV4=async function(){
-    const id=activeId();if(!id||stateCache[id])return stateCache[id]||null;
-    try{return await fetchState(id)}catch(e){console.warn('DCC check-in preload:',e);return null}
-  };
 
   window.dccCheckinV4Field=function(key,value){
     const id=activeId();if(!id||!['weight','bodyFat','comment'].includes(key))return;draft(id)[key]=String(value??'');
@@ -340,5 +316,4 @@
   window.dccOpenCheckinV4=function(preserve=false){return open(!!preserve)};
 
   injectCss();
-  injectLoadingCss();
 })();
