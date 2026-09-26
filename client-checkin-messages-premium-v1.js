@@ -286,24 +286,8 @@
     finally{if(send)send.disabled=false}
   };
 
-  async function sendCoachRemote(id){
-    const input=document.getElementById('dccChatInput')||document.getElementById('coach-message');const text=input?.value.trim();if(!id||!text)return;
-    const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
-    if(input)input.disabled=true;
-    try{
-      const {error}=await db.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
-      if(error)throw error;
-      if(input)input.value='';await syncMessages();toastSafe('Mensaje enviado');
-      if(typeof window.dccOpenChat==='function'&&String(window.__dccOpenChat??'')===String(id))window.dccOpenChat(id);
-      else if(typeof window.openMessages==='function'&&document.getElementById('modal')?.style.display!=='none')window.openMessages(id);
-    }catch(e){console.error('DCC mensaje entrenador:',e);toastSafe('No se pudo enviar el mensaje')}
-    finally{if(input)input.disabled=false}
-  }
-
-  function installReliableCoachSend(){
-    window.dccSendMessage=sendCoachRemote;
-    window.sendCoachMessage=sendCoachRemote;
-  }
+  // Coach-side messaging is owned by messages-chat-premium-v2.js.
+  // This module only owns the client conversation surface.
 
   let pollTimer=null;
   function stopMessagePolling(){if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
@@ -351,6 +335,6 @@
   }
 
   // Install once after dependencies are loaded. Reinstall loops were legacy race-condition patches.
-  injectCss();installShowClient();installReliableCoachSend();installCheckinLoader();syncCheckinsExtended();
-  window.addEventListener('load',()=>{installReliableCoachSend();installCheckinLoader();},{once:true});
+  injectCss();installShowClient();installCheckinLoader();syncCheckinsExtended();
+  window.addEventListener('load',()=>{installCheckinLoader();},{once:true});
 })();
