@@ -26,6 +26,20 @@
       .dcc-chat-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-chat-row.mine .dcc-chat-time{color:#b99a57}.dcc-chat-check{color:${GOLD2}}
       .dcc-chat-none{padding:28px 15px;border:1px solid #29323a;border-radius:16px;background:linear-gradient(145deg,#0f1419,#080b0e);color:#8f98a3;text-align:center;font-size:10px}
       .dcc-chat-composer{position:sticky;bottom:70px;z-index:8;display:grid;grid-template-columns:minmax(0,1fr) 43px;gap:8px;padding:9px;border:1px solid #2a333b;border-radius:18px;background:rgba(11,15,19,.96);box-shadow:0 -10px 28px rgba(0,0,0,.38);backdrop-filter:blur(14px)}.dcc-chat-input{min-height:42px;max-height:92px;resize:none;border:1px solid #303943;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font:inherit;font-size:11px;line-height:1.35}.dcc-chat-input::placeholder{color:#6f7984}.dcc-chat-send{width:43px;height:43px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905}.dcc-chat-send svg{width:20px;height:20px}
+      html.dcc-theme-light-premium #coach-main.dcc-premium-messages{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important;padding:15px 16px 96px!important}
+      html.dcc-theme-light-premium .dcc-msg-kicker{color:#a66d0d!important}
+      html.dcc-theme-light-premium .dcc-msg-head h1{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-msg-head p{color:#747c88!important}
+      html.dcc-theme-light-premium .dcc-msg-search{background:rgba(255,254,250,.92)!important;border-color:rgba(185,122,17,.28)!important;color:#a46b0b!important;box-shadow:0 8px 24px rgba(83,63,31,.045)!important}
+      html.dcc-theme-light-premium .dcc-msg-search input{color:#17191d!important;-webkit-text-fill-color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-msg-search input::placeholder{color:#8a9099!important}
+      html.dcc-theme-light-premium .dcc-msg-list{gap:9px!important}
+      html.dcc-theme-light-premium .dcc-msg-card{min-height:72px!important;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(255,250,240,.96))!important;border-color:rgba(185,122,17,.24)!important;box-shadow:0 10px 26px rgba(83,63,31,.055),inset 0 1px 0 rgba(255,255,255,.95)!important}
+      html.dcc-theme-light-premium .dcc-msg-avatar{background:linear-gradient(145deg,#fff7e3,#f4ead3)!important;border-color:rgba(185,122,17,.26)!important;color:#a46b0b!important}
+      html.dcc-theme-light-premium .dcc-msg-name{color:#17191d!important}
+      html.dcc-theme-light-premium .dcc-msg-preview,html.dcc-theme-light-premium .dcc-msg-time{color:#7b828d!important}
+      html.dcc-theme-light-premium .dcc-msg-open{background:linear-gradient(145deg,#fffdf8,#f7ead3)!important;color:#8d5b08!important;border-color:rgba(183,123,19,.30)!important}
+      html.dcc-theme-light-premium .dcc-msg-empty{background:#fffefa!important;color:#68717e!important;border-color:rgba(185,122,17,.25)!important}
       @media(min-width:700px){.dcc-msg-card{grid-template-columns:54px minmax(0,1fr) auto;min-height:86px;padding:12px 14px}.dcc-msg-avatar{width:54px;height:54px;font-size:18px}.dcc-msg-name{font-size:16px}.dcc-msg-preview{font-size:11px}.dcc-msg-open{min-height:40px;font-size:10px}}
     `;
     document.head.appendChild(s);
@@ -54,7 +68,7 @@
   function timeFmt(d){if(!d)return'';return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
   function dayLabel(d){if(!d)return'';const now=new Date(),a=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(),b=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime(),dif=Math.round((a-b)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
-  function navActive(){const n=document.getElementById('coach-nav');if(!n)return;n.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===1))}
+  function navActive(){const n=document.getElementById('coach-nav');if(!n)return;n.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===2))}
 
   function card(c){const t=thread(c.id),last=t.at(-1),preview=last?textOf(last):(lastFallback(c)||'Sin mensajes'),time=timeFmt(last?dateOf(last):(c?.lastMessageAt?new Date(c.lastMessageAt):null));return `<article class="dcc-msg-card" data-name="${esc(String(c.name||'').toLowerCase())}"><div class="dcc-msg-avatar">${esc(initials(c.name))}</div><div class="dcc-msg-copy"><div class="dcc-msg-name">${esc(c.name||'Cliente')}</div><div class="dcc-msg-preview">${esc(preview)}</div></div><div class="dcc-msg-meta">${time?`<span class="dcc-msg-time">${esc(time)}</span>`:''}<button class="dcc-msg-open" onclick="dccOpenChat('${esc(c.id)}')">Abrir <span>›</span></button></div></article>`}
 
