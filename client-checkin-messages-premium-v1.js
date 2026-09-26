@@ -173,13 +173,6 @@
     const wrapped=function(screen){
       window.__dccClientPremiumScreen=screen;
       if(screen!=='messages')stopMessagePolling();
-      // Check-in is owned exclusively by client-checkin-schedule-v4.
-      // Do not call a legacy base renderer before v4, because that creates the old-screen flash.
-      if(screen==='checkin'&&typeof window.dccOpenCheckinV4==='function'){
-        window.currentScreen='checkin';
-        try{currentScreen='checkin'}catch(_){}
-        return window.dccOpenCheckinV4(false);
-      }
       const r=base.apply(this,arguments);
       if(screen==='messages')requestAnimationFrame(()=>renderClientMessages());
       return r;
