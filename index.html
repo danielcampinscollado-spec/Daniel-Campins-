@@ -12525,31 +12525,7 @@ async function addWeight(id){
     }
 }
 
-function editDietMarcos(id,type){
-if(!data.diets[id])data.diets[id]={};
-if(!data.diets[id][type]){
-data.diets[id][type]={
-calories:"",
-protein:"",
-meals:[]
-};
-}
 
-const diet=data.diets[id][type];
-
-const calories=prompt("Calorías:",diet.calories||"");
-if(calories===null)return;
-
-const protein=prompt("Proteína:",diet.protein||"");
-if(protein===null)return;
-
-diet.calories=calories;
-diet.protein=protein;
-
-saveData();
-window.coachDietType=type;
-showCoach("diets");
-}
 function ensureMealOptions(meal){
 
   if(!meal.options || !Array.isArray(meal.options)){
