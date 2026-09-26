@@ -12,16 +12,6 @@
   const notify=t=>{try{if(typeof toast==='function')return toast(t);if(typeof window.toast==='function')return window.toast(t)}catch(e){}console.log(t)};
   const save=()=>{try{if(typeof saveData==='function')return saveData();if(typeof window.saveData==='function')return window.saveData()}catch(e){}};
 
-  function loadPlanStatus(){
-    if(window.__dccCoachClientPlanStatusV3)return;
-    if([...document.scripts].some(s=>/coach-client-plan-status-v1\.js(?:\?|$)/.test(s.src||'')))return;
-    const s=document.createElement('script');
-    s.src='./coach-client-plan-status-v1.js?v=20260911-0438';
-    s.async=false;
-    s.onerror=()=>console.error('DCC: no se pudo cargar coach-client-plan-status-v1.js');
-    (document.head||document.documentElement).appendChild(s);
-  }
-
   function css(){
     if(document.getElementById('dcc-client-profile-preferences-v2-css'))return;
     const s=document.createElement('style');
@@ -151,14 +141,13 @@
     if(busy)return;busy=true;
     requestAnimationFrame(()=>{
       busy=false;
-      loadPlanStatus();
       if(!window.createClient?.__dccAuditCreateFlowV11)installCreateFlow();
       patchNewClientLabel();
     });
   }
 
   function boot(){
-    css();loadPlanStatus();installDeleteGuard();schedule();
+    css();installDeleteGuard();schedule();
     window.addEventListener('pageshow',schedule);
     window.dccProfilePreferencesRefresh=schedule;
   }
