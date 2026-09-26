@@ -113,7 +113,7 @@
     try{
       await coachSession();const database=db();const r=await database.rpc('dcc_update_client_profile',{p_client_id:id,p_name:name,p_goal:goal,p_age:age===null?null:Math.round(age),p_height_cm:height,p_foods_to_avoid:foods,p_weight:weight,p_body_fat:fat});if(r.error)throw r.error;if(r.data!==true)throw new Error('El servidor no confirmó el guardado');
       const v=await fetchProfile(id);const ok=sameText(v.name,name)&&sameText(v.goal,goal)&&sameNum(v.age,age===null?null:Math.round(age))&&sameNum(v.height_cm,height)&&sameNum(v.weight,weight)&&sameNum(v.body_fat,fat)&&sameText(v.foods_to_avoid,foods);if(!ok)throw new Error('La verificación posterior no coincide con los datos guardados');
-      await syncClients(false);closeEditor();if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');notify('Cliente actualizado correctamente');
+      if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});else await syncClients(false);closeEditor();if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');notify('Cliente actualizado correctamente');
     }catch(e){console.error('DCC critical editor save:',e);notify(e.message||'No se pudieron guardar los cambios');b.disabled=false;b.textContent='Guardar cambios';}
   }
 
@@ -125,11 +125,5 @@
     }
   },true);
 
-  async function bootstrap(){
-    if(window.currentApp!=='coach')return;
-    try{await syncClients(window.currentScreen==='dashboard'||window.currentScreen==='clients')}catch(e){console.warn('DCC critical bootstrap:',e)}
-  }
-  document.addEventListener('DOMContentLoaded',()=>queueMicrotask(bootstrap),{once:true});
-  window.addEventListener('load',()=>queueMicrotask(bootstrap),{once:true});
-  window.addEventListener('pageshow',()=>queueMicrotask(bootstrap));
+
 })();
