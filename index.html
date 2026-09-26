@@ -12535,21 +12535,8 @@ data.weights[id]=[weight];
 // Do not manufacture a local check-in that Supabase does not contain.
 delete data.checkins[id];
 
-data.diets[id]={
-  training:{
-    calories:"",
-    protein:"",
-    meals:[]
-  },
-  rest:{
-    calories:"",
-    protein:"",
-    meals:[]
-  }
-};
-
-data.routines[id]=[];
-data.messages[id]=[];
+// Diets, routines, check-ins and messages are hydrated from their
+// authoritative Supabase tables. Do not manufacture local domain rows here.
 
 saveData();
 
