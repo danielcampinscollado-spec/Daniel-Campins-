@@ -40,6 +40,18 @@
       html.dcc-theme-light-premium .dcc-msg-preview,html.dcc-theme-light-premium .dcc-msg-time{color:#7b828d!important}
       html.dcc-theme-light-premium .dcc-msg-open{background:linear-gradient(145deg,#fffdf8,#f7ead3)!important;color:#8d5b08!important;border-color:rgba(183,123,19,.30)!important}
       html.dcc-theme-light-premium .dcc-msg-empty{background:#fffefa!important;color:#68717e!important;border-color:rgba(185,122,17,.25)!important}
+      #coach-main.dcc-premium-messages{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important;padding:14px 16px 96px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-head{margin:0 2px 12px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-head h1{color:#17191d!important;font-size:27px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-head p{color:#747c88!important;margin-top:5px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-search{height:40px!important;margin-bottom:10px!important;background:#fffefa!important;border-color:rgba(185,122,17,.28)!important;color:#a46b0b!important}
+      #coach-main.dcc-premium-messages .dcc-msg-search input{color:#17191d!important;-webkit-text-fill-color:#17191d!important}
+      #coach-main.dcc-premium-messages .dcc-msg-list{gap:7px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-card{min-height:64px!important;padding:7px 9px!important;grid-template-columns:42px minmax(0,1fr) auto!important;background:linear-gradient(145deg,#fff,#fffaf0)!important;border-color:rgba(185,122,17,.24)!important;box-shadow:0 7px 18px rgba(83,63,31,.05)!important}
+      #coach-main.dcc-premium-messages .dcc-msg-avatar{width:42px!important;height:42px!important;background:#fff5dc!important;color:#a46b0b!important;border-color:rgba(185,122,17,.25)!important}
+      #coach-main.dcc-premium-messages .dcc-msg-name{color:#17191d!important;font-size:13px!important}
+      #coach-main.dcc-premium-messages .dcc-msg-preview,#coach-main.dcc-premium-messages .dcc-msg-time{color:#7b828d!important}
+      #coach-main.dcc-premium-messages .dcc-msg-open{min-height:32px!important;padding:0 9px!important}
       @media(min-width:700px){.dcc-msg-card{grid-template-columns:54px minmax(0,1fr) auto;min-height:86px;padding:12px 14px}.dcc-msg-avatar{width:54px;height:54px;font-size:18px}.dcc-msg-name{font-size:16px}.dcc-msg-preview{font-size:11px}.dcc-msg-open{min-height:40px;font-size:10px}}
     `;
     document.head.appendChild(s);
@@ -72,7 +84,7 @@
 
   function card(c){const t=thread(c.id),last=t.at(-1),preview=last?textOf(last):(lastFallback(c)||'Sin mensajes'),time=timeFmt(last?dateOf(last):(c?.lastMessageAt?new Date(c.lastMessageAt):null));return `<article class="dcc-msg-card" data-name="${esc(String(c.name||'').toLowerCase())}"><div class="dcc-msg-avatar">${esc(initials(c.name))}</div><div class="dcc-msg-copy"><div class="dcc-msg-name">${esc(c.name||'Cliente')}</div><div class="dcc-msg-preview">${esc(preview)}</div></div><div class="dcc-msg-meta">${time?`<span class="dcc-msg-time">${esc(time)}</span>`:''}<button class="dcc-msg-open" onclick="dccOpenChat('${esc(c.id)}')">Abrir <span>›</span></button></div></article>`}
 
-  function renderMessages(){css();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-messages';main.innerHTML=`<div class="dcc-msg"><div class="dcc-msg-kicker">MENSAJES</div><header class="dcc-msg-head"><h1>Conversaciones</h1><p>Comunícate con tus clientes de forma rápida.</p></header><label class="dcc-msg-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="dccMsgSearch" placeholder="Buscar conversación..." oninput="dccFilterMessages()"></label><div class="dcc-msg-list" id="dccMsgList">${clients().map(card).join('')||'<div class="dcc-msg-empty">Todavía no hay conversaciones.</div>'}</div></div>`;navActive()}
+  function renderMessages(){css();const main=document.getElementById('coach-main');if(!main)return;main.className='dcc-premium-messages';main.innerHTML=`<div class="dcc-msg"><header class="dcc-msg-head"><h1>Conversaciones</h1><p>Comunícate con tus clientes de forma rápida.</p></header><label class="dcc-msg-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg><input id="dccMsgSearch" placeholder="Buscar conversación..." oninput="dccFilterMessages()"></label><div class="dcc-msg-list" id="dccMsgList">${clients().slice().sort((a,b)=>{const ta=thread(a.id),tb=thread(b.id),da=ta.length?(dateOf(ta.at(-1))?.getTime()||1):0,db=tb.length?(dateOf(tb.at(-1))?.getTime()||1):0;return db-da}).map(card).join('')||'<div class="dcc-msg-empty">Todavía no hay conversaciones.</div>'}</div></div>`;navActive()}
 
   window.dccFilterMessages=function(){const q=(document.getElementById('dccMsgSearch')?.value||'').trim().toLowerCase();document.querySelectorAll('.dcc-msg-card').forEach(x=>x.style.display=x.dataset.name.includes(q)?'grid':'none')};
 
