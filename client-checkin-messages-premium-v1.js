@@ -47,17 +47,6 @@
     const s=document.createElement('style');
     s.id='dcc-client-checkin-messages-v1-css';
     s.textContent=`
-      /* ================= CHECK-IN CLIENTE ================= */
-      #client-main.dcc-client-checkin-v1{background:radial-gradient(circle at 88% 0,rgba(224,173,76,.075),transparent 26%),radial-gradient(circle at 0 75%,rgba(217,170,74,.025),transparent 28%),#06090c!important;color:#f7f5f0!important;padding:13px 14px 118px!important}
-      .dcc-cc{max-width:820px;margin:0 auto}.dcc-cc *{box-sizing:border-box}
-      .dcc-cc-head{margin:4px 1px 17px}.dcc-cc-kicker{color:${GOLD2};font-size:11px;font-weight:850;letter-spacing:2.7px;text-transform:uppercase}.dcc-cc-sub{margin:9px 0 0;color:#969eaa;font-size:13px;line-height:1.4}
-      .dcc-cc-card{margin:0 0 10px;padding:14px;border:1px solid rgba(224,173,76,.72);border-radius:20px;background:radial-gradient(circle at 96% 0,rgba(240,201,107,.09),transparent 32%),linear-gradient(145deg,#11171c,#080c10 72%);box-shadow:0 12px 30px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.03)}
-      .dcc-cc-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.dcc-cc-card-title{display:flex;align-items:center;gap:9px;color:#e9e9e5;font-size:10px;font-weight:820;letter-spacing:2px;text-transform:uppercase}.dcc-cc-card-icon{color:${GOLD2};font-size:17px}.dcc-cc-hint{color:#7f8994;font-size:9px}
-      .dcc-cc-data-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.dcc-cc-data{min-width:0;padding:12px;border:1px solid #2a333b;border-radius:16px;background:linear-gradient(145deg,#10151a,#0a0e12);text-align:center}.dcc-cc-data-top{display:flex;align-items:center;gap:9px;text-align:left}.dcc-cc-data-icon{width:38px;height:38px;min-width:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.42);border-radius:12px;background:rgba(217,170,74,.055);color:${GOLD2};font-size:18px}.dcc-cc-data-label{color:#98a1ac;font-size:9px;text-transform:uppercase;letter-spacing:1.2px}.dcc-cc-data-value{margin-top:3px;color:#f8f6f1;font-size:22px;font-weight:820;letter-spacing:-.5px}.dcc-cc-update{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:min(210px,100%);min-height:38px;margin:11px auto 0;padding:0 12px;border:1px solid #e4b44a;border-radius:999px;background:radial-gradient(circle at 50% 50%,rgba(217,170,74,.16),rgba(14,13,10,.92));color:${GOLD2};font-size:10px;font-weight:820;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
-      .dcc-cc-week{display:grid;gap:8px}.dcc-cc-row{display:grid;grid-template-columns:minmax(116px,.75fr) minmax(0,1.5fr);align-items:center;gap:10px}.dcc-cc-row-name{display:flex;align-items:center;gap:8px;color:#f5f3ee;font-size:12px;font-weight:760}.dcc-cc-row-ico{width:25px;color:${GOLD2};font-size:18px;text-align:center}.dcc-cc-options{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border:1px solid #343d46;border-radius:999px;background:#0b1014}.dcc-cc-option{min-height:35px;border:1px solid transparent;border-radius:999px;background:transparent;color:#a8afb8;font-size:10px}.dcc-cc-option.active{border-color:#e4b44a;background:radial-gradient(circle at 50% 50%,rgba(240,201,107,.26),rgba(44,34,15,.75));color:${GOLD2};font-weight:850;box-shadow:0 0 13px rgba(217,170,74,.13)}
-      .dcc-cc-comment-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}.dcc-cc-comment-title{display:flex;align-items:center;gap:8px;color:#e9e9e5;font-size:10px;font-weight:820;letter-spacing:1.8px;text-transform:uppercase}.dcc-cc-comment-hint{color:#7f8994;font-size:9px}.dcc-cc-comment{width:100%;min-height:105px;resize:vertical;border:1px solid #303a43;border-radius:15px;background:#0b1014;color:#f5f3ef;padding:12px;outline:0;font-size:16px;line-height:1.4;-webkit-text-size-adjust:100%}.dcc-cc-comment::placeholder{color:#6f7984}.dcc-cc-comment:focus{border-color:rgba(224,173,76,.75);box-shadow:0 0 0 2px rgba(217,170,74,.08)}
-      .dcc-cc-send{width:100%;min-height:53px;margin-top:4px;border:1px solid #f2ce69;border-radius:17px;background:linear-gradient(135deg,#f2cd67,#dca73c 62%,#edc25b);color:#12100b;font-size:15px;font-weight:900;box-shadow:0 10px 25px rgba(217,170,74,.16),inset 0 1px 0 rgba(255,255,255,.28)}.dcc-cc-send:disabled{opacity:.55}.dcc-cc-sent{margin-top:8px;color:#7f8994;font-size:9px;text-align:center}
-
       /* ================= MENSAJES CLIENTE ================= */
       #client-main.dcc-client-messages-v1{
         background:radial-gradient(circle at 88% 0%,rgba(208,153,48,.10),transparent 25%),linear-gradient(180deg,#fffaf1 0%,#f7f0e4 58%,#f2e9db 100%)!important;
@@ -116,73 +105,7 @@
     return `<button type="button" class="dcc-cc-option ${String(current||'').toLowerCase()===String(value).toLowerCase()?'active':''}" onclick="dccCheckinPick('${type}','${esc(value)}')">${esc(label)}</button>`;
   }
 
-  function renderClientCheckin(preserveScroll=false){
-    injectCss();
-    const main=document.getElementById('client-main');
-    const id=activeClientId();
-    const c=clientById(id);
-    if(!main||!id||!c)return;
-    const y=window.scrollY;
-    const x=ensureCheckin(id);
-    const weight=kg(c.weight);
-    const fat=kg(x.bodyFat??x.body_fat??c.bodyFat??c.body_fat);
-    main.className='dcc-client-checkin-v1';
-    main.innerHTML=`
-      <div class="dcc-cc">
-        <header class="dcc-cc-head">
-          <div class="dcc-cc-kicker">CHECK-IN SEMANAL</div>
-          <p class="dcc-cc-sub">Cuéntale a tu entrenador cómo ha ido tu semana.</p>
-        </header>
-
-        <section class="dcc-cc-card">
-          <div class="dcc-cc-card-head"><div class="dcc-cc-card-title"><span class="dcc-cc-card-icon">▥</span> DATOS ACTUALES</div><span class="dcc-cc-hint">Mantén tus datos al día</span></div>
-          <div class="dcc-cc-data-grid">
-            <article class="dcc-cc-data">
-              <div class="dcc-cc-data-top"><span class="dcc-cc-data-icon">▣</span><div><div class="dcc-cc-data-label">Peso actual</div><div class="dcc-cc-data-value">${weight!=null?comma(weight)+' kg':'—'}</div></div></div>
-              <button type="button" class="dcc-cc-update" onclick="updateClientWeight()"><span>✎</span> Actualizar peso</button>
-            </article>
-            <article class="dcc-cc-data">
-              <div class="dcc-cc-data-top"><span class="dcc-cc-data-icon">%</span><div><div class="dcc-cc-data-label">% de grasa actual</div><div class="dcc-cc-data-value">${fat!=null?comma(fat)+' %':'—'}</div></div></div>
-              <button type="button" class="dcc-cc-update" onclick="updateClientBodyFat()"><span>✎</span> Actualizar grasa</button>
-            </article>
-          </div>
-        </section>
-
-        <section class="dcc-cc-card">
-          <div class="dcc-cc-card-head"><div class="dcc-cc-card-title"><span class="dcc-cc-card-icon">♥</span> TU SEMANA</div><span class="dcc-cc-hint">Valora cómo ha ido tu semana</span></div>
-          <div class="dcc-cc-week">
-            <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">♨</span>Alimentación</div><div class="dcc-cc-options">${option('diet','Mal','Mal',x.diet)}${option('diet','Normal','Normal',x.diet)}${option('diet','Bien','Bien',x.diet)}</div></div>
-            <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">↔</span>Entrenamiento</div><div class="dcc-cc-options">${option('training','Mal','Mal',x.training)}${option('training','Normal','Normal',x.training)}${option('training','Bien','Bien',x.training)}</div></div>
-            <div class="dcc-cc-row"><div class="dcc-cc-row-name"><span class="dcc-cc-row-ico">ϟ</span>Energía</div><div class="dcc-cc-options">${option('energy','Baja','Baja',x.energy)}${option('energy','Normal','Normal',x.energy)}${option('energy','Alta','Alta',x.energy)}</div></div>
-          </div>
-        </section>
-
-        <section class="dcc-cc-card">
-          <div class="dcc-cc-comment-head"><div class="dcc-cc-comment-title"><span>💬</span> ¿CÓMO TE HAS ENCONTRADO?</div><span class="dcc-cc-comment-hint">Comparte lo que quieras</span></div>
-          <textarea id="dccCheckinComment" class="dcc-cc-comment" maxlength="500" placeholder="Escribe aquí tus sensaciones de la semana..." oninput="dccCheckinDraft(this.value)">${esc(x.comment||'')}</textarea>
-        </section>
-
-        <button id="dccSendCheckinButton" type="button" class="dcc-cc-send" onclick="dccSendCheckinPremium()">➤ &nbsp; Enviar check-in</button>
-        ${x.sentAt?`<div class="dcc-cc-sent">Último envío: ${esc(new Date(x.sentAt).toLocaleDateString('es-ES',{day:'numeric',month:'short'}))}</div>`:''}
-      </div>`;
-
-    if(preserveScroll)requestAnimationFrame(()=>window.scrollTo(0,y));
-  }
-
-  window.dccCheckinDraft=function(value){
-    const id=activeClientId();if(!id)return;ensureCheckin(id).comment=String(value||'');
-  };
-
-  window.dccCheckinPick=function(type,value){
-    if(!['diet','training','energy'].includes(type))return;
-    const id=activeClientId();if(!id)return;
-    const x=ensureCheckin(id);
-    const box=document.getElementById('dccCheckinComment');if(box)x.comment=box.value;
-    x[type]=value;x.reviewed=false;persistLocal();renderClientCheckin(true);
-  };
-
-  // Check-in persistence/rendering is owned by the base Supabase loader and
-  // client-checkin-schedule-v4.js. This module no longer duplicates that flow.
+  // Check-in V1 retired; V4 owns rendering.
 
   function msgText(m){return String(Array.isArray(m)?(m[1]??''):(m?.text??m?.message??m?.body??m?.content??'')).trim()}
   function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
