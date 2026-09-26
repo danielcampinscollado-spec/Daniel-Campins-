@@ -534,6 +534,9 @@ function install(){
     window.__dccManualTrainingDaySelection=false;
 
     if(screen!=='messages'&&typeof window.dccStopClientMessagePolling==='function')window.dccStopClientMessagePolling();
+    if(screen==='training'&&!window.activeWorkout&&typeof window.dccOpenClientTrainingPremium==='function'){
+      return window.dccOpenClientTrainingPremium();
+    }
     const result=current.apply(this,arguments);
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
     if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(window.dccEnhanceClientDiet));
