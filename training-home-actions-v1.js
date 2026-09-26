@@ -60,6 +60,6 @@ const s=document.createElement('style');s.id='dcc-training-home-actions-css';s.t
 #coach-main [data-dcc-routine-compact="1"]:active{transform:scale(.98)!important;filter:brightness(.94)!important}
 @media(max-width:390px){#coach-main [data-dcc-routine-home-actions="1"]{gap:7px!important}#coach-main [data-dcc-routine-compact="1"]{font-size:10px!important;padding:7px 8px!important}}
 `;document.head.appendChild(s);
+window.dccApplyTrainingHomeActions=schedule;
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
-new MutationObserver(schedule).observe(document.getElementById('coach-main')||document.body,{childList:true,subtree:true});
 })();
