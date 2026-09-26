@@ -14188,7 +14188,7 @@ const ok=await saveRoutineToSupabase(id);
   toast("Rutina guardada correctamente");
 
   if(typeof window.dccClientAdmin==="function")window.dccClientAdmin(String(id),"training");
-  else showCoach("routines");
+  else{console.error("DCC training: premium client admin authority unavailable");toast("No se pudo abrir el editor de entrenamiento");}
   return true;
 }
 function removeTrainingExercise(id,dayIndex,index){
