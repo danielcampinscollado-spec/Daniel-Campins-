@@ -231,11 +231,8 @@
 
   installTrainingRefinements();
   loadThemeSystem();
-  setTimeout(loadPremiumPolish,0);
-  const main=document.getElementById('client-main');
-  if(main&&!main.__dccClientTrainingRefinementsObserverV9){
-    const observer=new MutationObserver(schedule);observer.observe(main,{childList:true,subtree:true});main.__dccClientTrainingRefinementsObserverV9=observer;
-  }
+  loadPremiumPolish();
+  window.dccRefineClientTraining=schedule;
   window.addEventListener('dcc:exercise-library-ready',schedule);
   document.addEventListener('DOMContentLoaded',()=>{installTrainingRefinements();loadThemeSystem();loadPremiumPolish();schedule();});
   schedule();
