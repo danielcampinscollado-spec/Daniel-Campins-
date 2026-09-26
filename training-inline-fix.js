@@ -89,7 +89,7 @@
           if(de.querySelector('.dcc-tr-inline-trigger'))return;
           const box=de.querySelector('.dcc-tr-exercises'),d=days[di];if(!box||!d)return;
           const ms=dayMuscles(d);
-          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="openTrainingExercises('${esc(id)}',${di})">＋ Seleccionar ejercicios</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Seleccionar grupos musculares</button>`);
+          box.insertAdjacentHTML('beforeend',ms.length?`<button class="dcc-tr-inline-trigger" onclick="dccOpenExercisePickerV2('${esc(id)}',${di})">＋ Seleccionar ejercicios</button>`:`<button class="dcc-tr-inline-trigger" onclick="dccOpenMuscleModal('${esc(id)}',${di})">＋ Seleccionar grupos musculares</button>`);
         });
         document.querySelector('.dcc-tr-new')?.remove();
       }
