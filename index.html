@@ -6193,7 +6193,7 @@ async function openApp(app){
     try{
       const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
       if(claimError)throw claimError;
-      if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta de Google");
+      if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta");
 
       currentClientId=String(claimedClientId);
       window.currentClientId=currentClientId;
@@ -6201,7 +6201,10 @@ async function openApp(app){
       await loadClientsFromSupabase();
 
       const claimedClient=client(currentClientId);
-      if(claimedClient?.password_setup_completed!==true){
+      if(!claimedClient){
+        throw new Error("No se pudo cargar el perfil del cliente");
+      }
+      if(claimedClient.password_setup_completed!==true){
         if(typeof window.dccOpenFirstPasswordSetup==='function'){
           window.dccOpenFirstPasswordSetup(claimedClient);
           return;
@@ -6216,9 +6219,6 @@ async function openApp(app){
         throw new Error('Cuestionario inicial no disponible');
       }
 
-      if(!client(currentClientId)){
-        throw new Error("No se pudo cargar el perfil del cliente");
-      }
 
       // Inicio depende de rutina, check-in, historial, métricas, mensajes y
       // notificaciones. Antes se pintaba Inicio antes de que esos datos
