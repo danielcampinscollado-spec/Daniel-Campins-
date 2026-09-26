@@ -547,14 +547,11 @@ function install(){
 
 if(!install()){
   document.addEventListener('DOMContentLoaded',install,{once:true});
-  setTimeout(install,180);
 }
 window.addEventListener('pageshow',()=>{
-  setTimeout(()=>{
-    install();
-    if(window.currentApp==='client' && String(window.currentScreen||'home')==='home' && window.currentClientId){
-      try{goHome()}catch(error){console.warn('DCC home pageshow',error)}
-    }
-  },20);
+  install();
+  if(window.currentApp==='client' && String(window.currentScreen||'home')==='home' && window.currentClientId){
+    try{goHome()}catch(error){console.warn('DCC home pageshow',error)}
+  }
 });
 })();
