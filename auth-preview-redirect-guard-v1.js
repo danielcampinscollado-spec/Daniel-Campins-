@@ -16,18 +16,4 @@
   }
   if(!install()){let tries=0;const timer=setInterval(()=>{tries++;if(install()||tries>=80)clearInterval(timer)},100)}
 
-  loadAuthority('./coach-dashboard-authority-v1.js?v=20260914-5','dashboard');
-  loadAuthority('./coach-client-authority-v1.js?v=20260914-2','client');
-  loadAuthority('./coach-live-consistency-v2.js?v=20260914-6','live-consistency');
-  loadAuthority('./dcc-dynamic-greeting-v1.js?v=20260915-4','dynamic-greeting');
-  loadAuthority('./coach-edit-safety-v1.js?v=20260914-3','navigation-safety');
-  loadAuthority('./nutrition-flow-authority-v1.js?v=20260914-1','nutrition-flow');
-  loadAuthority('./nutrition-meal-setup-v1.js?v=20260914-3','nutrition-meal-setup');
-  loadAuthority('./client-plan-alert-compact-v1.js?v=20260915-5','client-plan-alert-compact');
-  loadAuthority('./client-header-compact-v1.js?v=20260914-8','client-header-compact');
-  loadAuthority('./client-edit-visibility-v1.js?v=20260915-3','client-edit-visibility');
-  loadAuthority('./checkin-premium.js?v=20260914-2','checkin-direct');
-  loadAuthority('./messages-premium.js?v=20260914-1','messages-direct');
-  loadAuthority('./coach-navigation-authority-v1.js?v=20260915-1','coach-navigation-authority');
-  loadAuthority('./coach-render-stability-v1.js?v=20260915-2','render-stability');
 })();
