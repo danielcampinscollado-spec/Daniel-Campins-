@@ -183,8 +183,12 @@
     await syncMessages(id);
     renderCoachChat(id);
   };
+  window.dccStopCoachMessagePolling=function(){
+    stopPolling();
+    window.__dccCoachChatV2=null;
+  };
   window.dccCloseCoachChatV2=function(){
-    stopPolling();window.__dccCoachChatV2=null;
+    window.dccStopCoachMessagePolling();
     if(typeof showCoach==='function')showCoach('messages');
   };
   window.dccCoachSendV2=async function(id){
