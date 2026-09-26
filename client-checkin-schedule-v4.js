@@ -236,8 +236,13 @@
 
   async function open(preserve=false){
     const id=activeId();if(!id)return;
-    render(preserve);
-    try{await fetchState(id);render(preserve)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true};render(preserve)}
+    // Paint the approved screen only once. Rendering before fetchState used stale
+    // local state and caused the removed/old check-in to flash before the final UI.
+    if(stateCache[id]){render(preserve);return}
+    const main=document.getElementById('client-main');
+    if(main){main.className='dcc-checkin-v4';main.innerHTML='';}
+    try{await fetchState(id)}catch(e){console.error('DCC check-in state:',e);stateCache[id]=stateCache[id]||{locked:true}}
+    if(activeId()===id && String(window.currentScreen||'checkin')==='checkin')render(preserve);
   }
 
   window.dccCheckinV4Field=function(key,value){
