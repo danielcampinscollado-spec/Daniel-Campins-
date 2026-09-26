@@ -76,7 +76,7 @@
       html body #coach #coach-main.dcc-premium-chat .dcc-chat-input{font-size:16px!important;-webkit-text-size-adjust:100%!important}
 
       @media(max-width:430px){
-        #client-main.dcc-client-checkin-v1,#client-main.dcc-client-messages-v1{padding-left:12px!important;padding-right:12px!important}
+        #client-main.dcc-client-messages-v1{padding-left:12px!important;padding-right:12px!important}
         .dcc-cc-head{margin-bottom:14px}.dcc-cc-sub{font-size:11.5px}.dcc-cc-card{padding:11px;border-radius:18px}.dcc-cc-card-head{margin-bottom:9px}.dcc-cc-data-grid{gap:7px}.dcc-cc-data{padding:9px 7px}.dcc-cc-data-icon{width:32px;height:32px;min-width:32px;font-size:16px}.dcc-cc-data-label{font-size:7.6px}.dcc-cc-data-value{font-size:18px}.dcc-cc-update{min-height:34px;margin-top:9px;padding:0 8px;font-size:8.8px}.dcc-cc-row{grid-template-columns:105px minmax(0,1fr);gap:7px}.dcc-cc-row-name{font-size:10px}.dcc-cc-row-ico{width:21px;font-size:16px}.dcc-cc-option{min-height:33px;font-size:8.8px}.dcc-cc-comment{min-height:92px}.dcc-cc-send{min-height:50px;font-size:14px}
         .dcc-cm-bubble{max-width:82%;font-size:11.5px}.dcc-cm-composer{width:calc(100vw - 24px)}
       }
@@ -86,23 +86,6 @@
       }
     `;
     document.head.appendChild(s);
-  }
-
-  function ensureCheckin(id){
-    const d=appData();
-    const c=clientById(id);
-    d.checkins=d.checkins||{};
-    if(!d.checkins[id]||typeof d.checkins[id]!=='object'){
-      d.checkins[id]={weight:c?.weight!=null?comma(c.weight)+' kg':'',bodyFat:'',diet:'',training:'',energy:'',comment:'',reviewed:false};
-    }
-    const x=d.checkins[id];
-    if(x.energy===undefined)x.energy='';
-    if(x.comment===undefined)x.comment='';
-    return x;
-  }
-
-  function option(type,value,label,current){
-    return `<button type="button" class="dcc-cc-option ${String(current||'').toLowerCase()===String(value).toLowerCase()?'active':''}" onclick="dccCheckinPick('${type}','${esc(value)}')">${esc(label)}</button>`;
   }
 
   // Check-in V1 retired; V4 owns rendering.
