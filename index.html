@@ -10296,6 +10296,25 @@ if(screen==="dashboard" && window.__dccCoachRouteIntent && window.__dccCoachRout
 currentScreen=screen;
 window.currentScreen=screen;
 window.__dccCoachRouteIntent=screen;
+
+/* Una sola autoridad para el estado activo de la navegación del entrenador.
+   Mantiene Panel / Clientes / Mensajes / Calendario alineados incluso cuando
+   una pantalla se abre desde una tarjeta, alerta o retorno interno. */
+const coachNav=document.getElementById("coach-nav");
+if(coachNav){
+  const navLabel={
+    dashboard:"Panel",
+    clients:"Clientes",
+    messages:"Mensajes",
+    calendar:"Calendario"
+  }[screen];
+  coachNav.querySelectorAll("button").forEach(button=>{
+    const active=button.dataset.navLabel===navLabel;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-current",active?"page":"false");
+  });
+}
+
 const main=document.getElementById("coach-main");
 let html="";
 
