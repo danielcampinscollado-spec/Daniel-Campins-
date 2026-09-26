@@ -12497,24 +12497,24 @@ if(screen==="messages"){
     return new Date(bm.at(-1)?.[2]||0)-new Date(am.at(-1)?.[2]||0);
   });
   html=`
-  <div class="dcc-coach-messages-light" style="padding:4px 4px 120px;max-width:760px;margin:0 auto">
-    <div style="margin-bottom:18px">
-      <h1 style="margin:0;color:#17191d;font-size:31px;line-height:1.08">Conversaciones</h1>
-      <p style="margin:7px 0 0;color:#777f89;font-size:14px">Mensajes de tus clientes</p>
+  <div class="dcc-coach-messages-light" style="padding:0 4px 100px;max-width:760px;margin:0 auto">
+    <div style="margin-bottom:11px">
+      <h1 style="margin:0;color:#17191d;font-size:28px;line-height:1.05">Conversaciones</h1>
+      <p style="margin:4px 0 0;color:#777f89;font-size:13px">Mensajes de tus clientes</p>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;margin-bottom:14px;border:1px solid #e7d5b5;border-radius:16px;background:#fffdf9">
+    <div style="display:flex;align-items:center;gap:10px;height:42px;padding:0 13px;margin-bottom:9px;border:1px solid #e7d5b5;border-radius:16px;background:#fffdf9">
       <span style="color:#b17b1d;font-size:19px">⌕</span>
       <input id="messages-search" placeholder="Buscar cliente..." oninput="const q=this.value.toLowerCase().trim();document.querySelectorAll('[data-message-client]').forEach(el=>el.style.display=el.dataset.messageClient.includes(q)?'':'none')" style="width:100%;border:0!important;outline:0;background:transparent;color:#17191d;font-size:15px;padding:0!important">
     </div>
-    <div style="display:grid;gap:9px">
+    <div style="display:grid;gap:7px">
     ${messageClients.map(c=>{
       const msgs=data.messages?.[c.id]||[], last=msgs.at(-1), unread=!!last&&String(last[0]||'').trim().toLowerCase()!=='daniel';
       const initials=String(c.name||'').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();
       const when=last?.[2]?new Date(last[2]).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}):'';
-      return `<button type="button" data-message-client="${esc(String(c.name||'').toLowerCase())}" onclick="openMessages('${c.id}')" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #ead9bb;border-radius:17px;background:#fffdf9;text-align:left;color:#17191d;box-shadow:0 8px 24px rgba(120,82,20,.05)">
-        <span style="width:46px;height:46px;flex:none;border-radius:50%;display:grid;place-items:center;background:#f6ecd9;color:#9c6913;font-weight:800">${esc(initials||'C')}</span>
-        <span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small style="color:#8b8f96;flex:none">${esc(when)}</small></span><span style="display:flex;align-items:center;gap:7px;margin-top:4px;color:#7a8088;font-size:13px;min-width:0">${unread?'<i style="width:7px;height:7px;border-radius:50%;background:#d7a62f;flex:none"></i>':''}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(last?.[1]||'Sin mensajes')}</span></span></span>
-        <span style="color:#b17b1d;font-size:24px">›</span>
+      return `<button type="button" data-message-client="${esc(String(c.name||'').toLowerCase())}" onclick="openMessages('${c.id}')" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #ead9bb;border-radius:16px;background:#fffdf9;text-align:left;color:#17191d;box-shadow:0 8px 24px rgba(120,82,20,.05)">
+        <span style="width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:#f6ecd9;color:#9c6913;font-weight:800">${esc(initials||'C')}</span>
+        <span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small style="color:#8b8f96;flex:none">${esc(when)}</small></span><span style="display:flex;align-items:center;gap:6px;margin-top:2px;color:#7a8088;font-size:12px;min-width:0">${unread?'<i style="width:7px;height:7px;border-radius:50%;background:#d7a62f;flex:none"></i>':''}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(last?.[1]||'Sin mensajes')}</span></span></span>
+        <span style="color:#b17b1d;font-size:21px">›</span>
       </button>`;
     }).join('')}
     </div>
