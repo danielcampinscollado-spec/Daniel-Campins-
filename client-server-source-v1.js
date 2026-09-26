@@ -141,7 +141,7 @@
   function onCoachScreen(event){
     if(rerendering)return;
     const screen=event.detail?.screen||window.currentScreen;
-    if(screen==='dashboard'||screen==='clients')queueMicrotask(()=>syncClients({render:true}));
+    if(screen==='dashboard'||screen==='clients')queueMicrotask(()=>syncClients({render:false}));
   }
 
   function bootstrap(){syncCoachVisible()}
