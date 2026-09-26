@@ -33,7 +33,7 @@
       #${OVERLAY_ID} .picker input{position:absolute;inset:0;z-index:4;width:100%;height:100%;margin:0;padding:0 10px;border:0!important;border-radius:0;background:#fffefa!important;box-shadow:none!important;text-align:center!important;color:#17191d!important;-webkit-text-fill-color:#17191d!important;color-scheme:light!important;cursor:pointer;opacity:1!important;-webkit-appearance:auto!important;appearance:auto!important;font:700 12px/1.2 inherit!important}
       #${OVERLAY_ID} .picker input::-webkit-date-and-time-value{text-align:center!important}
       #${OVERLAY_ID} .picker input::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:100%;height:100%;opacity:1;cursor:pointer}
-      #${OVERLAY_ID} .picker-display{display:none!important}
+      #${OVERLAY_ID} .picker-display{display:none!important;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:0 10px;font:700 12px/1.2 inherit;color:#17191d}
       #${OVERLAY_ID} .picker.has-value .picker-display{color:#17191d}
       #${OVERLAY_ID} .save{width:100%;height:44px;margin-top:2px;border:1px solid #e5b64d!important;border-radius:13px;background:linear-gradient(135deg,#f5d581 0%,#e1ad3f 100%)!important;color:#18140c!important;font-size:13px;font-weight:900;box-shadow:0 10px 24px rgba(185,125,20,.14)!important}#${OVERLAY_ID} .save:disabled{opacity:.6}body.dcc-session-open{overflow:hidden}
 
