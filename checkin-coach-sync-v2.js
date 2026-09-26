@@ -166,7 +166,7 @@
     const wrapped=function(id){
       const result=current.apply(this,arguments);
       requestAnimationFrame(()=>patchReview(id));
-      syncBodyFatClient(id).then(()=>patchReview(id));
+      syncBodyFatClient(id);
       return result;
     };
     wrapped.__dccEnergyReviewV2=true;
