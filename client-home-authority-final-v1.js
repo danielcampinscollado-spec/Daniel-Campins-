@@ -535,6 +535,7 @@ function install(){
 
     const result=current.apply(this,arguments);
     if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
+    if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(window.dccEnhanceClientDiet));
     return result;
   };
   wrapped.__dccHomePremiumV2=true;
