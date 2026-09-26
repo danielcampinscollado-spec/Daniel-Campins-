@@ -34,7 +34,7 @@
     try{
       const {data:ok,error}=await database.rpc('dcc_create_client_access',{p_id:id,p_name:name,p_access_email:accessEmail});
       if(error||ok!==true)throw error||new Error('Alta no confirmada');
-      const redirectTo=location.origin+location.pathname;
+      const redirectUrl=new URL(location.origin+location.pathname);redirectUrl.searchParams.set('dcc_activate','1');const redirectTo=redirectUrl.toString();
       const {error:mailError}=await database.auth.signInWithOtp({email:accessEmail,options:{emailRedirectTo:redirectTo,shouldCreateUser:true}});
       if(mailError)throw Object.assign(new Error('Cliente creado, pero no se pudo enviar el enlace de acceso'),{cause:mailError,dccMail:true});
       if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});
