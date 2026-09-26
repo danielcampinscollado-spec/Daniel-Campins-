@@ -234,7 +234,6 @@
   }
 
   install();
-  setTimeout(install,300);
-  setTimeout(install,1000);
-  window.addEventListener('load',()=>setTimeout(install,120));
+  // Message globals are deterministic after script load; legacy reinstall timers are unnecessary.
+  window.addEventListener('load',install,{once:true});
 })();
