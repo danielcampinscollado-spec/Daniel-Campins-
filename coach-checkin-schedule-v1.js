@@ -22,7 +22,7 @@
       #coach-main .dcc-cs-box p{margin:0 0 10px;color:#747d8b;font-size:9px;line-height:1.4}
       #coach-main .dcc-cs-field{display:grid;gap:5px;margin-top:8px}
       #coach-main .dcc-cs-field label{margin:0!important;color:#626b78;font-size:9px;font-weight:800}
-      #coach-main .dcc-cs-field input,#coach-main .dcc-cs-field select{min-height:40px!important;padding:8px 10px!important;border-radius:11px!important;font-size:13px!important}
+      #coach-main .dcc-cs-field input,#coach-main .dcc-cs-field select{display:block!important;width:100%!important;height:42px!important;min-height:42px!important;max-height:42px!important;box-sizing:border-box!important;padding:0 12px!important;border-radius:11px!important;font-size:13px!important;line-height:42px!important}#coach-main .dcc-cs-field input[type=date]{appearance:auto!important;-webkit-appearance:auto!important}
       #coach-main .dcc-cs-save{width:100%;min-height:44px;margin-top:11px;border:1px solid #cf9326;border-radius:13px;background:linear-gradient(135deg,#f2cb64,#d7a13a);color:#17120a;font-size:11px;font-weight:900}
       #coach-main .dcc-cs-state{display:flex;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(100,80,45,.10);color:#7a8391;font-size:8.5px}
       #coach-main .dcc-cs-state b{color:#a66f12}
