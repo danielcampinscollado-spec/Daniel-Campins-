@@ -168,18 +168,15 @@
     else if(window.__dccClientPremiumScreen==='messages')startMessagePolling();
   });
 
-  function installShowClient(){
-    const base=window.showClient;if(typeof base!=='function'||base.__dccClientMessagesV1)return;
-    const wrapped=function(screen){
-      window.__dccClientPremiumScreen=screen;
-      if(screen!=='messages')stopMessagePolling();
-      const r=base.apply(this,arguments);
-      if(screen==='messages')requestAnimationFrame(()=>renderClientMessages());
-      return r;
-    };
-    wrapped.__dccClientMessagesV1=true;wrapped.__base=base;window.showClient=wrapped;
-  }
+  window.dccOpenClientMessagesPremium=function(){
+    window.__dccClientPremiumScreen='messages';
+    requestAnimationFrame(()=>renderClientMessages());
+  };
+  window.dccStopClientMessagePolling=function(){
+    window.__dccClientPremiumScreen='';
+    stopMessagePolling();
+  };
 
-  // Install once after dependencies are loaded. Reinstall loops were legacy race-condition patches.
-  injectCss();installShowClient();
+  // Navigation is owned by the canonical client authority.
+  injectCss();
 })();
