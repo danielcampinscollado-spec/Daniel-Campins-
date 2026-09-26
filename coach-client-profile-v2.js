@@ -118,6 +118,6 @@ window.dccSaveCoachFollowup=function(id){const cl=client(id);if(!cl)return;cl.ch
 window.dccAddCoachNote=function(id){const cl=client(id),el=document.getElementById('dccV2NewNote'),text=el?.value?.trim();if(!cl||!text)return;cl.coachNotes=Array.isArray(cl.coachNotes)?cl.coachNotes:[];cl.coachNotes.push({text,date:new Date().toISOString()});persist();dccCoachNotes(id)}
 window.dccDeleteCoachNote=function(id,index){const cl=client(id);if(!cl||!Array.isArray(cl.coachNotes))return;cl.coachNotes.splice(index,1);persist();dccCoachNotes(id)}
 
-const obs=new MutationObserver(()=>requestAnimationFrame(enhance));
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{css();obs.observe(document.body,{childList:true,subtree:true});enhance()},{once:true});else{css();obs.observe(document.body,{childList:true,subtree:true});enhance()}
+window.dccEnhanceCoachClientProfile=enhance;
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{css();enhance()},{once:true});else{css();enhance()}
 })();
