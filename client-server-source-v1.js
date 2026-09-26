@@ -134,7 +134,7 @@
     if(window.__dccSecureRole!=='coach')return;
     if(window.currentApp!=='coach')return;
     if(window.currentScreen==='dashboard'||window.currentScreen==='clients'){
-      await syncClients({render:true});
+      await syncClients({render:false});
     }
   }
 
