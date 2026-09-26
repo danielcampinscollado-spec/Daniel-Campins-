@@ -350,8 +350,7 @@
     }catch(e){console.error(e)}
   }
 
+  // Install once after dependencies are loaded. Reinstall loops were legacy race-condition patches.
   injectCss();installShowClient();installReliableCoachSend();installCheckinLoader();syncCheckinsExtended();
-  setTimeout(()=>{installShowClient();installReliableCoachSend();installCheckinLoader()},300);
-  setTimeout(()=>{installShowClient();installReliableCoachSend();installCheckinLoader()},1000);
-  window.addEventListener('load',()=>setTimeout(()=>{installShowClient();installReliableCoachSend();installCheckinLoader()},120));
+  window.addEventListener('load',()=>{installReliableCoachSend();installCheckinLoader();},{once:true});
 })();
