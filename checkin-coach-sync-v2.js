@@ -166,7 +166,6 @@
     const wrapped=function(id){
       const result=current.apply(this,arguments);
       requestAnimationFrame(()=>patchReview(id));
-      setTimeout(()=>patchReview(id),80);
       syncBodyFatClient(id).then(()=>patchReview(id));
       return result;
     };
@@ -270,8 +269,6 @@
 
   function install(){installReviewEnhancements();installReviewedSync();installClientAdminEnhancement()}
   injectStyles();install();syncCheckinsFromDatabase();
-  
-  window.addEventListener('load',()=>{install();syncCheckinsFromDatabase()},{once:true});
 })();
 
 /* Carga del formulario premium de alta de cliente. */
