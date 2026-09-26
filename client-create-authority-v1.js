@@ -37,10 +37,9 @@
       if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});
       else if(typeof window.loadClientsFromSupabase==='function')await window.loadClientsFromSupabase();
       try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(_){}
-      window.selectedClient=id;window.__dccClientAdminId=id;
-      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'summary');
-      else if(typeof window.openClient==='function')window.openClient(id);
-      notify('Acceso de cliente creado · cuestionario pendiente');
+      window.selectedClient='';window.__dccClientAdminId='';
+      if(typeof window.showCoach==='function')window.showCoach('clients');
+      notify('Acceso creado · pendiente de cuestionario');
     }catch(error){
       console.error('DCC alta mínima de cliente:',error);
       const message=String(error?.message||'').toLowerCase();
