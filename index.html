@@ -5334,6 +5334,17 @@ async function loadWeightsFromSupabase(){
 
     });
 
+    // client_weights is the authoritative weight history. Keep the client
+    // summary aligned with its latest server value so a clients-table value
+    // cannot overwrite a newer recorded weight after reload.
+    (data.clients||[]).forEach(client=>{
+      const history=data.weights[client.id];
+      if(Array.isArray(history)&&history.length){
+        const latest=Number(history[history.length-1]);
+        if(Number.isFinite(latest))client.weight=latest;
+      }
+    });
+
     saveData();
 
   }catch(e){
@@ -6422,15 +6433,16 @@ async function openApp(app){
     showCoach("dashboard");
 
     setupMessageRealtime();
-    Promise.allSettled([
+    // Client rows are the base identity set. Load them first, then hydrate
+    // dependent server domains so metrics/messages cannot race an older client snapshot.
+    loadClientsFromSupabase().then(()=>Promise.allSettled([
       loadDietsFromSupabase(),
-      loadClientsFromSupabase(),
       loadRoutinesFromSupabase(),
       loadWorkoutHistoryFromSupabase(),
       loadWeightsFromSupabase(),
       loadMessagesFromSupabase(),
       loadCheckinsFromSupabase()
-    ]).then(()=>{
+    ])).then(()=>{
       // Server data refreshes in place; navigation is not repainted asynchronously.
     });
 
