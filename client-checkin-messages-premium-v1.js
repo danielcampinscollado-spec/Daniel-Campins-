@@ -181,41 +181,8 @@
     x[type]=value;x.reviewed=false;persistLocal();renderClientCheckin(true);
   };
 
-  async function syncCheckinsExtended(){
-    const db=database();if(!db)return false;
-    try{
-      const {data:rows,error}=await db.from('client_checkins').select('client_id,weight,diet,training,energy,comment,reviewed,body_fat,sent_at,updated_at');
-      if(error)throw error;
-      const d=appData();d.checkins=d.checkins||{};
-      (rows||[]).forEach(r=>{
-        const prev=d.checkins[r.client_id]||{};
-        d.checkins[r.client_id]={...prev,weight:r.weight??prev.weight??'',diet:r.diet??prev.diet??'',training:r.training??prev.training??'',energy:r.energy??prev.energy??'',comment:r.comment??prev.comment??'',reviewed:!!r.reviewed,bodyFat:r.body_fat!=null?Number(r.body_fat):(prev.bodyFat??''),sentAt:r.sent_at??prev.sentAt??null,updatedAt:r.updated_at??prev.updatedAt??null};
-        const c=clientById(r.client_id);if(c)c.status=r.reviewed?'Revisado':'Pendiente';
-      });
-      persistLocal();return true;
-    }catch(e){console.error('DCC sync check-ins:',e);return false}
-  }
-
-  window.dccSendCheckinPremium=async function(){
-    const id=activeClientId();const c=clientById(id);if(!id||!c)return;
-    const x=ensureCheckin(id);const box=document.getElementById('dccCheckinComment');if(box)x.comment=box.value.trim();
-    const missing=[];
-    if(!x.diet||x.diet==='Pendiente')missing.push('alimentación');
-    if(!x.training||x.training==='Pendiente')missing.push('entrenamiento');
-    if(!x.energy||x.energy==='Pendiente')missing.push('energía');
-    if(missing.length){toastSafe('Completa '+missing.join(', '));return}
-    const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
-    const btn=document.getElementById('dccSendCheckinButton');if(btn)btn.disabled=true;
-    const now=new Date().toISOString();
-    x.weight=(kg(c.weight)!=null?comma(c.weight):String(c.weight||''))+' kg';x.reviewed=false;x.status='Nuevo check-in';x.sentAt=now;c.status='Pendiente';
-    try{
-      const {error}=await db.from('client_checkins').upsert({client_id:id,weight:x.weight,diet:x.diet,training:x.training,energy:x.energy,comment:x.comment||'',body_fat:x.bodyFat!==undefined&&x.bodyFat!==null&&x.bodyFat!==''?Number(x.bodyFat):null,sent_at:now,reviewed:false,updated_at:now},{onConflict:'client_id'});
-      if(error)throw error;
-      const {error:clientError}=await db.from('clients').update({status:'Pendiente'}).eq('id',id);
-      if(clientError)console.warn('DCC estado cliente:',clientError);
-      persistLocal();toastSafe('Check-in enviado a tu entrenador');renderClientCheckin(false);
-    }catch(e){console.error('DCC envío check-in:',e);toastSafe('No se pudo enviar el check-in');if(btn)btn.disabled=false}
-  };
+  // Check-in persistence/rendering is owned by the base Supabase loader and
+  // client-checkin-schedule-v4.js. This module no longer duplicates that flow.
 
   function msgText(m){return String(Array.isArray(m)?(m[1]??''):(m?.text??m?.message??m?.body??m?.content??'')).trim()}
   function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
@@ -325,16 +292,6 @@
     wrapped.__dccClientMessagesV1=true;wrapped.__base=base;window.showClient=wrapped;
   }
 
-  function installCheckinLoader(){
-    try{
-      const old=window.loadCheckinsFromSupabase;
-      if(typeof old==='function'&&!old.__dccEnergyV1){
-        const wrapped=async function(){const r=await old.apply(this,arguments);await syncCheckinsExtended();return r};wrapped.__dccEnergyV1=true;wrapped.__base=old;window.loadCheckinsFromSupabase=wrapped;
-      }
-    }catch(e){console.error(e)}
-  }
-
   // Install once after dependencies are loaded. Reinstall loops were legacy race-condition patches.
-  injectCss();installShowClient();installCheckinLoader();syncCheckinsExtended();
-  window.addEventListener('load',()=>{installCheckinLoader();},{once:true});
+  injectCss();installShowClient();
 })();
