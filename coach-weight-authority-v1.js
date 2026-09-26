@@ -38,8 +38,8 @@
       d.checkins[id].reviewed=false;
 
       try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
-      if(typeof window.showClientAdmin==='function')window.showClientAdmin(id);
-      else if(typeof showClientAdmin==='function')showClientAdmin(id);
+      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(id),'summary');
+      else{console.error('DCC coach weight: premium client admin authority unavailable');notify('Peso guardado, pero no se pudo actualizar la vista')}
       notify('Peso actualizado correctamente');
     }catch(error){
       console.error('DCC coach weight authority:',error);
