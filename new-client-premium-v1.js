@@ -111,47 +111,7 @@
           <input class="dcc-nc-input" id="new-name" autocomplete="name" placeholder="Nombre y apellidos">
         </label>
 
-        <label class="dcc-nc-field">
-          <span class="dcc-nc-label">${icon('weight')}<span>Peso actual</span></span>
-          <input class="dcc-nc-input" id="new-weight" inputmode="decimal" placeholder="Ej. 75,5 kg">
-        </label>
-
-        <div class="dcc-nc-row">
-          <label class="dcc-nc-field">
-            <span class="dcc-nc-label">${icon('age')}<span>Edad</span></span>
-            <input class="dcc-nc-input" id="new-age" inputmode="numeric" placeholder="Ej. 28">
-          </label>
-          <label class="dcc-nc-field">
-            <span class="dcc-nc-label">${icon('height')}<span>Altura</span></span>
-            <input class="dcc-nc-input" id="new-height" inputmode="decimal" placeholder="Ej. 178 cm">
-          </label>
-        </div>
-
-        <label class="dcc-nc-field">
-          <span class="dcc-nc-label">${icon('fat')}<span>Grasa corporal inicial</span></span>
-          <input class="dcc-nc-input" id="new-body-fat" inputmode="decimal" placeholder="Ej. 18,5">
-        </label>
-
-        <label class="dcc-nc-field">
-          <span class="dcc-nc-label">${icon('goal')}<span>Objetivo</span></span>
-          <span class="dcc-nc-select-wrap">
-            <select class="dcc-nc-select" id="new-goal">
-              <option value="" selected disabled>Selecciona un objetivo</option>
-              <option value="Pérdida de grasa">Pérdida de grasa</option>
-              <option value="Recomposición corporal">Recomposición corporal</option>
-              <option value="Ganancia muscular">Ganancia muscular</option>
-              <option value="Mantenimiento">Mantenimiento</option>
-              <option value="Mejorar rendimiento">Mejorar rendimiento</option>
-            </select>
-          </span>
-        </label>
-
-        <label class="dcc-nc-field">
-  <span class="dcc-nc-label"><span>Alimentos a evitar</span></span>
-  <input class="dcc-nc-input" id="new-foods-avoid" placeholder="Ej. cebolla, aceitunas, marisco">
-</label>
-
-        <button type="button" id="dcc-create-client-btn" class="dcc-nc-create" onclick="createClient()">Crear cliente <span>→</span></button>
+                <button type="button" id="dcc-create-client-btn" class="dcc-nc-create" onclick="createClient()">Crear cliente <span>→</span></button>
       </div>
     `);
     document.getElementById('modal')?.classList.add('dcc-new-client-overlay');
