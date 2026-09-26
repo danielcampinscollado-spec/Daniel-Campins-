@@ -179,23 +179,12 @@ window.dccPrintClientDiet=function(){
 };
 
 function install(){
-  const fn=window.showClient;
-  if(typeof fn==='function'&&!fn.__dccDietPrintPremium){
-    const base=fn;
-    const wrapped=function(screen){
-      const result=base.apply(this,arguments);
-      requestAnimationFrame(()=>syncClientNav(screen));
-      if(screen==='food')requestAnimationFrame(()=>requestAnimationFrame(enhance));
-      return result;
-    };
-    wrapped.__dccDietPrintPremium=true;
-    wrapped.__base=base;
-    window.showClient=wrapped;
+  // Diet/PDF owns presentation only; client navigation remains authoritative elsewhere.
+  if(window.currentScreen==='food'){
+    requestAnimationFrame(()=>{syncClientNav('food');requestAnimationFrame(enhance)});
   }
-  if(window.currentScreen==='food')requestAnimationFrame(enhance);
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 window.addEventListener('pageshow',install);
-setTimeout(install,120);
 })();
