@@ -5470,9 +5470,9 @@ async function loadNotificationStateFromSupabase(){
 
     }
 
-    if(!data.notificationState){
-      data.notificationState={};
-    }
+    // Server state is authoritative. Rebuild instead of retaining
+    // notification timestamps from an older local session.
+    data.notificationState={};
 
     (states || []).forEach(row=>{
 
@@ -5517,13 +5517,10 @@ async function loadRoutinesFromSupabase(){
 
     if(!routines) return;
 
-    if(!data.routines){
-      data.routines={};
-    }
-
-    if(!data.routineUpdatedAt){
-      data.routineUpdatedAt={};
-    }
+    // Rebuild the server-backed routine domains so deleted or replaced
+    // routines cannot survive in localStorage after a reload.
+    data.routines={};
+    data.routineUpdatedAt={};
 
     routines.forEach(row=>{
 
