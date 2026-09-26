@@ -25,6 +25,15 @@ function ensureLayoutCss(){
     #coach-main.dcc-ca .dcc-followup-summary{overflow:hidden}
     #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{display:grid!important;grid-template-columns:minmax(0,1fr) 104px!important;align-items:center!important;padding:11px 16px 11px 14px!important;column-gap:14px!important}
     #coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{display:flex!important;align-items:center!important;justify-content:center!important;justify-self:stretch!important;width:100%!important;min-width:0!important;margin:0!important;padding:0 6px!important;text-align:center!important;line-height:1.25!important;box-sizing:border-box!important;transform:translateX(9px)!important}
+    @media(max-width:700px){
+      #coach-main.dcc-ca .dcc-profile-v2-notes,
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-card,
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-form,
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box!important;overflow:hidden!important}
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field input[type="date"]{display:block!important;width:calc(100% - 2px)!important;max-width:calc(100% - 2px)!important;min-width:0!important;height:42px!important;margin:0 1px!important;padding:0 12px!important;box-sizing:border-box!important;-webkit-appearance:none!important;appearance:none!important}
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-field input[type="date"]::-webkit-date-and-time-value{text-align:left!important}
+      #coach-main.dcc-ca .dcc-profile-v2-notes .dcc-v2-save{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+    }
     @media(max-width:390px){#coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row{grid-template-columns:minmax(0,1fr) 96px!important;padding-left:12px!important;padding-right:16px!important}#coach-main.dcc-ca .dcc-followup-summary .dcc-v2-row b{padding:0 5px!important;transform:translateX(7px)!important}}
   `;(document.head||document.documentElement).appendChild(s)
 }
