@@ -34,16 +34,19 @@
     try{
       const {data:ok,error}=await database.rpc('dcc_create_client_access',{p_id:id,p_name:name,p_access_email:accessEmail});
       if(error||ok!==true)throw error||new Error('Alta no confirmada');
+      const redirectTo=location.origin+location.pathname;
+      const {error:mailError}=await database.auth.signInWithOtp({email:accessEmail,options:{emailRedirectTo:redirectTo,shouldCreateUser:true}});
+      if(mailError)throw Object.assign(new Error('Cliente creado, pero no se pudo enviar el enlace de acceso'),{cause:mailError,dccMail:true});
       if(typeof window.dccSyncClientsFromServer==='function')await window.dccSyncClientsFromServer({render:false});
       else if(typeof window.loadClientsFromSupabase==='function')await window.loadClientsFromSupabase();
       try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(_){}
       window.selectedClient='';window.__dccClientAdminId='';
       if(typeof window.showCoach==='function')window.showCoach('clients');
-      notify('Acceso creado · pendiente de cuestionario');
+      notify('Acceso creado · enlace enviado al correo');
     }catch(error){
       console.error('DCC alta mínima de cliente:',error);
       const message=String(error?.message||'').toLowerCase();
-      notify(message.includes('duplicate')||String(error?.code||'')==='23505'?'Ese email de acceso ya está asignado a otro cliente':message.includes('forbidden')?'Tu sesión de entrenador ha caducado. Vuelve a iniciar sesión.':'No se pudo guardar el cliente');
+      notify(error?.dccMail?'Cliente creado, pero falló el envío del enlace':message.includes('duplicate')||String(error?.code||'')==='23505'?'Ese email de acceso ya está asignado a otro cliente':message.includes('forbidden')?'Tu sesión de entrenador ha caducado. Vuelve a iniciar sesión.':'No se pudo guardar el cliente');
       if(button){button.dataset.dccCreating='0';button.disabled=false;button.innerHTML='Crear cliente <span>→</span>'}
     }
   }
