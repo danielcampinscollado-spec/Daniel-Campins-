@@ -137,4 +137,5 @@ function fix(){
   media.classList.add('dcc-muscle-artwork');
 }
 let queued=false;function queue(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;fix()})}
-const main=document.getElementById('client-main');if(main)new MutationObserver(queue).observe(main,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(queue,0),true);window.addEventListener('dcc:themechange',queue);queue();})();
+window.dccApplyWorkoutMuscleVisual=queue;
+window.addEventListener('dcc:themechange',queue);queue();})();
