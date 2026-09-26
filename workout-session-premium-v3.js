@@ -330,12 +330,12 @@
 
   window.renderWorkoutSession=renderPremiumWorkout;
 
-  const previousShowClient=window.showClient;
-  if(typeof previousShowClient==='function'){
-    window.showClient=function(){
-      const result=previousShowClient.apply(this,arguments);
-      if(!window.activeWorkout){document.body.classList.remove('dcc-workout-mode');clearInterval(window.dccWorkoutElapsedInterval);}
-      return result;
-    };
-  }
+  // Navigation cleanup is handled by the canonical client navigation chain.
+  // Workout owns only its own lifecycle; do not wrap showClient from this renderer.
+  window.dccCleanupWorkoutMode=function(){
+    if(!window.activeWorkout){
+      document.body.classList.remove('dcc-workout-mode');
+      clearInterval(window.dccWorkoutElapsedInterval);
+    }
+  };
 })();
