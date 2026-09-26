@@ -6448,6 +6448,24 @@ async function openApp(app){
 
 }
 function logout(){
+/* Limpiar estado efímero antes de una nueva sesión. La capa de autenticación
+   se encarga de cerrar Supabase; aquí evitamos que una reentrada herede
+   navegación, entrenamiento o polling del usuario anterior. */
+clearInterval(window.restTimerInterval);
+window.restTimerInterval=null;
+if(typeof window.dccStopClientMessagePolling==="function"){
+  window.dccStopClientMessagePolling();
+}
+window.activeWorkout=null;
+window.workoutPausedScreen=null;
+window.__dccCoachRouteIntent=null;
+window.__dccOpenAppPromise=null;
+currentClientId=null;
+window.currentClientId=null;
+currentApp=null;
+window.currentApp=null;
+currentScreen="home";
+window.currentScreen="home";
 document.getElementById("login").style.display="flex";
 document.getElementById("client").style.display="none";
 document.getElementById("coach").style.display="none";
