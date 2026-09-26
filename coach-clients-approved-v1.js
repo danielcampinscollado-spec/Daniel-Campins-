@@ -79,7 +79,7 @@ function render(){
 function wrap(){
  const original=window.showCoach;if(typeof original!=='function'||original.__dccApprovedClients)return false;
  function wrapped(screen){
-   if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';render();const nav=document.getElementById('coach-nav');nav?.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Clientes'));document.dispatchEvent(new CustomEvent('dcc:coach-screen',{detail:{screen:'clients'}}));return;}
+   if(screen==='clients'){window.currentScreen='clients';window.__dccCoachRouteIntent='clients';render();if(typeof window.__dccSetCoachNavActive==='function')window.__dccSetCoachNavActive('clients');document.dispatchEvent(new CustomEvent('dcc:coach-screen',{detail:{screen:'clients'}}));return;}
    return original.apply(this,arguments);
  }
  wrapped.__dccApprovedClients=true;wrapped.__original=original;window.showCoach=wrapped;return true;
