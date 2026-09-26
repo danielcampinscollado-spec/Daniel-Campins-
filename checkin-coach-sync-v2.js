@@ -89,10 +89,23 @@
       ]);
       if(checkinsRes.error)throw checkinsRes.error;
       if(historyRes.error)throw historyRes.error;
-      const d=appData();d.checkins=d.checkins||{};
+      const d=appData();
+      // Supabase owns the current check-in snapshot for the coach as well.
+      // Rebuild it instead of merging stale local fields back into server rows.
+      d.checkins={};
       (checkinsRes.data||[]).forEach(r=>{
-        const prev=d.checkins[r.client_id]||{};
-        d.checkins[r.client_id]={...prev,weight:r.weight??prev.weight??'',diet:r.diet??prev.diet??'',training:r.training??prev.training??'',energy:r.energy??prev.energy??'',comment:r.comment??prev.comment??'',reviewed:!!r.reviewed,bodyFat:r.body_fat!=null?Number(r.body_fat):(prev.bodyFat??''),body_fat:r.body_fat!=null?Number(r.body_fat):(prev.body_fat??''),sentAt:r.sent_at??prev.sentAt??null,updatedAt:r.updated_at??prev.updatedAt??null};
+        d.checkins[r.client_id]={
+          weight:r.weight??'',
+          diet:r.diet??'',
+          training:r.training??'',
+          energy:r.energy??'',
+          comment:r.comment??'',
+          reviewed:!!r.reviewed,
+          bodyFat:r.body_fat!=null?Number(r.body_fat):'',
+          body_fat:r.body_fat!=null?Number(r.body_fat):'',
+          sentAt:r.sent_at??null,
+          updatedAt:r.updated_at??null
+        };
         const c=clientFor(r.client_id);if(c){c.status=r.reviewed?'Revisado':'Pendiente';if(r.body_fat!=null){c.bodyFat=Number(r.body_fat);c.body_fat=Number(r.body_fat)}}
       });
       const grouped={};(d.clients||[]).forEach(c=>{grouped[c.id]=[]});
