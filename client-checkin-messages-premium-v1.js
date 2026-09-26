@@ -1,9 +1,7 @@
-/* DCC — Cliente: check-in semanal premium + mensajería fiable */
+/* DCC — Cliente: mensajería premium */
 (function(){
   'use strict';
 
-  const GOLD='#e0ad4c';
-  const GOLD2='#f0c96b';
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function appData(){
@@ -32,15 +30,6 @@
     }catch(e){}
     console.log(text);
   }
-  function kg(v){
-    const n=parseFloat(String(v??'').replace(',','.'));
-    return Number.isFinite(n)?n:null;
-  }
-  function comma(v,d=1){
-    const n=Number(v);
-    return Number.isFinite(n)?n.toFixed(d).replace('.',','):'—';
-  }
-
   function injectCss(){
     let old=document.getElementById('dcc-client-checkin-messages-v1-css');
     if(old)old.remove();
