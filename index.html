@@ -5220,12 +5220,12 @@ async function loadClientsFromSupabase(){
         foods_to_avoid:String(row.foods_to_avoid||""),
         plan:row.plan||"",
         status:row.status||"Pendiente",
-        checkin_frequency:row.checkin_frequency??old.checkin_frequency??null,
-        photo_frequency:row.photo_frequency??old.photo_frequency??null,
-        next_checkin_date:row.next_checkin_date??old.next_checkin_date??null,
-        next_photo_checkin_date:row.next_photo_checkin_date??old.next_photo_checkin_date??null,
-        followup_configured_at:row.followup_configured_at??old.followup_configured_at??null,
-        created_at:row.created_at||old.created_at||null
+        checkin_frequency:row.checkin_frequency??null,
+        photo_frequency:row.photo_frequency??null,
+        next_checkin_date:row.next_checkin_date??null,
+        next_photo_checkin_date:row.next_photo_checkin_date??null,
+        followup_configured_at:row.followup_configured_at??null,
+        created_at:row.created_at||null
       };
     });
 
