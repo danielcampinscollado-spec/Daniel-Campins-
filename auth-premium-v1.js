@@ -130,11 +130,11 @@
     let section=document.getElementById(ROOT_ID);
     if(!section){
       section=document.createElement('section');section.id=ROOT_ID;
-      section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro</div><h3>Entrar en DCC Fitness</h3><p>Accede con tu cuenta de Google o mediante un enlace seguro por email.</p><button id="dcc-google-auth" class="dcc-google-auth" type="button">Continuar con Google</button><div class="dcc-auth-divider">o por email</div><div class="dcc-auth-row"><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" aria-label="Email de acceso seguro"><button id="dcc-secure-auth-send" class="dcc-email-send" type="button">Enviar enlace</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
+      section.innerHTML=`<div class="dcc-auth-kicker">Acceso seguro</div><h3>Entrar en DCC Fitness</h3><p>Accede con el email y la contraseña que configuraste en tu primer acceso.</p><div class="dcc-auth-row"><input id="dcc-secure-auth-email" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" aria-label="Email"><input id="dcc-secure-auth-password" type="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña"><button id="dcc-password-login" class="dcc-google-auth" type="button">Entrar</button><button id="dcc-secure-auth-send" class="dcc-email-send" type="button">He olvidado mi contraseña</button></div><p id="${STATUS_ID}" aria-live="polite"></p>`;
       if(choices)box.insertBefore(section,choices);else box.appendChild(section);
-      section.querySelector('#dcc-google-auth')?.addEventListener('click',requestGoogleLogin);
+      section.querySelector('#dcc-password-login')?.addEventListener('click',requestPasswordLogin);
       section.querySelector('#dcc-secure-auth-send')?.addEventListener('click',requestMagicLink);
-      section.querySelector('#dcc-secure-auth-email')?.addEventListener('keydown',e=>{if(e.key==='Enter')requestMagicLink()});
+      section.querySelector('#dcc-secure-auth-password')?.addEventListener('keydown',e=>{if(e.key==='Enter')requestPasswordLogin()});
     }
   }
 
@@ -145,11 +145,19 @@
     catch(error){console.error('DCC Google Auth:',error);status(String(error?.message||'No se pudo iniciar el acceso con Google.'),'error');button.disabled=false;}
   }
 
+  async function requestPasswordLogin(){
+    const db=database(),email=String(document.getElementById('dcc-secure-auth-email')?.value||'').trim().toLowerCase(),password=String(document.getElementById('dcc-secure-auth-password')?.value||''),button=document.getElementById('dcc-password-login');
+    if(!email||!password){status('Introduce tu email y contraseña.','error');return}
+    button.disabled=true;status('Iniciando sesión…','info');
+    try{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error;status('Acceso correcto.','ok')}
+    catch(error){console.error('DCC password auth:',error);status('Email o contraseña incorrectos.','error');button.disabled=false}
+  }
+
   async function requestMagicLink(){
     const db=database(),input=document.getElementById('dcc-secure-auth-email'),button=document.getElementById('dcc-secure-auth-send'),email=String(input?.value||'').trim().toLowerCase();
     if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}if(!email||!/^\S+@\S+\.\S+$/.test(email)){status('Introduce un email válido.','error');input?.focus();return}
-    button.disabled=true;status('Enviando enlace seguro…','info');
-    try{const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:authRedirectUrl()}});if(result.error)throw result.error;status(isPreview()?'Enlace enviado para esta RC. El enlace debe volver a este mismo Preview.':'Enlace enviado. Abre el correo y pulsa el enlace para iniciar sesión.','ok');}
+    button.disabled=true;status('Enviando enlace de recuperación…','info');
+    try{const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:authRedirectUrl()}});if(result.error)throw result.error;status('Enlace enviado. Revisa tu correo para recuperar el acceso.','ok');}
     catch(error){console.error('DCC Auth:',error);const msg=String(error?.message||'No se pudo enviar el enlace de acceso.');status(isPreview()?`No se envió el enlace RC: ${msg}`:msg,'error');}finally{button.disabled=false}
   }
 
