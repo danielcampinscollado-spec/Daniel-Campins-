@@ -12531,14 +12531,9 @@ if(weightError){
 
 data.weights[id]=[weight];
 
-data.checkins[id]={
-  weight:money(weight)+" kg",
-  bodyFat:bodyFat,
-  diet:"Pendiente",
-  training:"Pendiente",
-  comment:"Pendiente de revisión.",
-  reviewed:false
-};
+// A newly created client has no check-in until one is actually submitted.
+// Do not manufacture a local check-in that Supabase does not contain.
+delete data.checkins[id];
 
 data.diets[id]={
   training:{
