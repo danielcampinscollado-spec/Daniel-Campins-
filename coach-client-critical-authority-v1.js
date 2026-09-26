@@ -117,24 +117,9 @@
     }catch(e){console.error('DCC critical editor save:',e);notify(e.message||'No se pudieron guardar los cambios');b.disabled=false;b.textContent='Guardar cambios';}
   }
 
-  async function deleteClient(id,button){
-    id=String(id||window.selectedClient||'');if(!id)return notify('No se encontró el cliente seleccionado');
-    const d=appData(),cl=(d.clients||[]).find(x=>String(x.id)===id);if(!confirm(`¿Eliminar definitivamente a ${cl?.name||'este cliente'}? Esta acción borrará también sus datos asociados.`))return;
-    const old=button?.textContent;if(button){button.disabled=true;button.textContent='Eliminando…'}
-    try{
-      await coachSession();const database=db();const r=await database.rpc('dcc_delete_client',{p_client_id:id});if(r.error)throw r.error;if(r.data!==true)throw new Error('El servidor no confirmó la eliminación');
-      const check=await database.from('clients').select('id').eq('id',id).maybeSingle();if(check.error)throw check.error;if(check.data)throw new Error('El cliente sigue existiendo en Supabase');
-      await syncClients(false);window.selectedClient=null;if(typeof window.showCoach==='function')window.showCoach('clients');notify('Cliente eliminado definitivamente');
-    }catch(e){console.error('DCC critical delete:',e);alert('No se pudo eliminar el cliente.\n\n'+(e.message||'Error del servidor'));if(button){button.disabled=false;button.textContent=old||'Eliminar cliente'}}
-  }
-  window.dccCriticalDeleteClient=deleteClient;
-
   document.addEventListener('click',e=>{
     const b=e.target.closest?.('button');if(!b)return;
     const text=String(b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
-    if(b.classList.contains('dcc-ca-delete')||text==='eliminar cliente'){
-      if(!document.querySelector('#coach-main.dcc-ca'))return;e.preventDefault();e.stopImmediatePropagation();deleteClient(window.selectedClient,b);return;
-    }
     if(text==='editar cliente'){
       if(!document.querySelector('#coach-main.dcc-ca'))return;e.preventDefault();e.stopImmediatePropagation();openEditor(window.selectedClient);return;
     }
