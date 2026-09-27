@@ -83,6 +83,10 @@
     try{
       await writeRoutine(id,draft);
       applyRoutine(id,draft);
+      const client=appData()?.clients?.find?.(x=>String(x?.id)===String(id))||appData()?.clients?.[id]||{};
+      const required=Math.max(1,Math.min(7,parseInt(client?.preferred_training_days,10)||draft.length||1));
+      const configured=(Array.isArray(draft)?draft:[]).filter(d=>Array.isArray(d?.exercises)&&d.exercises.length>0).length;
+      const remaining=Math.max(0,required-configured);
       window.__dccTrainingEdit=false;
       delete window.__dccTrainingBackup;
       window.__dccRoutineDraftDirty=false;
@@ -90,7 +94,7 @@
       window.__dccRoutineUnsavedBackupSet=false;
       window.__dccRoutineUnsavedClient='';
       renderClientRoutine(id);
-      notify('Rutina guardada');
+      if(remaining>0)alert(`Sesión guardada como borrador.\n\nQuedan ${remaining} día${remaining===1?'':'s'} de entrenamiento por configurar. La rutina todavía no se enviará al cliente.`);else notify('Rutina completa. Ya puedes enviarla al cliente.');
     }catch(error){
       console.error('DCC guardar rutina premium:',error);
       if(backup!==null)applyRoutine(id,backup);
