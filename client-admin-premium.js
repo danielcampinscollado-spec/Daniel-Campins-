@@ -88,6 +88,12 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 .dcc-tr-ex.dcc-no-img .dcc-tr-remove{width:30px!important;height:26px!important;min-height:26px!important}
 .dcc-tr-ex.dcc-no-img .dcc-tr-video{margin-top:3px!important}
 .dcc-tr-ex.dcc-no-img .dcc-tr-advanced{margin-top:3px!important;gap:4px!important}
+.dcc-tr-actions[data-dcc-routine-authority="1"]{display:block!important;margin:6px 0!important}
+.dcc-tr-actions[data-dcc-routine-authority="1"] .dcc-tr-edit{width:100%!important;height:38px!important;min-height:38px!important;padding:5px 10px!important;margin:0!important;border-radius:10px!important;font-size:10px!important;line-height:1.1!important}
+.dcc-training-overview{padding:7px 10px!important;margin-bottom:5px!important}
+.dcc-training-overview .dcc-ca-title{min-height:30px!important}
+.dcc-training-overview .dcc-ca-title h2{font-size:13px!important}
+.dcc-training-overview .pill{font-size:7px!important;padding:4px 7px!important}
 .dcc-training-days{gap:4px!important}
 .dcc-training-days .dcc-tr-day{border-radius:10px!important}
 .dcc-training-days .dcc-tr-day-head{min-height:34px!important;height:34px!important;padding:4px 8px!important}
