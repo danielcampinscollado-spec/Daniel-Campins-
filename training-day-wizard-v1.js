@@ -21,7 +21,7 @@
     #coach-main .dcc-tdw-tabs{display:grid!important;grid-template-columns:repeat(var(--dcc-day-count,1),minmax(0,1fr))!important;gap:6px!important;width:100%!important;overflow:visible!important;margin-top:12px!important;padding:0!important}
     #coach-main .dcc-tdw-tabs button{min-width:0!important;width:100%!important;padding:0 4px!important;white-space:nowrap!important}
     #coach-main .dcc-tr-days{padding-bottom:0!important}
-    #coach-main .dcc-tr-day-head small{font-size:12px!important;line-height:1.2!important;font-weight:700!important;margin-top:4px!important;color:#7b828c!important}
+    #coach-main .dcc-tr-day-head>span:first-child{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important}#coach-main .dcc-tr-day-head b{display:inline-block!important}#coach-main .dcc-tr-day-head small{display:inline-block!important;margin:0!important;padding:4px 7px!important;border:1px solid rgba(183,123,19,.28)!important;border-radius:8px!important;background:#fff1c8!important;color:#7b5309!important;font-size:9px!important;line-height:1!important;font-weight:800!important}
     @media(max-width:430px){#coach-main .dcc-tdw{padding:14px!important}#coach-main .dcc-tdw-count{gap:4px!important}#coach-main .dcc-tdw-count button{min-height:38px!important;border-radius:11px!important;font-size:12px!important}#coach-main .dcc-tdw-tabs{gap:4px!important}#coach-main .dcc-tdw-tabs button{min-height:40px!important;border-radius:11px!important;padding:0 2px!important;font-size:12px!important;letter-spacing:-.15px!important}}
   `;(document.head||document.documentElement).appendChild(s)}
 
