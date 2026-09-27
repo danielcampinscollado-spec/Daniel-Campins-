@@ -20,7 +20,7 @@
     #coach-main .dcc-tdw-config{display:flex!important;gap:10px!important;align-items:flex-start!important;margin-top:17px!important;padding-top:15px!important;border-top:1px solid rgba(183,123,19,.14)!important}
     #coach-main .dcc-tdw-tabs{display:grid!important;grid-template-columns:repeat(var(--dcc-day-count,1),minmax(0,1fr))!important;gap:6px!important;width:100%!important;overflow:visible!important;margin-top:12px!important;padding:0!important}
     #coach-main .dcc-tdw-tabs button{min-width:0!important;width:100%!important;padding:0 4px!important;white-space:nowrap!important}
-    #coach-main .dcc-tr-days{padding-bottom:110px!important}
+    #coach-main .dcc-tr-days{padding-bottom:0!important}
     @media(max-width:430px){#coach-main .dcc-tdw{padding:14px!important}#coach-main .dcc-tdw-count{gap:4px!important}#coach-main .dcc-tdw-count button{min-height:38px!important;border-radius:11px!important;font-size:12px!important}#coach-main .dcc-tdw-tabs{gap:4px!important}#coach-main .dcc-tdw-tabs button{min-height:40px!important;border-radius:11px!important;padding:0 2px!important;font-size:12px!important;letter-spacing:-.15px!important}}
   `;(document.head||document.documentElement).appendChild(s)}
 
