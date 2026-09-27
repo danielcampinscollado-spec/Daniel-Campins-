@@ -163,6 +163,17 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 .dcc-tr-restpause-row .dcc-tr-video label{white-space:nowrap!important}
 .dcc-tr-superset-group .dcc-tr-superset-shared{grid-template-columns:48px 86px 72px!important}
 .dcc-tr-superset-group .dcc-tr-superset-shared .dcc-field-reps,.dcc-tr-superset-group .dcc-tr-superset-shared .dcc-field-reps input{width:86px!important}
+.dcc-tr-global-summary{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:8px!important;background:transparent!important;border:0!important}
+.dcc-tr-global-summary>label{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;min-height:48px!important;padding:8px 10px!important;background:#fffdfa!important;border:1px solid rgba(183,123,19,.18)!important;border-radius:12px!important;box-shadow:none!important}
+.dcc-tr-global-summary>label>b{font-size:10px!important;line-height:1.1!important}
+.dcc-tr-global-summary>label>span{display:flex!important;align-items:center!important;gap:4px!important;font-size:11px!important;white-space:nowrap!important}
+.dcc-tr-global-summary input{width:52px!important;height:32px!important;min-height:32px!important;padding:0 8px!important;border-radius:9px!important;background:#fff!important;font-size:12px!important}
+.dcc-tr-restpause-row{display:grid!important;grid-template-columns:48px 88px 68px 76px minmax(0,1fr) 34px!important;gap:6px!important;align-items:end!important}
+.dcc-tr-restpause-row>.dcc-field-series{grid-column:1!important;grid-row:1!important}.dcc-tr-restpause-row>.dcc-field-reps{grid-column:2!important;grid-row:1!important}
+.dcc-tr-restpause-row>.dcc-tr-field:nth-child(3){grid-column:3!important;grid-row:1!important}.dcc-tr-restpause-row>.dcc-tr-field:nth-child(4){grid-column:4!important;grid-row:1!important}
+.dcc-tr-restpause-row>.dcc-tr-video{grid-column:5!important;grid-row:1!important;min-width:0!important}.dcc-tr-restpause-row>.dcc-tr-remove{grid-column:6!important;grid-row:1!important}
+.dcc-tr-restpause-row .dcc-tr-field{min-width:0!important;width:auto!important}.dcc-tr-restpause-row .dcc-tr-field label{font-size:8px!important;line-height:1!important;white-space:normal!important;min-height:16px!important}
+.dcc-tr-restpause-row .dcc-tr-field input{width:100%!important;min-width:0!important;height:34px!important;padding:0 7px!important;font-size:11px!important}.dcc-tr-restpause-row .dcc-tr-video label{white-space:nowrap!important}
 }
 }
 
