@@ -33,6 +33,20 @@ function css(){if(document.getElementById('dcc-training-card-layout-css'))docume
 #coach-main .dcc-superset-rest{display:grid!important;grid-template-columns:minmax(0,1fr) 120px!important;align-items:center!important;gap:8px!important;margin-top:3px!important;padding:4px 2px 0!important;border-top:1px solid rgba(183,123,19,.18)!important}
 #coach-main .dcc-superset-rest label{font-size:9px!important;font-weight:850!important;color:#747b85!important}
 #coach-main .dcc-superset-rest input{width:100%!important;height:26px!important;box-sizing:border-box!important;border:1px solid rgba(183,123,19,.28)!important;border-radius:10px!important;background:#fffefa!important;padding:3px 8px!important;font-size:11px!important;color:#17191d!important}
+
+#coach-main .dcc-tr-ex.dcc-exercise-card{padding:6px 8px!important;margin:0 0 5px!important;gap:3px!important;border-radius:12px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-head{margin:0 0 3px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-fields{margin:0!important;gap:5px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-fields label{margin:0!important;font-size:8px!important;line-height:1.05!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-fields input{height:27px!important;min-height:27px!important;margin-top:2px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-video{margin:3px 0 0!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-video input,#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-approved-video button{height:27px!important;min-height:27px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-tr-method-badge{margin:2px 0!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-tr-advanced{margin:3px 0 0!important;gap:4px!important}
+#coach-main .dcc-tr-ex.dcc-exercise-card .dcc-tr-advanced input{height:27px!important;min-height:27px!important}
+#coach-main .dcc-superset-block{padding:6px 8px!important;margin:4px 0!important}
+#coach-main .dcc-superset-block>.dcc-tr-ex.dcc-exercise-card{padding:5px 0!important;margin:0!important}
+#coach-main .dcc-superset-block .dcc-approved-video{margin-top:2px!important}
 `;document.head.appendChild(s)}
 function dayIndex(card){const d=card.closest('.dcc-tr-day');return d?[...root().querySelectorAll('.dcc-tr-days>.dcc-tr-day')].indexOf(d):-1}
 function reorder(card,target){const di=dayIndex(card);if(di<0)return;const parent=card.parentElement;const cards=[...parent.querySelectorAll(':scope>.dcc-exercise-card')];const from=cards.indexOf(card),to=cards.indexOf(target);if(from<0||to<0||from===to)return;const d=routine()[di];if(!d?.exercises)return;const [ex]=d.exercises.splice(from,1);d.exercises.splice(to,0,ex);window.dccMarkTrainingDraftDirty?.(rid());try{window.saveData?.()}catch(_){};parent.insertBefore(card,to>from?target.nextSibling:target)}
