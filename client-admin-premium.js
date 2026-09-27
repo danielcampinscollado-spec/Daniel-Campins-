@@ -124,6 +124,20 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 .dcc-tr-superset-ex>small{display:block!important;font-size:8px!important;color:#8b8277!important}
 .dcc-tr-superset-ex>.dcc-tr-remove{position:absolute!important;right:6px!important;top:6px!important}
 .dcc-tr-superset-ex>.dcc-tr-video{margin-top:4px!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row{display:grid!important;grid-template-columns:34px 70px minmax(0,1fr) 28px!important;gap:5px!important;align-items:end!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row .dcc-tr-video{grid-column:3!important;grid-row:1!important;margin:0!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row>.dcc-tr-remove{grid-column:4!important;grid-row:1!important}
+.dcc-tr-superset-group .dcc-tr-ex-name{display:block!important}
+.dcc-tr-superset-group .dcc-tr-method-badge{display:inline-flex!important;margin-left:5px!important;vertical-align:middle!important}
+.dcc-tr-superset-group .dcc-tr-superset-shared{display:grid!important;grid-template-columns:34px 70px 68px!important;gap:5px!important;width:auto!important;margin-top:5px!important}
+.dcc-tr-superset-ex{display:grid!important;grid-template-columns:minmax(0,1fr) 28px!important;gap:3px 5px!important;width:100%!important;box-sizing:border-box!important}
+.dcc-tr-superset-ex>b{grid-column:1!important;grid-row:1!important;white-space:normal!important;word-break:normal!important;padding:0!important}
+.dcc-tr-superset-ex>small{grid-column:1!important;grid-row:2!important}
+.dcc-tr-superset-ex>.dcc-tr-remove{position:static!important;grid-column:2!important;grid-row:1/3!important;align-self:center!important}
+.dcc-tr-superset-ex>.dcc-tr-video{grid-column:1/-1!important;grid-row:3!important;width:100%!important;margin-top:2px!important}
+.dcc-tr-superset-ex>.dcc-tr-video input{width:100%!important}
+.dcc-tr-restpause-row{display:grid!important;grid-template-columns:34px 72px 62px 62px minmax(0,1fr) 28px!important;gap:5px!important;align-items:end!important}
+.dcc-tr-restpause-row .dcc-tr-video{margin:0!important}
 .dcc-tr-ex.dcc-no-img .dcc-tr-editrow-reps-only{grid-template-columns:76px 28px!important}
 .dcc-tr-ex.dcc-no-img .dcc-tr-field input{height:24px!important;min-height:24px!important;padding:1px 5px!important}
 .dcc-tr-ex.dcc-no-img .dcc-tr-remove{width:28px!important;height:24px!important;min-height:24px!important}
