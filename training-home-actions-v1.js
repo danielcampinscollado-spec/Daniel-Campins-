@@ -1,7 +1,7 @@
 /* DCC — acciones de rutina compactas, mismo lenguaje que Cancelar / Guardar */
 (function(){
 'use strict';
-const BUILD='20260925-training-home-actions-v5-nutrition-scale';
+const BUILD='20260927-training-home-actions-v6-training-terms';
 if(window.__dccTrainingHomeActions===BUILD)return;window.__dccTrainingHomeActions=BUILD;
 let raf=0;
 const norm=s=>String(s||'').replace(/\s+/g,' ').trim().toLowerCase();
@@ -29,8 +29,8 @@ function apply(){
   if(window.__dccTrainingEdit){delete root.dataset.dccRoutineHomeMode;return}
   root.dataset.dccRoutineHomeMode='1';
   const buttons=[...root.querySelectorAll('button')];
-  const edit=buttons.find(b=>norm(b.textContent).includes('editar rutina'));
-  const create=buttons.find(b=>norm(b.textContent).includes('crear nueva rutina'));
+  const edit=buttons.find(b=>{const t=norm(b.textContent);return t.includes('editar entrenamiento')||t.includes('continuar configurando')});
+  const create=buttons.find(b=>norm(b.textContent).includes('crear entrenamiento'));
   const authority=root.querySelector('[data-dcc-routine-authority="1"]'),actions=authority||commonBox(edit,create),days=root.querySelector('.dcc-tr-days'),history=root.querySelector('[data-dcc-history="1"]');
   if(!actions||!days||actions===root||actions.contains(days))return;
   if(edit)compactButton(edit);if(create)compactButton(create);
