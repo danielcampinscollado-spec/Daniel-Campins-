@@ -31,12 +31,12 @@ function apply(){
   const buttons=[...root.querySelectorAll('button')];
   const edit=buttons.find(b=>norm(b.textContent).includes('editar rutina'));
   const create=buttons.find(b=>norm(b.textContent).includes('crear nueva rutina'));
-  const actions=commonBox(edit,create),days=root.querySelector('.dcc-tr-days'),history=root.querySelector('[data-dcc-history="1"]');
-  if(!edit||!create||!actions||!days||actions===root||actions.contains(days))return;
-  compactButton(edit);compactButton(create);
+  const authority=root.querySelector('[data-dcc-routine-authority="1"]'),actions=authority||commonBox(edit,create),days=root.querySelector('.dcc-tr-days'),history=root.querySelector('[data-dcc-history="1"]');
+  if(!actions||!days||actions===root||actions.contains(days))return;
+  if(edit)compactButton(edit);if(create)compactButton(create);
   actions.dataset.dccRoutineHomeActions='1';
   actions.style.setProperty('display','grid','important');
-  actions.style.setProperty('grid-template-columns','1fr 1fr','important');
+  actions.style.setProperty('grid-template-columns',actions.children.length>1?'1fr 1fr':'1fr','important');
   actions.style.setProperty('align-items','start','important');
   actions.style.setProperty('gap','8px','important');
   actions.style.setProperty('margin','8px 0 12px','important');
