@@ -227,6 +227,37 @@
         #coach-main .dcc-restpause-single>.dcc-method-video input{grid-column:1!important;width:100%!important}
         #coach-main .dcc-restpause-single [data-delete-rest]{grid-column:2!important}
       }
+
+      /* DCC FINAL MOBILE CARD GEOMETRY — reference locked */
+      @media(max-width:700px){
+        #coach-main.dcc-config-active .dcc-rest-global-top{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:0!important;margin:6px 0 10px!important;border:0!important;background:transparent!important}
+        #coach-main.dcc-config-active .dcc-rest-global-top>div{display:grid!important;grid-template-columns:minmax(0,1fr) 62px 14px!important;align-items:center!important;gap:5px!important;min-height:64px!important;padding:9px 10px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fffdf9!important}
+        #coach-main.dcc-config-active .dcc-rest-global-top input{width:62px!important;height:34px!important;min-height:34px!important;margin:0!important;padding:4px 8px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card{display:grid!important;grid-template-columns:64px 118px minmax(0,1fr) 38px!important;column-gap:8px!important;row-gap:3px!important;align-items:end!important;padding:9px 10px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card>div:first-child{grid-column:1/-1!important;grid-row:1!important;margin:0 0 2px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(2){display:grid!important;grid-column:1/3!important;grid-row:2!important;grid-template-columns:64px 118px!important;width:auto!important;gap:8px!important;margin:0!important}
+        #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(3){display:grid!important;grid-column:3/5!important;grid-row:2!important;grid-template-columns:minmax(0,1fr) 38px!important;gap:8px!important;margin:0!important}
+        #coach-main.dcc-config-active .dcc-exercise-card input{height:34px!important;min-height:34px!important}
+        #coach-main .dcc-superset-group{display:grid!important;grid-template-columns:1fr!important;padding:9px 10px!important;gap:0!important}
+        #coach-main .dcc-superset-group>.dcc-method-config-head{grid-column:1!important}
+        #coach-main .dcc-superset-group>.dcc-method-fields{display:grid!important;grid-template-columns:64px 118px 74px!important;width:272px!important;gap:8px!important;margin:0 0 7px!important}
+        #coach-main .dcc-superset-group>.dcc-exercise-card{display:grid!important;grid-template-columns:minmax(0,1fr) 38px!important;gap:5px 8px!important;padding:9px 6px!important}
+        #coach-main .dcc-superset-group>.dcc-exercise-card>div:first-child{display:grid!important;grid-column:1/3!important;grid-row:1!important}
+        #coach-main .dcc-superset-group>.dcc-exercise-card>div:nth-child(2){display:none!important}
+        #coach-main .dcc-superset-group>.dcc-exercise-card>div:nth-child(3){display:grid!important;grid-column:1/3!important;grid-row:2!important;grid-template-columns:118px minmax(0,1fr) 38px!important;gap:8px!important;margin:0!important}
+        #coach-main .dcc-restpause-single{display:grid!important;grid-template-columns:64px 118px 92px 100px minmax(0,1fr) 38px!important;gap:8px!important;align-items:end!important;padding:9px 10px!important}
+        #coach-main .dcc-restpause-single>.dcc-method-config-head{grid-column:1/-1!important;grid-row:1!important}
+        #coach-main .dcc-restpause-single>.dcc-method-fields{display:contents!important}
+        #coach-main .dcc-restpause-single>.dcc-method-video{display:contents!important}
+        #coach-main .dcc-restpause-single>.dcc-method-video input{height:34px!important;min-height:34px!important}
+        #coach-main .dcc-restpause-single [data-open-video],#coach-main .dcc-restpause-single .dcc-method-note{display:none!important}
+      }
+      @media(max-width:430px){
+        #coach-main .dcc-restpause-single{grid-template-columns:56px 100px 82px 92px!important}
+        #coach-main .dcc-restpause-single>.dcc-method-video{display:grid!important;grid-column:1/-1!important;grid-template-columns:minmax(0,1fr) 38px!important;gap:8px!important;margin-top:2px!important}
+        #coach-main .dcc-restpause-single>.dcc-method-video input{grid-column:1!important;width:100%!important}
+        #coach-main .dcc-restpause-single [data-delete-rest]{grid-column:2!important}
+      }
     `;
     document.head.appendChild(style);
   }
