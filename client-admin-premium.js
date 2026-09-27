@@ -169,6 +169,30 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 .dcc-tr-restpause-row .dcc-rp-main input,.dcc-tr-restpause-row .dcc-rp-video input{width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;padding:0 7px!important;font-size:11px!important}
 .dcc-tr-restpause-row .dcc-rp-video .dcc-tr-remove{grid-column:2!important;grid-row:1!important;width:34px!important;height:34px!important;align-self:end!important}
 .dcc-tr-restpause-row .dcc-rp-video .dcc-tr-video{grid-column:1!important;grid-row:1!important;margin:0!important}
+/* final compact mobile training layout */
+@media(max-width:760px){
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row{display:grid!important;grid-template-columns:48px 86px minmax(110px,1fr) 34px!important;gap:7px!important;align-items:end!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row>.dcc-tr-video{grid-column:3!important;grid-row:1!important;min-width:0!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row>.dcc-tr-remove{grid-column:4!important;grid-row:1!important}
+.dcc-tr-ex.dcc-no-img .dcc-tr-normal-row>.dcc-tr-video input{width:100%!important;min-width:0!important;padding:0 8px!important}
+.dcc-tr-superset-group .dcc-tr-superset-shared{display:grid!important;grid-template-columns:48px 86px 68px!important;gap:8px!important;justify-content:start!important;width:max-content!important;max-width:100%!important}
+.dcc-tr-superset-group .dcc-tr-superset-shared>.dcc-field-rest{grid-column:3!important;width:68px!important}
+.dcc-tr-superset-group .dcc-tr-superset-shared>.dcc-field-rest input{width:68px!important}
+.dcc-tr-restpause-row{display:block!important;width:100%!important}
+.dcc-tr-restpause-row>.dcc-rp-main{display:grid!important;grid-template-columns:48px 88px 78px 84px!important;gap:7px!important;align-items:end!important;width:100%!important}
+.dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field{display:block!important;position:static!important;grid-row:1!important;min-width:0!important;width:auto!important;margin:0!important}
+.dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field:nth-child(1){grid-column:1!important}
+.dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field:nth-child(2){grid-column:2!important}
+.dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field:nth-child(3){grid-column:3!important}
+.dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field:nth-child(4){grid-column:4!important}
+.dcc-tr-restpause-row>.dcc-rp-main label{display:block!important;position:static!important;font-size:8px!important;line-height:1.05!important;min-height:17px!important;margin:0 0 3px!important}
+.dcc-tr-restpause-row>.dcc-rp-main input{display:block!important;position:static!important;width:100%!important;height:34px!important;min-height:34px!important}
+.dcc-tr-restpause-row>.dcc-rp-video{display:grid!important;grid-template-columns:minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;width:100%!important;margin-top:7px!important}
+.dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-video{display:block!important;position:static!important;grid-column:1!important;grid-row:1!important;width:auto!important;min-width:0!important;margin:0!important}
+.dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-video label{display:block!important;position:static!important;min-height:0!important;margin:0 0 3px!important}
+.dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-video input{display:block!important;position:static!important;width:100%!important;min-width:0!important;height:34px!important}
+.dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-remove{position:static!important;grid-column:2!important;grid-row:1!important;width:34px!important;height:34px!important;margin:0!important;align-self:end!important}
+}
 .dcc-tr-superset-group .dcc-tr-superset-shared{grid-template-columns:48px 86px 72px!important}
 .dcc-tr-superset-group .dcc-tr-superset-shared .dcc-field-reps,.dcc-tr-superset-group .dcc-tr-superset-shared .dcc-field-reps input{width:86px!important}
 .dcc-tr-global-summary{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:8px!important;background:transparent!important;border:0!important}
