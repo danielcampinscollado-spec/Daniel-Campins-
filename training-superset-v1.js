@@ -140,7 +140,17 @@
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
       #coach-main.dcc-config-active{padding-bottom:96px!important}
-      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important;min-height:0!important}
+      #coach-main .dcc-exercise-card{padding:6px 8px!important;border-radius:11px!important;margin:0!important;min-height:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card *{box-sizing:border-box}
+      #coach-main.dcc-config-active .dcc-exercise-card>div{min-height:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:first-child{margin:0 0 2px!important;padding:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(n+2){margin-top:2px!important;margin-bottom:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card label{margin:0!important;line-height:1.05!important}
+      #coach-main.dcc-config-active .dcc-exercise-card input{height:28px!important;min-height:28px!important;margin-top:2px!important;padding:3px 8px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card input[type="url"]{height:28px!important;min-height:28px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .muted{margin:1px 0!important;line-height:1.05!important}
+      #coach-main.dcc-config-active .dcc-exercise-card [data-dcc-delete]{height:28px!important;min-height:28px!important}
+      #coach-main.dcc-config-active .dcc-method-badge{margin:0 0 2px!important;padding:2px 6px!important;line-height:1.1!important}
       #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;margin-bottom:3px!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
       #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
