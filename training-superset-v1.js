@@ -184,6 +184,47 @@
       #client-main .dcc-method-session b{display:block;color:#d9aa4a;font-size:11px;letter-spacing:.04em}
       #client-main .dcc-method-session span{display:block;margin-top:4px;color:#9da5af;font-size:10px;line-height:1.35}
       @media(max-width:430px){#coach-main .dcc-method-fields.three{grid-template-columns:1fr 1fr}#coach-main .dcc-method-fields.three label:first-child{grid-column:1/-1}}
+
+      /* FINAL APPROVED LIGHT COMPACT LAYOUT */
+      #coach-main.dcc-config-active .dcc-rest-global-top{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;padding:10px!important;background:#fffdf9!important;border:1px solid rgba(183,123,19,.22)!important;box-shadow:none!important}
+      #coach-main.dcc-config-active .dcc-rest-global-top>div{min-height:64px!important;padding:9px 12px!important;border:1px solid rgba(183,123,19,.16)!important;border-radius:12px!important;background:#fff!important}
+      #coach-main.dcc-config-active .dcc-rest-global-top input{width:88px!important;min-height:34px!important;height:34px!important}
+      #coach-main.dcc-config-active .dcc-rest-global-top .dcc-method-global-note{display:none!important}
+      #coach-main.dcc-config-active .dcc-exercise-card{padding:9px 10px!important;border-radius:13px!important;background:#fff!important;border:1px solid rgba(183,123,19,.20)!important;box-shadow:none!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:14px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(2){display:grid!important;grid-template-columns:108px 160px minmax(180px,1fr) 38px!important;gap:8px!important;align-items:end!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(2) label:first-child{max-width:108px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(2) label:nth-child(2){max-width:160px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(3){grid-column:3/5!important;display:grid!important;grid-template-columns:minmax(0,1fr) 38px!important;gap:8px!important;margin-top:-35px!important;margin-left:284px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card input{height:34px!important;min-height:34px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card [data-dcc-delete]{width:36px!important;height:34px!important;min-width:36px!important}
+      #coach-main .dcc-superset-group{padding:10px!important;gap:0!important;border:1px solid #e3b548!important;border-radius:14px!important;background:#fffdf9!important}
+      #coach-main .dcc-superset-group>.dcc-method-config-head{padding:0 2px 8px!important}
+      #coach-main .dcc-superset-group>.dcc-method-config-head b{font-size:16px!important}
+      #coach-main .dcc-superset-group>.dcc-method-names,#coach-main .dcc-superset-group>.dcc-method-note{display:none!important}
+      #coach-main .dcc-superset-group>.dcc-method-fields{display:grid!important;grid-template-columns:130px 170px 130px!important;gap:12px!important;margin:0 0 8px!important}
+      #coach-main .dcc-superset-group>.dcc-exercise-card{display:block!important;padding:10px 12px!important;border:0!important;border-top:1px solid rgba(183,123,19,.15)!important;border-radius:0!important;background:#fff!important}
+      #coach-main .dcc-superset-group>.dcc-exercise-card .dcc-method-badge{display:none!important}
+      #coach-main .dcc-superset-group>.dcc-exercise-card>div:nth-child(2){display:none!important}
+      #coach-main .dcc-superset-group>.dcc-exercise-card>div:nth-child(3){display:grid!important;grid-template-columns:150px minmax(0,1fr) 38px!important;gap:8px!important;margin:5px 0 0!important}
+      #coach-main .dcc-restpause-single{padding:10px 12px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fff!important}
+      #coach-main .dcc-restpause-single>.dcc-method-config-head{margin-bottom:7px!important}
+      #coach-main .dcc-restpause-single>.dcc-method-config-head b{font-size:15px!important}
+      #coach-main .dcc-restpause-single>.dcc-method-config-head span{font-size:10px!important}
+      #coach-main .dcc-restpause-single>.dcc-method-fields{display:contents!important}
+      #coach-main .dcc-restpause-single{display:grid!important;grid-template-columns:105px 170px 130px 140px minmax(190px,1fr) 38px!important;gap:8px!important;align-items:end!important}
+      #coach-main .dcc-restpause-single>.dcc-method-config-head{grid-column:1/-1!important}
+      #coach-main .dcc-restpause-single>.dcc-method-video{display:contents!important}
+      #coach-main .dcc-restpause-single>.dcc-method-video input{height:34px!important;min-width:0!important}
+      #coach-main .dcc-restpause-single>[class*=note],#coach-main .dcc-restpause-single [data-open-video]{display:none!important}
+      #coach-main .dcc-restpause-single [data-delete-rest]{width:36px!important;height:34px!important}
+      @media(max-width:700px){
+        #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(2){grid-template-columns:64px 112px minmax(0,1fr) 38px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card>div:nth-child(3){grid-column:auto!important;grid-template-columns:minmax(0,1fr) 38px!important;margin:4px 0 0!important}
+        #coach-main .dcc-superset-group>.dcc-method-fields{grid-template-columns:70px 110px 80px!important}
+        #coach-main .dcc-superset-group>.dcc-exercise-card>div:nth-child(3){grid-template-columns:145px minmax(0,1fr) 38px!important;margin-top:5px!important}
+        #coach-main .dcc-restpause-single{grid-template-columns:58px 108px 88px 100px minmax(0,1fr) 38px!important;padding:9px!important;gap:6px!important}
+      }
     `;
     document.head.appendChild(style);
   }
