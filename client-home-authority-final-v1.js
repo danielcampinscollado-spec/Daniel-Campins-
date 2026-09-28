@@ -57,7 +57,7 @@ function css(){
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{
     margin:8px 0 9px!important;color:#17191d!important;font-family:inherit!important;
-    font-size:30px!important;line-height:1.02!important;font-weight:850!important;letter-spacing:-1px!important
+    font-size:25px!important;line-height:1.06!important;font-weight:740!important;letter-spacing:-.55px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-line{
     width:42px!important;height:2px!important;border-radius:999px!important;background:#d3a03a!important
@@ -330,7 +330,7 @@ function css(){
     html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
       grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important
     }
-    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:31px!important}
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:25px!important}
 
   }
   `;
