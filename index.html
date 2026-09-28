@@ -9752,104 +9752,73 @@ function skipRest(){
 
 function saveWorkoutSet(){
 
-  const workout = window.activeWorkout;
+  const workout=window.activeWorkout;
+  if(!workout)return;
+  if(workout.restUntil && workout.restUntil > Date.now()){toast("Espera a que termine el descanso");return;}
 
-  if(!workout) return;
+  const exercise=workout.exercises[workout.currentExercise];
+  if(!exercise)return;
 
-  /* No permitir guardar otra serie durante el descanso */
+  const kgInput=document.getElementById("workout-kg");
+  const repsInput=document.getElementById("workout-reps");
+  if(!kgInput||!repsInput)return;
+  const kgValue=parseFloat(String(kgInput.value||"").trim().replace(",","."));
+  const repsValue=parseInt(String(repsInput.value||"").trim());
+  if(!Number.isFinite(kgValue)||!Number.isFinite(repsValue)||kgValue<0||repsValue<=0){toast("Introduce peso y repeticiones");return;}
 
-  if(workout.restUntil && workout.restUntil > Date.now()){
+  const groupId=exercise.supersetId||null;
+  if(groupId){
+    const members=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===groupId).sort((a,b)=>(Number(a.ex.supersetOrder)||0)-(Number(b.ex.supersetOrder)||0));
+    const pos=Math.max(0,members.findIndex(x=>x.index===workout.currentExercise));
+    const rounds=Math.max(1,parseInt(exercise.supersetRounds||exercise.sets)||1);
+    workout.supersetState=workout.supersetState||{};
+    const state=workout.supersetState[groupId]||{round:1,entries:{}};
+    const round=Math.max(1,Number(state.round)||1);
+    state.entries[workout.currentExercise]=state.entries[workout.currentExercise]||[];
+    state.entries[workout.currentExercise][round-1]={kg:kgValue,reps:repsValue};
+    workout.supersetState[groupId]=state;
+    workout.sets=state.entries[workout.currentExercise].filter(Boolean);
 
-    toast("Espera a que termine el descanso");
+    if(pos<members.length-1){
+      workout.currentExercise=members[pos+1].index;
+      workout.sets=(state.entries[workout.currentExercise]||[]).filter(Boolean);
+      workout.restUntil=null;workout.restMode=null;
+      renderWorkoutSession();
+      toast(`Superserie · Ejercicio ${pos+2} de ${members.length}`);
+      return;
+    }
 
+    members.forEach(m=>{
+      const sets=(state.entries[m.index]||[]).filter(Boolean);
+      const existing=workout.completedExercises.find(x=>x.__supersetId===groupId&&x.__exerciseIndex===m.index);
+      const record={name:m.ex.name||"Ejercicio",plannedSets:String(rounds),plannedReps:m.ex.reps||"",sets:JSON.parse(JSON.stringify(sets)),__supersetId:groupId,__exerciseIndex:m.index};
+      if(existing)Object.assign(existing,record);else workout.completedExercises.push(record);
+    });
+
+    if(round<rounds){
+      state.round=round+1;
+      workout.currentExercise=members[0].index;
+      workout.sets=(state.entries[workout.currentExercise]||[]).filter(Boolean);
+      const restSeconds=Math.max(0,parseInt(exercise.supersetRest||exercise.restBetweenExercises)||0);
+      if(restSeconds>0){workout.restUntil=Date.now()+restSeconds*1000;workout.restMode="superset";renderWorkoutSession();startRestTimer();toast(`Superserie · Serie ${round} guardada · Descanso ${restSeconds} s`);}
+      else{workout.restUntil=null;workout.restMode=null;renderWorkoutSession();toast(`Superserie · Serie ${round} guardada`);}
+      return;
+    }
+
+    const lastIndex=members[members.length-1].index;
+    workout.currentExercise=lastIndex;
+    workout.sets=(state.entries[lastIndex]||[]).filter(Boolean);
+    renderWorkoutSession();
+    toast("Superserie completada");
     return;
   }
 
-  const exercise =
-    workout.exercises[workout.currentExercise];
-
-  const plannedSets =
-    parseInt(exercise?.sets) || 0;
-
-  if(plannedSets && workout.sets.length >= plannedSets){
-
-    toast("Ya has completado todas las series");
-
-    return;
-  }
-
-  const kgInput =
-    document.getElementById("workout-kg");
-
-  const repsInput =
-    document.getElementById("workout-reps");
-
-  if(!kgInput || !repsInput) return;
-
-  const kg =
-    kgInput.value.trim();
-
-  const reps =
-    repsInput.value.trim();
-
-  if(!kg || !reps){
-
-    toast("Introduce peso y repeticiones");
-
-    return;
-  }
-
-  const kgValue =
-    parseFloat(kg.replace(",","."));
-
-  const repsValue =
-    parseInt(reps);
-
-  if(
-    !Number.isFinite(kgValue) ||
-    !Number.isFinite(repsValue) ||
-    kgValue < 0 ||
-    repsValue <= 0
-  ){
-
-    toast("Introduce valores válidos");
-
-    return;
-  }
-
-  workout.sets.push({
-    kg:kgValue,
-    reps:repsValue
-  });
-
-/* Descanso configurado por el entrenador */
-
-const restSeconds =
-  Math.max(
-    0,
-    parseInt(exercise?.restBetweenSets) || 0
-  );
-
-if(restSeconds > 0){
-
-  workout.restUntil =
-    Date.now() + (restSeconds * 1000);
-
-  workout.restMode="set";
-
-  renderWorkoutSession();
-
-  startRestTimer();
-
-  toast(`Serie guardada · Descanso ${restSeconds} s`);
-}else{
-
-  workout.restUntil = null;
-
-  renderWorkoutSession();
-
-  toast("Serie guardada");
-}
+  const plannedSets=parseInt(exercise?.sets)||0;
+  if(plannedSets&&workout.sets.length>=plannedSets){toast("Ya has completado todas las series");return;}
+  workout.sets.push({kg:kgValue,reps:repsValue});
+  const restSeconds=Math.max(0,parseInt(exercise?.restBetweenSets)||0);
+  if(restSeconds>0){workout.restUntil=Date.now()+restSeconds*1000;workout.restMode="set";renderWorkoutSession();startRestTimer();toast(`Serie guardada · Descanso ${restSeconds} s`);}
+  else{workout.restUntil=null;renderWorkoutSession();toast("Serie guardada");}
 }
 function editWorkoutSet(index){
 
