@@ -409,7 +409,8 @@ function renderHome(){
   });
   const scheduledCheckin=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
   const todayKey=new Date().toISOString().slice(0,10);
-  const checkinDays=scheduledCheckin?dayDiff(todayKey,String(scheduledCheckin).slice(0,10)):null;
+  const dateOnly=v=>{const x=String(v||'').slice(0,10).split('-').map(Number);return x.length===3&&x.every(Number.isFinite)?new Date(x[0],x[1]-1,x[2],12,0,0):null};
+  const checkinDays=scheduledCheckin?(()=>{const a=dateOnly(todayKey),b=dateOnly(scheduledCheckin);return a&&b?Math.round((b-a)/86400000):null})():null;
   if(!sentThisWeek&&checkinDays===1){
     tasks.push({type:'check',title:'Check-in mañana',text:'Mañana tienes que completar tu check-in',action:"showClient('checkin')"});
   }else if(!sentThisWeek&&checkinDays===0){
