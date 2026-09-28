@@ -142,6 +142,16 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared,
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared{width:228px!important}
+/* final mobile composition: match approved reference without touching rest-pause */
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared{width:100%!important;display:grid!important;grid-template-columns:74px 104px 86px!important;gap:10px!important;justify-content:start!important;align-items:end!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex{display:grid!important;grid-template-columns:minmax(0,1fr) 38px!important;grid-template-rows:auto auto auto!important;gap:2px 10px!important;padding:10px 8px!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex>b{grid-column:1!important;grid-row:1!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex>small{grid-column:1!important;grid-row:2!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex>.dcc-tr-remove{grid-column:2!important;grid-row:1/3!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex>.dcc-tr-video{grid-column:1/-1!important;grid-row:3!important;display:grid!important;grid-template-columns:96px minmax(0,1fr)!important;gap:8px!important;width:100%!important}
+#coach-main.dcc-ca .dcc-tr-normal-row{grid-template-columns:74px 104px minmax(0,1fr) 38px!important;gap:10px!important}
+#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-video{min-width:0!important;width:100%!important}
+
 
 `;document.head.appendChild(s)}
 function c(id){return(data?.clients||[]).find(x=>String(x.id)===String(id))}function weights(id,cl){const a=data?.weights?.[id]||[],v=a.map(x=>num(typeof x==='object'?(x.weight??x.value):x)).filter(x=>x!==null);return v.length?v:(num(cl?.initial??cl?.initial_weight??cl?.weight)!=null?[num(cl?.initial??cl?.initial_weight??cl?.weight)]:[])}function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';return`${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} ${u} desde el inicio`}function metric(l,v,s,g=false){return`<div class="dcc-ca-metric"><small>${l}</small><b>${v}</b>${s?`<span class="dcc-ca-trend ${g?'good':''}">${s}</span>`:''}</div>`}function info(a,b){return`<div class="dcc-ca-info"><span>${a}</span><b>${b}</b></div>`}
