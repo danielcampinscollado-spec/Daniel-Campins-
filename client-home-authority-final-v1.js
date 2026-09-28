@@ -407,7 +407,16 @@ function renderHome(){
     subtext:accessText(next.access),
     action:"showClient('training')"
   });
-  if(!sentThisWeek)tasks.push({type:'check',title:'Check-in semanal pendiente',text:'Completa el seguimiento de esta semana',action:"showClient('checkin')"});
+  const scheduledCheckin=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
+  const todayKey=new Date().toISOString().slice(0,10);
+  const checkinDays=scheduledCheckin?dayDiff(todayKey,String(scheduledCheckin).slice(0,10)):null;
+  if(!sentThisWeek&&checkinDays===1){
+    tasks.push({type:'check',title:'Check-in mañana',text:'Mañana tienes que completar tu check-in',action:"showClient('checkin')"});
+  }else if(!sentThisWeek&&checkinDays===0){
+    tasks.push({type:'check',title:'Check-in de hoy',text:'Hoy tienes que completar tu check-in',action:"showClient('checkin')"});
+  }else if(!sentThisWeek&&checkinDays!=null&&checkinDays<0){
+    tasks.push({type:'check',title:'Check-in pendiente',text:'Tu check-in está pendiente de completar',action:"showClient('checkin')"});
+  }
 
   const ns=d().notificationState?.[id()]||{};
   const diet=d().diets?.[id()]||{};
