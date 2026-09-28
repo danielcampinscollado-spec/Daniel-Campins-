@@ -12,7 +12,7 @@ const GROUPS=[['Pecho','◒'],['Espalda','◐'],['Pierna','◢'],['Hombro','◉'
 function appData(){try{return typeof data!=='undefined'?data:(window.data||{})}catch(e){return window.data||{}}}
 function db(){try{return typeof supabaseClient!=='undefined'?supabaseClient:window.supabaseClient}catch(e){return window.supabaseClient||null}}
 function planLabel(v){return v==='nutrition'?'DCC Nutrición':v==='training'?'DCC Entrenamiento':v==='complete'?'DCC Complete':'Sin seleccionar'}
-function planPrice(v){return v==='complete'?'119 €/mes':(v==='nutrition'||v==='training')?'69 €/mes':'—'}}
+function planPrice(v){return v==='complete'?'119 €/mes':(v==='nutrition'||v==='training')?'69 €/mes':'—'}
 function client(id){const d=appData();return (d.clients||[]).find(x=>String(x.id)===String(id))||null}
 function persist(){try{if(typeof saveData==='function')return saveData()}catch(e){}return false}
 function selectedId(){try{return String(window.selectedClient||'')}catch(e){return''}}
