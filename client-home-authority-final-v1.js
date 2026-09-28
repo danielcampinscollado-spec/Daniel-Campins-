@@ -401,12 +401,6 @@ function renderHome(){
   const sentThisWeek=!!(checkin.sentAt&&checkinWeekStart&&new Date(checkin.sentAt)>=checkinWeekStart);
 
   const tasks=[];
-  if(next.day)tasks.push({
-    type:'training',title:'Siguiente entrenamiento',
-    text:`Día ${next.index+1} · ${next.title}`,
-    subtext:accessText(next.access),
-    action:"showClient('training')"
-  });
   const scheduledCheckin=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
   const todayKey=new Date().toISOString().slice(0,10);
   const dateOnly=v=>{const x=String(v||'').slice(0,10).split('-').map(Number);return x.length===3&&x.every(Number.isFinite)?new Date(x[0],x[1]-1,x[2],12,0,0):null};
@@ -423,12 +417,12 @@ function renderHome(){
   const diet=d().diets?.[id()]||{};
   const dietUpdated=diet?.training?.updated_at||diet?.rest?.updated_at||null;
   if(dietUpdated&&(!ns.dietSeenAt||new Date(dietUpdated)>new Date(ns.dietSeenAt))){
-    tasks.push({type:'check',title:'Nueva alimentación',text:'Tu entrenador ha actualizado tu alimentación',action:"showClient('food')"});
+    tasks.push({type:'check',title:'Nueva alimentación',text:'Tu entrenador ha actualizado tu alimentación',action:"dccOpenClientTask('diet','food')"});
   }
 
   const routineUpdated=d().routineUpdatedAt?.[id()]||null;
   if(r.length&&routineUpdated&&(!ns.routineSeenAt||new Date(routineUpdated)>new Date(ns.routineSeenAt))){
-    tasks.push({type:'training',title:'Nuevo entrenamiento',text:'Tu entrenador ha actualizado tu entrenamiento',action:"showClient('training')"});
+    tasks.push({type:'training',title:'Nuevo entrenamiento',text:'Tu entrenador ha actualizado tu entrenamiento',action:"dccOpenClientTask('routine','training')"});
   }
 
   const messages=Array.isArray(d().messages?.[id()])?d().messages[id()]:[];
@@ -438,7 +432,7 @@ function renderHome(){
   const fromCoach=lastMessageRole?lastMessageRole==='coach':/daniel|coach|trainer|entrenador|admin/.test(lastMessageSender);
   const lastMessageAt=lastMessage?.[2]||null;
   if(fromCoach&&lastMessageAt&&(!ns.messageSeenAt||new Date(lastMessageAt)>new Date(ns.messageSeenAt))){
-    tasks.push({type:'check',title:'Nuevo mensaje',text:'Tienes un mensaje nuevo de tu entrenador',action:"showClient('messages')"});
+    tasks.push({type:'check',title:'Nuevo mensaje',text:'Tienes un mensaje nuevo de tu entrenador',action:"dccOpenClientTask('message','messages')"});
   }
 
   const allDays=r.map((day,i)=>{
@@ -488,6 +482,14 @@ function renderHome(){
 }
 
 window.dccRenderClientHomeApproved=renderHome;
+
+window.dccOpenClientTask=async function(type,screen){
+  const clientId=id();
+  try{
+    if(typeof window.markClientNotificationSeen==='function')await window.markClientNotificationSeen(type,clientId);
+  }catch(e){console.error('DCC aviso cliente:',e)}
+  if(typeof window.showClient==='function')window.showClient(screen);
+};
 
 function activateHomeNav(){
   try{
