@@ -94,7 +94,7 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 #coach-main.dcc-ca .dcc-tr-global-summary input{width:58px!important;height:34px!important;min-height:34px!important;padding:0 8px!important;border:1px solid rgba(183,123,19,.28)!important;border-radius:9px!important;background:#fff!important;color:#17191d!important;font-size:12px!important}
 
 #coach-main.dcc-ca .dcc-tr-exercises{display:grid!important;gap:8px!important;padding:0 4px 4px!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img{display:block!important;width:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:10px 12px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fff!important;color:#17191d!important;box-shadow:none!important}
+#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:10px 12px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fff!important;color:#17191d!important;box-shadow:none!important}
 #coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;column-gap:8px!important;align-items:center!important}
 #coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name>b{grid-column:1!important;margin:0!important;color:#17191d!important;font-size:14px!important;line-height:1.12!important}
 #coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name>small{grid-column:1!important;margin:1px 0 0!important;color:#8b8277!important;font-size:10px!important;line-height:1.1!important}
@@ -105,13 +105,13 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 #coach-main.dcc-ca .dcc-tr-field input{display:block!important;width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 8px!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:9px!important;background:#fff!important;color:#17191d!important;font-size:11px!important}
 #coach-main.dcc-ca .dcc-tr-remove{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;border:1px solid #8f151c!important;border-radius:9px!important;background:#fff!important;color:#d8232d!important;font-size:14px!important}
 
-#coach-main.dcc-ca .dcc-tr-normal-row{display:grid!important;grid-template-columns:48px 86px minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;margin-top:8px!important}
+#coach-main.dcc-ca .dcc-tr-normal-row{display:grid!important;grid-template-columns:48px 86px minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;margin-top:8px!important;grid-column:1/-1!important}
 #coach-main.dcc-ca .dcc-tr-normal-row>.dcc-field-series{grid-column:1!important}
 #coach-main.dcc-ca .dcc-tr-normal-row>.dcc-field-reps{grid-column:2!important}
 #coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-video{grid-column:3!important;grid-row:1!important;margin:0!important}
 #coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-remove{grid-column:4!important;grid-row:1!important}
 
-#coach-main.dcc-ca .dcc-tr-superset-group{padding:10px 12px!important;border:1.5px solid #d9aa4a!important;border-radius:14px!important;background:#fffdf8!important}
+#coach-main.dcc-ca .dcc-tr-superset-group{display:block!important;padding:10px 12px!important;border:1.5px solid #d9aa4a!important;border-radius:14px!important;background:#fffdf8!important}
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name{display:block!important}
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>b{display:inline-block!important;font-size:16px!important}
 #coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-method-badge{float:right!important;display:inline-flex!important;margin:0!important}
@@ -123,7 +123,7 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 #coach-main.dcc-ca .dcc-tr-superset-ex>.dcc-tr-video{display:grid!important;grid-column:1/-1!important;grid-row:3!important;grid-template-columns:96px minmax(0,1fr)!important;gap:7px!important;align-items:end!important;width:100%!important;margin-top:5px!important}
 #coach-main.dcc-ca .dcc-tr-superset-ex>.dcc-tr-video label{align-self:center!important;margin:0!important}
 
-#coach-main.dcc-ca .dcc-tr-restpause-row{display:block!important;width:100%!important;margin-top:8px!important}
+#coach-main.dcc-ca .dcc-tr-restpause-row{display:block!important;grid-column:1/-1!important;width:100%!important;margin-top:8px!important}
 #coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-main{display:grid!important;grid-template-columns:48px 86px 76px 82px!important;gap:7px!important;align-items:end!important;width:100%!important}
 #coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field{display:block!important;position:static!important;min-width:0!important;width:auto!important;margin:0!important}
 #coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-video{display:grid!important;grid-template-columns:minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;width:100%!important;margin-top:7px!important}
@@ -132,6 +132,16 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 
 #coach-main.dcc-ca .dcc-tr-add{width:100%!important;min-height:42px!important;margin:6px 0 0!important;padding:9px!important;border:1px dashed #c99532!important;border-radius:11px!important;background:#fffdf8!important;color:#956711!important;font-size:11px!important;font-weight:850!important}
 }
+
+/* geometry guard: normal + superserie; rest-pause remains isolated */
+#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group){grid-template-columns:minmax(0,1fr)!important}
+#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group)>.dcc-tr-ex-name{grid-column:1/-1!important;width:100%!important}
+#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group)>.dcc-tr-normal-row{grid-column:1/-1!important;width:100%!important}
+#coach-main.dcc-ca .dcc-tr-superset-group{grid-template-columns:1fr!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name,
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared,
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
+#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared{width:228px!important}
 
 `;document.head.appendChild(s)}
 function c(id){return(data?.clients||[]).find(x=>String(x.id)===String(id))}function weights(id,cl){const a=data?.weights?.[id]||[],v=a.map(x=>num(typeof x==='object'?(x.weight??x.value):x)).filter(x=>x!==null);return v.length?v:(num(cl?.initial??cl?.initial_weight??cl?.weight)!=null?[num(cl?.initial??cl?.initial_weight??cl?.weight)]:[])}function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';return`${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} ${u} desde el inicio`}function metric(l,v,s,g=false){return`<div class="dcc-ca-metric"><small>${l}</small><b>${v}</b>${s?`<span class="dcc-ca-trend ${g?'good':''}">${s}</span>`:''}</div>`}function info(a,b){return`<div class="dcc-ca-info"><span>${a}</span><b>${b}</b></div>`}
