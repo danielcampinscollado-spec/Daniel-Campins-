@@ -139,37 +139,68 @@
       .dcc-picker-savebar-count b{display:block;color:#17191d;font-size:12px}
       .dcc-picker-savebar-count strong{color:#a66b08}
       .dcc-picker-savebar button{flex:0 0 auto;min-height:42px;padding:0 18px;border:1px solid #c58b1d;border-radius:12px;background:linear-gradient(135deg,#f3cf69,#d9a63d);color:#17120a;font-size:12px;font-weight:900}
-      #coach-main.dcc-config-active{padding-bottom:96px!important}
-      #coach-main .dcc-exercise-card{padding:7px 9px!important;border-radius:11px!important;margin:0!important}
-      #coach-main .dcc-exercise-card>div:first-child{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;margin-bottom:3px!important}
-      #coach-main .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.15!important}
-      #coach-main .dcc-exercise-card>div:first-child>div:first-child>.muted{margin-top:2px!important;font-size:10px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(2){gap:6px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(2) label{font-size:10px!important}
-      #coach-main .dcc-exercise-card>div:nth-child(3){grid-template-columns:minmax(0,1fr) 84px!important;gap:5px!important;margin-top:4px!important}
-      #coach-main .dcc-exercise-card input{min-height:31px!important;margin-top:2px!important;font-size:12px!important;padding-top:5px!important;padding-bottom:5px!important}
-      #coach-main .dcc-exercise-card input[type="url"]{min-height:31px!important;font-size:10px!important}
-      #coach-main .dcc-exercise-card [data-dcc-delete]{width:32px!important;height:30px!important;min-width:32px!important;padding:0!important;border-radius:9px!important;border:1px solid rgba(190,48,55,.34)!important;color:#b92f38!important;background:rgba(190,48,55,.025)!important;display:grid!important;place-items:center!important}#coach-main .dcc-exercise-card [data-dcc-delete] svg{width:15px;height:15px}
-      #coach-main .dcc-exercise-card [data-dcc-video]{min-height:36px!important;font-size:11px!important}
+      #coach-main.dcc-config-active{padding-bottom:128px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card,
+      #coach-main.dcc-config-active .dcc-method-config{box-sizing:border-box;width:100%;min-width:0}
+      #coach-main.dcc-config-active .dcc-exercise-card{margin:0 0 7px!important;padding:10px 11px!important;border:1px solid rgba(183,123,19,.22)!important;border-radius:13px!important;background:#fffefa!important;box-shadow:none!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:first-child{display:grid!important;grid-template-columns:minmax(0,1fr) 36px!important;gap:8px!important;align-items:start!important;margin:0 0 7px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:first-child>div:first-child{min-width:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card>div:first-child>div:first-child>div:first-child{font-size:15px!important;line-height:1.18!important;font-weight:850!important;white-space:normal!important;overflow-wrap:anywhere!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .muted{margin-top:2px!important;font-size:10px!important;line-height:1.2!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-main-fields{display:grid!important;grid-template-columns:62px 92px minmax(0,1fr)!important;gap:7px!important;align-items:end!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-main-fields label{display:block!important;min-width:0!important;margin:0!important;font-size:9px!important;font-weight:800!important;color:#747b85!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-main-fields input{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin-top:3px!important;padding:0 9px!important;border-radius:10px!important;font-size:12px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-video-row{display:grid!important;grid-template-columns:96px minmax(0,1fr)!important;gap:7px!important;align-items:end!important;margin:0!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-video-row label{display:contents!important}
+      #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-video-row input[type="url"]{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 10px!important;border-radius:10px!important;font-size:10px!important}
+      #coach-main.dcc-config-active .dcc-exercise-card [data-dcc-delete]{width:34px!important;height:34px!important;min-width:34px!important;padding:0!important;border-radius:9px!important;border:1px solid #a3151b!important;color:#d31f2a!important;background:#fff!important;display:grid!important;place-items:center!important}
+      #coach-main.dcc-config-active .dcc-exercise-card [data-dcc-delete] svg{width:16px;height:16px}
+      #coach-main.dcc-config-active .dcc-native-hidden{display:none!important}
+      #coach-main .dcc-rest-global-top{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important;margin:0 0 8px!important;padding:8px!important;border-radius:13px!important}
+      #coach-main .dcc-rest-global-top>div{display:grid!important;grid-template-columns:minmax(0,1fr) 58px 12px!important;gap:5px!important;align-items:center!important;min-width:0!important;padding:7px 8px!important;border-radius:11px!important;background:#fffefa!important}
+      #coach-main .dcc-rest-global-top label{font-size:10px!important;line-height:1.15!important;font-weight:850!important;min-width:0!important}
+      #coach-main .dcc-rest-global-top input{box-sizing:border-box!important;width:58px!important;min-width:0!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 8px!important;border-radius:10px!important;font-size:12px!important}
+      #coach-main .dcc-rest-global-top .muted,#coach-main .dcc-rest-global-top .dcc-method-global-note{display:none!important}
+      #coach-main .dcc-superset-group{display:block!important;margin:7px 0!important;padding:10px!important;border:1px solid rgba(217,170,74,.72)!important;border-radius:14px!important;background:rgba(255,253,249,.96)!important}
+      #coach-main .dcc-superset-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin-bottom:7px!important}
+      #coach-main .dcc-superset-head b{font-size:16px!important;line-height:1.15!important}
+      #coach-main .dcc-superset-count{flex:0 0 auto;padding:4px 9px;border:1px solid rgba(217,170,74,.55);border-radius:999px;color:#b1770e;font-size:9px;font-weight:850}
+      #coach-main .dcc-superset-shared{display:grid!important;grid-template-columns:62px 92px 78px!important;gap:7px!important;align-items:end!important;margin-bottom:7px!important}
+      #coach-main .dcc-superset-shared label{font-size:9px!important;font-weight:800!important;color:#747b85!important}
+      #coach-main .dcc-superset-shared input{box-sizing:border-box!important;width:100%!important;height:34px!important;min-height:34px!important;margin-top:3px!important;padding:0 9px!important;border-radius:10px!important;font-size:12px!important}
+      #coach-main .dcc-superset-item{margin:0!important;padding:8px 2px!important;border:0!important;border-top:1px solid rgba(183,123,19,.16)!important;border-radius:0!important;background:transparent!important}
+      #coach-main .dcc-superset-item>div:first-child{margin-bottom:5px!important}
+      #coach-main .dcc-superset-item .dcc-native-main-fields{display:none!important}
+      #coach-main .dcc-superset-item .dcc-native-video-row{grid-template-columns:96px minmax(0,1fr)!important}
+      #coach-main .dcc-method-badge{display:none!important}
+      #coach-main .dcc-restpause-single{margin:7px 0!important;padding:10px 11px!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:13px!important;background:#fffefa!important}
+      #coach-main .dcc-restpause-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important;align-items:start!important;margin-bottom:7px!important}
+      #coach-main .dcc-restpause-title b{display:block;font-size:15px!important;line-height:1.18!important}
+      #coach-main .dcc-restpause-title span{display:block;margin-top:2px;color:#7b828c;font-size:10px}
+      #coach-main .dcc-restpause-badge{padding:4px 9px;border:1px solid rgba(217,170,74,.55);border-radius:999px;color:#b1770e;font-size:9px;font-weight:850}
+      #coach-main .dcc-restpause-fields{display:grid!important;grid-template-columns:58px minmax(86px,1fr) 74px 82px!important;gap:7px!important;align-items:end!important}
+      #coach-main .dcc-restpause-fields label{min-width:0;font-size:9px!important;font-weight:800!important;color:#747b85!important}
+      #coach-main .dcc-restpause-fields input{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin-top:3px!important;padding:0 8px!important;border-radius:10px!important;font-size:12px!important}
+      #coach-main .dcc-restpause-fields input[readonly]{background:#fffefa!important;color:#17191d!important;opacity:1!important}
+      #coach-main .dcc-method-video{display:grid!important;grid-template-columns:96px minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;margin-top:7px!important}
+      #coach-main .dcc-method-video:before{content:"Vídeo (opcional)";align-self:center;color:#747b85;font-size:9px;font-weight:800}
+      #coach-main .dcc-method-video input{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:34px!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:10px!important;background:#fffdf9!important;padding:0 10px!important;font-size:10px!important;color:#171717!important}
+      #coach-main .dcc-method-video [data-open-video]{display:none!important}
+      #coach-main .dcc-method-video [data-delete-rest]{width:34px!important;height:34px!important;padding:0!important;border:1px solid #a3151b!important;border-radius:9px!important;background:#fff!important;color:#d31f2a!important;display:grid!important;place-items:center!important}
+      #coach-main .dcc-method-note{display:none!important}
       #coach-main .dcc-config-save{position:static!important;width:100%!important;min-height:44px!important;margin-top:12px!important;border-radius:12px!important;font-size:13px!important;box-shadow:none!important}
-      #coach-main .dcc-method-badge{display:inline-flex;align-items:center;margin:0 0 6px;padding:3px 7px;border-radius:999px;background:rgba(217,170,74,.13);color:#9a650c;font-size:9px;font-weight:850}
-      #coach-main .dcc-method-config{margin:5px 0;padding:8px;border:1px solid rgba(217,170,74,.40);border-radius:12px;background:rgba(217,170,74,.055);color:#17191d}#coach-main .dcc-superset-group{display:grid!important;gap:5px!important;padding:8px!important}#coach-main .dcc-superset-group>.dcc-exercise-card{background:#fffdf9!important;border-color:rgba(217,170,74,.28)!important;box-shadow:none!important}
-      #coach-main .dcc-method-config-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-      #coach-main .dcc-method-config-head b{font-size:13px}.dcc-method-config-head span{font-size:9px;color:#9a650c;font-weight:850}
-      #coach-main .dcc-method-names{margin-top:5px;color:#6f747c;font-size:10px;line-height:1.35}
-      #coach-main .dcc-method-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px}
-      #coach-main .dcc-method-fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-      #coach-main .dcc-method-fields label{font-size:10px;font-weight:800;color:#4f5660}
-      #coach-main .dcc-method-fields input{width:100%;min-height:31px;margin-top:2px;box-sizing:border-box;font-size:12px}
-      #coach-main .dcc-method-note{margin-top:4px;color:#7a818a;font-size:9px;line-height:1.3}
-      #coach-main .dcc-method-video{display:grid;grid-template-columns:minmax(0,1fr) 78px 34px;gap:5px;margin-top:6px}
-      #coach-main .dcc-method-video input{min-width:0;height:34px;border:1px solid rgba(183,123,19,.24);border-radius:10px;background:#fffdf9;padding:0 10px;font:inherit;color:#171717}
-      #coach-main .dcc-method-video button{height:34px;align-self:center;border:1px solid #d9aa4a;border-radius:9px;background:transparent;color:#a06d12;font-size:10px;font-weight:850}#coach-main .dcc-method-video [data-delete-rest]{width:34px;padding:0;border-color:rgba(190,48,55,.34);background:rgba(190,48,55,.025);color:#b92f38;display:grid;place-items:center}#coach-main .dcc-method-video [data-delete-rest] svg{width:15px;height:15px}
-      #coach-main .dcc-rest-global-top{margin-top:0!important;margin-bottom:8px!important;padding:10px!important;border-radius:13px!important}
-      #coach-main .dcc-rest-global-top label{font-size:11px!important}
-      #coach-main .dcc-rest-global-top input{min-height:36px!important;margin-top:4px!important;font-size:12px!important}
-      #coach-main .dcc-rest-global-top .muted{font-size:10px!important}
-      #coach-main .dcc-rest-global-top .dcc-method-global-note{margin-top:7px;color:#8d6a26;font-size:9px;line-height:1.35}
+      @media(max-width:390px){
+        #coach-main.dcc-config-active .dcc-exercise-card{padding:9px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-main-fields{grid-template-columns:54px 82px minmax(0,1fr)!important;gap:5px!important}
+        #coach-main .dcc-superset-shared{grid-template-columns:54px 82px 70px!important;gap:5px!important}
+        #coach-main .dcc-restpause-fields{grid-template-columns:50px minmax(78px,1fr) 66px 72px!important;gap:5px!important}
+        #coach-main .dcc-rest-global-top{gap:6px!important;padding:7px!important}
+        #coach-main .dcc-rest-global-top>div{grid-template-columns:minmax(0,1fr) 50px 10px!important;padding:6px!important}
+        #coach-main .dcc-rest-global-top input{width:50px!important}
+        #coach-main.dcc-config-active .dcc-exercise-card .dcc-native-video-row,
+        #coach-main .dcc-superset-item .dcc-native-video-row,
+        #coach-main .dcc-method-video{grid-template-columns:84px minmax(0,1fr) 34px!important}
+      }
       #client-main .dcc-method-session{margin:0 0 10px;padding:10px 12px;border:1px solid rgba(217,170,74,.45);border-radius:14px;background:rgba(217,170,74,.08)}
       #client-main .dcc-method-session b{display:block;color:#d9aa4a;font-size:11px;letter-spacing:.04em}
       #client-main .dcc-method-session span{display:block;margin-top:4px;color:#9da5af;font-size:10px;line-height:1.35}
@@ -423,6 +454,13 @@
       if(videoBtn){videoBtn.textContent='Ver vídeo';videoBtn.dataset.dccVideo='1';}
       const urlInput=card.querySelector('input[type="url"]');
       if(urlInput)urlInput.placeholder='Enlace del vídeo (opcional)';
+      const labels=[...card.querySelectorAll('label')];
+      const mainLabels=labels.filter(label=>/^(Series|Repeticiones)$/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
+      const restLabels=labels.filter(label=>/Descanso entre series|Entre ejercicios/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
+      restLabels.forEach(label=>label.classList.add('dcc-native-hidden'));
+      const mainParent=mainLabels[0]?.parentElement;if(mainParent)mainParent.classList.add('dcc-native-main-fields');
+      const videoLabel=labels.find(label=>/Vídeo/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
+      const videoParent=videoLabel?.parentElement;if(videoParent)videoParent.classList.add('dcc-native-video-row');
     });
     const saveButton=[...root.querySelectorAll('button')].find(btn=>(btn.getAttribute('onclick')||'').includes('saveConfiguredTraining'));
     if(saveButton){saveButton.textContent='Guardar rutina';saveButton.classList.add('dcc-config-save');}
@@ -434,33 +472,31 @@
 
     groups.supersets.forEach(group=>{
       const groupCards=group.items.map(ex=>currentCards().find(card=>(card.textContent||'').includes(ex.name||'')&&card.querySelector('input'))).filter(Boolean);
-      groupCards.forEach((card,i)=>{const badge=document.createElement('div');badge.className='dcc-method-badge';badge.textContent='Superserie · '+(i+1)+'/'+group.items.length;card.insertBefore(badge,card.firstChild);});
-      groupCards.forEach(card=>{
-        const labels=[...card.querySelectorAll('label')];
-        const seriesLabel=labels.find(label=>/^Series$/i.test((label.childNodes[0]?.textContent||label.textContent||'').trim()));
-        if(seriesLabel){seriesLabel.style.display='none';const fields=seriesLabel.parentElement;if(fields)fields.style.gridTemplateColumns='1fr';}
-      });
       const first=groupCards[0];if(!first)return;
-      const box=document.createElement('div');box.className='dcc-method-config';box.innerHTML=`
-        <div class="dcc-method-config-head"><b>Superserie · ${group.items.length} ejercicios</b><span>sin descanso entre ellos</span></div>
-        <div class="dcc-method-names">${group.items.map(ex=>esc(ex.name||'Ejercicio')).join(' → ')}</div>
-        <div class="dcc-method-fields"><label>Series de superserie<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}" placeholder="Ej. 3"></label><label>Descanso tras cada serie<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}" placeholder="Ej. 90"></label></div>
-        <div class="dcc-method-note">Ejemplo: 3 series. En cada serie haces todos los ejercicios seguidos, sin descanso entre ellos; después descansas el tiempo indicado.</div>`;
+      const box=document.createElement('div');box.className='dcc-superset-group';
+      box.innerHTML=`
+        <div class="dcc-superset-head"><b>🔗 Superserie</b><span class="dcc-superset-count">${group.items.length} ejercicios</span></div>
+        <div class="dcc-superset-shared">
+          <label>Series<input data-rounds type="number" min="1" inputmode="numeric" value="${esc(group.rounds)}"></label>
+          <label>Reps<input data-shared-reps type="text" value="${esc(group.items[0]?.reps||'')}"></label>
+          <label>Descanso<input data-rest type="number" min="0" inputmode="numeric" value="${esc(group.rest)}"></label>
+        </div>`;
       first.parentNode.insertBefore(box,first);
-      box.classList.add('dcc-superset-group');
-      groupCards.forEach(card=>box.appendChild(card));
+      groupCards.forEach(card=>{card.classList.add('dcc-superset-item');box.appendChild(card);});
       box.querySelector('[data-rounds]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rounds',e.target.value));
       box.querySelector('[data-rest]')?.addEventListener('input',e=>updateSuperset(id,di,group.id,'rest',e.target.value));
+      box.querySelector('[data-shared-reps]')?.addEventListener('input',e=>{markRoutineDirty(id);group.items.forEach(ex=>ex.reps=e.target.value);save(id);});
     });
 
     groups.restPauses.forEach(group=>{
       const card=currentCards().find(c=>(c.textContent||'').includes(group.ex.name||'')&&c.querySelector('input'));if(!card)return;
       const box=document.createElement('div');box.className='dcc-method-config dcc-restpause-single';box.innerHTML=`
-        <div class="dcc-method-config-head"><b>REST-pause</b><span>${esc(group.ex.name||'Ejercicio')}</span></div>
-        <div class="dcc-method-fields three">
-          <label>Repeticiones<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="Ej. 12/10/8/6"></label>
-          <label>Pausa entre bloques<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="Ej. 7"></label>
-          <label>Descanso al terminar<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="Ej. 90"></label>
+        <div class="dcc-restpause-head"><div class="dcc-restpause-title"><b>${esc(group.ex.name||'Ejercicio')}</b><span>${esc(group.ex.muscle||'')}</span></div><span class="dcc-restpause-badge">REST-pause</span></div>
+        <div class="dcc-restpause-fields">
+          <label>Series<input type="text" value="${esc(group.blocks||'')}" readonly></label>
+          <label>Reps<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="12/10/8/6"></label>
+          <label>Mini-descanso<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="7"></label>
+          <label>Descanso final<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="90"></label>
         </div>
         <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
         <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
