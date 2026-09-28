@@ -416,6 +416,21 @@ function renderHome(){
     tasks.push({type:'check',title:'Nueva alimentación',text:'Tu entrenador ha actualizado tu alimentación',action:"showClient('food')"});
   }
 
+  const routineUpdated=d().routineUpdatedAt?.[id()]||null;
+  if(r.length&&routineUpdated&&(!ns.routineSeenAt||new Date(routineUpdated)>new Date(ns.routineSeenAt))){
+    tasks.push({type:'training',title:'Nuevo entrenamiento',text:'Tu entrenador ha actualizado tu entrenamiento',action:"showClient('training')"});
+  }
+
+  const messages=Array.isArray(d().messages?.[id()])?d().messages[id()]:[];
+  const lastMessage=messages.length?messages[messages.length-1]:null;
+  const lastMessageRole=String(lastMessage?.[3]||'').toLowerCase();
+  const lastMessageSender=String(lastMessage?.[0]||'').toLowerCase();
+  const fromCoach=lastMessageRole?lastMessageRole==='coach':/daniel|coach|trainer|entrenador|admin/.test(lastMessageSender);
+  const lastMessageAt=lastMessage?.[2]||null;
+  if(fromCoach&&lastMessageAt&&(!ns.messageSeenAt||new Date(lastMessageAt)>new Date(ns.messageSeenAt))){
+    tasks.push({type:'check',title:'Nuevo mensaje',text:'Tienes un mensaje nuevo de tu entrenador',action:"showClient('messages')"});
+  }
+
   const allDays=r.map((day,i)=>{
     const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
     const isNext=i===next.index;
