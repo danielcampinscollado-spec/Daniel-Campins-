@@ -128,6 +128,19 @@
     return `<div class="dwa3-today">${sets.map((set,i)=>`<span><b>S${i+1}</b> ${fmt(set.kg)} kg × ${fmt(set.reps)}</span>`).join('')}</div>`;
   }
 
+  function renderSupersetSaved(members,state){
+    if(!members?.length||!state?.entries)return '';
+    const rounds=Math.max(0,...members.map(m=>(state.entries[m.index]||[]).filter(Boolean).length));
+    if(!rounds)return '';
+    let html='<div class="dwa3-superset-saved">';
+    for(let r=0;r<rounds;r++){
+      html+='<div class="dwa3-superset-round"><b>Serie '+(r+1)+'</b>';
+      members.forEach((m,i)=>{const s=(state.entries[m.index]||[])[r];if(s)html+='<span>E'+(i+1)+' · '+fmt(s.kg)+' kg × '+fmt(s.reps)+'</span>';});
+      html+='</div>';
+    }
+    return html+'</div>';
+  }
+
   function renderRest(workout,exercise){
     const active=!!(workout.restUntil&&workout.restUntil>Date.now());
     if(!active)return '';
@@ -135,7 +148,7 @@
     return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>DESCANSO</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>Recupera antes de la siguiente serie.</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
   }
 
-  function renderCurrent(workout,exercise,stats,planned,completed,finished){
+  function renderCurrent(workout,exercise,stats,planned,completed,finished,supersetId,supersetMembers,supersetState){
     const currentIndex=Math.min(completed,Math.max(0,planned-1));
     const previousSet=stats.latest?.sets?.[currentIndex]||null;
     const restActive=!!(workout.restUntil&&workout.restUntil>Date.now());
@@ -145,9 +158,9 @@
     }
 
     return `<section class="dwa3-card dwa3-current">
-      <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>SERIE ACTUAL</span></div><small>Serie ${Math.min(completed+1,planned||1)} de ${planned||'—'}</small></div>
+      <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>${supersetId?'SUPERSERIE':'SERIE ACTUAL'}</span></div><small>Serie ${Math.min(completed+1,planned||1)} de ${planned||'—'}</small></div>
       <div class="dwa3-steps">${renderSeriesSteps(planned,completed)}</div>
-      ${restActive?`${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">Serie ${completed} guardada · descansa antes de continuar</div>`:`
+      ${restActive?`${supersetId?renderSupersetSaved(supersetMembers,supersetState):renderSavedToday(workout.sets)}<div class="dwa3-rest-note">Serie ${completed} guardada · descansa antes de continuar</div>`:`
         <div class="dwa3-fields">
           <label><b>Peso (kg)</b><div class="dwa3-input"><input id="workout-kg" type="number" inputmode="decimal" step="0.5" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>kg</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.kg)} kg`:'Sin registro anterior'}</small></label>
           <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
@@ -195,7 +208,8 @@
     const supersetPos=supersetId?Math.max(0,supersetMembers.findIndex(x=>x.index===workout.currentExercise)):0;
     const supersetState=supersetId?(workout.supersetState?.[supersetId]||{round:1,entries:{}}):null;
     const planned=Math.max(0,parseInt(supersetId?(exercise.supersetRounds||exercise.sets):exercise.sets)||0);
-    const completed=supersetId?Math.max(0,(Number(supersetState?.round)||1)-1):workout.sets.length;
+    const supersetSavedRounds=supersetId&&supersetMembers.length?Math.min(...supersetMembers.map(m=>(supersetState?.entries?.[m.index]||[]).filter(Boolean).length)):0;
+    const completed=supersetId?supersetSavedRounds:workout.sets.length;
     const finished=planned>0&&completed>=planned;
     const stats=historyStats(workout.clientId,exercise);
     const image=exerciseImage(exercise);
@@ -234,6 +248,12 @@
         #client-main .dwa3-elapsed-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:rgba(217,170,74,.07)}
         #client-main .dwa3-elapsed-icon svg{width:17px;height:17px}
         #client-main .dwa3-elapsed strong{color:#f6f4ef;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+        #client-main .dwa3-superset-status{padding:8px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+        #client-main .dwa3-superset-status b{color:#a56f12;font-size:9px;letter-spacing:1.2px}
+        #client-main .dwa3-superset-status span{color:#6f7279;font-size:9px;white-space:nowrap}
+        #client-main .dwa3-superset-saved{display:grid;gap:5px;margin-top:7px}
+        #client-main .dwa3-superset-round{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:6px 8px;border:1px solid rgba(217,170,74,.22);border-radius:9px;background:rgba(217,170,74,.035);font-size:8px;color:#777}
+        #client-main .dwa3-superset-round b{color:#a56f12}
         #client-main .dwa3-card{position:relative;margin:0 0 10px;border:1px solid rgba(217,170,74,.68);border-radius:19px;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.085),transparent 38%),linear-gradient(145deg,#171b21,#0d1116 65%,#090c10);box-shadow:0 12px 28px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.03)}
         #client-main .dwa3-history{min-height:82px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);gap:13px;align-items:center}
         #client-main .dwa3-history.first{grid-template-columns:42px minmax(0,1fr)}
@@ -353,7 +373,8 @@
 
         <section class="dwa3-card dwa3-tip ${window.__dccWorkoutTipOpen?'open':''}"><button type="button" class="dwa3-tip-toggle" aria-expanded="${window.__dccWorkoutTipOpen?'true':'false'}" onclick="dccToggleWorkoutTips()"><div class="dwa3-history-icon">${icon('bulb')}</div><div class="head">CONSEJOS DEL EJERCICIO</div><span class="dwa3-tip-chevron"></span></button><div class="dwa3-tip-body">${esc(tip)}</div></section>
 
-        ${renderCurrent(workout,exercise,stats,planned,completed,finished)}
+        ${supersetId?`<section class="dwa3-card dwa3-superset-status"><b>SUPERSERIE · ${supersetMembers.length} EJERCICIOS</b><span>Ejercicio ${supersetPos+1}/${supersetMembers.length} · Serie ${Math.min(completed+1,planned||1)} de ${planned||'—'}</span></section>`:''}
+        ${renderCurrent(workout,exercise,stats,planned,completed,finished,supersetId,supersetMembers,supersetState)}
         ${renderRest(workout,exercise)}
         <button type="button" class="dwa3-exit" onclick="cancelWorkout()">${icon('exit')} Salir del entrenamiento</button>
       </div>`;
