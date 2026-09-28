@@ -44,7 +44,8 @@
     return d&&Number.isFinite(d.getTime())?d:null;
   }
   function isCoach(m){
-    return /daniel|coach|trainer|entrenador|admin/i.test(messageSender(m));
+    const role=String(Array.isArray(m)?(m[3]||''):(m?.sender_role||m?.role||'')).toLowerCase();
+    return role?role==='coach':/daniel|coach|trainer|entrenador|admin/i.test(messageSender(m));
   }
   function thread(id){
     const a=appData().messages?.[id];
@@ -136,20 +137,20 @@
   async function syncMessages(id=null){
     const client=db();if(!client)return false;
     try{
-      let query=client.from('client_messages').select('client_id,sender,message,created_at');
+      let query=client.from('client_messages').select('client_id,sender,message,created_at,sender_role');
       if(id)query=query.eq('client_id',id);
       const {data:rows,error}=await query.order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData();
       d.messages=d.messages||{};
       if(id){
-        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null]);
+        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
       }else{
         const next={};
         (d.clients||[]).forEach(c=>next[c.id]=[]);
         (rows||[]).forEach(r=>{
           if(!next[r.client_id])next[r.client_id]=[];
-          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null]);
+          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
         });
         d.messages=next;
       }
@@ -179,8 +180,23 @@
     requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
   }
 
+  async function markCoachMessagesSeen(id){
+    const client=db();if(!client||!id)return;
+    const now=new Date().toISOString();
+    try{
+      const {error}=await client.from('client_notification_state').upsert(
+        {client_id:id,coach_message_seen_at:now,updated_at:now},
+        {onConflict:'client_id'}
+      );
+      if(error)throw error;
+      const d=appData();d.notificationState=d.notificationState||{};d.notificationState[id]=d.notificationState[id]||{};
+      d.notificationState[id].coachMessageSeenAt=now;saveLocal();
+    }catch(e){console.error('DCC estado mensajes entrenador:',e)}
+  }
+
   window.dccOpenCoachChatV2=async function(id){
     await syncMessages(id);
+    await markCoachMessagesSeen(id);
     renderCoachChat(id);
   };
   window.dccStopCoachMessagePolling=function(){
@@ -197,7 +213,7 @@
     const client=db();if(!client){toastSafe('No hay conexión con el servidor');return}
     const button=document.getElementById('dccCoachSendV2Button');if(button)button.disabled=true;if(input)input.disabled=true;
     try{
-      const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel',message:text});
+      const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel',sender_role:'coach',message:text});
       if(error)throw error;
       if(input)input.value='';
       await syncMessages(id);
