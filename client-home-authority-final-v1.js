@@ -144,9 +144,14 @@ function css(){
   }
 
   /* PROGRESS */
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress{display:block!important;min-height:0!important;padding:0!important;overflow:hidden!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-head{
+    min-height:43px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+    padding:0 13px!important;border-bottom:1px solid rgba(126,93,37,.08)!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress-body{
     display:grid!important;grid-template-columns:38px minmax(0,1fr) 12px!important;gap:10px!important;
-    align-items:center!important;min-height:80px!important;padding:10px 12px!important
+    align-items:center!important;min-height:69px!important;padding:10px 12px!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-progress h3{
     margin:5px 0 3px!important;color:#17191d!important;font-family:inherit!important;
@@ -481,7 +486,7 @@ function renderHome(){
       ${checkinSummary?`<section class="dcc-home2-checkin" onclick="showClient('progress')"><div class="dcc-home2-checkin-icon">${icon('chart')}</div><div class="dcc-home2-checkin-copy"><div class="dcc-home2-label">TU ÚLTIMO CHECK-IN</div><h3>${esc(checkinSummary.title)}</h3><p>${esc(checkinSummary.text)}</p><small>${esc(checkinSummary.foot)}</small></div><div class="dcc-home2-arrow">›</div></section>`:''}
     </div>
     <section class="dcc-home2-card ${tasks.length?'':'is-empty'}"><div class="dcc-home2-card-head"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div>${taskRows||'<div class="dcc-home2-empty"><div class="dcc-home2-empty-check">✓</div><div class="dcc-home2-empty-copy"><strong>Todo al día</strong><span>No tienes tareas pendientes.</span></div></div>'}</section>
-    <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div class="dcc-home2-progress-copy"><div class="dcc-home2-label">TU PROGRESO</div><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></section>
+    <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-head"><div class="dcc-home2-label">TU PROGRESO</div></div><div class="dcc-home2-progress-body"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div class="dcc-home2-progress-copy"><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></div></section>
     ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-week-carousel"><button type="button" class="dcc-week-arrow left" aria-label="Ver días anteriores" ${canGoLeft?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.max(0,${weekStart}-2);window.__dccWeekPlanAutoIndex=null;showClient('home')">‹</button><div class="dcc-home2-days">${visibleDays}</div><button type="button" class="dcc-week-arrow right" aria-label="Ver días siguientes" ${canGoRight?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.min(${maxStart},${weekStart}+2);window.__dccWeekPlanAutoIndex=null;showClient('home')">›</button></div></section>`:''}
     ${hero}
   </div>`;
