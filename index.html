@@ -5222,7 +5222,7 @@ async function loadMessagesFromSupabase(){
 
     const { data:messages,error } = await supabaseClient
       .from("client_messages")
-      .select("client_id,sender,message,created_at")
+      .select("client_id,sender,message,created_at,sender_role")
       .order("created_at",{ascending:true});
 
     if(error){
@@ -5245,7 +5245,8 @@ async function loadMessagesFromSupabase(){
       nextMessages[row.client_id].push([
         row.sender || "",
         row.message || "",
-        row.created_at || null
+        row.created_at || null,
+        row.sender_role || null
       ]);
 
     });
@@ -5315,7 +5316,7 @@ async function loadNotificationStateFromSupabase(){
       await supabaseClient
         .from("client_notification_state")
         .select(
-          "client_id,diet_seen_at,routine_seen_at,message_seen_at"
+          "client_id,diet_seen_at,routine_seen_at,message_seen_at,coach_message_seen_at"
         );
 
     if(error){
@@ -5338,7 +5339,8 @@ async function loadNotificationStateFromSupabase(){
       data.notificationState[row.client_id]={
         dietSeenAt:row.diet_seen_at,
         routineSeenAt:row.routine_seen_at,
-        messageSeenAt:row.message_seen_at
+        messageSeenAt:row.message_seen_at,
+        coachMessageSeenAt:row.coach_message_seen_at
       };
 
     });
@@ -5831,7 +5833,8 @@ function setupMessageRealtime(){
           data.messages[row.client_id].push([
             row.sender || "",
             row.message || "",
-            row.created_at || null
+            row.created_at || null,
+            row.sender_role || null
           ]);
 
           saveData();
@@ -6297,6 +6300,7 @@ async function openApp(app){
       loadWorkoutHistoryFromSupabase(),
       loadWeightsFromSupabase(),
       loadMessagesFromSupabase(),
+      loadNotificationStateFromSupabase(),
       loadCheckinsFromSupabase()
     ])).then(()=>{
       // Server data refreshes in place; navigation is not repainted asynchronously.
@@ -10155,6 +10159,7 @@ async function sendClientMessage(){
     .insert({
       client_id:currentClientId,
       sender:sender,
+      sender_role:"client",
       message:text
     });
 
@@ -10215,8 +10220,16 @@ if(screen==="dashboard"){
     if(!msgs.length) return false;
 
     const last = msgs[msgs.length - 1];
+    const role = String(last?.[3] || "").toLowerCase();
+    const fromClient = role ? role === "client" : last && last[0] !== "Daniel";
+    const messageDate = last?.[2] || null;
+    const seenAt = data.notificationState?.[c.id]?.coachMessageSeenAt || null;
 
-    return last && last[0] !== "Daniel";
+    return !!(
+      fromClient &&
+      messageDate &&
+      (!seenAt || new Date(messageDate) > new Date(seenAt))
+    );
 
   });
 
@@ -14365,6 +14378,7 @@ async function sendCoachMessage(id){
     .insert({
       client_id:id,
       sender:"Daniel",
+      sender_role:"coach",
       message:text
     });
 
