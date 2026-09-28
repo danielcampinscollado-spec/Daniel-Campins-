@@ -76,83 +76,17 @@ box-sizing:border-box!important;min-height:42px!important;height:42px!important;
 #coach-main .dcc-followup-overview .dcc-ca-edit-actions{margin-top:2px!important}
 #coach-main textarea{font-size:11px}
 
-/* DCC CLIENT ADMIN — single responsive authority */
+/* DCC CLIENT ADMIN — responsive authority */
 @media(max-width:520px){
 #coach-main.dcc-ca{padding-left:12px!important;padding-right:12px!important}
 .dcc-ca-head h1{font-size:31px}.dcc-ca-metric{padding:10px}.dcc-ca-metric b{font-size:14px}.dcc-ca-tab{font-size:9px}.dcc-ca-grid{grid-template-columns:1fr}
-
 #coach-main.dcc-ca .dcc-training-days{gap:8px!important}
 #coach-main.dcc-ca .dcc-training-days .dcc-tr-day{padding:8px!important;border-radius:14px!important;overflow:hidden!important}
 #coach-main.dcc-ca .dcc-training-days .dcc-tr-day-head{min-height:38px!important;height:auto!important;padding:6px 8px!important}
 #coach-main.dcc-ca .dcc-training-days .dcc-tr-day-head b{font-size:12px!important}
 #coach-main.dcc-ca .dcc-training-days .dcc-tr-day-head small{display:inline-block!important;margin-left:6px!important;font-size:9px!important}
-
-#coach-main.dcc-ca .dcc-tr-global-summary{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:4px 4px 10px!important;padding:0!important;border:0!important;background:transparent!important}
-#coach-main.dcc-ca .dcc-tr-global-summary>label{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:7px!important;min-height:58px!important;padding:9px 10px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fffdf9!important}
-#coach-main.dcc-ca .dcc-tr-global-summary>label>b{margin:0!important;color:#17191d!important;font-size:10px!important;line-height:1.12!important}
-#coach-main.dcc-ca .dcc-tr-global-summary>label>span{display:flex!important;align-items:center!important;gap:4px!important;padding:0!important;background:transparent!important;font-size:10px!important}
-#coach-main.dcc-ca .dcc-tr-global-summary input{width:58px!important;height:34px!important;min-height:34px!important;padding:0 8px!important;border:1px solid rgba(183,123,19,.28)!important;border-radius:9px!important;background:#fff!important;color:#17191d!important;font-size:12px!important}
-
-#coach-main.dcc-ca .dcc-tr-exercises{display:grid!important;gap:8px!important;padding:0 4px 4px!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%!important;min-width:0!important;min-height:0!important;margin:0!important;padding:10px 12px!important;border:1px solid rgba(183,123,19,.20)!important;border-radius:13px!important;background:#fff!important;color:#17191d!important;box-shadow:none!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;column-gap:8px!important;align-items:center!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name>b{grid-column:1!important;margin:0!important;color:#17191d!important;font-size:14px!important;line-height:1.12!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img .dcc-tr-ex-name>small{grid-column:1!important;margin:1px 0 0!important;color:#8b8277!important;font-size:10px!important;line-height:1.1!important}
-#coach-main.dcc-ca .dcc-tr-method-badge{grid-column:2!important;grid-row:1/3!important;align-self:center!important;margin:0!important;padding:4px 8px!important;border:1px solid rgba(217,170,74,.55)!important;border-radius:999px!important;background:#fff9e9!important;color:#ad7610!important;font-size:8px!important;font-weight:900!important}
-
-#coach-main.dcc-ca .dcc-tr-field{min-width:0!important}
-#coach-main.dcc-ca .dcc-tr-field label{display:block!important;min-height:0!important;margin:0 0 3px!important;color:#8a9098!important;font-size:8px!important;font-weight:800!important;line-height:1.05!important}
-#coach-main.dcc-ca .dcc-tr-field input{display:block!important;width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 8px!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:9px!important;background:#fff!important;color:#17191d!important;font-size:11px!important}
-#coach-main.dcc-ca .dcc-tr-remove{display:grid!important;place-items:center!important;width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;border:1px solid #8f151c!important;border-radius:9px!important;background:#fff!important;color:#d8232d!important;font-size:14px!important}
-
-#coach-main.dcc-ca .dcc-tr-normal-row{display:grid!important;grid-template-columns:48px 86px minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;margin-top:8px!important;grid-column:1/-1!important}
-#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-field-series{grid-column:1!important}
-#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-field-reps{grid-column:2!important}
-#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-video{grid-column:3!important;grid-row:1!important;margin:0!important}
-#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-remove{grid-column:4!important;grid-row:1!important}
-
-#coach-main.dcc-ca .dcc-tr-superset-group{display:block!important;padding:10px 12px!important;border:1.5px solid #d9aa4a!important;border-radius:14px!important;background:#fffdf8!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name{display:block!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>b{display:inline-block!important;font-size:16px!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-method-badge{float:right!important;display:inline-flex!important;margin:0!important}
-#coach-main.dcc-ca .dcc-tr-superset-shared{display:grid!important;grid-template-columns:48px 86px 70px!important;gap:8px!important;width:228px!important;max-width:100%!important;margin:9px 0 7px!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr) 34px!important;gap:2px 8px!important;width:100%!important;margin:0!important;padding:9px 4px!important;border:0!important;border-top:1px solid rgba(183,123,19,.14)!important;border-radius:0!important;background:transparent!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex>b{grid-column:1!important;margin:0!important;padding:0!important;color:#17191d!important;font-size:13px!important;line-height:1.15!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex>small{grid-column:1!important;color:#8b8277!important;font-size:9px!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex>.dcc-tr-remove{position:static!important;grid-column:2!important;grid-row:1/3!important;align-self:center!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex>.dcc-tr-video{display:grid!important;grid-column:1/-1!important;grid-row:3!important;grid-template-columns:96px minmax(0,1fr)!important;gap:7px!important;align-items:end!important;width:100%!important;margin-top:5px!important}
-#coach-main.dcc-ca .dcc-tr-superset-ex>.dcc-tr-video label{align-self:center!important;margin:0!important}
-
-#coach-main.dcc-ca .dcc-tr-restpause-row{display:block!important;grid-column:1/-1!important;width:100%!important;margin-top:8px!important}
-#coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-main{display:grid!important;grid-template-columns:48px 86px 76px 82px!important;gap:7px!important;align-items:end!important;width:100%!important}
-#coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-main>.dcc-tr-field{display:block!important;position:static!important;min-width:0!important;width:auto!important;margin:0!important}
-#coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-video{display:grid!important;grid-template-columns:minmax(0,1fr) 34px!important;gap:7px!important;align-items:end!important;width:100%!important;margin-top:7px!important}
-#coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-video{display:block!important;position:static!important;grid-column:1!important;grid-row:1!important;width:auto!important;min-width:0!important;margin:0!important}
-#coach-main.dcc-ca .dcc-tr-restpause-row>.dcc-rp-video>.dcc-tr-remove{position:static!important;grid-column:2!important;grid-row:1!important;align-self:end!important}
-
 #coach-main.dcc-ca .dcc-tr-add{width:100%!important;min-height:42px!important;margin:6px 0 0!important;padding:9px!important;border:1px dashed #c99532!important;border-radius:11px!important;background:#fffdf8!important;color:#956711!important;font-size:11px!important;font-weight:850!important}
 }
-
-/* geometry guard: normal + superserie; rest-pause remains isolated */
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group){grid-template-columns:minmax(0,1fr)!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group)>.dcc-tr-ex-name{grid-column:1/-1!important;width:100%!important}
-#coach-main.dcc-ca .dcc-tr-ex.dcc-no-img:not(.dcc-tr-superset-group)>.dcc-tr-normal-row{grid-column:1/-1!important;width:100%!important}
-#coach-main.dcc-ca .dcc-tr-superset-group{grid-template-columns:1fr!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name,
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared,
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-ex{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-superset-shared{width:228px!important}
-/* final mobile composition — superserie DOM is nested inside .dcc-tr-ex-name */
-#coach-main.dcc-ca .dcc-tr-superset-group{display:block!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name{display:block!important;width:100%!important;max-width:none!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-shared{display:grid!important;grid-template-columns:74px 104px 86px!important;gap:10px!important;width:100%!important;max-width:none!important;margin:9px 0 7px!important;justify-content:start!important;align-items:end!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-ex{display:grid!important;grid-template-columns:minmax(0,1fr) 38px!important;grid-template-rows:auto auto auto!important;gap:2px 10px!important;width:100%!important;max-width:none!important;margin:0!important;padding:10px 8px!important;box-sizing:border-box!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-ex>b{grid-column:1!important;grid-row:1!important;width:auto!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-ex>small{grid-column:1!important;grid-row:2!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-ex>.dcc-tr-remove{position:static!important;grid-column:2!important;grid-row:1/3!important;align-self:center!important}
-#coach-main.dcc-ca .dcc-tr-superset-group>.dcc-tr-ex-name>.dcc-tr-superset-ex>.dcc-tr-video{display:grid!important;grid-column:1/-1!important;grid-row:3!important;grid-template-columns:96px minmax(0,1fr)!important;gap:8px!important;align-items:end!important;width:100%!important;margin-top:5px!important}
-#coach-main.dcc-ca .dcc-tr-normal-row{grid-template-columns:74px 104px minmax(0,1fr) 38px!important;gap:10px!important}
-#coach-main.dcc-ca .dcc-tr-normal-row>.dcc-tr-video{min-width:0!important;width:100%!important}
 
 `;document.head.appendChild(s)}
 function c(id){return(data?.clients||[]).find(x=>String(x.id)===String(id))}function weights(id,cl){const a=data?.weights?.[id]||[],v=a.map(x=>num(typeof x==='object'?(x.weight??x.value):x)).filter(x=>x!==null);return v.length?v:(num(cl?.initial??cl?.initial_weight??cl?.weight)!=null?[num(cl?.initial??cl?.initial_weight??cl?.weight)]:[])}function trend(a,b,u){if(a==null||b==null)return'Sin histórico todavía';const d=a-b;if(Math.abs(d)<.05)return'Sin cambios desde el inicio';return`${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1).replace('.',',')} ${u} desde el inicio`}function metric(l,v,s,g=false){return`<div class="dcc-ca-metric"><small>${l}</small><b>${v}</b>${s?`<span class="dcc-ca-trend ${g?'good':''}">${s}</span>`:''}</div>`}function info(a,b){return`<div class="dcc-ca-info"><span>${a}</span><b>${b}</b></div>`}
