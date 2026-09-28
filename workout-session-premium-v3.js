@@ -190,7 +190,12 @@
 
     document.body.classList.add('dcc-workout-mode');
     const total=workout.exercises.length,current=workout.currentExercise+1;
-    const planned=Math.max(0,parseInt(exercise.sets)||0),completed=workout.sets.length;
+    const supersetId=exercise.supersetId||null;
+    const supersetMembers=supersetId?workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===supersetId).sort((a,b)=>(Number(a.ex.supersetOrder)||0)-(Number(b.ex.supersetOrder)||0)):[];
+    const supersetPos=supersetId?Math.max(0,supersetMembers.findIndex(x=>x.index===workout.currentExercise)):0;
+    const supersetState=supersetId?(workout.supersetState?.[supersetId]||{round:1,entries:{}}):null;
+    const planned=Math.max(0,parseInt(supersetId?(exercise.supersetRounds||exercise.sets):exercise.sets)||0);
+    const completed=supersetId?Math.max(0,(Number(supersetState?.round)||1)-1):workout.sets.length;
     const finished=planned>0&&completed>=planned;
     const stats=historyStats(workout.clientId,exercise);
     const image=exerciseImage(exercise);
@@ -220,6 +225,7 @@
         #client-main .dwa3-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
         #client-main .dwa3-badge{min-height:27px;display:inline-flex;align-items:center;padding:0 9px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:linear-gradient(145deg,#131820,#0b0f14);color:#aab1bc;font-size:9px;font-weight:720}
         #client-main .dwa3-badge.gold{border-color:rgba(224,173,76,.72);background:rgba(217,170,74,.055);color:#f0c96b;font-size:8px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase}
+        #client-main .dwa3-badge.superset{border-color:rgba(224,173,76,.72);color:#b17b18;background:#fff8e8;font-size:8px;font-weight:850;letter-spacing:.7px}
         #client-main .dwa3-actions{grid-area:actions;display:grid;grid-template-columns:minmax(0,1fr) 128px;gap:9px}
         #client-main .dwa3-tech,#client-main .dwa3-elapsed{min-height:45px;border:1px solid rgba(224,173,76,.70);border-radius:14px;background:linear-gradient(145deg,#11161c,#0a0e13)}
         #client-main .dwa3-tech{display:flex;align-items:center;justify-content:center;gap:9px;color:#f4f3ef;font-size:11px;font-weight:760}
@@ -278,6 +284,37 @@
         #client-main .dwa3-rest button{min-height:38px;padding:0 12px;border:1px solid rgba(255,255,255,.13);border-radius:11px;background:rgba(255,255,255,.025);color:#c2c7ce;font-size:9px}
         #client-main .dwa3-exit{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;padding:0 15px;border:1px solid rgba(255,255,255,.14);border-radius:15px;background:linear-gradient(145deg,#12171d,#0a0e13);color:#dfe2e5;font-size:11px;font-weight:680}
         #client-main .dwa3-exit svg{width:18px;height:18px;color:#aeb6bf}
+        @media(max-width:520px){
+          #client-main .dwa3{padding-bottom:18px}
+          #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 92px;gap:7px 9px;margin-bottom:7px}
+          #client-main .dwa3-media{width:92px;height:84px;border-radius:13px}
+          #client-main .dwa3-title{font-size:18px!important}
+          #client-main .dwa3-back{width:34px;height:34px;border-radius:10px}
+          #client-main .dwa3-kicker{margin-bottom:6px}
+          #client-main .dwa3-badges{gap:4px;margin-top:6px}
+          #client-main .dwa3-badge{min-height:23px;padding:0 7px;font-size:8px}
+          #client-main .dwa3-actions{grid-template-columns:minmax(0,1fr) 105px;gap:6px}
+          #client-main .dwa3-tech,#client-main .dwa3-elapsed{min-height:36px;border-radius:11px}
+          #client-main .dwa3-card{margin-bottom:7px;border-radius:15px}
+          #client-main .dwa3-history{min-height:58px;padding:8px 10px}
+          #client-main .dwa3-history.first{grid-template-columns:32px minmax(0,1fr)}
+          #client-main .dwa3-history-icon{width:32px;height:32px;border-radius:9px}
+          #client-main .dwa3-tip-toggle{min-height:48px;padding:7px 10px;grid-template-columns:32px minmax(0,1fr) 12px}
+          #client-main .dwa3-current{padding:10px}
+          #client-main .dwa3-current-head{margin-bottom:8px}
+          #client-main .dwa3-steps{gap:5px;margin-bottom:9px}
+          #client-main .dwa3-step{height:34px;border-radius:10px;font-size:13px}
+          #client-main .dwa3-fields{gap:7px}
+          #client-main .dwa3-fields label>b{margin-bottom:4px;font-size:10px}
+          #client-main .dwa3-input{height:42px;border-radius:10px}
+          #client-main .dwa3-input input{font-size:16px!important;padding:0 9px!important}
+          #client-main .dwa3-fields label>small{margin-top:4px;font-size:7.5px}
+          #client-main .dwa3-today{margin-top:7px}
+          #client-main .dwa3-primary{min-height:42px;margin-top:9px;border-radius:12px;font-size:12px}
+          #client-main .dwa3-rest{min-height:56px;padding:8px 10px;grid-template-columns:34px minmax(0,1fr) auto}
+          #client-main .dwa3-rest-icon{width:34px;height:34px}
+          #client-main .dwa3-exit{min-height:40px;border-radius:12px}
+        }
         @media(max-width:390px){
           #client-main .dwa3-top{grid-template-columns:minmax(0,1fr) 108px;gap:9px 10px}
           #client-main .dwa3-media{width:108px;height:100px;border-radius:15px}
@@ -306,7 +343,7 @@
           <div class="dwa3-copy">
             <div class="dwa3-kicker"><button type="button" class="dwa3-back" onclick="cancelWorkout()" aria-label="Volver">${icon('back')}</button><div><span>ENTRENAMIENTO</span><small>Ejercicio ${current} de ${total}</small></div></div>
             <h1 class="dwa3-title">${esc(exercise.name||'Ejercicio')}</h1>
-            <div class="dwa3-badges">${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
+            <div class="dwa3-badges">${supersetId?`<span class="dwa3-badge superset">🔗 SUPERSERIE · ${supersetMembers.length} EJERCICIOS · ${supersetPos+1}/${supersetMembers.length}</span>`:''}${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
           </div>
           <div class="dwa3-media">${image?`<img src="./${esc(image)}" alt="${esc(exercise.name||'')}">`:'<div class="dwa3-media-placeholder">◇</div>'}</div>
           <div class="dwa3-actions"><button type="button" class="dwa3-tech" onclick="${techniqueAction}">${icon('play')} Ver técnica</button><div class="dwa3-elapsed"><div class="dwa3-elapsed-icon">${icon('clock')}</div><strong id="workout-elapsed">00:00</strong></div></div>
