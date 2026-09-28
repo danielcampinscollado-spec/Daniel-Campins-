@@ -82,7 +82,7 @@
   function msgText(m){return String(Array.isArray(m)?(m[1]??''):(m?.text??m?.message??m?.body??m?.content??'')).trim()}
   function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
   function msgDate(m){const v=Array.isArray(m)?m[2]:(m?.created_at??m?.createdAt??m?.date??m?.time??m?.timestamp);const d=v?new Date(v):null;return d&&Number.isFinite(d.getTime())?d:null}
-  function msgIsCoach(m){return /daniel|coach|trainer|entrenador|admin/i.test(msgSender(m))||(m&&!Array.isArray(m)&&(m.isCoach===true||m.mine===false&&/coach/i.test(String(m.role||''))))}
+  function msgIsCoach(m){const role=String(Array.isArray(m)?(m[3]||''):(m?.sender_role||m?.role||'')).toLowerCase();return role?role==='coach':(/daniel|coach|trainer|entrenador|admin/i.test(msgSender(m))||(m&&!Array.isArray(m)&&(m.isCoach===true||m.mine===false&&/coach/i.test(String(m.role||'')))))}
   function thread(id){const a=appData().messages?.[id];return Array.isArray(a)?a.filter(m=>msgText(m)).slice().sort((x,y)=>(msgDate(x)?.getTime()||0)-(msgDate(y)?.getTime()||0)):[]}
   function timeFmt(d){return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):''}
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
@@ -110,10 +110,10 @@
   async function syncMessages(){
     const db=database();if(!db)return false;
     try{
-      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at').order('created_at',{ascending:true});
+      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role').order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData(),next={};(d.clients||[]).forEach(c=>next[c.id]=[]);
-      (rows||[]).forEach(r=>{if(!next[r.client_id])next[r.client_id]=[];next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null])});
+      (rows||[]).forEach(r=>{if(!next[r.client_id])next[r.client_id]=[];next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null])});
       d.messages=next;persistLocal();return true;
     }catch(e){console.error('DCC sync mensajes:',e);return false}
   }
@@ -141,7 +141,7 @@
     const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
     const send=document.getElementById('dccClientMessageSend');if(send)send.disabled=true;
     try{
-      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',message:text});
+      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',message:text});
       if(error)throw error;
       if(input)input.value='';await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);toastSafe('Mensaje enviado');
     }catch(e){console.error('DCC mensaje cliente:',e);toastSafe('No se pudo enviar el mensaje')}
