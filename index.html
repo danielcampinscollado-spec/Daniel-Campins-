@@ -6096,28 +6096,9 @@ async function openApp(app){
   }
 
   if(window.__dccOpenAppPromise){
-    const pendingMain=app==="client"
-      ? document.getElementById("client-main")
-      : document.getElementById("coach-main");
-    const clientReady=
-      app==="client" &&
-      currentApp==="client" &&
-      currentClientId &&
-      typeof client==="function" &&
-      !!client(currentClientId);
-
-    if(clientReady && pendingMain && !pendingMain.querySelector(".dcc-home2")){
-      try{
-        if(typeof window.dccClientGoHome==="function"){
-          window.dccClientGoHome();
-        }else{
-          showClient("home");
-        }
-      }catch(error){
-        console.warn("DCC openApp pending repaint",error);
-      }
-    }
-
+    // A concurrent auth/session event must never repaint Client Home while
+    // first-access gates are still being resolved. The active openApp call
+    // owns password setup + questionnaire routing.
     return window.__dccOpenAppPromise;
   }
 
