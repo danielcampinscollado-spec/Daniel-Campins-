@@ -10228,6 +10228,14 @@ if(screen==="dashboard"){
 
   const clients = data.clients || [];
 
+  if(!window.__dccCoachDashboardSync){
+    window.__dccCoachDashboardSync=true;
+    Promise.allSettled([loadMessagesFromSupabase(),loadNotificationStateFromSupabase(),loadCheckinsFromSupabase()]).finally(()=>{
+      window.__dccCoachDashboardSync=false;
+      if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
+    });
+  }
+
   const pendingCheckins = clients.filter(c => {
     const checkin=data.checkins?.[c.id];
     return !!(checkin?.sentAt && !checkin?.reviewed);
