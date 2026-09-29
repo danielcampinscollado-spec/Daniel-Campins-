@@ -176,8 +176,16 @@
     if(String(window.__dccCoachChatV2??'')!==String(id))return;
     const c=clientById(id),stream=document.getElementById('dccCoachChatStreamV2');
     if(!c||!stream)return;
+    const root=document.documentElement;
+    const distanceToBottom=root.scrollHeight-(window.scrollY+window.innerHeight);
+    const followNewest=distanceToBottom<140;
+    const previousHeight=root.scrollHeight;
+    const previousY=window.scrollY;
     stream.innerHTML=messagesHtml(id,c);
-    requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+    requestAnimationFrame(()=>{
+      if(followNewest)window.scrollTo(0,document.documentElement.scrollHeight);
+      else window.scrollTo(0,previousY+(document.documentElement.scrollHeight-previousHeight));
+    });
   }
 
   async function markCoachMessagesSeen(id){
