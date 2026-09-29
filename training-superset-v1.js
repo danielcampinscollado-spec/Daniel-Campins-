@@ -657,10 +657,10 @@
   function restPauseWorkoutContext(){
     const workout=window.activeWorkout;if(!workout)return null;
     const ex=workout.exercises?.[Number(workout.currentExercise)||0];if(!ex?.restPause)return null;
-    const reps=String(ex.restPauseReps||ex.reps||'12/10/8/6');
+    const reps=String(ex.restPauseReps||ex.reps||'').trim();
     const targets=reps.split(/[\/\-–,\s]+/).filter(Boolean);
-    const blocks=Math.max(2,targets.length||parseInt(ex.restPauseBlocks)||4);
-    const seconds=Math.max(1,parseInt(ex.restPauseSeconds)||7);
+    const blocks=targets.length||Math.max(0,parseInt(ex.restPauseBlocks)||0);
+    const seconds=Math.max(0,parseInt(ex.restPauseSeconds)||0);
     const finalRest=Math.max(0,parseInt(ex.restPauseFinalRest)||parseInt(ex.restBetweenExercises)||0);
     const state=workout.restPauseState?.[String(workout.currentExercise)]||{seriesCompleted:workout.sets?.length||0,block:0,entries:[]};
     const series=Math.max(1,parseInt(ex.sets)||1);
