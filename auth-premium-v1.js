@@ -195,8 +195,28 @@
       const {data,error}=await db.auth.getSession();
       if(error)throw error;
       if(data?.session){
-        const routed=await routeSession(data.session);
-        if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
+        // Supabase password-recovery links can restore the session before the
+        // PASSWORD_RECOVERY listener is attached. Detect the recovery callback
+        // on cold load and open password setup before normal client routing.
+        const hashParams=new URLSearchParams(String(location.hash||'').replace(/^#/,''));
+        const searchParams=new URLSearchParams(location.search);
+        const recoveryCallback=
+          hashParams.get('type')==='recovery' ||
+          searchParams.get('type')==='recovery' ||
+          String(location.hash||'').includes('type=recovery');
+        if(recoveryCallback){
+          const {data:row,error:rowError}=await db.from('clients').select('id,name,status,password_setup_completed').eq('auth_user_id',data.session.user.id).maybeSingle();
+          if(rowError)throw rowError;
+          if(!row)throw new Error('No linked client for password recovery');
+          setCurrentClient(row.id);window.__dccSecureRole='client';sessionBadge('client');
+          document.getElementById('client')?.style.setProperty('display','block');
+          document.getElementById('coach')?.style.setProperty('display','none');
+          if(typeof window.dccOpenFirstPasswordSetup!=='function')throw new Error('Password setup unavailable');
+          window.dccOpenFirstPasswordSetup(row);
+        }else{
+          const routed=await routeSession(data.session);
+          if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
+        }
       }else{
         renderLogin();showLogin();
       }
