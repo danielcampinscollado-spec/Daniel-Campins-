@@ -6256,7 +6256,9 @@ async function openApp(app){
       currentClientId=null;
       window.currentClientId=null;
       if(clientMain){
-        clientMain.innerHTML='<div style="margin:24px;padding:20px;border:1px solid rgba(183,123,19,.25);border-radius:18px;background:#fffdf9;color:#17191d"><h2 style="margin:0 0 8px">No se pudo abrir el perfil de cliente</h2><p style="margin:0 0 14px;color:#6f747c;line-height:1.45">Entra con la cuenta de Google cuyo correo está asignado al cliente en el panel del entrenador.</p><button type="button" onclick="logout()" style="width:100%;min-height:46px;border:1px solid #d9aa4a;border-radius:12px;background:#f4d16f;font-weight:850">Cambiar cuenta</button></div>';
+        // Never expose the obsolete Google-account fallback. A valid client
+        // session that cannot hydrate must return to secure access instead.
+        clientMain.innerHTML='<div style="margin:24px;padding:20px;border:1px solid rgba(183,123,19,.25);border-radius:18px;background:#fffdf9;color:#17191d"><h2 style="margin:0 0 8px">No se pudo cargar tu acceso</h2><p style="margin:0 0 14px;color:#6f747c;line-height:1.45">Vuelve al acceso seguro e inténtalo de nuevo.</p><button type="button" onclick="logout()" style="width:100%;min-height:46px;border:1px solid #d9aa4a;border-radius:12px;background:#f4d16f;font-weight:850">Volver al acceso</button></div>';
       }
     }
 
