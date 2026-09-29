@@ -693,7 +693,6 @@
         let result;try{result=nativeRenderWorkoutSession.apply(this,arguments);}finally{ex.sets=originalSets;ex.restBetweenSets=originalRestSets;ex.restBetweenExercises=originalRestExercises;}
         requestAnimationFrame(decorateWorkoutSession);return result;
       }
-      if(restPause){restPause.ex.reps=restPause.reps;restPause.ex.restBetweenSets=0;restPause.ex.restBetweenExercises=restPause.finalRest;}
       const result=nativeRenderWorkoutSession.apply(this,arguments);requestAnimationFrame(decorateWorkoutSession);return result;
     };
   }
