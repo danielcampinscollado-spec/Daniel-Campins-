@@ -4967,6 +4967,15 @@ if(parsed.routineUpdatedAt){
 if(parsed.completedTrainingDays){
   result.completedTrainingDays=parsed.completedTrainingDays;
 }
+if(parsed.trainingNextDayIndex){
+  result.trainingNextDayIndex=parsed.trainingNextDayIndex;
+}
+if(parsed.trainingProgressWeekStart){
+  result.trainingProgressWeekStart=parsed.trainingProgressWeekStart;
+}
+if(parsed.trainingLastCompletedAt){
+  result.trainingLastCompletedAt=parsed.trainingLastCompletedAt;
+}
 
       if(parsed.diets){
         result.diets=parsed.diets;
@@ -5548,6 +5557,8 @@ async function markTrainingDayCompleted(clientId,dayIndex,totalDays){
 
   const next=(index+1)%total;
   data.trainingNextDayIndex[clientId]=next;
+  if(!data.trainingLastCompletedAt)data.trainingLastCompletedAt={};
+  data.trainingLastCompletedAt[clientId]=new Date().toISOString();
   window.trainingDayTab=next;
 
   saveData();
@@ -5560,10 +5571,9 @@ async function markTrainingDayCompleted(clientId,dayIndex,totalDays){
   return {completedAll:completed.length>=total,synced};
 }
 
-/* Acceso semanal: cada día de la rutina puede completarse una sola vez por semana.
-   Los días no realizados caducan al cambiar de semana y el lunes se genera
-   un ciclo nuevo completo. Si todos los días ya están hechos, no se reinicia
-   el ciclo antes del lunes. */
+/* Acceso secuencial continuo: la rutina nunca reinicia su posición el lunes.
+   Solo el next_day_index puede entrenarse. Tras completar un día, el siguiente
+   queda bloqueado hasta el siguiente día natural local. */
 function getTrainingAccessState(clientId,dayIndex){
   const routine=Array.isArray(data.routines?.[clientId])?data.routines[clientId]:[];
   const total=routine.length;
@@ -5573,28 +5583,25 @@ function getTrainingAccessState(clientId,dayIndex){
     return {allowed:false,code:"no-routine",reason:"Entrenamiento no disponible"};
   }
 
-  ensureTrainingProgressWeek(clientId);
-  const completed=getCompletedTrainingDays(clientId);
-
-  if(completed.includes(index)){
-    return {
-      allowed:false,
-      code:completed.length>=total ? "week-complete" : "already-completed",
-      reason:"Este entrenamiento ya está completado esta semana"
-    };
+  const next=getTrainingNextDayIndex(clientId,total);
+  if(index!==next){
+    return {allowed:false,code:"sequence-locked",reason:"Completa los entrenamientos en orden para desbloquear este día"};
   }
 
-  if(completed.length>=total){
-    return {
-      allowed:false,
-      code:"week-complete",
-      reason:"Semana completada. Disponible de nuevo el próximo lunes"
-    };
+  const lastRaw=data.trainingLastCompletedAt?.[clientId];
+  if(lastRaw){
+    const last=new Date(lastRaw);
+    if(Number.isFinite(last.getTime())){
+      const now=new Date();
+      const sameLocalDay=last.getFullYear()===now.getFullYear()&&last.getMonth()===now.getMonth()&&last.getDate()===now.getDate();
+      if(sameLocalDay){
+        return {allowed:false,code:"next-day",reason:"El siguiente entrenamiento estará disponible mañana a las 00:00"};
+      }
+    }
   }
 
   return {allowed:true,code:"ready",reason:""};
 }
-
 window.dccGetTrainingAccessState=getTrainingAccessState;
 async function saveRoutineToSupabase(id){
   try{
@@ -6031,6 +6038,7 @@ function ensureTrainingProgressWeek(clientId){
   if(!data.completedTrainingDays)data.completedTrainingDays={};
   if(!data.trainingNextDayIndex)data.trainingNextDayIndex={};
   if(!data.trainingProgressWeekStart)data.trainingProgressWeekStart={};
+  if(!data.trainingLastCompletedAt)data.trainingLastCompletedAt={};
 
   const weekKey=getCurrentWeekKey();
 
