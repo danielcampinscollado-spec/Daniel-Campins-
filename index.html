@@ -6040,7 +6040,7 @@ async function loadCheckinHistoryFromSupabase(){
   try{
     const {data:rows,error}=await supabaseClient
       .from("client_checkin_history")
-      .select("client_id,weight,body_fat,sent_at")
+      .select("client_id,weight,body_fat,sent_at,checkin_type,photos")
       .order("sent_at",{ascending:true});
 
     if(error){
@@ -6057,7 +6057,9 @@ async function loadCheckinHistoryFromSupabase(){
       data.checkinHistory[row.client_id].push({
         weight:weightMatch?Number(weightMatch[0]):null,
         bodyFat:row.body_fat!=null?Number(row.body_fat):null,
-        sentAt:row.sent_at||null
+        sentAt:row.sent_at||null,
+        checkinType:row.checkin_type||"normal",
+        photos:row.photos&&typeof row.photos==="object"?row.photos:{}
       });
     });
 
