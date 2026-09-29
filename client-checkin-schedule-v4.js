@@ -301,7 +301,8 @@
       const ad=appData();ad.checkins=ad.checkins||{};ad.checkins[id]={...(ad.checkins[id]||{}),weight:fmt(weight)+' kg',bodyFat:fat??ad.checkins[id]?.bodyFat,diet:d.diet,training:d.training,energy:d.energy,comment:d.comment.trim(),sentAt:now,reviewed:false,checkinType:complete?'complete':'normal',photos:paths};
       saveLocal();clearDraft(id);success[id]=true;
       await fetchState(id);
-      toastSafe('Check-in enviado correctamente');render(false);
+      toastSafe('Check-in enviado correctamente');
+      if(activeId()===id&&String(window.currentScreen||'')==='checkin')render(false);
       if(typeof window.loadWeightsFromSupabase==='function')Promise.resolve(window.loadWeightsFromSupabase()).catch(()=>{});
       if(typeof window.loadCheckinsFromSupabase==='function')Promise.resolve(window.loadCheckinsFromSupabase()).catch(()=>{});
       setTimeout(()=>{if(success[id]){delete success[id];if(activeId()===id&&document.querySelector('#client-main.dcc-checkin-v4'))render(true)}},4500);
@@ -312,7 +313,7 @@
       if(/not available|bloqueado|available yet/i.test(msg))toastSafe('La fecha de este check-in todavía no está disponible');
       else toastSafe('No se pudo enviar el check-in');
       try{await fetchState(id)}catch(_){}
-      render(true);
+      if(activeId()===id&&String(window.currentScreen||'')==='checkin')render(true);
     }
   };
 
