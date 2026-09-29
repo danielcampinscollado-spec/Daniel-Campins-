@@ -6530,6 +6530,11 @@ function showClient(screen){
     return;
   }
 
+  if(screen==="messages" && typeof window.dccOpenClientMessagesPremium==="function"){
+    window.dccOpenClientMessagesPremium();
+    return;
+  }
+
   let html="";
   // Recuperar entrenamiento que estaba en curso
   if(screen==="training" && window.activeWorkout){
