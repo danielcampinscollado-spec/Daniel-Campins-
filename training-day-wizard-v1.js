@@ -10,6 +10,8 @@
   function days(){const r=window.data?.routines?.[id()];return Array.isArray(r)?r:Array.isArray(r?.routine)?r.routine:[]}
   function setDays(next){const cid=id();if(!cid||!window.data)return;window.data.routines=window.data.routines||{};const r=window.data.routines[cid];if(Array.isArray(r))window.data.routines[cid]=next;else if(r&&typeof r==='object'&&Array.isArray(r.routine))r.routine=next;else window.data.routines[cid]=next}
   function blankDay(i){return{day:i+1,muscle:'Sin grupos musculares',muscles:[],exercises:[],restBetweenSetsGlobal:0,restBetweenExercisesGlobal:0}}
+  function requestedDays(){const cid=id(),cl=(window.data?.clients||[]).find(x=>String(x?.id)===cid)||{};return Math.max(1,Math.min(7,parseInt(cl?.preferred_training_days,10)||1))}
+  function ensureRequestedDays(){const n=requestedDays(),cur=days();if(cur.length>=n)return cur;const next=cur.slice();while(next.length<n)next.push(blankDay(next.length));setDays(next);save();return next}
   function save(){window.dccMarkTrainingDraftDirty?.(id())}
 
   function css(){if(document.getElementById('dcc-training-day-wizard-css'))return;const s=document.createElement('style');s.id='dcc-training-day-wizard-css';s.textContent=`
@@ -38,6 +40,7 @@
   function apply(){
     css();if(!window.__dccTrainingEdit){document.querySelector('[data-dcc-tdw="1"]')?.remove();state.lastSig='';return}
     let ds=days(),wrap=document.querySelector('#coach-main .dcc-tr-days');if(!wrap)return;
+    const wanted=requestedDays();if(ds.length<wanted){ds=ensureRequestedDays();window.__dccTrainingOpen=Math.min(state.active,ds.length-1);try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}return}
     if(!ds.length){setDays([blankDay(0)]);ds=days();window.__dccTrainingOpen=0;save();try{window.dccClientAdmin(id(),'training')}catch(_){schedule()}return}
     state.active=Math.max(0,Math.min(state.active,ds.length-1));
     const sig=signature(ds);let top=document.querySelector('[data-dcc-tdw="1"]');
