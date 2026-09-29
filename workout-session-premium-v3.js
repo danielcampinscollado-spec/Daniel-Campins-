@@ -78,11 +78,15 @@
       const sets=Array.isArray(found.sets)?found.sets:[];
       latest={workout,exercise:found,sets};
       sets.forEach(set=>{
-        const kg=Number(set?.kg)||0,reps=Number(set?.reps)||0;
-        if(!best||kg>best.kg||(kg===best.kg&&reps>best.reps))best={kg,reps};
+        const entries=set?.restPause&&Array.isArray(set.blocks)&&set.blocks.length?set.blocks:[set];
+        entries.forEach(entry=>{
+          const kg=Number(entry?.kg)||0,reps=Number(entry?.reps)||0;
+          if(!best||kg>best.kg||(kg===best.kg&&reps>best.reps))best={kg,reps};
+        });
       });
     }
-    const latestBest=latest?.sets?.reduce((bestSet,set)=>{
+    const latestEntries=(latest?.sets||[]).flatMap(set=>set?.restPause&&Array.isArray(set.blocks)&&set.blocks.length?set.blocks:[set]);
+    const latestBest=latestEntries.reduce((bestSet,set)=>{
       const kg=Number(set?.kg)||0,reps=Number(set?.reps)||0;
       if(!bestSet||kg>bestSet.kg||(kg===bestSet.kg&&reps>bestSet.reps))return {kg,reps};
       return bestSet;
