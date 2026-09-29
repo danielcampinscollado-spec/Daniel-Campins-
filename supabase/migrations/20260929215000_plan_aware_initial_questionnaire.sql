@@ -1,0 +1,2 @@
+-- Production migration applied via Supabase MCP: plan-aware validation for dcc_submit_initial_questionnaire.
+-- Canonical function is managed in production migration history; this marker prevents losing the audit trail.
