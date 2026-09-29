@@ -148,7 +148,11 @@
     try{
       const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',message:text});
       if(error)throw error;
-      if(input)input.value='';await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);toastSafe('Mensaje enviado');
+      if(input)input.value='';await syncMessages();
+      if(window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id)){
+        refreshClientThread(id);scrollClientChatToBottom(true);
+      }
+      toastSafe('Mensaje enviado');
     }catch(e){console.error('DCC mensaje cliente:',e);toastSafe('No se pudo enviar el mensaje')}
     finally{if(input)input.disabled=false;if(send)send.disabled=false}
   };
