@@ -27,6 +27,9 @@
       #coach-main .dcc-cs-state{display:flex;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(100,80,45,.10);color:#7a8391;font-size:8.5px}
       #coach-main .dcc-cs-state b{color:#a66f12}
       #coach-main .dcc-cs-photo-date{margin-top:8px;color:#8b6a30;font-size:9px;font-weight:800}
+      #coach-main .dcc-cs-box.dcc-cs-photo-locked{opacity:.68;background:#f5f2eb}
+      #coach-main .dcc-cs-box.dcc-cs-photo-locked input{cursor:not-allowed!important;background:#ece9e2!important;color:#8b8b88!important}
+      #coach-main .dcc-cs-lock-note{margin-top:8px;padding:8px 9px;border:1px solid rgba(140,105,43,.22);border-radius:10px;background:#fffaf0;color:#795f31;font-size:9px;font-weight:800;line-height:1.35}
       #coach-main .dcc-ca-photo-box.has-photo{overflow:hidden;padding:0!important;background:#eee!important}
       #coach-main .dcc-ca-photo-box.has-photo img{width:100%;height:100%;object-fit:cover;display:block}
       @media(max-width:520px){#coach-main .dcc-cs-grid{grid-template-columns:1fr}}
@@ -40,7 +43,7 @@
   }
 
   function scheduleHtml(id,st){
-    const c=client(id)||{},freq=st?.checkin_frequency||c.checkin_frequency||'off',normal=st?.next_checkin_date||c.next_checkin_date||'',photo=st?.next_photo_checkin_date||c.next_photo_checkin_date||'',diet=c.next_diet_review||c.nextDietReview||'',routine=c.next_routine_review||c.nextRoutineReview||'';
+    const c=client(id)||{},freq=st?.checkin_frequency||c.checkin_frequency||'off',normal=st?.next_checkin_date||c.next_checkin_date||'',photoAllowed=c.wants_photo_checkin===true||c.wants_photo_checkin==='yes'||c.wants_photo_checkin==='true',photo=photoAllowed?(st?.next_photo_checkin_date||c.next_photo_checkin_date||''):'',diet=c.next_diet_review||c.nextDietReview||'',routine=c.next_routine_review||c.nextRoutineReview||'';
     return `<section id="dccCheckinScheduleCard" class="dcc-ca-card dcc-cs-card">
       <div class="dcc-ca-title"><h2>Programación de check-ins</h2><span style="font-size:9px;color:#8f98a3">Controlada por el entrenador</span></div>
       <p class="dcc-cs-intro">El cliente puede abrir Check-in cuando quiera, pero no podrá rellenar ni enviar nada hasta la fecha programada.</p>
@@ -57,10 +60,10 @@
           <div class="dcc-cs-field"><label>Próxima revisión</label><input id="dccCsNext" type="date" value="${esc(normal)}"></div>
           <div class="dcc-cs-state"><span>Ahora</span><b>${esc(dateText(normal))}</b></div>
         </div>
-        <div class="dcc-cs-box">
+        <div class="dcc-cs-box ${photoAllowed?'':'dcc-cs-photo-locked'}">
           <h3>Check-in completo</h3><p>Incluye todo el check-in normal + 3 fotos: frontal, lateral y espalda. Se repite una vez al mes.</p>
-          <div class="dcc-cs-field"><label>Próximo control fotográfico</label><input id="dccCsPhotoNext" type="date" value="${esc(photo)}"></div>
-          <div class="dcc-cs-photo-date">Frecuencia fija · 1 vez al mes</div>
+          <div class="dcc-cs-field"><label>Próximo control fotográfico</label><input id="dccCsPhotoNext" type="date" value="${esc(photo)}" ${photoAllowed?'':'disabled aria-disabled="true"'}></div>
+          ${photoAllowed?'<div class="dcc-cs-photo-date">Autorizado por el cliente · frecuencia fija · 1 vez al mes</div>':'<div class="dcc-cs-lock-note">🔒 Bloqueado por el cliente · No autorizó seguimiento con fotografías en el cuestionario inicial.</div>'}
           <div class="dcc-cs-state"><span>Ahora</span><b>${esc(dateText(photo))}</b></div>
         </div>
         <div class="dcc-cs-box">
@@ -96,7 +99,7 @@
     const d=db();if(!d){toastSafe('Sin conexión con el servidor');return}
     const freq=document.getElementById('dccCsFreq')?.value||'off';
     let normal=document.getElementById('dccCsNext')?.value||null;
-    const photo=document.getElementById('dccCsPhotoNext')?.value||null;
+    const c=client(id)||{},photoAllowed=c.wants_photo_checkin===true||c.wants_photo_checkin==='yes'||c.wants_photo_checkin==='true',photo=photoAllowed?(document.getElementById('dccCsPhotoNext')?.value||null):null;
     const diet=document.getElementById('dccCsDietNext')?.value||null;
     const routine=document.getElementById('dccCsRoutineNext')?.value||null;
     if(freq==='off')normal=null;
