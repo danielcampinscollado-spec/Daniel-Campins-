@@ -40,7 +40,7 @@
   }
 
   function scheduleHtml(id,st){
-    const freq=st?.checkin_frequency||'off',normal=st?.next_checkin_date||'',photo=st?.next_photo_checkin_date||'';
+    const c=client(id)||{},freq=st?.checkin_frequency||c.checkin_frequency||'off',normal=st?.next_checkin_date||c.next_checkin_date||'',photo=st?.next_photo_checkin_date||c.next_photo_checkin_date||'',diet=c.next_diet_review||c.nextDietReview||'',routine=c.next_routine_review||c.nextRoutineReview||'';
     return `<section id="dccCheckinScheduleCard" class="dcc-ca-card dcc-cs-card">
       <div class="dcc-ca-title"><h2>Programación de check-ins</h2><span style="font-size:9px;color:#8f98a3">Controlada por el entrenador</span></div>
       <p class="dcc-cs-intro">El cliente puede abrir Check-in cuando quiera, pero no podrá rellenar ni enviar nada hasta la fecha programada.</p>
@@ -62,6 +62,13 @@
           <div class="dcc-cs-field"><label>Próximo control fotográfico</label><input id="dccCsPhotoNext" type="date" value="${esc(photo)}"></div>
           <div class="dcc-cs-photo-date">Frecuencia fija · 1 vez al mes</div>
           <div class="dcc-cs-state"><span>Ahora</span><b>${esc(dateText(photo))}</b></div>
+        </div>
+        <div class="dcc-cs-box">
+          <h3>Renovaciones del plan</h3><p>Estas fechas generan automáticamente los avisos del entrenador en el Panel cuando llega el día.</p>
+          <div class="dcc-cs-field"><label>Próxima renovación de dieta</label><input id="dccCsDietNext" type="date" value="${esc(diet)}"></div>
+          <div class="dcc-cs-state"><span>Aviso</span><b>${esc(dateText(diet))}</b></div>
+          <div class="dcc-cs-field" style="margin-top:12px"><label>Próxima renovación de rutina</label><input id="dccCsRoutineNext" type="date" value="${esc(routine)}"></div>
+          <div class="dcc-cs-state"><span>Aviso</span><b>${esc(dateText(routine))}</b></div>
         </div>
       </div>
       <button class="dcc-cs-save" type="button" onclick="dccSaveCheckinSchedule('${esc(id)}')">Guardar programación</button>
@@ -90,6 +97,8 @@
     const freq=document.getElementById('dccCsFreq')?.value||'off';
     let normal=document.getElementById('dccCsNext')?.value||null;
     const photo=document.getElementById('dccCsPhotoNext')?.value||null;
+    const diet=document.getElementById('dccCsDietNext')?.value||null;
+    const routine=document.getElementById('dccCsRoutineNext')?.value||null;
     if(freq==='off')normal=null;
     if(freq!=='off'&&!normal){toastSafe('Selecciona la fecha de la próxima revisión');return}
     try{
@@ -97,7 +106,8 @@
         p_client_id:String(id),p_checkin_frequency:freq,p_next_checkin_date:normal,p_next_photo_checkin_date:photo
       });
       if(error)throw error;if(ok!==true)throw new Error('No confirmado');
-      const c=client(id);if(c){c.checkin_frequency=freq;c.photo_frequency=photo?'monthly':'off';c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.followup_configured_at=new Date().toISOString();saveLocal()}
+      const {error:reviewError}=await d.from('clients').update({next_diet_review:diet,next_routine_review:routine,followup_configured_at:new Date().toISOString()}).eq('id',String(id));if(reviewError)throw reviewError;
+      const c=client(id);if(c){c.checkin_frequency=freq;c.photo_frequency=photo?'monthly':'off';c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.next_diet_review=c.nextDietReview=diet||'';c.next_routine_review=c.nextRoutineReview=routine||'';c.followup_configured_at=new Date().toISOString();saveLocal()}
       stateCache[id]=null;toastSafe('Programación guardada');await patchFollowup(id);
     }catch(e){console.error('DCC save check-in schedule:',e);toastSafe('No se pudo guardar la programación')}
   };
