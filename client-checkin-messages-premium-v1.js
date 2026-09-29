@@ -146,7 +146,10 @@
     const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
     const send=document.getElementById('dccClientMessageSend');if(send)send.disabled=true;if(input)input.disabled=true;
     try{
-      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',message:text});
+      const sessionResult=await db.auth.getSession();
+      const senderUserId=sessionResult?.data?.session?.user?.id||null;
+      if(!senderUserId)throw new Error('Sesión de cliente no disponible');
+      const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',sender_user_id:senderUserId,message:text});
       if(error)throw error;
       if(input)input.value='';await syncMessages();
       if(window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id)){
