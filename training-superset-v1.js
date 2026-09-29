@@ -392,7 +392,7 @@
     const restPauses=(day?.exercises||[]).map((ex,index)=>({ex,index})).filter(x=>x.ex?.restPause).map((x,index)=>{
       const reps=String(x.ex.restPauseReps||x.ex.reps||'').trim();
       const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
-      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,seconds:x.ex.restPauseSeconds==null?'':String(x.ex.restPauseSeconds),finalRest:x.ex.restPauseFinalRest==null?'':String(x.ex.restPauseFinalRest)};
+      return {index:index+1,exerciseIndex:x.index,ex:x.ex,reps,blocks,series:String(x.ex.sets||'').trim(),seconds:x.ex.restPauseSeconds==null?'':String(x.ex.restPauseSeconds),finalRest:x.ex.restPauseFinalRest==null?'':String(x.ex.restPauseFinalRest)};
     });
     return {supersets,restPauses};
   }
@@ -407,9 +407,11 @@
   function updateRestPause(id,di,exerciseIndex,keyName,value){
     const day=dayRef(id,di);const ex=day?.exercises?.[exerciseIndex];if(!ex)return;
     markRoutineDirty(id);
-    if(keyName==='reps'){
+    if(keyName==='series'){
+      const raw=String(value??'').trim();ex.sets=raw?String(Math.max(1,parseInt(raw)||1)):'';
+    }else if(keyName==='reps'){
       const reps=String(value||'').trim();const blocks=reps?reps.split(/[\/\-–,\s]+/).filter(Boolean).length:0;
-      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;ex.sets=blocks?String(blocks):'';
+      ex.restPauseReps=reps;ex.reps=reps;ex.restPauseBlocks=blocks;
     }else if(keyName==='seconds'){
       const raw=String(value??'').trim(),n=raw?Math.max(1,parseInt(raw)||1):null;ex.restPauseSeconds=n;ex.restBetweenSets=n??0;
     }else{
@@ -490,15 +492,16 @@
       const box=document.createElement('div');box.className='dcc-method-config dcc-restpause-single';box.innerHTML=`
         <div class="dcc-restpause-head"><div class="dcc-restpause-title"><b>${esc(group.ex.name||'Ejercicio')}</b><span>${esc(group.ex.muscle||'')}</span></div><span class="dcc-restpause-badge">REST-pause</span></div>
         <div class="dcc-restpause-fields">
-          <label>Series<input type="text" value="${esc(group.ex.sets||group.blocks||'')}" readonly></label>
+          <label>Series<input data-series type="number" min="1" inputmode="numeric" value="${esc(group.series)}" placeholder="3"></label>
           <label>Reps<input data-reps type="text" inputmode="text" value="${esc(group.reps)}" placeholder="12/10/8/6"></label>
           <label>Mini-descanso<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="7"></label>
-          <label>Descanso final<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="90"></label>
+          <label>Descanso entre series<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="90"></label>
         </div>
         <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
-        <div class="dcc-method-note">Ejemplo: 12/10/8/6 con 7 s entre bloques. Los valores son solo ejemplos: tú decides repeticiones y descansos.</div>`;
+        <div class="dcc-method-note">Cada secuencia completa es 1 serie. Ejemplo: 12 reps → 7 s → 10 → 7 s → 8 → 7 s → 6; después empieza el descanso entre series. Series, repeticiones y descansos son configurables.</div>`;
       card.parentNode.insertBefore(box,card);
       card.style.display='none';
+      box.querySelector('[data-series]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'series',e.target.value));
       box.querySelector('[data-reps]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
