@@ -157,7 +157,7 @@
     const db=database(),input=document.getElementById('dcc-secure-auth-email'),button=document.getElementById('dcc-secure-auth-send'),email=String(input?.value||'').trim().toLowerCase();
     if(!db?.auth){status('Supabase Auth todavía no está disponible.','error');return}if(!email||!/^\S+@\S+\.\S+$/.test(email)){status('Introduce un email válido.','error');input?.focus();return}
     button.disabled=true;status('Enviando enlace de recuperación…','info');
-    try{const result=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:authRedirectUrl()}});if(result.error)throw result.error;status('Enlace enviado. Revisa tu correo para recuperar el acceso.','ok');}
+    try{const result=await db.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl()});if(result.error)throw result.error;status('Enlace enviado. Revisa tu correo para crear una nueva contraseña.','ok');}
     catch(error){console.error('DCC Auth:',error);const msg=String(error?.message||'No se pudo enviar el enlace de acceso.');status(isPreview()?`No se envió el enlace RC: ${msg}`:msg,'error');}finally{button.disabled=false}
   }
 
@@ -205,6 +205,11 @@
       renderLogin();showLogin();
     }
     db.auth.onAuthStateChange((event,session)=>{
+      if(event==='PASSWORD_RECOVERY'&&session){
+        // Recovery establishes a temporary session. Do not route it through
+        // normal client access; force the password setup screen first.
+        setTimeout(async()=>{try{const {data:row,error}=await db.from('clients').select('id,name,status,password_setup_completed').eq('auth_user_id',session.user.id).maybeSingle();if(error)throw error;if(row&&typeof window.dccOpenFirstPasswordSetup==='function'){setCurrentClient(row.id);window.__dccSecureRole='client';sessionBadge('client');document.getElementById('login')?.style.setProperty('display','none');document.getElementById('client')?.style.setProperty('display','block');document.getElementById('coach')?.style.setProperty('display','none');window.dccOpenFirstPasswordSetup(row);return}throw new Error('No linked client')}catch(error){console.error('DCC recovery route:',error);renderLogin();showLogin();status('No se pudo abrir la recuperación de contraseña.','error')}},0);return;
+      }
       if(event==='SIGNED_OUT'||!session){
         document.querySelector('.dcc-secure-session-badge')?.remove();
         renderLogin();showLogin();
