@@ -54,6 +54,20 @@
     }
   };
 
+  function plusOneMonthDate(){const d=new Date(),day=d.getDate(),x=new Date(d.getFullYear(),d.getMonth()+1,1);x.setDate(Math.min(day,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));return [x.getFullYear(),String(x.getMonth()+1).padStart(2,'0'),String(x.getDate()).padStart(2,'0')].join('-')}
+
+  window.dccSendRoutineToClient=async function(id){
+    const d=appData(),routine=clone(d.routines?.[id])||[],client=d?.clients?.find?.(x=>String(x?.id)===String(id))||{},required=Math.max(1,Math.min(7,parseInt(client?.preferred_training_days,10)||routine.length||1)),configured=routine.filter(x=>Array.isArray(x?.exercises)&&x.exercises.length>0).length;
+    if(configured<required){notify('Completa todos los días de entrenamiento antes de enviar la rutina');return false}
+    const database=db();if(!database){notify('Sin conexión con el servidor');return false}
+    try{
+      await writeRoutine(id,routine);
+      const next=plusOneMonthDate();
+      const {error}=await database.from('clients').update({next_routine_review:next,followup_configured_at:new Date().toISOString()}).eq('id',String(id));if(error)throw error;
+      client.next_routine_review=client.nextRoutineReview=next;applyRoutine(id,routine);renderClientRoutine(id);notify('Rutina enviada al cliente · próxima renovación en 1 mes');return true;
+    }catch(error){console.error('DCC enviar rutina:',error);notify('No se pudo enviar la rutina');return false}
+  };
+
   window.removeTrainingDay=async function(id,dayIndex){
     const next=clone(appData().routines?.[id])||[];
     if(!next[dayIndex])return;
