@@ -5900,7 +5900,6 @@ async function loadTrainingProgressFromSupabase(){
 
     if(error){
       console.error("Error cargando progreso de entrenamiento:",error);
-      rebuildTrainingProgressFromHistory();
       return false;
     }
 
@@ -5948,7 +5947,6 @@ async function loadTrainingProgressFromSupabase(){
 
   }catch(e){
     console.error("Error conectando con Supabase para progreso de entrenamiento:",e);
-    rebuildTrainingProgressFromHistory();
     return false;
   }
 }
@@ -6221,7 +6219,7 @@ async function openApp(app){
       currentScreen="home";
       window.currentScreen="home";
 
-      await Promise.allSettled([
+      const hydrationResults=await Promise.allSettled([
         loadDietsFromSupabase(),
         loadRoutinesFromSupabase(),
         loadWorkoutHistoryFromSupabase(),
@@ -6232,6 +6230,9 @@ async function openApp(app){
         loadCheckinHistoryFromSupabase(),
         loadCheckinsFromSupabase()
       ]);
+      const historyLoaded=hydrationResults[2]?.status==="fulfilled"&&hydrationResults[2].value===true;
+      const progressLoaded=hydrationResults[3]?.status==="fulfilled"&&hydrationResults[3].value===true;
+      if(!progressLoaded&&historyLoaded)rebuildTrainingProgressFromHistory();
 
       const loadedRoutine=Array.isArray(data.routines?.[currentClientId])?data.routines[currentClientId]:[];
       if(loadedRoutine.length){
