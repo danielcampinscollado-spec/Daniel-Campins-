@@ -10228,9 +10228,10 @@ if(screen==="dashboard"){
 
   const clients = data.clients || [];
 
-  const pendingCheckins = clients.filter(c =>
-    c.status === "Pendiente"
-  );
+  const pendingCheckins = clients.filter(c => {
+    const checkin=data.checkins?.[c.id];
+    return !!(checkin?.sentAt && !checkin?.reviewed);
+  });
 
   const newMessages = clients.filter(c => {
 
@@ -10284,44 +10285,7 @@ if(screen==="dashboard"){
 
   });
 
-  /* ALIMENTACIÓN PENDIENTE */
-
-  clients.forEach(c => {
-
-    const diets = data.diets?.[c.id];
-
-    const trainingMeals =
-      diets?.training?.meals || [];
-
-    const restMeals =
-      diets?.rest?.meals || [];
-
-    const trainingFoods =
-      trainingMeals.reduce(
-        (total,meal) =>
-          total + (meal.foods?.length || 0),
-        0
-      );
-
-    const restFoods =
-      restMeals.reduce(
-        (total,meal) =>
-          total + (meal.foods?.length || 0),
-        0
-      );
-
-    if(trainingFoods === 0 && restFoods === 0){      attention.push({
-        type:"diet",
-        icon:"🍴",
-        title:c.name,
-        text:"Alimentación sin configurar",
-        action:`openClient('${c.id}')`,
-        label:"Gestionar"
-      });
-
-    }
-
-  });
+  /* Las dietas o rutinas vacías no son tareas por sí mismas. */
 
   const visibleAttention =
     attention.slice(0,6);
