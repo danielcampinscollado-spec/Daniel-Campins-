@@ -9769,6 +9769,37 @@ function saveWorkoutSet(){
   const repsValue=parseInt(String(repsInput.value||"").trim());
   if(!Number.isFinite(kgValue)||!Number.isFinite(repsValue)||kgValue<0||repsValue<=0){toast("Introduce peso y repeticiones");return;}
 
+  if(exercise.restPause){
+    const repsPattern=String(exercise.restPauseReps||exercise.reps||'').trim();
+    const targets=repsPattern.split(/[\/\-–,\s]+/).map(v=>parseInt(v)).filter(v=>Number.isFinite(v)&&v>0);
+    if(!targets.length){toast("Configura las repeticiones REST-pause");return;}
+    workout.restPauseState=workout.restPauseState||{};
+    const stateKey=String(workout.currentExercise);
+    const state=workout.restPauseState[stateKey]||{seriesCompleted:0,block:0,entries:[]};
+    const plannedSeries=Math.max(1,parseInt(exercise.sets)||1);
+    if(state.seriesCompleted>=plannedSeries){toast("Ya has completado todas las series");return;}
+    state.entries.push({kg:kgValue,reps:repsValue,targetReps:targets[state.block]||null});
+    state.block+=1;
+    workout.restPauseState[stateKey]=state;
+    if(state.block<targets.length){
+      const miniRest=Math.max(0,parseInt(exercise.restPauseSeconds)||0);
+      if(miniRest>0){workout.restUntil=Date.now()+miniRest*1000;workout.restMode="restpause-block";renderWorkoutSession();startRestTimer();toast(`REST-pause · Bloque ${state.block} guardado · Mini-descanso ${miniRest} s`);}
+      else{workout.restUntil=null;workout.restMode=null;renderWorkoutSession();toast(`REST-pause · Bloque ${state.block} guardado`);}
+      return;
+    }
+    const blocks=JSON.parse(JSON.stringify(state.entries));
+    const representativeKg=blocks.length?blocks[0].kg:kgValue;
+    workout.sets.push({kg:representativeKg,reps:repsPattern,restPause:true,blocks});
+    state.seriesCompleted+=1;
+    state.block=0;
+    state.entries=[];
+    const seriesDone=state.seriesCompleted;
+    const seriesRest=Math.max(0,parseInt(exercise.restPauseFinalRest)||parseInt(exercise.restBetweenExercises)||0);
+    if(seriesDone<plannedSeries&&seriesRest>0){workout.restUntil=Date.now()+seriesRest*1000;workout.restMode="restpause-series";renderWorkoutSession();startRestTimer();toast(`REST-pause · Serie ${seriesDone} guardada · Descanso ${seriesRest} s`);}
+    else{workout.restUntil=null;workout.restMode=null;renderWorkoutSession();toast(`REST-pause · Serie ${seriesDone} guardada`);}
+    return;
+  }
+
   const groupId=exercise.supersetId||null;
   if(groupId){
     const members=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===groupId).sort((a,b)=>(Number(a.ex.supersetOrder)||0)-(Number(b.ex.supersetOrder)||0));
