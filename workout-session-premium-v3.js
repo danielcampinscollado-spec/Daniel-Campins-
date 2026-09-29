@@ -125,7 +125,13 @@
 
   function renderSavedToday(sets){
     if(!sets?.length)return '';
-    return `<div class="dwa3-today">${sets.map((set,i)=>`<span><b>S${i+1}</b> ${fmt(set.kg)} kg × ${fmt(set.reps)}</span>`).join('')}</div>`;
+    return `<div class="dwa3-today">${sets.map((set,i)=>{
+      if(set?.restPause&&Array.isArray(set.blocks)){
+        const detail=set.blocks.map(block=>`${fmt(block.kg)} kg × ${fmt(block.reps)}`).join(' · ');
+        return `<span><b>S${i+1} · REST-pause</b> ${detail}</span>`;
+      }
+      return `<span><b>S${i+1}</b> ${fmt(set.kg)} kg × ${fmt(set.reps)}</span>`;
+    }).join('')}</div>`;
   }
 
   function renderRest(workout,exercise){
@@ -195,7 +201,8 @@
     const supersetPos=supersetId?Math.max(0,supersetMembers.findIndex(x=>x.index===workout.currentExercise)):0;
     const supersetState=supersetId?(workout.supersetState?.[supersetId]||{round:1,entries:{}}):null;
     const planned=Math.max(0,parseInt(supersetId?(exercise.supersetRounds||exercise.sets):exercise.sets)||0);
-    const completed=supersetId?Math.max(0,(Number(supersetState?.round)||1)-1):workout.sets.length;
+    const restPauseState=exercise.restPause?(workout.restPauseState?.[String(workout.currentExercise)]||null):null;
+    const completed=supersetId?Math.max(0,(Number(supersetState?.round)||1)-1):exercise.restPause?Math.max(workout.sets.length,Number(restPauseState?.seriesCompleted)||0):workout.sets.length;
     const finished=planned>0&&completed>=planned;
     const stats=historyStats(workout.clientId,exercise);
     const image=exerciseImage(exercise);
