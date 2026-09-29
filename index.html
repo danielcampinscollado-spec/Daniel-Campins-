@@ -5849,9 +5849,14 @@ function setupMessageRealtime(){
           saveData();
         }
 
-        // Realtime updates the shared message cache only.
-        // Premium client/coach chat authorities refresh their own active streams;
-        // this listener must never navigate or repaint another screen asynchronously.
+        // Realtime updates the shared cache and only the already-open premium thread.
+        // It must never navigate, open a conversation or repaint another screen.
+        if(currentApp==="client"&&typeof window.dccRefreshClientChatRealtime==="function"){
+          window.dccRefreshClientChatRealtime(row.client_id);
+        }
+        if(currentApp==="coach"&&typeof window.dccRefreshCoachChatRealtime==="function"){
+          window.dccRefreshCoachChatRealtime(row.client_id);
+        }
 
 
       }
