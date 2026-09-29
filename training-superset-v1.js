@@ -692,44 +692,11 @@
     };
   }
 
-  function recordSupersetSet(ctx,sets){
-    const workout=ctx.workout,ex=ctx.ex;if(!Array.isArray(workout.completedExercises))workout.completedExercises=[];
-    const existing=workout.completedExercises.find(item=>item?.supersetId===ex.supersetId&&((ex.libraryId&&item.libraryId===ex.libraryId)||(!ex.libraryId&&item.name===ex.name)));
-    const copy=JSON.parse(JSON.stringify(sets||[]));if(existing){existing.sets.push(...copy);return;}
-    workout.completedExercises.push({libraryId:ex.libraryId||'',name:ex.name||'Ejercicio',plannedSets:ctx.rounds,plannedReps:ex.reps||'',supersetId:ex.supersetId,supersetOrder:ex.supersetOrder||ctx.position+1,sets:copy});
-  }
-
-  const nativeSaveWorkoutSet=typeof window.saveWorkoutSet==='function'?window.saveWorkoutSet:null;
-  if(nativeSaveWorkoutSet){
-    window.saveWorkoutSet=function(){
-      const ctx=supersetWorkoutContext();if(!ctx)return nativeSaveWorkoutSet.apply(this,arguments);
-      const workout=ctx.workout;if(workout.restUntil&&workout.restUntil>Date.now()){notify('Espera a que termine el descanso');return;}
-      if(Array.isArray(workout.sets)&&workout.sets.length>=1){notify('Esta parte de la superserie ya está completada');return;}
-      const kgInput=document.getElementById('workout-kg'),repsInput=document.getElementById('workout-reps');if(!kgInput||!repsInput)return;
-      const kg=kgInput.value.trim(),reps=repsInput.value.trim();if(!kg||!reps){notify('Introduce peso y repeticiones');return;}
-      const kgValue=parseFloat(kg.replace(',','.')),repsValue=parseInt(reps);if(!Number.isFinite(kgValue)||!Number.isFinite(repsValue)||kgValue<0||repsValue<=0){notify('Introduce valores válidos');return;}
-      if(!Array.isArray(workout.sets))workout.sets=[];workout.sets.push({kg:kgValue,reps:repsValue});window.nextWorkoutExercise?.();
-    };
-  }
-
-  const nativeNextWorkoutExercise=typeof window.nextWorkoutExercise==='function'?window.nextWorkoutExercise:null;
-  if(nativeNextWorkoutExercise){
-    window.nextWorkoutExercise=function(){
-      const ctx=supersetWorkoutContext();if(!ctx)return nativeNextWorkoutExercise.apply(this,arguments);
-      const workout=ctx.workout;if(!workout.sets||!workout.sets.length){notify('Registra al menos una serie');return;}
-      recordSupersetSet(ctx,workout.sets);workout.sets=[];
-      if(ctx.position<ctx.groupIndices.length-1){workout.currentExercise=ctx.groupIndices[ctx.position+1];workout.restUntil=null;workout.restMode=null;window.renderWorkoutSession?.();notify('Siguiente ejercicio · sin descanso');return;}
-      if(ctx.round<ctx.rounds){
-        workout.supersetRoundById[ctx.ex.supersetId]=ctx.round+1;workout.currentExercise=ctx.groupIndices[0];
-        if(ctx.rest>0){workout.restUntil=Date.now()+(ctx.rest*1000);workout.restMode='exercise';window.renderWorkoutSession?.();window.startRestTimer?.();notify('Vuelta '+ctx.round+' completada · Descanso '+ctx.rest+' s');return;}
-        workout.restUntil=null;workout.restMode=null;window.renderWorkoutSession?.();notify('Empieza la vuelta '+(ctx.round+1));return;
-      }
-      workout.supersetRoundById[ctx.ex.supersetId]=ctx.rounds;workout.currentExercise=Math.max(...ctx.groupIndices)+1;
-      if(workout.currentExercise>=workout.exercises.length){window.finishWorkout?.();return;}
-      if(ctx.rest>0){workout.restUntil=Date.now()+(ctx.rest*1000);workout.restMode='exercise';window.renderWorkoutSession?.();window.startRestTimer?.();notify('Superserie completada · Descanso '+ctx.rest+' s');return;}
-      workout.restUntil=null;workout.restMode=null;window.renderWorkoutSession?.();notify('Superserie completada');
-    };
-  }
+  /* Runtime authority note:
+     The canonical client workout flow lives in index.html (saveWorkoutSet /
+     nextWorkoutExercise) and persists supersets through workout.supersetState.
+     Do not wrap those functions here: a second round-state machine previously
+     used supersetRoundById and could desynchronise the premium renderer. */
 
   installStyle();requestAnimationFrame(decoratePicker);
 })();
