@@ -64,7 +64,7 @@
       await writeRoutine(id,routine);
       const next=plusOneMonthDate();
       const {error}=await database.from('clients').update({next_routine_review:next,followup_configured_at:new Date().toISOString()}).eq('id',String(id));if(error)throw error;
-      client.next_routine_review=client.nextRoutineReview=next;applyRoutine(id,routine);renderClientRoutine(id);notify('Rutina enviada correctamente');return true;
+      client.next_routine_review=client.nextRoutineReview=next;applyRoutine(id,routine);try{renderClientRoutine(id)}catch(renderError){console.warn('DCC render tras enviar rutina:',renderError)}notify('Rutina enviada correctamente');return true;
     }catch(error){console.error('DCC enviar rutina:',error);notify('No se pudo enviar la rutina');return false}
   };
 
