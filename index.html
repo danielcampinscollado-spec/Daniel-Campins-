@@ -10025,6 +10025,16 @@ const totalDays =
     workout.exercises[workout.currentExercise];
 
   if(lastExercise && workout.sets.length){
+    if(lastExercise.restPause){
+      const plannedSeries=Math.max(1,parseInt(lastExercise.sets)||1);
+      const state=workout.restPauseState?.[String(workout.currentExercise)];
+      const completedSeries=Math.max(workout.sets.length,Number(state?.seriesCompleted)||0);
+      if(completedSeries<plannedSeries){
+        toast(`Completa las ${plannedSeries} series REST-pause antes de finalizar`);
+        renderWorkoutSession();
+        return;
+      }
+    }
 
     workout.completedExercises.push({
 
