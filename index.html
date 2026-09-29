@@ -5907,6 +5907,28 @@ function setupMessageRealtime(){
   window.clientMessagesRealtimeChannel=channel;
 }
 
+function rebuildTrainingProgressFromHistory(){
+  if(!data.completedTrainingDays)data.completedTrainingDays={};
+  if(!data.trainingProgressWeekStart)data.trainingProgressWeekStart={};
+  const weekKey=getCurrentWeekKey();
+  const weekStart=new Date(weekKey+"T00:00:00");
+  const weekEnd=new Date(weekStart);
+  weekEnd.setDate(weekEnd.getDate()+7);
+
+  Object.entries(data.workoutHistory||{}).forEach(([clientId,history])=>{
+    const completed=[...new Set((Array.isArray(history)?history:[])
+      .filter(item=>{
+        const when=new Date(item?.date||0);
+        return Number.isFinite(when.getTime())&&when>=weekStart&&when<weekEnd&&Number.isInteger(Number(item?.dayIndex));
+      })
+      .map(item=>Number(item.dayIndex))
+      .filter(index=>index>=0))].sort((a,b)=>a-b);
+    data.completedTrainingDays[clientId]=completed;
+    data.trainingProgressWeekStart[clientId]=weekKey;
+  });
+  saveData();
+}
+
 async function loadTrainingProgressFromSupabase(){
   try{
     const {data:rows,error}=await supabaseClient
@@ -5915,6 +5937,7 @@ async function loadTrainingProgressFromSupabase(){
 
     if(error){
       console.error("Error cargando progreso de entrenamiento:",error);
+      rebuildTrainingProgressFromHistory();
       return false;
     }
 
@@ -5962,6 +5985,7 @@ async function loadTrainingProgressFromSupabase(){
 
   }catch(e){
     console.error("Error conectando con Supabase para progreso de entrenamiento:",e);
+    rebuildTrainingProgressFromHistory();
     return false;
   }
 }
