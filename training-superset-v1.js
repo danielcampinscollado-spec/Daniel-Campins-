@@ -662,7 +662,9 @@
     const blocks=Math.max(2,targets.length||parseInt(ex.restPauseBlocks)||4);
     const seconds=Math.max(1,parseInt(ex.restPauseSeconds)||7);
     const finalRest=Math.max(0,parseInt(ex.restPauseFinalRest)||parseInt(ex.restBetweenExercises)||0);
-    return {workout,ex,reps,targets,blocks,seconds,finalRest};
+    const state=workout.restPauseState?.[String(workout.currentExercise)]||{seriesCompleted:workout.sets?.length||0,block:0,entries:[]};
+    const series=Math.max(1,parseInt(ex.sets)||1);
+    return {workout,ex,reps,targets,blocks,seconds,finalRest,state,series};
   }
 
   function decorateWorkoutSession(){
@@ -673,9 +675,10 @@
     const banner=document.createElement('div');banner.className='dcc-method-session';
     if(superset){banner.innerHTML='<b>SUPERSERIE · VUELTA '+superset.round+' DE '+superset.rounds+'</b><span>Ejercicio '+(superset.ex.supersetOrder||superset.position+1)+' de '+(superset.ex.supersetSize||superset.groupIndices.length)+' · sin descanso entre ejercicios · '+superset.rest+' s al completar la vuelta</span>';}
     else{
-      const completed=Array.isArray(restPause.workout.sets)?restPause.workout.sets.length:0;
-      const target=restPause.targets[Math.min(completed,restPause.targets.length-1)]||'';
-      banner.innerHTML='<b>REST-PAUSE · '+restPause.reps+' REP</b><span>Bloque '+Math.min(completed+1,restPause.blocks)+' de '+restPause.blocks+(target?' · objetivo '+target+' rep':'')+' · '+restPause.seconds+' s entre bloques · '+restPause.finalRest+' s al terminar</span>';
+      const completedSeries=Math.max(0,Number(restPause.state?.seriesCompleted)||0);
+      const block=Math.max(0,Number(restPause.state?.block)||0);
+      const target=restPause.targets[Math.min(block,restPause.targets.length-1)]||'';
+      banner.innerHTML='<b>REST-PAUSE · SERIE '+Math.min(completedSeries+1,restPause.series)+' DE '+restPause.series+'</b><span>Bloque '+Math.min(block+1,restPause.blocks)+' de '+restPause.blocks+(target?' · objetivo '+target+' rep':'')+' · '+restPause.seconds+' s de mini-descanso · '+restPause.finalRest+' s entre series</span>';
     }
     top.parentNode.insertBefore(banner,top);
   }
@@ -690,7 +693,7 @@
         let result;try{result=nativeRenderWorkoutSession.apply(this,arguments);}finally{ex.sets=originalSets;ex.restBetweenSets=originalRestSets;ex.restBetweenExercises=originalRestExercises;}
         requestAnimationFrame(decorateWorkoutSession);return result;
       }
-      if(restPause){restPause.ex.sets=String(restPause.blocks);restPause.ex.reps=restPause.reps;restPause.ex.restBetweenSets=restPause.seconds;restPause.ex.restBetweenExercises=restPause.finalRest;}
+      if(restPause){restPause.ex.reps=restPause.reps;restPause.ex.restBetweenSets=0;restPause.ex.restBetweenExercises=restPause.finalRest;}
       const result=nativeRenderWorkoutSession.apply(this,arguments);requestAnimationFrame(decorateWorkoutSession);return result;
     };
   }
