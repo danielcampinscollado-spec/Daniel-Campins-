@@ -53,6 +53,7 @@
     });
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootstrap,{once:true});
-  else bootstrap();
+  // Auth routing authority lives in auth-premium-v1.js.
+  // Keep claim() available internally for compatibility, but do not start a
+  // second auth listener that can race the authoritative session router.
 })();
