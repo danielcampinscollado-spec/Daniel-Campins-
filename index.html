@@ -9937,6 +9937,16 @@ function nextWorkoutExercise(){
     return;
   }
 
+  if(exercise.restPause){
+    const plannedSeries=Math.max(1,parseInt(exercise.sets)||1);
+    const state=workout.restPauseState?.[String(workout.currentExercise)];
+    const completedSeries=Math.max(workout.sets.length,Number(state?.seriesCompleted)||0);
+    if(completedSeries<plannedSeries){
+      toast(`Completa las ${plannedSeries} series REST-pause antes de continuar`);
+      return;
+    }
+  }
+
   workout.completedExercises.push({
 
     name:exercise.name || "Ejercicio",
@@ -9948,6 +9958,8 @@ function nextWorkoutExercise(){
     sets:JSON.parse(JSON.stringify(workout.sets))
 
   });
+
+  if(exercise.restPause&&workout.restPauseState)delete workout.restPauseState[String(workout.currentExercise)];
 
   workout.currentExercise++;
 
