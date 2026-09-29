@@ -194,6 +194,10 @@
     }catch(e){console.error('DCC estado mensajes entrenador:',e)}
   }
 
+  window.dccRefreshCoachChatRealtime=function(id){
+    if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id);
+  };
+
   window.dccOpenCoachChatV2=async function(id){
     await syncMessages(id);
     await markCoachMessagesSeen(id);
