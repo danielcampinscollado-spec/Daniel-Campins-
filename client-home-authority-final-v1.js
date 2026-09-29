@@ -576,8 +576,12 @@ function install(){
       return window.dccOpenClientTrainingPremium();
     }
     const result=current.apply(this,arguments);
-    if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(enhanceTraining));
-    if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(window.dccEnhanceClientDiet));
+    if(screen==='training')requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(window.currentScreen==='training')enhanceTraining();
+    }));
+    if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      if(window.currentScreen==='food')window.dccEnhanceClientDiet();
+    }));
     if(screen==='messages'&&typeof window.dccOpenClientMessagesPremium==='function')window.dccOpenClientMessagesPremium();
     return result;
   };
