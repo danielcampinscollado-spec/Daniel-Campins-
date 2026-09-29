@@ -11856,6 +11856,13 @@ if(screen==="diets"){
 
   const selected = window.selectedClient;
 
+  /* Nutrition authority: never render the legacy diet editor for a selected client. */
+  if(selected && typeof window.dccClientAdmin==="function"){
+    window.__dccDietType=window.coachDietType||"training";
+    window.dccClientAdmin(String(selected),"food");
+    return;
+  }
+
   if(!selected){
 
     html=`
