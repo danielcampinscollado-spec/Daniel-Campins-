@@ -178,6 +178,9 @@
       try{await db.auth.signOut()}catch(error){console.warn('DCC Auth — cambio de cuenta:',error)}
       window.__dccSecureRole=null;
       document.querySelector('.dcc-secure-session-badge')?.remove();
+      // signOut has already happened above; call only the pre-patch/base logout
+      // to deterministically clear timers, realtime channels and previous user ids.
+      try{if(typeof window.logout?.__base==='function')window.logout.__base()}catch(error){console.warn('DCC Auth — limpieza cambio de cuenta:',error)}
       document.getElementById('client')?.style.setProperty('display','none');
       document.getElementById('coach')?.style.setProperty('display','none');
       params.delete('logout');
