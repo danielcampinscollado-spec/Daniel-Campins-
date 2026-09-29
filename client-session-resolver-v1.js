@@ -12,6 +12,8 @@ async function resolve(session){
  return true;
 }
 window.dccResolveClientSession=resolve;
-async function boot(){const database=db();if(!database?.auth)return;const {data}=await database.auth.getSession();if(data?.session)await resolve(data.session);database.auth.onAuthStateChange((event,session)=>{if(session&&event!=='SIGNED_OUT')setTimeout(()=>resolve(session),0)})}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+// Expose the resolver for explicit recovery only. auth-premium-v1.js owns
+// automatic session routing, so this module must not register a competing
+// getSession/onAuthStateChange bootstrap.
+window.dccResolveClientSession=resolve;
 })();
