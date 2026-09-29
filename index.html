@@ -5523,7 +5523,7 @@ function getCompletedTrainingDays(clientId){
 
 
 
-function markTrainingDayCompleted(clientId,dayIndex,totalDays){
+async function markTrainingDayCompleted(clientId,dayIndex,totalDays){
   const total=Math.max(1,parseInt(totalDays)||1);
   const index=Math.max(0,Number(dayIndex)||0);
 
@@ -5541,13 +5541,12 @@ function markTrainingDayCompleted(clientId,dayIndex,totalDays){
 
   saveData();
 
-  Promise.resolve(saveTrainingProgressToSupabase(clientId)).then(ok=>{
-    if(!ok){
-      try{toast("El entrenamiento se guardó, pero no se pudo sincronizar el progreso semanal.");}catch(_){}
-    }
-  });
+  const synced=await saveTrainingProgressToSupabase(clientId);
+  if(!synced){
+    try{toast("El entrenamiento se guardó, pero no se pudo sincronizar el progreso semanal.");}catch(_){}
+  }
 
-  return completed.length>=total;
+  return {completedAll:completed.length>=total,synced};
 }
 
 /* Acceso semanal: cada día de la rutina puede completarse una sola vez por semana.
@@ -10137,14 +10136,14 @@ const totalDays =
 
   saveData();
 
-const completedAll =
-  markTrainingDayCompleted(
+const progressResult =
+  await markTrainingDayCompleted(
     workout.clientId,
     workout.dayIndex,
     totalDays
   );
 
-if(completedAll){
+if(progressResult.completedAll){
   toast("¡Rutina completada! Nuevo ciclo disponible.");
 }
   window.activeWorkout=null;
