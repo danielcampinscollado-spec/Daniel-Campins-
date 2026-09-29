@@ -10263,6 +10263,18 @@ if(screen==="dashboard"){
 
   const attention = [];
 
+  clients.forEach(c=>{
+    const requested=String(c.requested_plan||'').toLowerCase();
+    const questionnaireDone=c.password_setup_completed===true && c.status!=='Pendiente de cuestionario' && !!requested;
+    const needsTraining=requested==='training'||requested==='complete';
+    const needsNutrition=requested==='nutrition'||requested==='complete';
+    const routineSent=!needsTraining||!!c.next_routine_review;
+    const dietSent=!needsNutrition||!!c.next_diet_review;
+    if(questionnaireDone && !(routineSent&&dietSent)){
+      attention.push({type:'questionnaire',icon:'✓',title:c.name,text:'Cuestionario completado',action:"openClient('"+c.id+"')",label:'Revisar'});
+    }
+  });
+
   /* CHECK-INS PENDIENTES */
 
   pendingCheckins.forEach(c => {
