@@ -5123,10 +5123,10 @@ async function loadWorkoutHistoryFromSupabase(){
     if(error){
       console.error("Error cargando historial de entrenamientos:",error);
       toast("No se pudo cargar el historial");
-      return;
+      return false;
     }
 
-    if(!history) return;
+    if(!history) return false;
 
     data.workoutHistory={};
 
@@ -5162,6 +5162,7 @@ async function loadWorkoutHistoryFromSupabase(){
     });
 
     saveData();
+    return true;
 
   }catch(e){
 
@@ -5169,6 +5170,7 @@ async function loadWorkoutHistoryFromSupabase(){
       "Error conectando con Supabase para historial:",
       e
     );
+    return false;
 
   }
 
