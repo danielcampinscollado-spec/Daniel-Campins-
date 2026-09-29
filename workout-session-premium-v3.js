@@ -147,7 +147,10 @@
 
   function renderCurrent(workout,exercise,stats,planned,completed,finished){
     const currentIndex=Math.min(completed,Math.max(0,planned-1));
-    const previousSet=stats.latest?.sets?.[currentIndex]||null;
+    const previousSeries=stats.latest?.sets?.[currentIndex]||null;
+    const previousSet=exercise.restPause&&previousSeries?.restPause&&Array.isArray(previousSeries.blocks)&&previousSeries.blocks.length
+      ? previousSeries.blocks[Math.min(Number(workout.restPauseState?.[String(workout.currentExercise)]?.block)||0,previousSeries.blocks.length-1)]
+      : previousSeries;
     const restActive=!!(workout.restUntil&&workout.restUntil>Date.now());
 
     if(finished){
