@@ -225,7 +225,7 @@
     const client=db();if(!client){toastSafe('No hay conexión con el servidor');return}
     const button=document.getElementById('dccCoachSendV2Button');if(button)button.disabled=true;if(input)input.disabled=true;
     try{
-      const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel',sender_role:'coach',message:text});
+      const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel Campins',sender_role:'coach',sender_user_id:(await client.auth.getUser()).data.user.id,message:text});
       if(error)throw error;
       if(input)input.value='';
       await syncMessages(id);
