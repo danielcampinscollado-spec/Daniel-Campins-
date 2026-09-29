@@ -9833,11 +9833,34 @@ function saveWorkoutSet(){
       return;
     }
 
+    /* Última ronda de la superserie: el grupo ya está registrado en
+       completedExercises. Avanzar al ejercicio siguiente en lugar de dejar
+       al usuario atrapado en el 2/2 con la serie final ya guardada. */
     const lastIndex=members[members.length-1].index;
-    workout.currentExercise=lastIndex;
-    workout.sets=(state.entries[lastIndex]||[]).filter(Boolean);
-    renderWorkoutSession();
-    toast("Superserie completada");
+    const nextIndex=lastIndex+1;
+    delete workout.supersetState[groupId];
+    workout.sets=[];
+    workout.restUntil=null;
+    workout.restMode=null;
+
+    if(nextIndex>=workout.exercises.length){
+      workout.currentExercise=workout.exercises.length;
+      finishWorkout();
+      return;
+    }
+
+    workout.currentExercise=nextIndex;
+    const restSeconds=Math.max(0,parseInt(exercise.supersetRest||exercise.restBetweenExercises)||0);
+    if(restSeconds>0){
+      workout.restUntil=Date.now()+restSeconds*1000;
+      workout.restMode="exercise";
+      renderWorkoutSession();
+      startRestTimer();
+      toast(`Superserie completada · Descanso ${restSeconds} s`);
+    }else{
+      renderWorkoutSession();
+      toast("Superserie completada · Siguiente ejercicio");
+    }
     return;
   }
 
