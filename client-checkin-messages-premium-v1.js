@@ -139,13 +139,13 @@
   window.dccClientSendPremium=async function(){
     const id=activeClientId();const c=clientById(id);const input=document.getElementById('dccClientMessageInput');const text=input?.value.trim();if(!id||!c||!text)return;
     const db=database();if(!db){toastSafe('No hay conexión con el servidor');return}
-    const send=document.getElementById('dccClientMessageSend');if(send)send.disabled=true;
+    const send=document.getElementById('dccClientMessageSend');if(send)send.disabled=true;if(input)input.disabled=true;
     try{
       const {error}=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',message:text});
       if(error)throw error;
       if(input)input.value='';await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);toastSafe('Mensaje enviado');
     }catch(e){console.error('DCC mensaje cliente:',e);toastSafe('No se pudo enviar el mensaje')}
-    finally{if(send)send.disabled=false}
+    finally{if(input)input.disabled=false;if(send)send.disabled=false}
   };
 
   // Coach-side messaging is owned by messages-chat-premium-v2.js.
