@@ -15,6 +15,18 @@
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function status(message,type){const el=document.getElementById(STATUS_ID);if(!el)return;el.textContent=message||'';el.dataset.type=type||'info';}
   function setCurrentClient(id){try{currentClientId=id}catch(_){}try{window.currentClientId=id}catch(_){} }
+  async function openRecovery(session){
+    const db=database(),user=session?.user;if(!db||!user)throw new Error('Recovery session unavailable');
+    const {data:row,error}=await db.from('clients').select('id,name,status,password_setup_completed').eq('auth_user_id',user.id).maybeSingle();
+    if(error)throw error;if(!row)throw new Error('No linked client for password recovery');
+    setCurrentClient(row.id);window.__dccSecureRole='client';window.__dccPasswordRecoveryActive=true;sessionBadge('client');hideLogin();
+    document.getElementById('client')?.style.setProperty('display','block');
+    document.getElementById('coach')?.style.setProperty('display','none');
+    document.querySelector('#client .side')?.style.setProperty('display','none','important');
+    if(typeof window.dccOpenFirstPasswordSetup!=='function')throw new Error('Password setup unavailable');
+    window.dccOpenFirstPasswordSetup({...row,__dccRecovery:true});
+    return true;
+  }
   function isPreview(){const host=String(window.location.hostname||'').toLowerCase();return host.endsWith('.vercel.app')&&host!=='daniel-campins.vercel.app';}
   function authRedirectUrl(){const url=new URL(window.location.href);const share=url.searchParams.get('_vercel_share');url.search='';if(share)url.searchParams.set('_vercel_share',share);url.hash='';return url.toString();}
 
@@ -205,14 +217,7 @@
           searchParams.get('type')==='recovery' ||
           String(location.hash||'').includes('type=recovery');
         if(recoveryCallback){
-          const {data:row,error:rowError}=await db.from('clients').select('id,name,status,password_setup_completed').eq('auth_user_id',data.session.user.id).maybeSingle();
-          if(rowError)throw rowError;
-          if(!row)throw new Error('No linked client for password recovery');
-          setCurrentClient(row.id);window.__dccSecureRole='client';sessionBadge('client');
-          document.getElementById('client')?.style.setProperty('display','block');
-          document.getElementById('coach')?.style.setProperty('display','none');
-          if(typeof window.dccOpenFirstPasswordSetup!=='function')throw new Error('Password setup unavailable');
-          window.dccOpenFirstPasswordSetup(row);
+          await openRecovery(data.session);
         }else{
           const routed=await routeSession(data.session);
           if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
@@ -228,7 +233,7 @@
       if(event==='PASSWORD_RECOVERY'&&session){
         // Recovery establishes a temporary session. Do not route it through
         // normal client access; force the password setup screen first.
-        setTimeout(async()=>{try{const {data:row,error}=await db.from('clients').select('id,name,status,password_setup_completed').eq('auth_user_id',session.user.id).maybeSingle();if(error)throw error;if(row&&typeof window.dccOpenFirstPasswordSetup==='function'){setCurrentClient(row.id);window.__dccSecureRole='client';sessionBadge('client');document.getElementById('login')?.style.setProperty('display','none');document.getElementById('client')?.style.setProperty('display','block');document.getElementById('coach')?.style.setProperty('display','none');window.dccOpenFirstPasswordSetup(row);return}throw new Error('No linked client')}catch(error){console.error('DCC recovery route:',error);renderLogin();showLogin();status('No se pudo abrir la recuperación de contraseña.','error')}},0);return;
+        setTimeout(async()=>{try{await openRecovery(session)}catch(error){console.error('DCC recovery route:',error);renderLogin();showLogin();status('No se pudo abrir la recuperación de contraseña.','error')}},0);return;
       }
       if(event==='SIGNED_OUT'||!session){
         document.querySelector('.dcc-secure-session-badge')?.remove();
