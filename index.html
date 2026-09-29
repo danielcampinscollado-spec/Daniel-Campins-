@@ -5849,59 +5849,10 @@ function setupMessageRealtime(){
           saveData();
         }
 
-        if(
-          currentApp==="client" &&
-          row.client_id===currentClientId
-        ){
+        // Realtime updates the shared message cache only.
+        // Premium client/coach chat authorities refresh their own active streams;
+        // this listener must never navigate or repaint another screen asynchronously.
 
-          if(currentScreen==="messages"){
-
-            const draft=
-              document.getElementById("client-message")?.value || "";
-
-            showClient("messages");
-
-            requestAnimationFrame(()=>{
-              const box=document.getElementById("client-message");
-              if(box) box.value=draft;
-            });
-
-          }else if(currentScreen==="home"){
-
-            showClient("home");
-
-          }
-
-        }
-
-        if(currentApp==="coach"){
-
-          if(
-            window.openCoachMessageClientId===row.client_id &&
-            document.getElementById("modal")?.style.display==="grid"
-          ){
-
-            const draft=
-              document.getElementById("coach-message")?.value || "";
-
-            openMessages(row.client_id);
-
-            requestAnimationFrame(()=>{
-              const box=document.getElementById("coach-message");
-              if(box) box.value=draft;
-            });
-
-          }else if(currentScreen==="messages"){
-
-            showCoach("messages");
-
-          }else if(currentScreen==="dashboard"){
-
-            showCoach("dashboard");
-
-          }
-
-        }
 
       }
     )
