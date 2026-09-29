@@ -157,7 +157,7 @@
     return `<section class="dwa3-card dwa3-current">
       <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>SERIE ACTUAL</span></div><small>Serie ${Math.min(completed+1,planned||1)} de ${planned||'—'}</small></div>
       <div class="dwa3-steps">${renderSeriesSteps(planned,completed)}</div>
-      ${restActive?`${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">Serie ${completed} guardada · descansa antes de continuar</div>`:`
+      ${restActive?`${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">${exercise.restPause&&workout.restMode==='restpause-block'?`Bloque ${Math.max(1,Number(workout.restPauseState?.[String(workout.currentExercise)]?.block)||1)} guardado · mini-descanso antes del siguiente bloque`:exercise.restPause&&workout.restMode==='restpause-series'?`Serie ${completed} guardada · descansa antes de la siguiente serie`:`Serie ${completed} guardada · descansa antes de continuar`}</div>`:`
         <div class="dwa3-fields">
           <label><b>Peso (kg)</b><div class="dwa3-input"><input id="workout-kg" type="number" inputmode="decimal" step="0.5" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>kg</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.kg)} kg`:'Sin registro anterior'}</small></label>
           <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
