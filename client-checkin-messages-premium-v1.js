@@ -135,6 +135,11 @@
   }
 
   window.scrollClientChatToBottom=scrollClientChatToBottom;
+  window.dccRefreshClientChatRealtime=function(id){
+    if(window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id)){
+      refreshClientThread(id);
+    }
+  };
 
   window.dccClientSendPremium=async function(){
     const id=activeClientId();const c=clientById(id);const input=document.getElementById('dccClientMessageInput');const text=input?.value.trim();if(!id||!c||!text)return;
