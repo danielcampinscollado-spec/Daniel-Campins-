@@ -9056,6 +9056,30 @@ if(!workout.completedExercises){
     plannedSets>0 &&
     completedSets>=plannedSets;
 
+  let techniqueLabel="SERIE ACTUAL";
+  let techniqueDetail="Serie "+currentSetNumber+" de "+(plannedSets||"—");
+  let actionLabel="Completar serie "+currentSetNumber;
+
+  if(exercise.restPause){
+    const rpTargets=String(exercise.restPauseReps||exercise.reps||"").trim().split(/[\\/\\-–,\\s]+/).map(v=>parseInt(v)).filter(v=>Number.isFinite(v)&&v>0);
+    const rpState=workout.restPauseState?.[String(workout.currentExercise)]||{seriesCompleted:0,block:0};
+    const rpSeries=Math.min((Number(rpState.seriesCompleted)||0)+1,Math.max(1,parseInt(exercise.sets)||1));
+    const rpBlock=Math.min((Number(rpState.block)||0)+1,Math.max(1,rpTargets.length));
+    const target=rpTargets[rpBlock-1];
+    techniqueLabel="REST-PAUSE · SERIE "+rpSeries+" DE "+Math.max(1,parseInt(exercise.sets)||1);
+    techniqueDetail="Bloque "+rpBlock+" de "+Math.max(1,rpTargets.length)+(target?" · "+target+" repeticiones":"");
+    actionLabel=rpBlock<rpTargets.length ? "Completar bloque "+rpBlock+(target?" · "+target+" reps":"") : "Completar serie rest-pause "+rpSeries+(target?" · "+target+" reps":"");
+  }else if(exercise.supersetId){
+    const ssMembers=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===exercise.supersetId).sort((x,y)=>(Number(x.ex.supersetOrder)||0)-(Number(y.ex.supersetOrder)||0));
+    const ssPos=Math.max(0,ssMembers.findIndex(x=>x.index===workout.currentExercise));
+    const ssState=workout.supersetState?.[exercise.supersetId]||{round:1};
+    const ssRound=Math.max(1,Number(ssState.round)||1);
+    const ssRounds=Math.max(1,parseInt(exercise.supersetRounds||exercise.sets)||1);
+    techniqueLabel="SUPERSERIE · SERIE "+ssRound+" DE "+ssRounds;
+    techniqueDetail="Ejercicio "+(ssPos+1)+" de "+ssMembers.length;
+    actionLabel=ssPos<ssMembers.length-1 ? "Siguiente ejercicio →" : "Completar superserie "+ssRound;
+  }
+
 
     /* =====================================
    ÚLTIMA SESIÓN — PESTAÑA DESPLEGABLE
@@ -9462,7 +9486,7 @@ ${
           "
           onclick="saveWorkoutSet()">
 
-          ✓ Guardar serie ${currentSetNumber}
+          ${actionLabel}
 
         </button>
 
