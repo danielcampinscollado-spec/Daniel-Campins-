@@ -660,16 +660,22 @@ label{
 
 .toast{
   position:fixed;
-  right:20px;
-  bottom:20px;
+  left:50%;
+  right:auto;
+  bottom:92px;
+  transform:translateX(-50%);
   display:none;
-  padding:13px 17px;
-  background:#10141a;
+  max-width:calc(100vw - 32px);
+  padding:11px 15px;
+  background:rgba(16,20,26,.96);
   color:#fff;
   border:1px solid rgba(255,255,255,.08);
   border-radius:13px;
-  z-index:100;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
+  z-index:1000;
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+  font-size:13px;
+  line-height:1.35;
+  text-align:center;
 }
 
 /* =========================
@@ -5807,11 +5813,14 @@ function money(n){
 return Number(n).toFixed(1).replace(".",",");
 }
 
+let __dccToastTimer=null;
 function toast(msg){
 const t=document.getElementById("toast");
+if(!t)return;
+if(__dccToastTimer){clearTimeout(__dccToastTimer);__dccToastTimer=null;}
 t.textContent=msg;
 t.style.display="block";
-setTimeout(()=>t.style.display="none",2200);
+__dccToastTimer=setTimeout(()=>{t.style.display="none";__dccToastTimer=null;},2200);
 }
 
 function setupMessageRealtime(){
