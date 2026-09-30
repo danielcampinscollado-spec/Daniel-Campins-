@@ -12,8 +12,8 @@ function css(){
     #coach-main.dcc-ca .dcc-ca-danger-row{display:none!important}
     #coach-main.dcc-ca .dcc-profile-delete-top{display:none!important}
     #coach-main.dcc-ca .dcc-profile-delete-bottom{display:block;width:100%!important;min-height:48px;margin:24px 0 8px!important;padding:12px 16px!important;border:1px solid rgba(190,55,60,.38)!important;border-radius:15px!important;background:rgba(155,28,34,.055)!important;color:#c94249!important;font-size:12px!important;font-weight:850!important;letter-spacing:.05px;text-align:center}
-    #coach-main.dcc-ca .dcc-tr-actions{gap:10px!important;margin-top:14px!important}
-    #coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit,#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-new{min-height:72px!important;border-radius:17px!important;padding:14px 12px!important;font-size:14px!important;font-weight:900!important;line-height:1.2!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+    #coach-main.dcc-ca .dcc-tr-actions{gap:8px!important;margin-top:8px!important}
+    #coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit,#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-new{height:42px!important;min-height:42px!important;max-height:42px!important;border-radius:14px!important;padding:7px 10px!important;font-size:11px!important;font-weight:850!important;line-height:1.05!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important}
     #coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit{border:1px solid rgba(217,170,74,.62)!important;background:linear-gradient(145deg,rgba(217,170,74,.09),rgba(255,255,255,.02))!important;color:#e5b84f!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)!important}
     #coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-new{border-color:#e8ba50!important;box-shadow:0 8px 20px rgba(185,125,20,.12)!important}
     #coach-main.dcc-ca .dcc-profile-v2-summary>.dcc-v2-card:nth-child(1),#coach-main.dcc-ca .dcc-profile-v2-summary>.dcc-v2-card:nth-child(2){cursor:pointer}
@@ -41,7 +41,7 @@ function css(){
     html.dcc-theme-light-premium body #coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit{background:linear-gradient(145deg,#fffdf8,#fbf4e8)!important;color:#8d5b08!important;border-color:rgba(177,119,18,.42)!important;box-shadow:0 7px 18px rgba(78,58,28,.045)!important}
     html.dcc-theme-light-premium body #coach-main.dcc-ca .dcc-progress-change,html.dcc-theme-light-premium body #coach-main.dcc-ca .dcc-strength-row{background:#fffaf0!important;border-color:rgba(183,123,22,.16)!important}
     html.dcc-theme-light-premium body #coach-main.dcc-ca .dcc-strength-empty{background:#fffaf0!important}
-    @media(max-width:390px){#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit,#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-new{min-height:68px!important;font-size:13px!important}.dcc-profile-delete-bottom{font-size:11px!important}}
+    @media(max-width:390px){#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-edit,#coach-main.dcc-ca .dcc-tr-actions>.dcc-tr-new{height:40px!important;min-height:40px!important;max-height:40px!important;font-size:10px!important;padding:6px 8px!important}.dcc-profile-delete-bottom{font-size:11px!important}}
   `;(document.head||document.documentElement).appendChild(s);
 }
 
