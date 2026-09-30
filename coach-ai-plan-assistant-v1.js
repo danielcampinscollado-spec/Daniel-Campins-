@@ -46,6 +46,9 @@ function inject(){
   if(training&&!pane.querySelector('[data-dcc-ai-plan="routine"]'))training.insertAdjacentElement('afterend',launchButton('routine',id));
   const nutrition=pane.querySelector('.dcc-n2-actions')||(!window.__dccDietEditing?pane.querySelector('.dcc-ca-summary-actions'):null);
   if(nutrition&&!pane.querySelector('[data-dcc-ai-plan="diet"]'))nutrition.insertAdjacentElement('afterend',launchButton('diet',id));
+  if(window.__dccDietEditing&&String(window.__dccAIDietDraftClient||'')===id&&!pane.querySelector('[data-dcc-ai-discard="diet"]')){
+    const b=document.createElement('button');b.type='button';b.className='dcc-ai-plan-launch';b.dataset.dccAiDiscard='diet';b.textContent='Descartar borrador IA';b.addEventListener('click',()=>window.dccAIDiscardDietDraft(id));pane.prepend(b);
+  }
 }
 function placeholders(kind){
   return kind==='routine'
@@ -153,12 +156,26 @@ function applyRoutine(id,draft){
 function applyDiet(id,draft){
   const d=appData();d.diets=d.diets||{};
   window.__dccAIDietBackup=JSON.stringify(d.diets[id]??null);
+  window.__dccAIDietDraftClient=String(id);
   d.diets[id]=mapDiet(draft);
   window.__dccDietType='training';window.__dccDietEditing=true;window.__dccDietOpenMeal=null;
   if(typeof window.dccNutritionV2Edit==='function')window.dccNutritionV2Edit(id);
   else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
   notify('Borrador de dieta generado. Revísalo antes de enviar.');
 }
+window.dccAIDiscardDietDraft=function(id){
+  id=String(id||selectedId());if(!id||String(window.__dccAIDietDraftClient||'')!==id)return;
+  const d=appData();d.diets=d.diets||{};
+  try{
+    const previous=JSON.parse(window.__dccAIDietBackup);
+    if(previous===null)delete d.diets[id];else d.diets[id]=previous;
+  }catch(_){}
+  delete window.__dccAIDietBackup;delete window.__dccAIDietDraftClient;
+  window.__dccDietEditing=false;window.__dccDietOpenMeal=null;
+  if(typeof window.dccNutritionV2Home==='function')window.dccNutritionV2Home(id);
+  else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
+  notify('Borrador IA descartado.');
+};
 async function generate(kind,id){
   const input=document.getElementById('dcc-ai-instructions'),button=document.getElementById('dcc-ai-generate'),status=document.getElementById('dcc-ai-status');
   const instructions=String(input?.value||'').trim();
