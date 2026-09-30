@@ -3,6 +3,7 @@
   'use strict';
   const STYLE_ID='dcc-coach-checkin-schedule-v1-css';
   const stateCache=window.__dccCoachCheckinState=window.__dccCoachCheckinState||{};
+  const followupCache=window.__dccCoachPrivateFollowupState=window.__dccCoachPrivateFollowupState||{};
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function db(){try{if(typeof supabaseClient!=='undefined'&&supabaseClient)return supabaseClient}catch(e){}return window.supabaseClient||null}
   function appData(){try{return data||{}}catch(e){return window.data||{}}}
@@ -41,9 +42,14 @@
     const {data:st,error}=await d.rpc('dcc_get_checkin_state',{p_client_id:String(id)});if(error)throw error;
     stateCache[id]=st;return st;
   }
+  async function getPrivateFollowup(id){
+    const d=db();if(!d)return null;
+    const {data:row,error}=await d.rpc('dcc_get_coach_followup',{p_client_id:String(id)});if(error)throw error;
+    followupCache[id]=row;return row;
+  }
 
-  function scheduleHtml(id,st){
-    const c=client(id)||{},freq=st?.checkin_frequency||c.checkin_frequency||'off',normal=st?.next_checkin_date||c.next_checkin_date||'',photoAllowed=c.wants_photo_checkin===true||c.wants_photo_checkin==='yes'||c.wants_photo_checkin==='true',photo=photoAllowed?(st?.next_photo_checkin_date||c.next_photo_checkin_date||''):'',diet=c.next_diet_review||c.nextDietReview||'',routine=c.next_routine_review||c.nextRoutineReview||'';
+  function scheduleHtml(id,st,followup){
+    const c=client(id)||{},freq=st?.checkin_frequency||c.checkin_frequency||'off',normal=st?.next_checkin_date||c.next_checkin_date||'',photoAllowed=c.wants_photo_checkin===true||c.wants_photo_checkin==='yes'||c.wants_photo_checkin==='true',photo=photoAllowed?(st?.next_photo_checkin_date||c.next_photo_checkin_date||''):'',diet=followup?.next_diet_review??c.next_diet_review??c.nextDietReview??'',routine=followup?.next_routine_review??c.next_routine_review??c.nextRoutineReview??'';
     return `<section id="dccCheckinScheduleCard" class="dcc-ca-card dcc-cs-card">
       <div class="dcc-ca-title"><h2>Programación de check-ins</h2><span style="font-size:9px;color:#8f98a3">Controlada por el entrenador</span></div>
       <p class="dcc-cs-intro">El cliente puede abrir Check-in cuando quiera, pero no podrá rellenar ni enviar nada hasta la fecha programada.</p>
@@ -83,14 +89,14 @@
     const root=document.querySelector('#coach-main .dcc-ca-wrap');if(!root)return;
     const firstCard=root.querySelector('.dcc-ca-card');if(!firstCard)return;
     root.querySelector('#dccCheckinScheduleCard')?.remove();
-    let st=stateCache[id]||null;
-    const holder=document.createElement('div');holder.innerHTML=scheduleHtml(id,st);
+    let st=stateCache[id]||null,followup=followupCache[id]||null;
+    const holder=document.createElement('div');holder.innerHTML=scheduleHtml(id,st,followup);
     firstCard.parentNode.insertBefore(holder.firstElementChild,firstCard);
     try{
-      st=await getState(id);
+      [st,followup]=await Promise.all([getState(id),getPrivateFollowup(id)]);
       if(String(window.selectedClient||'')!==String(id))return;
       const current=document.getElementById('dccCheckinScheduleCard');if(!current)return;
-      const replacement=document.createElement('div');replacement.innerHTML=scheduleHtml(id,st);
+      const replacement=document.createElement('div');replacement.innerHTML=scheduleHtml(id,st,followup);
       current.replaceWith(replacement.firstElementChild);
     }catch(e){console.error('DCC coach check-in state:',e)}
   }
@@ -109,9 +115,11 @@
         p_client_id:String(id),p_checkin_frequency:freq,p_next_checkin_date:normal,p_next_photo_checkin_date:photo
       });
       if(error)throw error;if(ok!==true)throw new Error('No confirmado');
-      const {error:reviewError}=await d.from('clients').update({next_diet_review:diet,next_routine_review:routine,followup_configured_at:new Date().toISOString()}).eq('id',String(id));if(reviewError)throw reviewError;
-      const c=client(id);if(c){c.checkin_frequency=freq;c.photo_frequency=photo?'monthly':'off';c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.next_diet_review=c.nextDietReview=diet||'';c.next_routine_review=c.nextRoutineReview=routine||'';c.followup_configured_at=new Date().toISOString();saveLocal()}
-      stateCache[id]=null;toastSafe('Programación guardada');await patchFollowup(id);
+      const current=await d.rpc('dcc_get_coach_followup',{p_client_id:String(id)});if(current.error||!current.data)throw current.error||new Error('No se pudo cargar el seguimiento privado');
+      const privateFreq=['weekly','biweekly','monthly','off'].includes(freq)?freq:(current.data.checkin_frequency||'off'),privatePhoto=photo?'monthly':'off';
+      const saved=await d.rpc('dcc_save_coach_followup',{p_client_id:String(id),p_checkin:privateFreq,p_photo:privatePhoto,p_diet:diet,p_routine:routine});if(saved.error||!saved.data)throw saved.error||new Error('No se pudo guardar el seguimiento privado');
+      const c=client(id);if(c){c.checkin_frequency=saved.data.checkin_frequency||privateFreq;c.photo_frequency=saved.data.photo_frequency||privatePhoto;c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.next_diet_review=c.nextDietReview=saved.data.next_diet_review||'';c.next_routine_review=c.nextRoutineReview=saved.data.next_routine_review||'';c.followup_configured_at=saved.data.followup_configured_at||null;if(Array.isArray(saved.data.coach_notes))c.coachNotes=saved.data.coach_notes;saveLocal()}
+      stateCache[id]=null;followupCache[id]=saved.data;toastSafe('Programación guardada');await patchFollowup(id);
     }catch(e){console.error('DCC save check-in schedule:',e);toastSafe('No se pudo guardar la programación')}
   };
 
