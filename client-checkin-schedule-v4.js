@@ -301,6 +301,9 @@
       const ad=appData();ad.checkins=ad.checkins||{};ad.checkins[id]={...(ad.checkins[id]||{}),weight:fmt(weight)+' kg',bodyFat:fat??ad.checkins[id]?.bodyFat,diet:d.diet,training:d.training,energy:d.energy,comment:d.comment.trim(),sentAt:now,reviewed:false,checkinType:complete?'complete':'normal',photos:paths};
       saveLocal();clearDraft(id);success[id]=true;
       await fetchState(id);
+      c.next_checkin_date=stateCache[id]?.next_checkin_date||null;
+      c.next_photo_checkin_date=stateCache[id]?.next_photo_checkin_date||null;
+      saveLocal();
       toastSafe('Check-in enviado correctamente');
       if(activeId()===id&&String(window.currentScreen||'')==='checkin')render(false);
       if(typeof window.loadWeightsFromSupabase==='function')Promise.resolve(window.loadWeightsFromSupabase()).catch(()=>{});
