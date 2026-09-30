@@ -14434,34 +14434,6 @@ function openMessages(id){
     </div>
   </div>`);
 }
-async function sendCoachMessage(id){
-
-  const box=document.getElementById("coach-message");
-  const text=box?.value.trim();
-
-  if(!text)return;
-
-  const { error } = await supabaseClient
-    .from("client_messages")
-    .insert({
-      client_id:id,
-      sender:"Daniel",
-      sender_role:"coach",
-      message:text
-    });
-
-  if(error){
-    console.error("Error enviando mensaje del entrenador:",error);
-    toast("No se pudo enviar el mensaje");
-    return;
-  }
-
-  await loadMessagesFromSupabase();
-
-  openMessages(id);
-  toast("Mensaje enviado");
-}
-
 function openModal(html){
 document.getElementById("modal-content").innerHTML=html;
 document.getElementById("modal").style.display="grid";
