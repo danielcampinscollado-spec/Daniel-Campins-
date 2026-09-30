@@ -6219,11 +6219,13 @@ async function openApp(app){
     // Entramos al panel inmediatamente. La sincronización con Supabase
     // no debe bloquear la primera pintura del entrenador.
     window.__dccCoachClientsHydrated=false;
+    window.__dccCoachPlanDataHydrated=false;
     showCoach("dashboard");
 
     setupMessageRealtime();
     // Client rows are the base identity set. Load them first, then hydrate
-    // dependent server domains so metrics/messages cannot race an older client snapshot.
+    // dependent server domains. The dashboard must not infer missing plan
+    // tasks until diet + routine data have finished loading from Supabase.
     loadClientsFromSupabase().then(()=>{
       window.__dccCoachClientsHydrated=true;
       if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
@@ -6237,7 +6239,8 @@ async function openApp(app){
       loadCheckinsFromSupabase()
     ]);
     }).then(()=>{
-      // Server data refreshes in place; navigation is not repainted asynchronously.
+      window.__dccCoachPlanDataHydrated=true;
+      if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
     });
 
   }
