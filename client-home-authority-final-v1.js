@@ -413,10 +413,6 @@ function renderHome(){
   const next=nextState();
   const checkinSummary=lastCheckinSummary();
   const currentWeek=typeof getCurrentWeekKey==='function'?getCurrentWeekKey():'';
-  const checkin=d().checkins?.[id()]||{};
-  const checkinWeekStart=currentWeek?new Date(currentWeek+'T00:00:00'):null;
-  const sentThisWeek=!!(checkin.sentAt&&checkinWeekStart&&new Date(checkin.sentAt)>=checkinWeekStart);
-
   const tasks=[];
   const scheduledCheckin=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
   const nowLocal=new Date(),todayKey=nowLocal.getFullYear()+'-'+String(nowLocal.getMonth()+1).padStart(2,'0')+'-'+String(nowLocal.getDate()).padStart(2,'0');
