@@ -6279,12 +6279,16 @@ async function openApp(app){
 
     // Entramos al panel inmediatamente. La sincronización con Supabase
     // no debe bloquear la primera pintura del entrenador.
+    window.__dccCoachClientsHydrated=false;
     showCoach("dashboard");
 
     setupMessageRealtime();
     // Client rows are the base identity set. Load them first, then hydrate
     // dependent server domains so metrics/messages cannot race an older client snapshot.
-    loadClientsFromSupabase().then(()=>Promise.allSettled([
+    loadClientsFromSupabase().then(()=>{
+      window.__dccCoachClientsHydrated=true;
+      if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
+      return Promise.allSettled([
       loadDietsFromSupabase(),
       loadRoutinesFromSupabase(),
       loadWorkoutHistoryFromSupabase(),
@@ -6292,7 +6296,8 @@ async function openApp(app){
       loadMessagesFromSupabase(),
       loadNotificationStateFromSupabase(),
       loadCheckinsFromSupabase()
-    ])).then(()=>{
+    ]);
+    }).then(()=>{
       // Server data refreshes in place; navigation is not repainted asynchronously.
     });
 
@@ -10265,6 +10270,7 @@ let html="";
 if(screen==="dashboard"){
 
   const clients = data.clients || [];
+  const coachClientsHydrated = window.__dccCoachClientsHydrated===true;
 
   if(!window.__dccCoachDashboardSync){
     window.__dccCoachDashboardSync=true;
@@ -10306,7 +10312,7 @@ if(screen==="dashboard"){
 
   const attention = [];
 
-  clients.forEach(c=>{
+  if(coachClientsHydrated) clients.forEach(c=>{
     const requested=String(c.requested_plan||'').toLowerCase();
     const questionnaireDone=c.password_setup_completed===true && c.status!=='Pendiente de cuestionario' && !!requested;
     const needsTraining=requested==='training'||requested==='complete';
