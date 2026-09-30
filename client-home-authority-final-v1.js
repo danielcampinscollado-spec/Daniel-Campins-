@@ -414,15 +414,17 @@ function renderHome(){
   const checkinSummary=lastCheckinSummary();
   const currentWeek=typeof getCurrentWeekKey==='function'?getCurrentWeekKey():'';
   const tasks=[];
-  const scheduledCheckin=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
+  const normalDue=c.nextCheckinDate||c.next_checkin_date||c.checkinDate||c.checkin_date||null;
+  const photoDue=c.nextPhotoCheckinDate||c.next_photo_checkin_date||null;
+  const scheduledCheckin=[normalDue,photoDue].filter(Boolean).sort((a,b)=>String(a).slice(0,10).localeCompare(String(b).slice(0,10)))[0]||null;
   const nowLocal=new Date(),todayKey=nowLocal.getFullYear()+'-'+String(nowLocal.getMonth()+1).padStart(2,'0')+'-'+String(nowLocal.getDate()).padStart(2,'0');
   const dateOnly=v=>{const x=String(v||'').slice(0,10).split('-').map(Number);return x.length===3&&x.every(Number.isFinite)?new Date(x[0],x[1]-1,x[2],12,0,0):null};
   const checkinDays=scheduledCheckin?(()=>{const a=dateOnly(todayKey),b=dateOnly(scheduledCheckin);return a&&b?Math.round((b-a)/86400000):null})():null;
-  if(!sentThisWeek&&checkinDays===1){
+  if(checkinDays===1){
     tasks.push({type:'check',title:'Check-in mañana',text:'Mañana tienes que completar tu check-in',action:"showClient('checkin')"});
-  }else if(!sentThisWeek&&checkinDays===0){
+  }else if(checkinDays===0){
     tasks.push({type:'check',title:'Check-in de hoy',text:'Hoy tienes que completar tu check-in',action:"showClient('checkin')"});
-  }else if(!sentThisWeek&&checkinDays!=null&&checkinDays<0){
+  }else if(checkinDays!=null&&checkinDays<0){
     tasks.push({type:'check',title:'Check-in pendiente',text:'Tu check-in está pendiente de completar',action:"showClient('checkin')"});
   }
 
