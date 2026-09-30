@@ -212,13 +212,15 @@ function css(){
     background:#fffdf8!important;border-color:#d9cba9!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
-    position:relative!important;background:transparent!important;color:#6d756e!important;
-    min-width:0!important;height:auto!important;padding:0 0 0 9px!important;font-size:6.8px!important
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
+    background:#edf7ef!important;color:#3f7950!important;border:1px solid #d3ead9!important;
+    min-width:0!important;height:19px!important;padding:0 6px!important;font-size:6.6px!important;
+    white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{
-    content:""!important;position:absolute!important;left:0!important;top:50%!important;
-    width:6px!important;height:6px!important;border-radius:50%!important;background:#55b96d!important;
-    transform:translateY(-50%)!important
+    content:""!important;position:static!important;display:block!important;
+    width:6px!important;height:6px!important;flex:0 0 6px!important;border-radius:50%!important;
+    background:#55b96d!important;transform:none!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
     background:#fff9ed!important;border-color:#c89125!important;
