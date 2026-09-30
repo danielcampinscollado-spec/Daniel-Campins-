@@ -247,8 +247,8 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>{
       const done=completedDays.includes(Number(i));
       const next=(typeof window.dccGetTrainingAccessState==='function')?window.dccGetTrainingAccessState(id,i):{allowed:i===dayIndex,code:'ready'};
-      const state=done?'COMPLETADO':(next.code==='next-day'||next.code==='today-complete')?'MAÑANA':next.allowed?'HOY':'';
-      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b>${state?`<em style="display:block;margin-top:3px;font-size:7px;font-style:normal;font-weight:850;letter-spacing:.6px;color:${done?'#8b641c':'#9a6b15'}">${state}</em>`:''}</button>`;
+      const state=done?'✓':(next.code==='next-day'||next.code==='today-complete')?'Mañ.':next.allowed?'Hoy':'';
+      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''} ${done?'is-done':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b>${state?`<em>${state}</em>`:''}</button>`;
     }).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
@@ -282,6 +282,15 @@
           font-weight:850!important;
           letter-spacing:3.2px!important;
           text-transform:uppercase!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-day em{
+          display:block!important;margin:2px auto 0!important;font-size:6.5px!important;line-height:1!important;
+          font-style:normal!important;font-weight:850!important;letter-spacing:0!important;color:#9a6b15!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.is-done em{
+          display:inline-flex!important;align-items:center!important;justify-content:center!important;
+          width:13px!important;height:13px!important;border-radius:50%!important;background:#55b96d!important;
+          color:#fff!important;font-size:8px!important
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
           display:flex!important;
