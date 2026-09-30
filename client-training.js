@@ -231,13 +231,13 @@
     const startLabel=access.allowed
       ? '▶&nbsp; Empezar entrenamiento'
       : (
-          access.code==='already-completed'
-            ? '✓ Completado esta semana'
-            : access.code==='week-complete'
-              ? '✓ Semana completada'
-              : access.code==='today-complete'
-                ? 'Disponible mañana'
-                : 'Bloqueado'
+          access.code==='next-day'||access.code==='today-complete'
+            ? 'Disponible mañana'
+            : access.code==='sequence-locked'||access.code==='sequence-required'
+              ? 'Completa el día anterior'
+              : access.code==='already-completed'
+                ? '✓ Completado'
+                : 'No disponible'
         );
 
     const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
