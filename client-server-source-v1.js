@@ -37,6 +37,18 @@
     };
   }
 
+  function mergePrivate(cl,row){
+    if(!cl||!row)return cl;
+    cl.checkinFrequency=cl.checkin_frequency=row.checkin_frequency??cl.checkin_frequency??'off';
+    cl.photoFrequency=cl.photo_frequency=row.photo_frequency??cl.photo_frequency??'off';
+    cl.nextDietReview=cl.next_diet_review=row.next_diet_review||'';
+    cl.nextRoutineReview=cl.next_routine_review=row.next_routine_review||'';
+    cl.followupConfiguredAt=cl.followup_configured_at=row.followup_configured_at||null;
+    cl.coachNotes=Array.isArray(row.coach_notes)?row.coach_notes:[];
+    cl.coach_notes=cl.coachNotes;
+    return cl;
+  }
+
   function pruneDeletedClientDomains(validIds){
     const d=appData();
     [
@@ -107,12 +119,15 @@
         return false;
       }
 
-      const result=await database.from('clients').select('*').order('created_at',{ascending:true});
-      if(result.error)throw result.error;
-      const rows=Array.isArray(result.data)?result.data:[];
+      const [result,privateResult]=await Promise.all([
+        database.from('clients').select('*').order('created_at',{ascending:true}),
+        database.from('coach_client_private').select('client_id,checkin_frequency,photo_frequency,next_diet_review,next_routine_review,followup_configured_at,coach_notes')
+      ]);
+      if(result.error)throw result.error;if(privateResult.error)throw privateResult.error;
+      const rows=Array.isArray(result.data)?result.data:[],privateById=new Map((privateResult.data||[]).map(x=>[String(x.client_id),x]));
       const d=appData();
       const previous=new Map((d.clients||[]).map(c=>[String(c.id),c]));
-      d.clients=rows.map(row=>normalizeClient(row,previous.get(String(row.id))||{}));
+      d.clients=rows.map(row=>mergePrivate(normalizeClient(row,previous.get(String(row.id))||{}),privateById.get(String(row.id))));
       const validIds=new Set(d.clients.map(c=>String(c.id)));
       pruneDeletedClientDomains(validIds);
       persist();
