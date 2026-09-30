@@ -209,10 +209,16 @@ function css(){
     font-size:8px!important;line-height:1!important;font-style:normal!important;font-weight:850!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done{
-    background:#f2f7e9!important;border-color:#c9ddb2!important
+    background:#fffdf8!important;border-color:#d9cba9!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
-    background:#77b858!important;color:#fff!important
+    position:relative!important;background:transparent!important;color:#6d756e!important;
+    min-width:0!important;height:auto!important;padding:0 0 0 9px!important;font-size:6.8px!important
+  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{
+    content:""!important;position:absolute!important;left:0!important;top:50%!important;
+    width:6px!important;height:6px!important;border-radius:50%!important;background:#55b96d!important;
+    transform:translateY(-50%)!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
     background:#fff9ed!important;border-color:#c89125!important;
@@ -450,7 +456,7 @@ function renderHome(){
     const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
     const isNext=i===next.index;
     const state=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Disponible mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
-    const shortState=done?'✓':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
+    const shortState=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
     return {
       i,
       html:`<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b>Día ${i+1}</b><span class="muscle">${esc(dayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`
