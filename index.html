@@ -9696,21 +9696,13 @@ function startRestTimer(){
 
   workout.restUntil = null;
 
-  const wasExerciseRest =
-    workout.restMode === "exercise";
-
+  const finishedRestMode=workout.restMode;
   workout.restMode = null;
-
   renderWorkoutSession();
-
-  if(wasExerciseRest){
-
+  if(finishedRestMode==="exercise" || finishedRestMode==="superset"){
     toast("Descanso terminado · Siguiente ejercicio");
-
   }else{
-
     toast("Descanso terminado · Siguiente serie");
-
   }
 
 }
@@ -9727,22 +9719,14 @@ function skipRest(){
 
   clearInterval(window.restTimerInterval);
 
-  const wasExerciseRest =
-    workout.restMode === "exercise";
-
+  const finishedRestMode=workout.restMode;
   workout.restUntil = null;
   workout.restMode = null;
-
   renderWorkoutSession();
-
-  if(wasExerciseRest){
-
+  if(finishedRestMode==="exercise" || finishedRestMode==="superset"){
     toast("Descanso omitido · Siguiente ejercicio");
-
   }else{
-
     toast("Descanso omitido · Siguiente serie");
-
   }
 }
 
@@ -10161,9 +10145,13 @@ if(progressResult.completedAll){
 }
   window.activeWorkout=null;
 
-  toast("Entrenamiento guardado ✓");
-
-  showClient("profile");
+  window.__dccWorkoutCompleted={
+    dayIndex:Number(workout.dayIndex),
+    dayName:workout.dayName||`Día ${Number(workout.dayIndex)+1}`,
+    duration:duration
+  };
+  toast("Entrenamiento completado ✓");
+  showClient("home");
 
 }
 
