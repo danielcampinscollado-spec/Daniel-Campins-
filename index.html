@@ -10268,7 +10268,12 @@ if(screen==="dashboard"){
 
   if(!window.__dccCoachDashboardSync){
     window.__dccCoachDashboardSync=true;
-    Promise.allSettled([loadMessagesFromSupabase(),loadNotificationStateFromSupabase(),loadCheckinsFromSupabase()]).finally(()=>{
+    supabaseClient.auth.getUser().then(({data:authData})=>{
+      if(!authData?.user)return [];
+      return Promise.allSettled([loadMessagesFromSupabase(),loadNotificationStateFromSupabase(),loadCheckinsFromSupabase()]);
+    }).catch(error=>{
+      console.warn("DCC coach dashboard sync skipped until authenticated",error);
+    }).finally(()=>{
       window.__dccCoachDashboardSync=false;
       if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
     });
