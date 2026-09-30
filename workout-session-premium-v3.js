@@ -152,13 +152,32 @@
       ? previousSeries.blocks[Math.min(Number(workout.restPauseState?.[String(workout.currentExercise)]?.block)||0,previousSeries.blocks.length-1)]
       : previousSeries;
     const restActive=!!(workout.restUntil&&workout.restUntil>Date.now());
+    let techniqueLabel='SERIE ACTUAL',techniqueDetail='Serie '+Math.min(completed+1,planned||1)+' de '+(planned||'—'),actionLabel=completed+1<planned?'Siguiente serie':'Completar serie';
+    if(exercise.restPause){
+      const targets=String(exercise.restPauseReps||exercise.reps||'').trim().split(/[\\/\\-–,\\s]+/).map(v=>parseInt(v)).filter(v=>Number.isFinite(v)&&v>0);
+      const state=workout.restPauseState?.[String(workout.currentExercise)]||{seriesCompleted:0,block:0};
+      const series=Math.min((Number(state.seriesCompleted)||0)+1,Math.max(1,parseInt(exercise.sets)||1));
+      const block=Math.min((Number(state.block)||0)+1,Math.max(1,targets.length));
+      const target=targets[block-1];
+      techniqueLabel='REST-PAUSE · SERIE '+series+' DE '+Math.max(1,parseInt(exercise.sets)||1);
+      techniqueDetail='Bloque '+block+' de '+Math.max(1,targets.length)+(target?' · '+target+' repeticiones':'');
+      actionLabel=block<targets.length?'Completar bloque '+block+(target?' · '+target+' reps':''):'Completar serie rest-pause '+series+(target?' · '+target+' reps':'');
+    }else if(exercise.supersetId){
+      const members=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===exercise.supersetId).sort((a,b)=>(Number(a.ex.supersetOrder)||0)-(Number(b.ex.supersetOrder)||0));
+      const pos=Math.max(0,members.findIndex(x=>x.index===workout.currentExercise));
+      const state=workout.supersetState?.[exercise.supersetId]||{round:1};
+      const round=Math.max(1,Number(state.round)||1),rounds=Math.max(1,parseInt(exercise.supersetRounds||exercise.sets)||1);
+      techniqueLabel='SUPERSERIE · SERIE '+round+' DE '+rounds;
+      techniqueDetail='Ejercicio '+(pos+1)+' de '+members.length;
+      actionLabel=pos<members.length-1?'Siguiente ejercicio →':'Completar superserie '+round;
+    }
 
     if(finished){
       return `<section class="dwa3-card dwa3-current"><div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>EJERCICIO COMPLETADO</span></div><small>${completed} de ${planned}</small></div>${renderSavedToday(workout.sets)}<button class="dwa3-primary" type="button" onclick="nextWorkoutExercise()">${workout.currentExercise<workout.exercises.length-1?'Siguiente ejercicio':'Finalizar entrenamiento'} <b>→</b></button></section>`;
     }
 
     return `<section class="dwa3-card dwa3-current">
-      <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>SERIE ACTUAL</span></div><small>Serie ${Math.min(completed+1,planned||1)} de ${planned||'—'}</small></div>
+      <div class="dwa3-current-head"><div class="dwa3-section-title">${icon('dumbbell')}<span>${techniqueLabel}</span></div><small>${techniqueDetail}</small></div>
       <div class="dwa3-steps">${renderSeriesSteps(planned,completed)}</div>
       ${restActive?`${renderSavedToday(workout.sets)}<div class="dwa3-rest-note">${exercise.restPause&&workout.restMode==='restpause-block'?`Bloque ${Math.max(1,Number(workout.restPauseState?.[String(workout.currentExercise)]?.block)||1)} guardado · mini-descanso antes del siguiente bloque`:exercise.restPause&&workout.restMode==='restpause-series'?`Serie ${completed} guardada · descansa antes de la siguiente serie`:`Serie ${completed} guardada · descansa antes de continuar`}</div>`:`
         <div class="dwa3-fields">
@@ -166,7 +185,7 @@
           <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
         </div>
         ${renderSavedToday(workout.sets)}
-        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${completed+1<planned?'Siguiente serie':'Completar serie'} <b>→</b></button>`}
+        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${actionLabel} <b>→</b></button>`}
     </section>`;
   }
 
