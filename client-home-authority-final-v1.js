@@ -590,7 +590,6 @@ function install(){
     if(screen==='food'&&typeof window.dccEnhanceClientDiet==='function')requestAnimationFrame(()=>requestAnimationFrame(()=>{
       if(window.currentScreen==='food')window.dccEnhanceClientDiet();
     }));
-    if(screen==='messages'&&typeof window.dccOpenClientMessagesPremium==='function')window.dccOpenClientMessagesPremium();
     return result;
   };
   wrapped.__dccHomePremiumV2=true;
