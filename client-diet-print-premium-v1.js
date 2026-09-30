@@ -175,7 +175,7 @@ window.dccPrintClientDiet=function(){
   <div class="meals">${meals.map(mealHtml).join('')}</div>
   <footer class="footer"><b>Gracias por cuidarte</b><span>Documento generado para guardar o imprimir.</span></footer>
   </main><div class="printbar"><button type="button" onclick="window.print()">Imprimir / Guardar PDF</button></div>
-  <script>setTimeout(function(){window.print()},450)<\/script></body></html>`;
+  </body></html>`;
 
   w.document.open();w.document.write(html);w.document.close();
   return true;
