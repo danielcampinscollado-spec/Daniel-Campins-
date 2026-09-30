@@ -50,7 +50,14 @@ function apply(){
 }
 function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;apply()})}
 const s=document.createElement('style');s.id='dcc-training-home-actions-css';s.textContent=`
-#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-days{padding-bottom:0!important;margin-bottom:0!important}
+#coach-main[data-dcc-routine-home-mode="1"] #dcc-coach-client-pane[data-dcc-pane="training"]>.dcc-ca-card:first-child{padding:11px 14px!important;margin:0 0 8px!important;border-radius:17px!important;min-height:0!important}
+#coach-main[data-dcc-routine-home-mode="1"] #dcc-coach-client-pane[data-dcc-pane="training"]>.dcc-ca-card:first-child .dcc-ca-title{min-height:34px!important;align-items:center!important}
+#coach-main[data-dcc-routine-home-mode="1"] #dcc-coach-client-pane[data-dcc-pane="training"]>.dcc-ca-card:first-child h2{font-size:17px!important;line-height:1.1!important}
+#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-days{padding-bottom:0!important;margin-bottom:0!important;gap:6px!important}
+#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-day{border-radius:14px!important}
+#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-day-head{min-height:52px!important;padding:7px 12px!important}
+#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-day-head b{font-size:13px!important}
+#coach-main[data-dcc-routine-home-mode="1"] .dcc-tr-day-head small{padding:3px 7px!important;font-size:8px!important}
 #coach-main [data-dcc-routine-home-actions="1"]{min-height:42px!important;height:42px!important;max-height:42px!important;overflow:visible!important}
 #coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"]{width:100%!important;margin:8px 0 12px!important;background:linear-gradient(145deg,#fffefa,#fbf6ec)!important;border:1px solid rgba(183,123,19,.24)!important;border-radius:14px!important;box-shadow:0 8px 20px rgba(83,63,31,.06)!important;color:#17191d!important}
 #coach-main[data-dcc-routine-home-mode="1"] [data-dcc-history="1"] .dcc-tr-history-head{min-height:42px!important;padding:9px 13px!important;background:transparent!important;color:#17191d!important}
