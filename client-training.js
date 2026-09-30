@@ -228,19 +228,28 @@
     const access=(typeof window.dccGetTrainingAccessState==='function')
       ? window.dccGetTrainingAccessState(id,dayIndex)
       : {allowed:true,reason:'',code:'ready'};
-    const startLabel=access.allowed
-      ? '▶&nbsp; Empezar entrenamiento'
-      : (
-          access.code==='next-day'||access.code==='today-complete'
-            ? 'Disponible mañana'
-            : access.code==='sequence-locked'||access.code==='sequence-required'
-              ? 'Completa el día anterior'
-              : access.code==='already-completed'
-                ? '✓ Completado'
-                : 'No disponible'
-        );
+    const completedDays=Array.isArray(d?.completedTrainingDays?.[id])?d.completedTrainingDays[id].map(Number):[];
+    const dayCompleted=completedDays.includes(Number(dayIndex));
+    const startLabel=dayCompleted
+      ? '✓ Entrenamiento completado'
+      : access.allowed
+        ? '▶&nbsp; Empezar entrenamiento'
+        : (
+            access.code==='next-day'||access.code==='today-complete'
+              ? 'Disponible mañana'
+              : access.code==='sequence-locked'||access.code==='sequence-required'
+                ? 'Completa el día anterior'
+                : access.code==='already-completed'
+                  ? '✓ Entrenamiento completado'
+                  : 'No disponible'
+          );
 
-    const dayButtons=routine.slice(0,7).map((x,i)=>`<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b></button>`).join('');
+    const dayButtons=routine.slice(0,7).map((x,i)=>{
+      const done=completedDays.includes(Number(i));
+      const next=(typeof window.dccGetTrainingAccessState==='function')?window.dccGetTrainingAccessState(id,i):{allowed:i===dayIndex,code:'ready'};
+      const state=done?'COMPLETADO':(next.code==='next-day'||next.code==='today-complete')?'MAÑANA':next.allowed?'HOY':'';
+      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b>${state?`<em style="display:block;margin-top:3px;font-size:7px;font-style:normal;font-weight:850;letter-spacing:.6px;color:${done?'#8b641c':'#9a6b15'}">${state}</em>`:''}</button>`;
+    }).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
       const art=v.kind==='image'
