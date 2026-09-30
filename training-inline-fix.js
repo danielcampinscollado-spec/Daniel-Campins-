@@ -69,8 +69,6 @@
       row.classList.add('dcc-no-img');
     });
   }
-  function historyHtml(id){const p=previousDays(id);return `<section class="dcc-tr-history-panel" data-dcc-history="1"><button class="dcc-tr-history-head" onclick="dccTogglePreviousRoutineInline('${esc(id)}')"><span><b>↶ &nbsp; Entrenamiento anterior</b><small>${p.length?'Ver el último entrenamiento guardado':'Todavía no hay un entrenamiento anterior guardado'}</small></span><span class="dcc-tr-arrow">${state.previousOpen?'⌃':'›'}</span></button>${state.previousOpen&&p.length?`<div class="dcc-tr-history-body">${p.map((d,i)=>`<div class="dcc-tr-history-day"><b>Día ${i+1}</b><small>${esc(dayMuscles(d).join(' · ')||'Sin grupos musculares')}</small>${(d.exercises||[]).map(ex=>`<div class="dcc-tr-history-ex"><span>${esc(exName(ex))}</span><span>${esc(exSets(ex)||'—')} series · ${esc(exReps(ex)||'—')} reps</span></div>`).join('')}</div>`).join('')}</div>`:''}</section>`}
-
   function decorate(){
     if(state.guard)return;
     const active=[...document.querySelectorAll('.dcc-ca-tab.active')].some(b=>/Entrenamiento/i.test(b.textContent||''));if(!active)return;
@@ -78,11 +76,8 @@
     state.guard=true;
     try{
       ensureCss();stripExerciseImages();document.querySelectorAll('button.dcc-tr-history').forEach(x=>x.remove());
-      const existingHistory=document.querySelector('[data-dcc-history="1"]');
-      if(!window.__dccTrainingEdit){
-        if(!existingHistory){const actions=document.querySelector('#coach-main .dcc-tr-actions');if(actions)actions.insertAdjacentHTML('afterend',historyHtml(id));}
-      }else{
-        if(existingHistory)existingHistory.remove();
+      document.querySelector('[data-dcc-history="1"]')?.remove();
+      if(window.__dccTrainingEdit){
         const days=routineDays(id);
         document.querySelectorAll('.dcc-tr-days>.dcc-tr-day').forEach((de,di)=>{
           de.querySelector('.dcc-tr-add')?.remove();
