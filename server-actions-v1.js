@@ -67,33 +67,6 @@
     }
   };
 
-  window.createClient=async function(){
-    const name=String(document.getElementById('new-name')?.value||'').trim();
-    const weightText=String(document.getElementById('new-weight')?.value||'').trim();
-    const bodyFatText=String(document.getElementById('new-body-fat')?.value||'').trim();
-    const goal=String(document.getElementById('new-goal')?.value||'').trim();
-    if(!name||!weightText||!bodyFatText||!goal){notify('Completa todos los campos');return}
-    const weight=Number(weightText.replace(',','.'));
-    const bodyFat=Number(bodyFatText.replace(',','.'));
-    if(!Number.isFinite(weight)||weight<=0||weight>=500){notify('Introduce un peso válido');return}
-    if(!Number.isFinite(bodyFat)||bodyFat<=0||bodyFat>=70){notify('Introduce un % de grasa válido');return}
-    const database=db();
-    if(!database){alert('No hay conexión con el servidor. El cliente no se ha creado.');return}
-    const id='client_'+Date.now();
-    try{
-      const result=await database.rpc('dcc_create_client',{p_id:id,p_name:name,p_goal:goal,p_weight:weight,p_body_fat:bodyFat});
-      if(result.error)throw result.error;
-      if(result.data!==true)throw new Error('El servidor no confirmó la creación del cliente');
-      await refreshClientDomains();
-      if(typeof window.closeModal==='function')window.closeModal();
-      if(typeof window.showCoach==='function')window.showCoach('clients');
-      notify('Cliente creado correctamente');
-    }catch(error){
-      console.error('DCC creación atómica de cliente:',error);
-      alert('No se pudo crear el cliente. No se ha guardado ningún estado parcial.\n\n'+(error?.message||'Error del servidor'));
-    }
-  };
-
   window.editDietMarcos=async function(id,type){
     const current=clone(appData().diets?.[id]?.[type])||{calories:'',protein:'',meals:[]};
     const calories=prompt('Calorías:',current.calories||'');
