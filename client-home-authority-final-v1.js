@@ -213,8 +213,8 @@ function css(){
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
     display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
-    background:transparent!important;color:transparent!important;border:0!important;
-    width:8px!important;max-width:8px!important;height:8px!important;margin:8px auto 0!important;padding:0!important;font-size:0!important;
+    background:#55b96d!important;color:#fff!important;border:0!important;
+    width:16px!important;max-width:16px!important;height:16px!important;margin:7px auto 0!important;padding:0!important;font-size:10px!important;
     white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{
@@ -222,13 +222,10 @@ function css(){
     width:8px!important;height:8px!important;flex:0 0 8px!important;border-radius:50%!important;
     background:#55b96d!important;transform:none!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next{
-    background:#fffafa!important;border-color:#d98b8b!important;
-    box-shadow:inset 0 0 0 1px rgba(185,67,67,.06)!important
-  }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next em{
-    display:none!important
-  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.locked{background:#fffafa!important;border-color:#e69a9a!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.locked em{display:inline-flex!important;background:#ef3f47!important;color:#fff!important;border:0!important;width:16px!important;min-width:16px!important;height:16px!important;margin:7px auto 0!important;padding:0!important;font-size:13px!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next:not(.locked){background:#fff9ed!important;border-color:#c89125!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next:not(.locked) em{background:#f0c95e!important;color:#3c2a08!important}
   @media(max-width:390px){
     html.dcc-theme-light-premium body #client #client-main .dcc-week-carousel{
       grid-template-columns:16px minmax(0,1fr) 16px!important;gap:4px!important
@@ -463,10 +460,11 @@ function renderHome(){
     const done=persistedCompleted.includes(Number(i)) || (typeof window.isTrainingDayCompleted==='function'&&window.isTrainingDayCompleted(id(),i));
     const isNext=i===next.index;
     const state=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Disponible mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
-    const shortState=done?'':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'':next.access.allowed?'Hoy':''):'');
+    const locked=!done && (!isNext || !next.access.allowed);
+    const shortState=done?'✓':(locked?'×':(isNext&&next.access.allowed?'Hoy':''));
     return {
       i,
-      html:`<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b>Día ${i+1}</b><span class="muscle">${esc(dayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`
+      html:`<div class="dcc-home2-day ${done?'done':''} ${locked?'locked':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b>Día ${i+1}</b><span class="muscle">${esc(dayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`
     };
   });
 
