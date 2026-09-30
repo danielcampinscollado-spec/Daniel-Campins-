@@ -247,8 +247,9 @@
     const dayButtons=routine.slice(0,7).map((x,i)=>{
       const done=completedDays.includes(Number(i));
       const next=(typeof window.dccGetTrainingAccessState==='function')?window.dccGetTrainingAccessState(id,i):{allowed:i===dayIndex,code:'ready'};
-      const state=done?'✓':(next.code==='next-day'||next.code==='today-complete')?'Mañ.':next.allowed?'Hoy':'';
-      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''} ${done?'is-done':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b>${state?`<em>${state}</em>`:''}</button>`;
+      const locked=!done&&!next.allowed;
+      const state=done?'✓':locked?'×':next.allowed?'Hoy':'';
+      return `<button type="button" class="dct3-day ${i===dayIndex?'active':''} ${done?'is-done':''} ${locked?'is-locked':''}" data-day="${i}"><span>DÍA</span><b>${i+1}</b>${state?`<em>${state}</em>`:''}</button>`;
     }).join('');
     const visuals=muscles.map(x=>{
       const v=x.visual;
@@ -292,6 +293,8 @@
           width:13px!important;height:13px!important;border-radius:50%!important;background:#55b96d!important;
           color:#fff!important;font-size:8px!important
         }
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.is-locked{background:#fffafa!important;border-color:#e69a9a!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-day.is-locked em{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:13px!important;height:13px!important;border-radius:50%!important;background:#ef3f47!important;color:#fff!important;font-size:11px!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
           display:flex!important;
           gap:6px!important;
