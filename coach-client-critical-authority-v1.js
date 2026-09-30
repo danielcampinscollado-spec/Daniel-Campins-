@@ -47,6 +47,18 @@
     };
   }
 
+  function mergePrivate(cl,row){
+    if(!cl||!row)return cl;
+    cl.checkinFrequency=cl.checkin_frequency=row.checkin_frequency??cl.checkin_frequency??'off';
+    cl.photoFrequency=cl.photo_frequency=row.photo_frequency??cl.photo_frequency??'off';
+    cl.nextDietReview=cl.next_diet_review=row.next_diet_review||'';
+    cl.nextRoutineReview=cl.next_routine_review=row.next_routine_review||'';
+    cl.followupConfiguredAt=cl.followup_configured_at=row.followup_configured_at||null;
+    cl.coachNotes=Array.isArray(row.coach_notes)?row.coach_notes:[];
+    cl.coach_notes=cl.coachNotes;
+    return cl;
+  }
+
   function prune(valid){
     const d=appData();
     ['checkins','diets','routines','previousRoutines','routineUpdatedAt','weights','workoutHistory','bodyFatHistory','messages','notificationState','completedTrainingDays','dietHistory'].forEach(k=>{
@@ -59,10 +71,13 @@
   async function syncClients(render=true){
     await coachSession();
     const database=db();
-    const res=await database.from('clients').select('*').order('created_at',{ascending:true});
-    if(res.error)throw res.error;
-    const d=appData(),previous=new Map((d.clients||[]).map(x=>[String(x.id),x]));
-    d.clients=(res.data||[]).map(r=>normalize(r,previous.get(String(r.id))||{}));
+    const [res,privateRes]=await Promise.all([
+      database.from('clients').select('*').order('created_at',{ascending:true}),
+      database.from('coach_client_private').select('client_id,checkin_frequency,photo_frequency,next_diet_review,next_routine_review,followup_configured_at,coach_notes')
+    ]);
+    if(res.error)throw res.error;if(privateRes.error)throw privateRes.error;
+    const d=appData(),previous=new Map((d.clients||[]).map(x=>[String(x.id),x])),privateById=new Map((privateRes.data||[]).map(x=>[String(x.client_id),x]));
+    d.clients=(res.data||[]).map(r=>mergePrivate(normalize(r,previous.get(String(r.id))||{}),privateById.get(String(r.id))));
     const valid=new Set(d.clients.map(x=>String(x.id)));prune(valid);
     try{if(typeof window.saveData==='function')window.saveData();else if(typeof saveData==='function')saveData()}catch(_){}
     if(render&&window.currentApp==='coach'&&typeof window.showCoach==='function'&&(window.currentScreen==='dashboard'||window.currentScreen==='clients'))window.showCoach(window.currentScreen);
