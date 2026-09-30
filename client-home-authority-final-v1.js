@@ -384,7 +384,7 @@ function nextState(){
 }
 
 function accessText(access){
-  if(access?.code==='today-complete')return 'Disponible mañana';
+  if(access?.code==='next-day'||access?.code==='today-complete')return 'Disponible mañana';
   if(access?.code==='week-complete')return 'Disponible el próximo lunes';
   if(access?.code==='already-completed')return 'Completado esta semana';
   if(access?.code==='sequence-required')return 'Sigue el orden de tu plan';
@@ -449,8 +449,8 @@ function renderHome(){
   const allDays=r.map((day,i)=>{
     const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
     const isNext=i===next.index;
-    const state=done?'Completado':(isNext?(next.access.code==='today-complete'?'Mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
-    const shortState=done?'✓':(isNext?(next.access.code==='today-complete'?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
+    const state=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Disponible mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
+    const shortState=done?'✓':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
     return {
       i,
       html:`<div class="dcc-home2-day ${done?'done':''} ${isNext?'next':''}" title="${esc(dayTitle(day))}"><b>Día ${i+1}</b><span class="muscle">${esc(dayTitle(day))}</span><em title="${esc(state)}">${shortState}</em></div>`
