@@ -5907,7 +5907,7 @@ async function loadTrainingProgressFromSupabase(){
   try{
     const {data:rows,error}=await supabaseClient
       .from("client_training_progress")
-      .select("client_id,completed_days,next_day_index,week_start,updated_at");
+      .select("client_id,completed_days,next_day_index,week_start,last_completed_at,updated_at");
 
     if(error){
       console.error("Error cargando progreso de entrenamiento:",error);
@@ -5917,6 +5917,7 @@ async function loadTrainingProgressFromSupabase(){
     data.completedTrainingDays={};
     data.trainingNextDayIndex={};
     data.trainingProgressWeekStart={};
+    data.trainingLastCompletedAt={};
 
     const currentWeek=getCurrentWeekKey();
     const stale=[];
@@ -5929,6 +5930,7 @@ async function loadTrainingProgressFromSupabase(){
         : [];
 
       data.trainingNextDayIndex[id]=Math.max(0,parseInt(row.next_day_index)||0);
+      if(row.last_completed_at)data.trainingLastCompletedAt[id]=row.last_completed_at;
 
       if(rowWeek===currentWeek){
         data.completedTrainingDays[id]=completed;
@@ -5990,6 +5992,7 @@ async function saveTrainingProgressToSupabase(clientId){
         completed_days:completed,
         next_day_index:nextDayIndex,
         week_start:weekKey,
+        last_completed_at:data.trainingLastCompletedAt?.[clientId]||null,
         updated_at:new Date().toISOString()
       },{onConflict:"client_id"});
 
