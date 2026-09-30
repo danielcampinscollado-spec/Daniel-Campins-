@@ -212,18 +212,15 @@ function css(){
     background:#fffdf8!important;border-color:#d9cba9!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
-    display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
     background:#55b96d!important;color:#fff!important;border:0!important;
-    width:16px!important;max-width:16px!important;height:16px!important;margin:7px auto 0!important;padding:0!important;font-size:10px!important;
-    white-space:nowrap!important
+    width:18px!important;min-width:18px!important;max-width:18px!important;height:18px!important;
+    margin:7px auto 0!important;padding:0!important;border-radius:50%!important;
+    font-size:11px!important;line-height:18px!important;white-space:nowrap!important
   }
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{
-    content:""!important;position:static!important;display:block!important;
-    width:8px!important;height:8px!important;flex:0 0 8px!important;border-radius:50%!important;
-    background:#55b96d!important;transform:none!important
-  }
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{content:none!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.locked{background:#fffafa!important;border-color:#e69a9a!important}
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.locked em{display:inline-flex!important;background:#ef3f47!important;color:#fff!important;border:0!important;width:16px!important;min-width:16px!important;height:16px!important;margin:7px auto 0!important;padding:0!important;font-size:13px!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.locked em{display:flex!important;align-items:center!important;justify-content:center!important;background:#ef3f47!important;color:#fff!important;border:0!important;width:18px!important;min-width:18px!important;max-width:18px!important;height:18px!important;margin:7px auto 0!important;padding:0!important;border-radius:50%!important;font-size:13px!important;line-height:18px!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next:not(.locked){background:#fff9ed!important;border-color:#c89125!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.next:not(.locked) em{background:#f0c95e!important;color:#3c2a08!important}
   @media(max-width:390px){
