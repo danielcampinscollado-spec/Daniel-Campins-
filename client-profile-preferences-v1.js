@@ -90,26 +90,9 @@
     }
   }
 
-  function installDeleteGuard(){
-    if(window.__dccDeleteGuardV2)return;window.__dccDeleteGuardV2=true;
+  function installDietAvoidGuard(){
+    if(window.__dccDietAvoidGuardV2)return;window.__dccDietAvoidGuardV2=true;
     document.addEventListener('click',event=>{
-      const del=event.target.closest?.('#coach-main .dcc-ca-delete');
-      if(del){
-        event.preventDefault();event.stopImmediatePropagation();
-        const id=clientId(),c=clientFor(id);if(!id||!c)return;
-        if(!confirm(`¿Eliminar definitivamente a ${c.name}? Esta acción borrará también sus datos asociados.`))return;
-        (async()=>{
-          const db=database();if(!db){notify('No hay conexión con el servidor.');return}
-          try{
-            const {data:deleted,error}=await db.from('clients').delete().eq('id',id).select('id');
-            if(error)throw error;if(!Array.isArray(deleted)||!deleted.length)throw new Error('El servidor no confirmó la eliminación');
-            const d=appData();d.clients=(d.clients||[]).filter(x=>String(x.id)!==String(id));
-            ['checkins','diets','routines','weights','workoutHistory','bodyFatHistory','messages','notificationState'].forEach(k=>{if(d[k]&&typeof d[k]==='object')delete d[k][id]});
-            save();notify('Cliente eliminado definitivamente');window.showCoach?.('clients');
-          }catch(e){console.error(e);notify('No se pudo eliminar el cliente');}
-        })();
-        return;
-      }
       const add=event.target.closest?.('#coach-main .dcc-diet-add-food');
       if(add&&!window.dccDietAddFood?.__dccNativeAvoidWarning){const c=clientFor(clientId()),f=foods(c);if(f)alert(`Aviso del cliente\nNo incluir: ${f}.`)}
     },true);
@@ -125,7 +108,7 @@
   }
 
   function boot(){
-    css();installDeleteGuard();schedule();
+    css();installDietAvoidGuard();schedule();
     window.addEventListener('pageshow',schedule);
     window.dccProfilePreferencesRefresh=schedule;
   }
