@@ -214,7 +214,7 @@ function css(){
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em{
     display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
     background:#edf7ef!important;color:#3f7950!important;border:1px solid #d3ead9!important;
-    min-width:0!important;max-width:56px!important;height:18px!important;padding:0 5px!important;font-size:6px!important;
+    width:calc(100% - 8px)!important;max-width:none!important;height:18px!important;margin:6px 4px 0!important;padding:0 3px!important;font-size:5.8px!important;
     white-space:nowrap!important
   }
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-day.done em:before{
@@ -242,7 +242,7 @@ function css(){
   }
 
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card.is-collapsed .dcc-home2-task-list{display:none!important}
-  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card .dcc-home2-card-head{cursor:pointer!important}
+  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card .dcc-home2-card-head{cursor:pointer!important}\n  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-head-right{display:flex!important;align-items:center!important;gap:8px!important}\n  html.dcc-theme-light-premium body #client #client-main .dcc-home2-task-chevron{display:inline-flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;line-height:1!important;color:#a87820!important;transition:transform .18s ease!important}\n  html.dcc-theme-light-premium body #client #client-main .dcc-home2-card:not(.is-collapsed) .dcc-home2-task-chevron{transform:rotate(180deg)!important}
   html.dcc-theme-light-premium body #client #client-main .dcc-home2-card.is-collapsed{padding-bottom:0!important}
 
   /* TOP PREMIUM NEXT WORKOUT */
@@ -498,7 +498,7 @@ function renderHome(){
       <header class="dcc-home2-head"><div><div class="dcc-home2-kicker">BIENVENIDO A DCC FITNESS</div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-home2-line"></div><div class="dcc-home2-motto">Aquí tienes tu resumen de hoy.</div></div></header>
       ${checkinSummary?`<section class="dcc-home2-checkin" onclick="showClient('progress')"><div class="dcc-home2-checkin-icon">${icon('chart')}</div><div class="dcc-home2-checkin-copy"><div class="dcc-home2-label">TU ÚLTIMO CHECK-IN</div><h3>${esc(checkinSummary.title)}</h3><p>${esc(checkinSummary.text)}</p><small>${esc(checkinSummary.foot)}</small></div><div class="dcc-home2-arrow">›</div></section>`:''}
     </div>
-    ${tasks.length?`<section class="dcc-home2-card is-collapsed" id="dcc-home2-tasks"><div class="dcc-home2-card-head" role="button" tabindex="0" onclick="const s=document.getElementById('dcc-home2-tasks');s.classList.toggle('is-collapsed')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-count">${tasks.length}</div></div><div class="dcc-home2-task-list">${taskRows}</div></section>`:''}
+    ${tasks.length?`<section class="dcc-home2-card is-collapsed" id="dcc-home2-tasks"><div class="dcc-home2-card-head" role="button" tabindex="0" onclick="const s=document.getElementById('dcc-home2-tasks');s.classList.toggle('is-collapsed')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"><div class="dcc-home2-label">TAREAS PENDIENTES</div><div class="dcc-home2-task-head-right"><div class="dcc-home2-count">${tasks.length}</div><span class="dcc-home2-task-chevron">⌄</span></div></div><div class="dcc-home2-task-list">${taskRows}</div></section>`:''}
     <section class="dcc-home2-progress" onclick="showClient('progress')"><div class="dcc-home2-progress-head"><div class="dcc-home2-label">TU PROGRESO</div></div><div class="dcc-home2-progress-body"><div class="dcc-home2-progress-icon">${icon('chart')}</div><div class="dcc-home2-progress-copy"><h3>Sigue dando lo mejor de ti</h3><p>Cada entrenamiento, cada comida y cada hábito te acerca a tu mejor versión.</p></div><div class="dcc-home2-arrow">›</div></div></section>
     ${r.length?`<section class="dcc-home2-week"><div class="dcc-home2-week-head"><div class="dcc-home2-label">TU PLAN DE ESTA SEMANA</div><div class="dcc-home2-week-link" onclick="showClient('training')">VER PLAN SEMANAL ›</div></div><div class="dcc-week-carousel"><button type="button" class="dcc-week-arrow left" aria-label="Ver días anteriores" ${canGoLeft?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.max(0,${weekStart}-2);window.__dccWeekPlanAutoIndex=null;showClient('home')">‹</button><div class="dcc-home2-days">${visibleDays}</div><button type="button" class="dcc-week-arrow right" aria-label="Ver días siguientes" ${canGoRight?'':'disabled'} onclick="window.__dccWeekPlanStart=Math.min(${maxStart},${weekStart}+2);window.__dccWeekPlanAutoIndex=null;showClient('home')">›</button></div></section>`:''}
     ${hero}
