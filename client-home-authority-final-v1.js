@@ -454,8 +454,9 @@ function renderHome(){
     tasks.push({type:'check',title:'Nuevo mensaje',text:'Tienes un mensaje nuevo de tu entrenador',action:"dccOpenClientTask('message','messages')"});
   }
 
+  const persistedCompleted=Array.isArray(d().completedTrainingDays?.[id()])?d().completedTrainingDays[id()].map(Number):[];
   const allDays=r.map((day,i)=>{
-    const done=typeof window.isTrainingDayCompleted==='function'?window.isTrainingDayCompleted(id(),i):false;
+    const done=persistedCompleted.includes(Number(i)) || (typeof window.isTrainingDayCompleted==='function'&&window.isTrainingDayCompleted(id(),i));
     const isNext=i===next.index;
     const state=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Disponible mañana':next.access.allowed?'Hoy':'Próximo'):'Pendiente');
     const shortState=done?'Completado':(isNext?((next.access.code==='next-day'||next.access.code==='today-complete')?'Mañ.':next.access.allowed?'Hoy':'Sig.'):'•');
