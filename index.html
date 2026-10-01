@@ -6792,23 +6792,22 @@ window.dccSwitchClientDietOption=function(button,mealIndex,optionIndex){
   const currentClientId=String(data.currentClient||window.currentClient||'');
   const plan=data.diets?.[currentClientId]||{};
   let dietType=window.clientDietType||'training';
-  if(!Array.isArray(plan?.[dietType]?.meals)){
-    dietType=Array.isArray(plan?.training?.meals)?'training':'rest';
-  }
-  const meal=plan?.[dietType]?.meals?.[mealIndex];
-  const options=typeof ensureMealOptions==='function'
-    ? ensureMealOptions(meal||{})
-    : (Array.isArray(meal?.options)?meal.options:[{name:'Opción 1',foods:meal?.foods||[]}]);
+  if(!Array.isArray(plan?.[dietType]?.meals))dietType=Array.isArray(plan?.training?.meals)?'training':'rest';
+  const meal=plan?.[dietType]?.meals?.[mealIndex]||{};
+  const options=typeof ensureMealOptions==='function'?ensureMealOptions(meal):(Array.isArray(meal.options)?meal.options:[{name:'Opción 1',foods:meal.foods||[]}]);
   const validOptions=options.filter(o=>o&&Array.isArray(o.foods)&&o.foods.length);
-  const foods=validOptions[optionIndex]?.foods||[];
+  const selected=validOptions[optionIndex];
   content.querySelectorAll('.food-row,.empty.compact-empty').forEach(row=>row.remove());
+  const foods=selected?.foods||[];
   foods.forEach(f=>{
     const row=document.createElement('div');row.className='food-row';
-    const name=document.createElement('span');name.textContent=String(f?.[0]??'');
-    const qty=document.createElement('b');qty.textContent=String(f?.[1]??'');
+    const name=document.createElement('span');
+    const qty=document.createElement('b');
+    if(Array.isArray(f)){name.textContent=String(f[0]??'');qty.textContent=String(f[1]??'')}
+    else{name.textContent=String(f?.name??f?.food??f?.label??f?.alimento??'');qty.textContent=String(f?.quantity??f?.qty??f?.amount??f?.grams??f?.cantidad??'')}
     row.append(name,qty);content.appendChild(row);
   });
-  if(!foods.length){const empty=document.createElement('div');empty.className='empty compact-empty';empty.textContent='Esta comida todavía no tiene alimentos.';content.appendChild(empty)}
+  if(!foods.length){const empty=document.createElement('div');empty.className='empty compact-empty';empty.textContent='Esta opción todavía no tiene alimentos.';content.appendChild(empty)}
   card.open=true;
 };
 
