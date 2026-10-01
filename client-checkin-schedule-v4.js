@@ -92,7 +92,7 @@
       .dcc-ci4-photo button{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;color:#586173}
       .dcc-ci4-photo-figure{position:absolute;inset:11px 12px 31px;display:grid;place-items:center;color:#b8b5ae}
       .dcc-ci4-photo-figure svg{width:65%;height:88%;fill:currentColor}
-      .dcc-ci4-photo.side .dcc-ci4-photo-figure svg{width:38%}
+      .dcc-ci4-photo.dcc-ci4-side .dcc-ci4-photo-figure svg{width:38%}
       .dcc-ci4-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
       .dcc-ci4-plus{position:absolute;right:8px;top:8px;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#dda52f,#bb7d13);color:#fff;font-size:22px;line-height:1;box-shadow:0 5px 14px rgba(159,104,13,.22)}
       .dcc-ci4-photo-label{position:relative;z-index:2;width:100%;padding:7px 4px;background:linear-gradient(180deg,transparent,rgba(255,253,248,.94) 35%);color:#303744;font-size:10px;font-weight:800;text-align:center}
@@ -160,7 +160,7 @@
 
   function photoBox(key,label,side,d,locked){
     const p=d.previews[key];
-    return `<div class="dcc-ci4-photo ${side?'side':''}">
+    return `<div class="dcc-ci4-photo ${side?'dcc-ci4-side':''}">
       <input id="dccCi4File-${key}" type="file" accept="image/*" hidden ${locked?'disabled':''} onchange="dccCheckinV4Photo('${key}',this.files&&this.files[0])">
       <button type="button" ${locked?'disabled':''} onclick="document.getElementById('dccCi4File-${key}').click()">
         ${p?`<img src="${esc(p)}" alt="${esc(label)}">`:`<div class="dcc-ci4-photo-figure">${personSvg}</div>`}
