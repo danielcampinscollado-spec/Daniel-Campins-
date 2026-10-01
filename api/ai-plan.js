@@ -178,7 +178,7 @@ module.exports=async function handler(req,res){
       ?body.exerciseCatalog.slice(0,180).map(x=>({name:cleanText(x?.name,80),muscle:cleanText(x?.muscle,40)})).filter(x=>x.name)
       :[];
     const context=clientContext(client);
-    const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||'';
+    const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
     if(!gatewayToken)return json(res,503,{error:'La conexión segura con la IA no está configurada'});
 
     const userPayload={
