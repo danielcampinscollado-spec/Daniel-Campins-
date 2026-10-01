@@ -138,6 +138,7 @@
   window.dccRefreshClientChatRealtime=function(id){
     if(window.__dccClientPremiumScreen==='messages'&&String(activeClientId())===String(id)){
       refreshClientThread(id);
+      try{if(typeof markClientNotificationSeen==='function')markClientNotificationSeen('message',id)}catch(e){}
     }
   };
 
@@ -172,7 +173,13 @@
       if(document.hidden){stopMessagePolling();return}
       if(window.__dccClientPremiumScreen!=='messages'){stopMessagePolling();return}
       const id=activeClientId();if(!id)return;
-      const before=JSON.stringify(appData().messages?.[id]||[]);const ok=await syncMessages();const after=JSON.stringify(appData().messages?.[id]||[]);if(ok&&before!==after)refreshClientThread(id);
+      const before=JSON.stringify(appData().messages?.[id]||[]);
+      const ok=await syncMessages();
+      const after=JSON.stringify(appData().messages?.[id]||[]);
+      if(ok&&before!==after){
+        refreshClientThread(id);
+        try{if(typeof markClientNotificationSeen==='function')await markClientNotificationSeen('message',id)}catch(e){}
+      }
     },4500);
   }
   document.addEventListener('visibilitychange',()=>{
