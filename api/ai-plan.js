@@ -178,8 +178,8 @@ module.exports=async function handler(req,res){
       ?body.exerciseCatalog.slice(0,180).map(x=>({name:cleanText(x?.name,80),muscle:cleanText(x?.muscle,40)})).filter(x=>x.name)
       :[];
     const context=clientContext(client);
-    const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
-    if(!gatewayToken)return json(res,503,{error:'La conexión segura con la IA no está disponible todavía'});
+    const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||'';
+    if(!gatewayToken)return json(res,503,{error:'La conexión segura con la IA no está configurada'});
 
     const userPayload={
       task:kind==='routine'?'Crear borrador de rutina':'Crear borrador de alimentación',
@@ -197,14 +197,13 @@ module.exports=async function handler(req,res){
           {role:'system',content:systemPrompt(kind)},
           {role:'user',content:JSON.stringify(userPayload)}
         ],
-        response_format:responseFormat(kind),
-        temperature:0.25
+        response_format:responseFormat(kind)
       })
     });
     const payload=await aiRes.json().catch(()=>({}));
     if(!aiRes.ok){
-      console.error('DCC AI gateway:',aiRes.status,payload?.error?.message||payload?.message||'error');
-      return json(res,502,{error:'La IA no pudo generar el borrador. Inténtalo de nuevo.'});
+      const detail=payload?.error?.message||payload?.message||payload?.error||'error';console.error('DCC AI gateway:',aiRes.status,detail);
+      return json(res,502,{error:'La IA no pudo generar el borrador.',detail:cleanText(detail,300)});
     }
     const text=parseContent(payload);
     let result;
