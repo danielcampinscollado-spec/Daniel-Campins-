@@ -6710,7 +6710,7 @@ if(screen==="food"){
                                 ? "active"
                                 : ""
                             }"
-                            onclick="event.preventDefault();event.stopPropagation();window.clientDietOptionIndex=window.clientDietOptionIndex||{};window.clientDietOptionIndex[${i}]=${index};const card=this.closest('.meal-card');const rows=card?card.querySelectorAll('.food-row'):[];const foods=${JSON.stringify(option.foods||[])};rows.forEach(r=>r.remove());const host=card&&card.querySelector('.meal-content');if(host){foods.forEach(f=>{const row=document.createElement('div');row.className='food-row';const s=document.createElement('span');const b=document.createElement('b');s.textContent=f[0]||'';b.textContent=f[1]||'';row.append(s,b);host.appendChild(row)});card.querySelectorAll('.diet-option').forEach((x,j)=>x.classList.toggle('active',j===${index}));card.open=true}"
+                            onclick="event.preventDefault();event.stopPropagation();window.clientDietOptionIndex=window.clientDietOptionIndex||{};window.clientDietOptionIndex[${i}]=${index};showClient('food');setTimeout(()=>{const cards=document.querySelectorAll('.meal-card');if(cards[${i}])cards[${i}].open=true},0)"
                           >
                             ${esc(option.name)}
                           </button>
