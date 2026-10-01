@@ -7,11 +7,13 @@ window.__dccCoachClientsApprovedV1=true;
 
 const STYLE_ID='dcc-coach-clients-approved-v1';
 function esc2(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function fmtDate(c){
-  const raw=c?.created_at||c?.createdAt||c?.created||c?.date_created||'';
+function fmtPlan(c){
+  const raw=String(c?.active_plan||c?.requested_plan||c?.plan||'').trim().toLowerCase();
   if(!raw)return '';
-  const d=new Date(raw); if(Number.isNaN(d.getTime()))return '';
-  return 'Desde '+new Intl.DateTimeFormat('es-ES',{day:'numeric',month:'short',year:'numeric'}).format(d).replace('.','');
+  if(raw==='complete'||raw.includes('complet'))return 'Entrenamiento + Alimentación · 109 €/mes';
+  if(raw==='training'||raw==='entrenamiento')return 'Entrenamiento · 59 €/mes';
+  if(raw==='nutrition'||raw==='nutrición'||raw==='nutricion'||raw==='alimentación'||raw==='alimentacion')return 'Alimentación · 59 €/mes';
+  return '';
 }
 function iconUsers(){
  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 20c.5-4 2.3-6 5.5-6s5 2 5.5 6"/><path d="M14 15c3-.2 5 1.3 5.5 4.5"/></svg>';
@@ -69,7 +71,7 @@ function render(){
    </div>
    <button class="dcc-ac-new" type="button" id="dcc-ac-new"><span class="plus">＋</span><span>Nuevo cliente</span></button>
    <label class="dcc-ac-search">${iconSearch()}<input id="dcc-ac-q" type="search" autocomplete="off" placeholder="Buscar cliente..." value="${esc2(query)}"></label>
-   <div class="dcc-ac-list">${visible.length?visible.map(c=>{const d=fmtDate(c);return `<div class="dcc-ac-client" data-name="${esc2(c.name)}"><div class="dcc-ac-avatar">${iconUsers()}</div><div class="dcc-ac-copy"><div class="dcc-ac-name">${esc2(c.name)}</div>${d?`<div class="dcc-ac-date">${esc2(d)}</div>`:''}</div><button class="dcc-ac-manage" type="button" data-client-id="${esc2(c.id)}">Gestionar <span class="arrow">›</span></button></div>`}).join(''):'<div class="dcc-ac-empty">No hay clientes que coincidan con la búsqueda.</div>'}</div>
+   <div class="dcc-ac-list">${visible.length?visible.map(c=>{const d=fmtPlan(c);return `<div class="dcc-ac-client" data-name="${esc2(c.name)}"><div class="dcc-ac-avatar">${iconUsers()}</div><div class="dcc-ac-copy"><div class="dcc-ac-name">${esc2(c.name)}</div>${d?`<div class="dcc-ac-date">${esc2(d)}</div>`:''}</div><button class="dcc-ac-manage" type="button" data-client-id="${esc2(c.id)}">Gestionar <span class="arrow">›</span></button></div>`}).join(''):'<div class="dcc-ac-empty">No hay clientes que coincidan con la búsqueda.</div>'}</div>
  </div>`;
  main.querySelector('#dcc-ac-new')?.addEventListener('click',()=>window.newClient?.());
  main.querySelector('#dcc-ac-sort')?.addEventListener('click',()=>{asc=!asc;render();});
