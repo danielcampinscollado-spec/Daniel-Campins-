@@ -8351,7 +8351,16 @@ if(screen==="messages"){
     </div>
     <div style="display:grid;gap:7px">
     ${messageClients.map(c=>{
-      const msgs=data.messages?.[c.id]||[], last=msgs.at(-1), unread=!!last&&String(last[0]||'').trim().toLowerCase()!=='daniel';
+      const msgs=data.messages?.[c.id]||[], last=msgs.at(-1);
+      const isClientMessage=m=>{
+        const role=String(m?.[3]||'').trim().toLowerCase();
+        if(role)return role==='client';
+        const sender=String(m?.[0]||'').trim().toLowerCase();
+        return !/daniel|coach|trainer|entrenador|admin/.test(sender);
+      };
+      const lastClientMessage=msgs.slice().reverse().find(isClientMessage)||null;
+      const coachSeenAt=data.notificationState?.[c.id]?.coachMessageSeenAt||null;
+      const unread=!!lastClientMessage&&!!lastClientMessage?.[2]&&(!coachSeenAt||new Date(lastClientMessage[2])>new Date(coachSeenAt));
       const initials=String(c.name||'').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();
       const when=last?.[2]?new Date(last[2]).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}):'';
       return `<button type="button" data-message-client="${esc(String(c.name||'').toLowerCase())}" onclick="openMessages('${c.id}')" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #ead9bb;border-radius:16px;background:#fffdf9;text-align:left;color:#17191d;box-shadow:0 8px 24px rgba(120,82,20,.05)">
