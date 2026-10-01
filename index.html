@@ -6710,7 +6710,7 @@ if(screen==="food"){
                                 ? "active"
                                 : ""
                             }"
-                            onclick="event.preventDefault();event.stopPropagation();window.dccSwitchClientDietOption&&window.dccSwitchClientDietOption(this,${i},${index})"
+                            onclick="event.preventDefault();event.stopPropagation();window.clientDietOptionIndex=window.clientDietOptionIndex||{};window.clientDietOptionIndex[${i}]=${index};showClient('food');setTimeout(()=>{const cards=document.querySelectorAll('.meal-card');if(cards[${i}])cards[${i}].open=true},0)"
                           >
                             ${esc(option.name)}
                           </button>
