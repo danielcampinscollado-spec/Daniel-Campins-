@@ -9215,9 +9215,8 @@ if(screen==="clients"){
 }
 
 if(screen==="checkins"){
-  /* El listado legacy de check-ins ya no se pinta.
-     El dashboard premium contiene las tareas de revisión con acceso
-     directo a cada check-in. */
+  /* La tarjeta de check-ins del dashboard no abre ya una pantalla legacy.
+     Reutiliza el dashboard premium y deja visibles las tareas de revisión. */
   window.__dccCoachTasksOpen=true;
   showCoach("dashboard");
   return;
