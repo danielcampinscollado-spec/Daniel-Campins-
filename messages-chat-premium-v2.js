@@ -203,7 +203,9 @@
   }
 
   window.dccRefreshCoachChatRealtime=function(id){
-    if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id);
+    if(String(window.__dccCoachChatV2??'')!==String(id))return;
+    refreshCoachChat(id);
+    markCoachMessagesSeen(id);
   };
 
   window.dccOpenCoachChatV2=async function(id){
@@ -250,7 +252,10 @@
       const before=JSON.stringify(appData().messages?.[id]||[]);
       const ok=await syncMessages(id);
       const after=JSON.stringify(appData().messages?.[id]||[]);
-      if(ok&&before!==after)refreshCoachChat(id);
+      if(ok&&before!==after){
+        refreshCoachChat(id);
+        await markCoachMessagesSeen(id);
+      }
     },4500);
   }
   document.addEventListener('visibilitychange',()=>{
