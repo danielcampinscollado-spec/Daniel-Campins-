@@ -144,27 +144,16 @@
     if(!id)return;
     const current=clone(appData().routines?.[id])||[];
     if(!current.length){notify('No hay una rutina actual para guardar');return}
-    const database=db();
-    if(!database){alert('No hay conexión con el servidor. La rutina no se ha modificado.');return}
-    const historyId='routine-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
-    try{
-      const result=await database.rpc('dcc_start_new_routine',{p_client_id:String(id),p_history_id:historyId});
-      if(result.error)throw result.error;
-      if(result.data!==true)throw new Error('El servidor no confirmó la nueva rutina');
-      const d=appData();
-      d.routines=d.routines||{};
-      d.routines[id]=[];
-      d.previousRoutines=d.previousRoutines||{};
-      d.previousRoutines[id]={routine:current,savedAt:new Date().toISOString()};
-      try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
-      await reloadRoutines();
-      await loadPrevious(id);
-      renderClientRoutine(id);
-      notify('Nueva rutina creada');
-    }catch(error){
-      console.error('DCC nueva rutina atómica:',error);
-      await reloadRoutines();
-      alert('No se pudo crear la nueva rutina. La rutina actual se mantiene intacta.\n\n'+(error?.message||'Error del servidor'));
-    }
+    // Crear una rutina nueva empieza siempre como borrador local. La rutina activa
+    // del servidor no se archiva ni se vacía hasta que el entrenador la guarda/envía.
+    window.__dccTrainingBackup=JSON.stringify(current);
+    window.__dccTrainingEdit=true;
+    window.__dccRoutineDraftDirty=false;
+    window.__dccRoutineUnsavedBackup=clone(current);
+    window.__dccRoutineUnsavedBackupSet=true;
+    window.__dccRoutineUnsavedClient=String(id);
+    const d=appData();d.routines=d.routines||{};d.routines[id]=[];
+    try{if(typeof saveData==='function')saveData();else if(typeof window.saveData==='function')window.saveData()}catch(_){}
+    renderClientRoutine(id);
   };
 })();
