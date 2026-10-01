@@ -339,10 +339,12 @@ function css(){
 
   @media(max-width:430px){
     html.dcc-theme-light-premium body #client #client-main .dcc-home2-top{
-      grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important
+      grid-template-columns:1fr!important;gap:10px!important
     }
     html.dcc-theme-light-premium body #client #client-main .dcc-home2-head h1{font-size:25px!important}
-
+    html.dcc-theme-light-premium body #client #client-main .dcc-home2-checkin{
+      width:100%!important;min-width:0!important
+    }
   }
   `;
   document.head.appendChild(s);
