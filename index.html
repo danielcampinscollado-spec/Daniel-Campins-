@@ -6651,6 +6651,8 @@ if(screen==="food"){
                 option.foods.length
             );
 
+          validOptions.forEach((o,oi)=>{window.dccDietOptionCache=window.dccDietOptionCache||{};window.dccDietOptionCache[i+":"+oi]=o.foods||[];});
+
           const selectedIndex =
             window.clientDietOptionIndex?.[i] != null
               ? window.clientDietOptionIndex[i]
@@ -6710,7 +6712,7 @@ if(screen==="food"){
                                 ? "active"
                                 : ""
                             }"
-                            onclick="event.preventDefault();event.stopPropagation();window.clientDietOptionIndex=window.clientDietOptionIndex||{};window.clientDietOptionIndex[${i}]=${index};showClient('food');setTimeout(()=>{const cards=document.querySelectorAll('.meal-card');if(cards[${i}])cards[${i}].open=true},0)"
+                            data-meal-index="${i}" data-option-index="${index}"
                           >
                             ${esc(option.name)}
                           </button>
@@ -6782,6 +6784,9 @@ if(screen==="food"){
 
 }
 
+window.dccDietOptionCache=window.dccDietOptionCache||{};
+window.dccDietOptionClick=function(button){const mi=Number(button.dataset.mealIndex),oi=Number(button.dataset.optionIndex),foods=window.dccDietOptionCache[mi+":"+oi]||[];window.clientDietOptionIndex=window.clientDietOptionIndex||{};window.clientDietOptionIndex[mi]=oi;const card=button.closest(".meal-card"),host=card&&card.querySelector(".meal-content");if(!card||!host)return;card.querySelectorAll(".diet-option").forEach((x,j)=>x.classList.toggle("active",j===oi));host.querySelectorAll(".food-row,.empty.compact-empty").forEach(x=>x.remove());foods.forEach(f=>{const row=document.createElement("div"),s=document.createElement("span"),b=document.createElement("b");row.className="food-row";s.textContent=String(f[0]||"");b.textContent=String(f[1]||"");row.append(s,b);host.appendChild(row)});card.open=true;};
+document.addEventListener("click",e=>{const b=e.target.closest(".diet-option[data-meal-index][data-option-index]");if(!b)return;e.preventDefault();e.stopPropagation();window.dccDietOptionClick(b)},true);
 window.dccSwitchClientDietOption=function(button,mealIndex,optionIndex){
   if(!window.clientDietOptionIndex)window.clientDietOptionIndex={};
   window.clientDietOptionIndex[mealIndex]=optionIndex;
