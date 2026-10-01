@@ -6710,29 +6710,7 @@ if(screen==="food"){
                                 ? "active"
                                 : ""
                             }"
-                            onclick="
-  event.preventDefault();
-  event.stopPropagation();
-
-  if(!window.clientDietOptionIndex){
-    window.clientDietOptionIndex={};
-  }
-
-  window.clientDietOptionIndex[${i}]=${index};
-
-  const mealCard=this.closest('.meal-card');
-  const content=mealCard?.querySelector('.meal-content');
-  if(mealCard&&content){
-    mealCard.querySelectorAll('.diet-option').forEach((btn,btnIndex)=>btn.classList.toggle('active',btnIndex===${index}));
-    const foods=${JSON.stringify(option.foods||[])};
-    const rows=content.querySelectorAll('.food-row,.empty.compact-empty');
-    rows.forEach(row=>row.remove());
-    const holder=document.createElement('div');
-    holder.innerHTML=foods.length?foods.map(f=>'<div class="food-row"><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></div>').join(''):'<div class="empty compact-empty">Esta comida todavía no tiene alimentos.</div>';
-    [...holder.children].forEach(node=>content.appendChild(node));
-    mealCard.open=true;
-  }
-"
+                            onclick="event.preventDefault();event.stopPropagation();window.dccSwitchClientDietOption&&window.dccSwitchClientDietOption(this,${i},${index})"
                           >
                             ${esc(option.name)}
                           </button>
@@ -6803,6 +6781,28 @@ if(screen==="food"){
   `;
 
 }
+
+window.dccSwitchClientDietOption=function(button,mealIndex,optionIndex){
+  if(!window.clientDietOptionIndex)window.clientDietOptionIndex={};
+  window.clientDietOptionIndex[mealIndex]=optionIndex;
+  const card=button?.closest('.meal-card');
+  const content=card?.querySelector('.meal-content');
+  if(!card||!content)return;
+  card.querySelectorAll('.diet-option').forEach((btn,i)=>btn.classList.toggle('active',i===optionIndex));
+  const client=(data.clients||[]).find(x=>x.id===data.currentClient);
+  const meal=client?.diet?.meals?.[mealIndex];
+  const options=(meal?.options||[]).filter(o=>o&&Array.isArray(o.foods));
+  const foods=options[optionIndex]?.foods||[];
+  content.querySelectorAll('.food-row,.empty.compact-empty').forEach(row=>row.remove());
+  foods.forEach(f=>{
+    const row=document.createElement('div');row.className='food-row';
+    const name=document.createElement('span');name.textContent=String(f?.[0]??'');
+    const qty=document.createElement('b');qty.textContent=String(f?.[1]??'');
+    row.append(name,qty);content.appendChild(row);
+  });
+  if(!foods.length){const empty=document.createElement('div');empty.className='empty compact-empty';empty.textContent='Esta comida todavía no tiene alimentos.';content.appendChild(empty)}
+  card.open=true;
+};
 
 if(screen==="training"){
   /* Resumen de entrenamiento: autoridad client-training.js.
