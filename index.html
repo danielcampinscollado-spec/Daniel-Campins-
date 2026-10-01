@@ -6789,10 +6789,18 @@ window.dccSwitchClientDietOption=function(button,mealIndex,optionIndex){
   const content=card?.querySelector('.meal-content');
   if(!card||!content)return;
   card.querySelectorAll('.diet-option').forEach((btn,i)=>btn.classList.toggle('active',i===optionIndex));
-  const client=(data.clients||[]).find(x=>x.id===data.currentClient);
-  const meal=client?.diet?.meals?.[mealIndex];
-  const options=(meal?.options||[]).filter(o=>o&&Array.isArray(o.foods));
-  const foods=options[optionIndex]?.foods||[];
+  const currentClientId=String(data.currentClient||window.currentClient||'');
+  const plan=data.diets?.[currentClientId]||{};
+  let dietType=window.clientDietType||'training';
+  if(!Array.isArray(plan?.[dietType]?.meals)){
+    dietType=Array.isArray(plan?.training?.meals)?'training':'rest';
+  }
+  const meal=plan?.[dietType]?.meals?.[mealIndex];
+  const options=typeof ensureMealOptions==='function'
+    ? ensureMealOptions(meal||{})
+    : (Array.isArray(meal?.options)?meal.options:[{name:'Opción 1',foods:meal?.foods||[]}]);
+  const validOptions=options.filter(o=>o&&Array.isArray(o.foods)&&o.foods.length);
+  const foods=validOptions[optionIndex]?.foods||[];
   content.querySelectorAll('.food-row,.empty.compact-empty').forEach(row=>row.remove());
   foods.forEach(f=>{
     const row=document.createElement('div');row.className='food-row';
