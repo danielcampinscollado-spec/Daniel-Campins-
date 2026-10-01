@@ -6109,8 +6109,12 @@ async function openApp(app){
     }
 
     try{
-      const {data:claimedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
-      if(claimError)throw claimError;
+      let claimedClientId=currentClientId||window.currentClientId||null;
+      if(!claimedClientId){
+        const {data:resolvedClientId,error:claimError}=await supabaseClient.rpc("dcc_claim_client_access");
+        if(claimError)throw claimError;
+        claimedClientId=resolvedClientId||null;
+      }
       if(!claimedClientId)throw new Error("No hay ningún cliente asociado a esta cuenta");
 
       currentClientId=String(claimedClientId);
