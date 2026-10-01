@@ -6721,11 +6721,17 @@ if(screen==="food"){
   window.clientDietOptionIndex[${i}]=${index};
 
   const mealCard=this.closest('.meal-card');
-  if(mealCard){
-    mealCard.dataset.keepOpen='1';
+  const content=mealCard?.querySelector('.meal-content');
+  if(mealCard&&content){
+    mealCard.querySelectorAll('.diet-option').forEach((btn,btnIndex)=>btn.classList.toggle('active',btnIndex===${index}));
+    const foods=${JSON.stringify(option.foods||[])};
+    const rows=content.querySelectorAll('.food-row,.empty.compact-empty');
+    rows.forEach(row=>row.remove());
+    const holder=document.createElement('div');
+    holder.innerHTML=foods.length?foods.map(f=>'<div class="food-row"><span>'+esc(f[0])+'</span><b>'+esc(f[1])+'</b></div>').join(''):'<div class="empty compact-empty">Esta comida todavía no tiene alimentos.</div>';
+    [...holder.children].forEach(node=>content.appendChild(node));
+    mealCard.open=true;
   }
-
-  showClient('food');
 "
                           >
                             ${esc(option.name)}
