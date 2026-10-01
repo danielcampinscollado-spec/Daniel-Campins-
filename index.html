@@ -9171,36 +9171,6 @@ window.activeWorkout=null;
 }
 
 
-async function sendClientMessage(){
-
-  const box=document.getElementById("client-message");
-  const text=box?.value.trim();
-
-  if(!text)return;
-
-  const sender=client(currentClientId)?.name || "Cliente";
-
-  const { error } = await supabaseClient
-    .from("client_messages")
-    .insert({
-      client_id:currentClientId,
-      sender:sender,
-      sender_role:"client",
-      message:text
-    });
-
-  if(error){
-    console.error("Error enviando mensaje del cliente:",error);
-    toast("No se pudo enviar el mensaje");
-    return;
-  }
-
-  await loadMessagesFromSupabase();
-
-  showClient("messages");
-  toast("Mensaje enviado");
-}
-
 function showCoach(screen){
 /* Route lock: stale async callbacks must never kick the coach back to Panel. */
 if(screen==="dashboard" && window.__dccCoachRouteIntent && window.__dccCoachRouteIntent!=="dashboard"){
