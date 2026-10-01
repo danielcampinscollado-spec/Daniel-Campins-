@@ -161,7 +161,7 @@
     const db=database(),email=String(document.getElementById('dcc-secure-auth-email')?.value||'').trim().toLowerCase(),password=String(document.getElementById('dcc-secure-auth-password')?.value||''),button=document.getElementById('dcc-password-login');
     if(!email||!password){status('Introduce tu email y contraseña.','error');return}
     button.disabled=true;status('Iniciando sesión…','info');
-    try{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error;status('Acceso correcto.','ok')}
+    try{const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;status('Acceso correcto.','ok');const session=data?.session||(await db.auth.getSession())?.data?.session;if(session){const routed=await routeSession(session);if(!routed)button.disabled=false}else button.disabled=false}
     catch(error){console.error('DCC password auth:',error);status('Email o contraseña incorrectos.','error');button.disabled=false}
   }
 
