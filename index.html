@@ -5939,6 +5939,34 @@ async function loadCheckinHistoryFromSupabase(){
   }
 }
 
+async function loadClientBodyFatHistoryFromSupabase(clientId=currentClientId){
+  const id=String(clientId||"").trim();
+  if(!id)return false;
+  try{
+    const {data:rows,error}=await supabaseClient
+      .from("client_body_fat_history")
+      .select("body_fat,recorded_at")
+      .eq("client_id",id)
+      .order("recorded_at",{ascending:true});
+
+    if(error)throw error;
+    data.bodyFatHistory=data.bodyFatHistory||{};
+    data.bodyFatHistory[id]=(rows||[])
+      .map(row=>({
+        bodyFat:Number(row.body_fat),
+        body_fat:Number(row.body_fat),
+        recordedAt:row.recorded_at||null,
+        recorded_at:row.recorded_at||null
+      }))
+      .filter(row=>Number.isFinite(row.bodyFat));
+    saveData();
+    return true;
+  }catch(e){
+    console.error("Error cargando historial de grasa corporal:",e);
+    return false;
+  }
+}
+
 function ensureTrainingProgressWeek(clientId){
   if(!data.completedTrainingDays)data.completedTrainingDays={};
   if(!data.trainingNextDayIndex)data.trainingNextDayIndex={};
@@ -6130,7 +6158,8 @@ async function openApp(app){
         loadNotificationStateFromSupabase(),
         loadMessagesFromSupabase(),
         loadCheckinHistoryFromSupabase(),
-        loadCheckinsFromSupabase()
+        loadCheckinsFromSupabase(),
+        loadClientBodyFatHistoryFromSupabase(currentClientId)
       ]);
       const historyLoaded=hydrationResults[2]?.status==="fulfilled"&&hydrationResults[2].value===true;
       const progressLoaded=hydrationResults[3]?.status==="fulfilled"&&hydrationResults[3].value===true;
@@ -6797,9 +6826,11 @@ if(screen==="progress"){
       ? currentBodyFat-initialBodyFat
       : null;
 
-  const bodyFatHistory=(data.checkinHistory?.[c.id]||[])
-    .map(x=>({value:Number(x?.bodyFat),date:x?.sentAt||null}))
-    .filter(x=>Number.isFinite(x.value));
+  const bodyFatAuthority=Array.isArray(data.bodyFatHistory?.[c.id])?data.bodyFatHistory[c.id]:[];
+  const bodyFatHistory=(bodyFatAuthority.length
+    ? bodyFatAuthority.map(x=>({value:Number(x?.bodyFat??x?.body_fat),date:x?.recordedAt??x?.recorded_at??null}))
+    : (data.checkinHistory?.[c.id]||[]).map(x=>({value:Number(x?.bodyFat),date:x?.sentAt||null}))
+  ).filter(x=>Number.isFinite(x.value));
 
   const weightSeries=weightHistory.length
     ? weightHistory
