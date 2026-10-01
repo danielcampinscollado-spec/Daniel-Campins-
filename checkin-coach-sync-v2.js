@@ -127,6 +127,51 @@
 
   function reviewRowByLabel(list,label){return[...list.querySelectorAll('.dcc-ci-review-row')].find(row=>(row.querySelector('.dcc-ci-rlabel')?.textContent||'').trim().toLowerCase()===label.toLowerCase())||null}
 
+  async function hydrateReviewPhotos(id){
+    const holder=document.querySelector('.dcc-checkin-review-light[data-dcc-checkin-client] [data-dcc-review-photos]');
+    const card=holder?.closest?.('.dcc-checkin-review-light');
+    if(!holder||String(card?.dataset?.dccCheckinClient||'')!==String(id))return;
+    const db=database();if(!db)return;
+    try{
+      const {data:rows,error}=await db.from('client_checkin_history')
+        .select('photos,sent_at')
+        .eq('client_id',String(id))
+        .order('sent_at',{ascending:false})
+        .limit(1);
+      if(error)throw error;
+      const photos=rows?.[0]?.photos&&typeof rows[0].photos==='object'?rows[0].photos:{};
+      const entries=[
+        ['front','Frontal'],
+        ['side','Lateral'],
+        ['back','Espalda']
+      ].map(([key,label])=>({key,label,value:String(photos?.[key]||'').trim()})).filter(x=>x.value);
+      if(!entries.length){holder.innerHTML='';return}
+
+      const privatePaths=entries.filter(x=>!/^(https?:|data:image|blob:)/i.test(x.value)).map(x=>x.value);
+      const signed=new Map();
+      if(privatePaths.length){
+        const {data:signedRows,error:signError}=await db.storage.from('checkin-photos').createSignedUrls(privatePaths,600);
+        if(signError)throw signError;
+        privatePaths.forEach((path,index)=>{
+          const row=signedRows?.[index]||{};
+          const url=row.signedUrl||row.signedURL||'';
+          if(url)signed.set(path,url);
+        });
+      }
+
+      if(!document.body.contains(holder))return;
+      holder.innerHTML=`<div class="dcc-checkin-review-photos-title">Fotos del check-in</div><div class="dcc-checkin-review-photo-grid">${entries.map(item=>{
+        const direct=/^(https?:|data:image|blob:)/i.test(item.value)?item.value:signed.get(item.value)||'';
+        return direct
+          ?`<div class="dcc-checkin-review-photo"><img src="${esc(direct)}" alt="${esc(item.label)}"></div>`
+          :`<div class="dcc-checkin-review-photo">${esc(item.label)} no disponible</div>`;
+      }).join('')}</div>`;
+    }catch(error){
+      console.warn('DCC fotos revisión check-in:',error);
+      if(document.body.contains(holder))holder.innerHTML='<div class="dcc-checkin-review-photos-title">Fotos del check-in</div><div class="dcc-checkin-review-photo">No se pudieron cargar las fotos</div>';
+    }
+  }
+
   function patchReview(id){
     injectStyles();
     const d=appData(),x=d.checkins?.[id]||{},list=document.querySelector('#dcc-ci-modal .dcc-ci-review-list');
@@ -165,7 +210,7 @@
     if(typeof current!=='function'||current.__dccReviewHistoryV4)return false;
     const wrapped=function(id){
       const result=current.apply(this,arguments);
-      requestAnimationFrame(()=>patchReview(id));
+      requestAnimationFrame(()=>{patchReview(id);hydrateReviewPhotos(id)});
       syncBodyFatClient(id);
       return result;
     };
