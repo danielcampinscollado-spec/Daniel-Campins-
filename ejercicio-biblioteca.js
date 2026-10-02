@@ -35,7 +35,7 @@
   const mapMuscle=group=>group==='Espalda'?'Dorsal':group;
   const mapExercise=ex=>{
     const image=illustrated.has(ex.id)&&ex.ilustracion?`./entrenamientos/${ex.ilustracion}`:'';
-    return{id:ex.id,name:ex.nombre||ex.id,muscle:mapMuscle(ex.grupo||''),secondaryMuscles:[],equipment:ex.equipo||'',image,imageStart:image,imagePeak:image,videoOptional:'',aliases:[],description:'',instructions:[],tips:[],difficulty:'',category:ex.patron||'',variationGroup:'',isUnilateral:/unilateral/i.test(ex.id+' '+(ex.nombre||'')),isBodyweight:ex.equipo==='Peso corporal',source:'DCC'};
+    return{id:ex.id,name:ex.nombre||ex.id,muscle:mapMuscle(ex.grupo||''),secondaryMuscles:[],equipment:ex.equipo||'',image,imageStart:image,imagePeak:image,videoOptional:String(ex.videoUrl||''),videoUrl:String(ex.videoUrl||''),video:String(ex.videoUrl||''),aliases:[],description:'',instructions:[],tips:[],difficulty:'',category:ex.patron||'',variationGroup:'',isUnilateral:/unilateral/i.test(ex.id+' '+(ex.nombre||'')),isBodyweight:ex.equipo==='Peso corporal',source:'DCC'};
   };
 
   window.exerciseLibraryReady=Promise.resolve(legacyReady)
