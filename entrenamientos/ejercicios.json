@@ -1186,28 +1186,32 @@
       "nombre": "Dominadas con agarre neutro",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical"
+      "patron": "traccion_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
     },
     {
       "id": "dominadas-supinas",
       "nombre": "Dominadas con agarre supino",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical"
+      "patron": "traccion_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
     },
     {
       "id": "remo-barra-agarre-supino",
       "nombre": "Remo con barra con agarre supino",
       "grupo": "Espalda",
       "equipo": "Barra",
-      "patron": "traccion_horizontal"
+      "patron": "traccion_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=9efgcAjQe7E"
     },
     {
       "id": "remo-mancuernas-banco-inclinado",
       "nombre": "Remo con mancuernas en banco inclinado",
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "traccion_horizontal"
+      "patron": "traccion_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
     },
     {
       "id": "remo-barra-t",
