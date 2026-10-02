@@ -344,7 +344,8 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-inclinado-mancuernas.webp"
+      "ilustracion": "ilustraciones/curl-inclinado-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=uRd77KxhxeE"
     },
     {
       "id": "curl-predicador-maquina",
@@ -384,7 +385,8 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-martillo-mancuernas.webp"
+      "ilustracion": "ilustraciones/curl-martillo-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=BRVDS6HVR9Q"
     },
     {
       "id": "extension-triceps-cuerda",
