@@ -1089,14 +1089,16 @@
       "nombre": "Press declinado con mancuernas",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco declinado",
-      "patron": "empuje_horizontal"
+      "patron": "empuje_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=0xRvl4Qv3ZY"
     },
     {
       "id": "aperturas-mancuernas-plano",
       "nombre": "Aperturas con mancuernas en banco plano",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=QwuUZ5wgQOk"
     },
     {
       "id": "aperturas-inclinadas-mancuernas",
