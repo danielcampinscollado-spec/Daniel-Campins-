@@ -471,7 +471,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-45.webp"
+      "ilustracion": "ilustraciones/prensa-45.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"
     },
     {
       "id": "prensa-horizontal",
@@ -521,7 +522,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/zancadas-mancuernas.webp"
+      "ilustracion": "ilustraciones/zancadas-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=D7KaRcUTQeE"
     },
     {
       "id": "split-squat-bulgaro",
@@ -1341,14 +1343,16 @@
       "nombre": "Zancada hacia atrás con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
-      "patron": "sentadilla"
+      "patron": "sentadilla",
+      "videoUrl": "https://www.youtube.com/watch?v=xrPteyQLGAo"
     },
     {
       "id": "step-up-mancuernas",
       "nombre": "Step-up al banco con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas y banco",
-      "patron": "sentadilla"
+      "patron": "sentadilla",
+      "videoUrl": "https://www.youtube.com/watch?v=dQqApCGd5Ss"
     },
     {
       "id": "peso-muerto-piernas-rigidas",
