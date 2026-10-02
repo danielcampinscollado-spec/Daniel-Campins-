@@ -760,7 +760,8 @@
       "grupo": "Core",
       "equipo": "Máquina",
       "patron": "flexion_tronco",
-      "ilustracion": "ilustraciones/crunch-maquina.webp"
+      "ilustracion": "ilustraciones/crunch-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=6GMKPQVERzw"
     },
     {
       "id": "crunch-polea",
@@ -1128,7 +1129,8 @@
       "grupo": "Core",
       "equipo": "Máquina",
       "patron": "rotacion_tronco",
-      "ilustracion": "ilustraciones/rotacion-torso-maquina.webp"
+      "ilustracion": "ilustraciones/rotacion-torso-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=3qjoXDTuyOE"
     },
     {
       "id": "pallof-press-polea",
