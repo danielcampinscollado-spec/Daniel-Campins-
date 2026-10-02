@@ -220,7 +220,8 @@
       "grupo": "Espalda",
       "equipo": "Barra",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-barra.webp"
+      "ilustracion": "ilustraciones/remo-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=TZLCvXbej_Q"
     },
     {
       "id": "pullover-polea",
@@ -1173,7 +1174,8 @@
       "nombre": "Jalón con brazos rectos en polea",
       "grupo": "Espalda",
       "equipo": "Polea",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
     },
     {
       "id": "press-arnold",
