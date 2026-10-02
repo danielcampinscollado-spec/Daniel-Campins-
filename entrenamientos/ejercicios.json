@@ -249,7 +249,8 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-maquina.webp"
+      "ilustracion": "ilustraciones/press-hombro-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=WvLMauqrnK8"
     },
     {
       "id": "press-militar-mancuernas",
@@ -293,7 +294,8 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-maquina.webp"
+      "ilustracion": "ilustraciones/elevacion-lateral-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=0o07iGKUarY"
     },
     {
       "id": "pajaros-maquina",
@@ -364,7 +366,8 @@
       "grupo": "Bíceps",
       "equipo": "Máquina",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-predicador-maquina.webp"
+      "ilustracion": "ilustraciones/curl-predicador-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
     },
     {
       "id": "curl-predicador-ez",
@@ -444,7 +447,8 @@
       "grupo": "Tríceps",
       "equipo": "Máquina asistida",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/fondos-maquina-asistida.webp"
+      "ilustracion": "ilustraciones/fondos-maquina-asistida.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=PaW3kabkW5E"
     },
     {
       "id": "press-triceps-maquina",
