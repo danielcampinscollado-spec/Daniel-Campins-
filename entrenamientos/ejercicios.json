@@ -143,7 +143,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-neutro.webp"
+      "ilustracion": "ilustraciones/jalon-pecho-neutro.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=4y-GyEQ74Hk"
     },
     {
       "id": "jalon-pecho-supino",
@@ -151,7 +152,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-supino.webp"
+      "ilustracion": "ilustraciones/jalon-pecho-supino.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=6WeUXN7dQWg"
     },
     {
       "id": "dominadas-asistidas",
@@ -167,7 +169,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-sentado-polea-neutro.webp"
+      "ilustracion": "ilustraciones/remo-sentado-polea-neutro.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
     },
     {
       "id": "remo-sentado-polea-ancho",
