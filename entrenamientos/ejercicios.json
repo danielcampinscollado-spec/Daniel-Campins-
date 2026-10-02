@@ -1394,7 +1394,8 @@
       "nombre": "Sentadilla sumo con mancuerna",
       "grupo": "Aductores",
       "equipo": "Mancuerna",
-      "patron": "aduccion_cadera"
+      "patron": "aduccion_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=vBA3vyOxJv0"
     },
     {
       "id": "sentadilla-sumo-barra",
@@ -1408,14 +1409,16 @@
       "nombre": "Zancada lateral con mancuernas",
       "grupo": "Aductores",
       "equipo": "Mancuernas",
-      "patron": "aduccion_cadera"
+      "patron": "aduccion_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=FUX6Pz8vV0s"
     },
     {
       "id": "gemelos-pie-mancuernas",
       "nombre": "Elevación de gemelos de pie con mancuernas",
       "grupo": "Gemelos",
       "equipo": "Mancuernas",
-      "patron": "flexion_plantar"
+      "patron": "flexion_plantar",
+      "videoUrl": "https://www.youtube.com/watch?v=wxwY7GXxL4k"
     },
     {
       "id": "gemelos-pie-barra",
@@ -1429,7 +1432,8 @@
       "nombre": "Elevación de gemelo unilateral en escalón",
       "grupo": "Gemelos",
       "equipo": "Peso corporal",
-      "patron": "flexion_plantar"
+      "patron": "flexion_plantar",
+      "videoUrl": "https://www.youtube.com/watch?v=9Zb5V1fM7A4"
     },
     {
       "id": "encogimientos-polea",
