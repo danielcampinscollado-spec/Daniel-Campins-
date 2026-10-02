@@ -53,7 +53,7 @@ const dietSchema={
               type:'object',additionalProperties:false,
               properties:{
                 name:{type:'string'},
-                foods:{type:'array',minItems:1,maxItems:8,items:{
+                foods:{type:'array',minItems:1,maxItems:5,items:{
                   type:'object',additionalProperties:false,
                   properties:{name:{type:'string'},quantity:{type:'string'}},
                   required:['name','quantity']
@@ -75,7 +75,7 @@ const dietSchema={
               type:'object',additionalProperties:false,
               properties:{
                 name:{type:'string'},
-                foods:{type:'array',minItems:1,maxItems:8,items:{
+                foods:{type:'array',minItems:1,maxItems:5,items:{
                   type:'object',additionalProperties:false,
                   properties:{name:{type:'string'},quantity:{type:'string'}},
                   required:['name','quantity']
@@ -139,10 +139,28 @@ function clientContext(c){
     active_plan:c.active_plan??null
   };
 }
+function nutritionTargets(c){
+  const sex=String(c?.sex||'').trim().toLowerCase();
+  const w=Number(c?.weight),h=Number(c?.height_cm),a=Number(c?.age);
+  if(!(w>0&&h>0&&a>0))return null;
+  const female=sex==='female'||sex==='mujer'||sex==='femenino'||sex==='f';
+  const male=sex==='male'||sex==='hombre'||sex==='masculino'||sex==='m';
+  const bmr=10*w+6.25*h-5*a+(female?-161:male?5:-78);
+  const days=Math.max(0,Math.min(7,Number(c?.preferred_training_days)||0));
+  const activity=days>=5?1.55:days>=3?1.45:days>=1?1.35:1.25;
+  let kcal=Math.round((bmr*activity)/50)*50;
+  const goal=String(c?.goal||'').toLowerCase();
+  if(/p[eé]rdida|perder|defin|grasa/.test(goal))kcal=Math.round((kcal*0.85)/50)*50;
+  else if(/ganar|masa|hipertrof|volumen/.test(goal))kcal=Math.round((kcal*1.08)/50)*50;
+  kcal=Math.max(1200,Math.min(4200,kcal));
+  const proteinFactor=/ganar|masa|hipertrof|defin|grasa/.test(goal)?1.7:1.5;
+  const protein=Math.round(w*proteinFactor/5)*5;
+  return {estimated_daily_kcal:kcal,daily_protein_g:protein,method:'Mifflin-St Jeor + actividad aproximada; referencia para borrador, no prescripción clínica'};
+}
 function systemPrompt(kind){
   const common='Eres el asistente profesional de DCC Fitness para un entrenador humano. Generas únicamente BORRADORES que el entrenador revisará antes de enviar. No diagnostiques ni trates enfermedades. Prioriza seguridad y respeta lesiones, cirugías, alergias y alimentos a evitar aunque una instrucción del entrenador entre en conflicto. No prescribas medicamentos, hormonas ni suplementos. Devuelve solo el JSON exigido por el esquema.';
   if(kind==='routine')return common+' Para rutinas: usa nomenclatura en español, programación realista, descansos en segundos y ejercicios compatibles con el objetivo y experiencia. Usa superseries o rest-pause solo cuando aporten valor o el entrenador lo pida. Una superserie comparte method_group entre sus ejercicios. REST-pause en DCC Fitness usa SIEMPRE exactamente esta secuencia por serie: "12 → 10 → 8 → 6". Cada flecha representa un mini-descanso de EXACTAMENTE 7 segundos. Para cada ejercicio rest-pause, rest_pause_sequence debe ser EXACTAMENTE "12 → 10 → 8 → 6", rest_pause_seconds debe ser EXACTAMENTE 7 y el descanso final debe ser de 90 a 120 segundos. No inventes otras secuencias, no omitas ningún tramo y no escribas explicaciones dentro de rest_pause_sequence. Si hay catálogo de ejercicios, prioriza sus nombres exactos para que DCC pueda asociar imágenes y vídeos.';
-  return common+' Para alimentación: crea un plan práctico, realista y fácil de comer en español, con cantidades claras en g, ml o unidades. Individualiza primero las necesidades energéticas usando sexo, edad, peso, altura, objetivo y contexto de entrenamiento disponibles; no reutilices por defecto las mismas cantidades entre personas. La proteína debe ser proporcional al peso, objetivo y entrenamiento, no una cantidad fija por sexo; evita excesos injustificados. Ajusta carbohidratos, grasas, calorías y tamaño de raciones al perfil y objetivo. Cada comida debe ser SIMPLE: normalmente 2 a 4 alimentos/componentes y NUNCA más de 5 salvo que el entrenador lo pida expresamente. No añadas ingredientes accesorios solo para cuadrar macros ni generes platos con listas interminables. Prioriza combinaciones normales (por ejemplo, una fuente principal de proteína, una de carbohidrato cuando corresponda, verdura/fruta y una grasa cuando haga falta) y raciones plausibles. No aumentes el volumen de comida innecesariamente: para pérdida de grasa, especialmente, busca saciedad con un volumen razonable y sostenible. Respeta de forma estricta alergias y alimentos a evitar. No uses cantidades calóricas extremas ni promesas médicas. Puedes dejar el día de descanso sin comidas solo si el entrenador lo pide expresamente; en caso contrario genera ambos días. Las opciones de una misma comida deben ser alternativas comparables en energía y macronutrientes.';
+  return common+' Para alimentación: crea un plan práctico, realista y fácil de comer en español, con cantidades claras en g, ml o unidades. Usa nutrition_reference cuando esté disponible como presupuesto diario de referencia y distribúyelo entre TODAS las comidas del día antes de decidir raciones. Individualiza las necesidades energéticas usando sexo, edad, peso, altura, objetivo y contexto de entrenamiento disponibles; no reutilices por defecto las mismas cantidades entre personas. La proteína debe ser proporcional al peso, objetivo y entrenamiento, no una cantidad fija por sexo; evita excesos injustificados. Ajusta carbohidratos, grasas, calorías y tamaño de raciones al perfil y objetivo. Cada comida debe ser SIMPLE: normalmente 2 a 4 alimentos/componentes y NUNCA más de 5. Evita concentrar proteína o calorías desproporcionadamente en una sola comida: reparte la proteína diaria de forma razonablemente uniforme entre las comidas principales y ajusta las raciones para que la suma diaria se aproxime a nutrition_reference. No añadas ingredientes accesorios solo para cuadrar macros ni generes platos con listas interminables. Prioriza combinaciones normales (por ejemplo, una fuente principal de proteína, una de carbohidrato cuando corresponda, verdura/fruta y una grasa cuando haga falta) y raciones plausibles. No aumentes el volumen de comida innecesariamente: para pérdida de grasa, especialmente, busca saciedad con un volumen razonable y sostenible. Respeta de forma estricta alergias y alimentos a evitar. No uses cantidades calóricas extremas ni promesas médicas. Puedes dejar el día de descanso sin comidas solo si el entrenador lo pide expresamente; en caso contrario genera ambos días. Las opciones de una misma comida deben ser alternativas comparables en energía y macronutrientes.';
 }
 function responseFormat(kind){
   return {type:'json_schema',json_schema:{name:kind==='routine'?'dcc_routine_draft':'dcc_diet_draft',strict:true,schema:kind==='routine'?routineSchema:dietSchema}};
@@ -180,6 +198,7 @@ module.exports=async function handler(req,res){
       ?body.exerciseCatalog.slice(0,180).map(x=>({name:cleanText(x?.name,80),muscle:cleanText(x?.muscle,40)})).filter(x=>x.name)
       :[];
     const context=clientContext(client);
+    const nutrition_reference=kind==='diet'?nutritionTargets(client):null;
     const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
     if(!gatewayToken)return json(res,503,{error:'La conexión segura con la IA no está configurada'});
 
@@ -188,6 +207,7 @@ module.exports=async function handler(req,res){
       trainer_instructions:instructions,
       client_context:context
     };
+    if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
     if(catalog.length)userPayload.available_exercises=catalog;
 
     const aiRes=await fetch(AI_GATEWAY_URL,{
