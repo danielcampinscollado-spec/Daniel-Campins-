@@ -114,6 +114,17 @@
     return true;
   }
 
+  function addMealControls(id){
+    if(!isEditing(id))return false;const p=pane();if(!p)return false;
+    const type=window.__dccDietType==='rest'?'rest':'training',meals=window.data?.diets?.[String(id)]?.[type]?.meals||[];
+    const cards=[...p.querySelectorAll('[data-meal-index],.diet-meal,.dcc-diet-meal,.meal-card')];
+    cards.forEach((card,fallback)=>{const mi=Number(card.dataset?.mealIndex??fallback);if(!Number.isInteger(mi)||!meals[mi]||card.querySelector('.dcc-meal-edit-actions'))return;
+      const bar=document.createElement('div');bar.className='dcc-meal-edit-actions';bar.style.cssText='display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:6px;margin:8px 0 2px';
+      bar.innerHTML='<button type="button" '+(mi===0?'disabled':'')+' style="min-height:34px;border:1px solid rgba(183,123,19,.25);border-radius:10px;background:#fffdf8">↑ Subir</button><button type="button" '+(mi===meals.length-1?'disabled':'')+' style="min-height:34px;border:1px solid rgba(183,123,19,.25);border-radius:10px;background:#fffdf8">↓ Bajar</button><button type="button" style="min-height:34px;border:1px solid rgba(190,70,70,.28);border-radius:10px;background:#fff8f6;color:#a33;font-weight:800">Eliminar comida</button>';
+      const bs=bar.querySelectorAll('button');bs[0].onclick=()=>window.dccDietMoveMeal(id,type,mi,-1);bs[1].onclick=()=>window.dccDietMoveMeal(id,type,mi,1);bs[2].onclick=()=>window.dccDietRemoveMeal(id,type,mi);card.appendChild(bar);
+    });return true;
+  }
+
   function addSaveButton(id){
     if(!isEditing(id))return false;
     const p=pane();if(!p)return false;
@@ -148,8 +159,8 @@
   function restoreEditor(id){
     if(!isEditing(id))return;
     requestAnimationFrame(()=>{
-      addEditorHeader(id);addSaveButton(id);
-      setTimeout(()=>{addEditorHeader(id);addSaveButton(id)},50);
+      addEditorHeader(id);addMealControls(id);addSaveButton(id);
+      setTimeout(()=>{addEditorHeader(id);addMealControls(id);addSaveButton(id)},50);
     });
   }
 
@@ -249,6 +260,31 @@
         remember(mi,oi);renderDraft(id);restoreEditor(String(id));
       };
       fn.__dccDraftV6=true;fn.__base=base;window.dccDietAddOption=fn;
+    }
+
+    const removeMeal=window.dccDietRemoveMeal;
+    if(typeof removeMeal!=='function'||!chainHas(removeMeal,'__dccDraftV7')){
+      const base=removeMeal;
+      const fn=async function(id,type,mi){
+        if(!isEditing(id)){if(typeof base==='function')return base.apply(this,arguments);return}
+        const d=window.data?.diets?.[String(id)]?.[type];if(!d||!Array.isArray(d.meals)||!d.meals[mi])return;
+        const label=String(d.meals[mi]?.name||'esta comida');
+        if(!confirm('¿Eliminar '+label+' completa?'))return;
+        d.meals.splice(mi,1);window.__dccDietOpenMeal=null;window.__dccDietOptionMap={};renderDraft(id);restoreEditor(String(id));
+      };
+      fn.__dccDraftV7=true;fn.__base=base;window.dccDietRemoveMeal=fn;
+    }
+
+    const moveMeal=window.dccDietMoveMeal;
+    if(typeof moveMeal!=='function'||!chainHas(moveMeal,'__dccDraftV7')){
+      const base=moveMeal;
+      const fn=async function(id,type,mi,delta){
+        if(!isEditing(id)){if(typeof base==='function')return base.apply(this,arguments);return}
+        const d=window.data?.diets?.[String(id)]?.[type],a=d?.meals;if(!Array.isArray(a))return;
+        const to=mi+delta;if(to<0||to>=a.length)return;const item=a.splice(mi,1)[0];a.splice(to,0,item);
+        window.__dccDietOpenMeal=to;window.__dccDietOptionMap=window.__dccDietOptionMap||{};renderDraft(id);restoreEditor(String(id));
+      };
+      fn.__dccDraftV7=true;fn.__base=base;window.dccDietMoveMeal=fn;
     }
 
     const removeOption=window.dccDietRemoveOption;
