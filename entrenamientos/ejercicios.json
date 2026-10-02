@@ -709,7 +709,8 @@
       "grupo": "Antebrazos",
       "equipo": "Mancuernas",
       "patron": "flexion_muneca",
-      "ilustracion": "ilustraciones/curl-muneca-mancuernas.webp"
+      "ilustracion": "ilustraciones/curl-muneca-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
     },
     {
       "id": "curl-inverso-ez",
@@ -717,7 +718,8 @@
       "grupo": "Antebrazos",
       "equipo": "Barra EZ",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-inverso-ez.webp"
+      "ilustracion": "ilustraciones/curl-inverso-ez.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=nRgxYX2Ve9w"
     },
     {
       "id": "hiperextensiones-banco",
@@ -1489,14 +1491,16 @@
       "nombre": "Curl de muñeca con barra",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_muneca"
+      "patron": "flexion_muneca",
+      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
     },
     {
       "id": "extension-muneca-barra",
       "nombre": "Extensión de muñeca con barra",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_muneca"
+      "patron": "flexion_muneca",
+      "videoUrl": "https://www.youtube.com/watch?v=Z3G3p7JH5aY"
     },
     {
       "id": "curl-inverso-barra-recta",
