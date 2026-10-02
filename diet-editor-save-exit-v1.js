@@ -115,14 +115,10 @@
   }
 
   function addMealControls(id){
-    if(!isEditing(id))return false;const p=pane();if(!p)return false;
-    const type=window.__dccDietType==='rest'?'rest':'training',meals=window.data?.diets?.[String(id)]?.[type]?.meals||[];
-    const cards=[...p.querySelectorAll('[data-meal-index],.diet-meal,.dcc-diet-meal,.meal-card')];
-    cards.forEach((card,fallback)=>{const mi=Number(card.dataset?.mealIndex??fallback);if(!Number.isInteger(mi)||!meals[mi]||card.querySelector('.dcc-meal-edit-actions'))return;
-      const bar=document.createElement('div');bar.className='dcc-meal-edit-actions';bar.style.cssText='display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:6px;margin:8px 0 2px';
-      bar.innerHTML='<button type="button" '+(mi===0?'disabled':'')+' style="min-height:34px;border:1px solid rgba(183,123,19,.25);border-radius:10px;background:#fffdf8">↑ Subir</button><button type="button" '+(mi===meals.length-1?'disabled':'')+' style="min-height:34px;border:1px solid rgba(183,123,19,.25);border-radius:10px;background:#fffdf8">↓ Bajar</button><button type="button" style="min-height:34px;border:1px solid rgba(190,70,70,.28);border-radius:10px;background:#fff8f6;color:#a33;font-weight:800">Eliminar comida</button>';
-      const bs=bar.querySelectorAll('button');bs[0].onclick=()=>window.dccDietMoveMeal(id,type,mi,-1);bs[1].onclick=()=>window.dccDietMoveMeal(id,type,mi,1);bs[2].onclick=()=>window.dccDietRemoveMeal(id,type,mi);card.appendChild(bar);
-    });return true;
+    // Meal ordering belongs to the explicit meal setup flow, not the generated/edit draft view.
+    const p=pane();if(!p)return false;
+    p.querySelectorAll('.dcc-meal-edit-actions').forEach(el=>el.remove());
+    return true;
   }
 
   function addSaveButton(id){
