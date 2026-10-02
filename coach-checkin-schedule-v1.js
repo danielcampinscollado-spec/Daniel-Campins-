@@ -117,7 +117,9 @@
       if(error)throw error;if(ok!==true)throw new Error('No confirmado');
       const current=await d.rpc('dcc_get_coach_followup',{p_client_id:String(id)});if(current.error||!current.data)throw current.error||new Error('No se pudo cargar el seguimiento privado');
       const privateFreq=['weekly','biweekly','monthly','off'].includes(freq)?freq:(current.data.checkin_frequency||'off'),privatePhoto=photo?'monthly':'off';
-      const saved=await d.rpc('dcc_save_coach_followup',{p_client_id:String(id),p_checkin:privateFreq,p_photo:privatePhoto,p_diet:diet,p_routine:routine});if(saved.error||!saved.data)throw saved.error||new Error('No se pudo guardar el seguimiento privado');
+      let saved={data:current.data,error:null};
+      const followupChanged=String(current.data.checkin_frequency||'off')!==String(privateFreq)||String(current.data.photo_frequency||'off')!==String(privatePhoto)||String(current.data.next_diet_review||'')!==String(diet||'')||String(current.data.next_routine_review||'')!==String(routine||'');
+      if(followupChanged){saved=await d.rpc('dcc_save_coach_followup',{p_client_id:String(id),p_checkin:privateFreq,p_photo:privatePhoto,p_diet:diet,p_routine:routine});if(saved.error||!saved.data)throw saved.error||new Error('No se pudo guardar el seguimiento privado')}
       const c=client(id);if(c){c.checkin_frequency=saved.data.checkin_frequency||privateFreq;c.photo_frequency=saved.data.photo_frequency||privatePhoto;c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.next_diet_review=c.nextDietReview=saved.data.next_diet_review||'';c.next_routine_review=c.nextRoutineReview=saved.data.next_routine_review||'';c.followup_configured_at=saved.data.followup_configured_at||null;if(Array.isArray(saved.data.coach_notes))c.coachNotes=saved.data.coach_notes;saveLocal()}
       stateCache[id]=null;followupCache[id]=saved.data;toastSafe('Programación guardada');await patchFollowup(id);
     }catch(e){console.error('DCC save check-in schedule:',e);toastSafe('No se pudo guardar la programación')}
