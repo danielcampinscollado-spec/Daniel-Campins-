@@ -93,7 +93,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/aperturas-pec-deck.webp"
+      "ilustracion": "ilustraciones/aperturas-pec-deck.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Z57CtFmRMxA"
     },
     {
       "id": "cruces-polea-media",
@@ -833,7 +834,8 @@
       "grupo": "Pectoral",
       "equipo": "Multipower",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-multipower.webp"
+      "ilustracion": "ilustraciones/press-inclinado-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ig0NyNlSce4"
     },
     {
       "id": "aperturas-polea-banco",
@@ -841,7 +843,8 @@
       "grupo": "Pectoral",
       "equipo": "Poleas y banco",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/aperturas-polea-banco.webp"
+      "ilustracion": "ilustraciones/aperturas-polea-banco.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Iwe6AmxVf7o"
     },
     {
       "id": "jalon-unilateral-polea",
@@ -1156,7 +1159,8 @@
       "nombre": "Aperturas con mancuernas en banco inclinado",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=ajdFwa-qM98"
     },
     {
       "id": "fondos-paralelas-pectoral",
