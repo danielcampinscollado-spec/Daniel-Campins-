@@ -5062,7 +5062,7 @@ async function loadClientsFromSupabase(){
   try{
     const {data:clients,error}=await supabaseClient
       .from("clients")
-      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at,access_email,next_checkin_date,next_photo_checkin_date,password_setup_completed,current_injury,injury_details,previous_surgery,surgery_details,food_allergy,food_allergy_details,trained_before,training_experience,preferred_training_days,wants_photo_checkin,sex,requested_plan,active_plan,training_enabled,nutrition_enabled,plan_start_date,plan_end_date,renewal_response,renewal_responded_at,access_suspended,suspended_at")
+      .select("id,name,goal,weight,initial_weight,initial_body_fat,age,height_cm,foods_to_avoid,plan,status,created_at,access_email,next_checkin_date,next_photo_checkin_date,password_setup_completed,current_injury,injury_details,previous_surgery,surgery_details,food_allergy,food_allergy_details,trained_before,training_experience,preferred_training_days,wants_photo_checkin,sex,requested_plan,active_plan,training_enabled,nutrition_enabled,plan_start_date,plan_end_date,renewal_response,renewal_responded_at,access_suspended,suspended_at,access_kind,trial_duration,renewal_selected_plan")
       .order("created_at",{ascending:true});
     if(error){console.error("Error cargando clientes:",error);return}
 
@@ -5105,6 +5105,9 @@ async function loadClientsFromSupabase(){
         renewal_responded_at:row.renewal_responded_at??null,
         access_suspended:row.access_suspended===true,
         suspended_at:row.suspended_at??null,
+        access_kind:row.access_kind||'standard',
+        trial_duration:row.trial_duration??null,
+        renewal_selected_plan:row.renewal_selected_plan??null,
         plan:row.plan||"",
         status:row.status||"Pendiente",
         next_checkin_date:row.next_checkin_date??null,
@@ -8482,7 +8485,7 @@ if(e.target===this)closeModal();
 
 </script>
 <script src="./new-client-premium-v1.js?v=20260916-runtime1"></script>
-<script src="./client-create-authority-v1.js?v=20260916-runtime1"></script>
+<script src="./client-create-authority-v1.js?v=20261003-trials1"></script>
 <script src="./client-first-password-v1.js?v=20261002-onboarding1"></script>
 <script src="./client-initial-questionnaire-v1.js?v=20261002-onboarding1"></script>
 <script src="./client-admin-premium.js?v=20261002-no-ai-meal-actions1"></script>
@@ -8585,7 +8588,7 @@ if(e.target===this)closeModal();
 <script src="./workout-session-premium-v3.js?v=20260928-superset-compact-final1"></script>
 <script src="./client-home-authority-final-v1.js?v=20261001-home-checkin-mobile1"></script>
 
-<script src="./client-plan-renewal-v1.js?v=20261003-renewal1"></script>
+<script src="./client-plan-renewal-v1.js?v=20261003-trials2"></script>
 <script src="./client-checkin-schedule-v4.js?v=20260926-atomic-entry2"></script>
 <script src="./coach-checkin-schedule-v1.js?v=20260924-no-retry1"></script>
 
