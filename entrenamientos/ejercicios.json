@@ -540,7 +540,8 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-sentado.webp"
+      "ilustracion": "ilustraciones/curl-femoral-sentado.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Orxowest56U"
     },
     {
       "id": "curl-femoral-tumbado",
@@ -548,7 +549,8 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-tumbado.webp"
+      "ilustracion": "ilustraciones/curl-femoral-tumbado.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "curl-femoral-unilateral",
@@ -1360,7 +1362,8 @@
       "nombre": "Peso muerto con piernas rígidas",
       "grupo": "Femoral",
       "equipo": "Barra",
-      "patron": "bisagra_cadera"
+      "patron": "bisagra_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=1uDiW5--rAE"
     },
     {
       "id": "buenos-dias-barra",
@@ -1383,7 +1386,8 @@
       "nombre": "Peso muerto rumano unilateral con mancuerna",
       "grupo": "Femoral",
       "equipo": "Mancuerna",
-      "patron": "bisagra_cadera"
+      "patron": "bisagra_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=GoKjrvJi-Iw"
     },
     {
       "id": "puente-gluteo-barra",
