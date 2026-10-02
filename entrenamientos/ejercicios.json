@@ -493,7 +493,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Barra",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-barra.webp"
+      "ilustracion": "ilustraciones/sentadilla-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=SW_C1A-rejs"
     },
     {
       "id": "extension-cuadriceps",
@@ -518,7 +519,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas y banco",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/split-squat-bulgaro.webp"
+      "ilustracion": "ilustraciones/split-squat-bulgaro.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2C-uNgKwPLE"
     },
     {
       "id": "curl-femoral-sentado",
@@ -1291,21 +1293,24 @@
       "nombre": "Sentadilla frontal con barra",
       "grupo": "Cuádriceps",
       "equipo": "Barra",
-      "patron": "sentadilla"
+      "patron": "sentadilla",
+      "videoUrl": "https://www.youtube.com/watch?v=tlfGU7WfIYg"
     },
     {
       "id": "sentadilla-goblet",
       "nombre": "Sentadilla goblet con mancuerna",
       "grupo": "Cuádriceps",
       "equipo": "Mancuerna",
-      "patron": "sentadilla"
+      "patron": "sentadilla",
+      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
     },
     {
       "id": "zancadas-caminando-mancuernas",
       "nombre": "Zancadas caminando con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
-      "patron": "sentadilla"
+      "patron": "sentadilla",
+      "videoUrl": "https://www.youtube.com/watch?v=L8fvypPrzzs"
     },
     {
       "id": "zancada-atras-mancuernas",
