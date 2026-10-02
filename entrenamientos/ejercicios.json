@@ -184,7 +184,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-sentado-polea-ancho.webp"
+      "ilustracion": "ilustraciones/remo-sentado-polea-ancho.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
     },
     {
       "id": "remo-maquina-pecho-apoyado",
@@ -192,7 +193,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-maquina-pecho-apoyado.webp"
+      "ilustracion": "ilustraciones/remo-maquina-pecho-apoyado.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
     },
     {
       "id": "remo-unilateral-maquina",
@@ -200,7 +202,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-unilateral-maquina.webp"
+      "ilustracion": "ilustraciones/remo-unilateral-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
     },
     {
       "id": "remo-barra-t-apoyado",
@@ -208,7 +211,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina / barra T",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-barra-t-apoyado.webp"
+      "ilustracion": "ilustraciones/remo-barra-t-apoyado.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=rvbjGSQ2tVE"
     },
     {
       "id": "remo-mancuerna-unilateral",
@@ -243,7 +247,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pullover-maquina.webp"
+      "ilustracion": "ilustraciones/pullover-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
     },
     {
       "id": "press-hombro-maquina",
