@@ -667,7 +667,8 @@
       "grupo": "Trapecio",
       "equipo": "Mancuernas",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-mancuernas.webp"
+      "ilustracion": "ilustraciones/encogimientos-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
     },
     {
       "id": "encogimientos-barra",
@@ -675,7 +676,8 @@
       "grupo": "Trapecio",
       "equipo": "Barra",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-barra.webp"
+      "ilustracion": "ilustraciones/encogimientos-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
     },
     {
       "id": "encogimientos-maquina",
@@ -1447,7 +1449,8 @@
       "nombre": "Paseo del granjero con mancuernas",
       "grupo": "Trapecio",
       "equipo": "Mancuernas",
-      "patron": "elevacion_escapular"
+      "patron": "elevacion_escapular",
+      "videoUrl": "https://www.youtube.com/watch?v=rt17lmnaLSM"
     },
     {
       "id": "curl-muneca-barra",
@@ -1468,7 +1471,8 @@
       "nombre": "Curl inverso con barra recta",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_codo"
+      "patron": "flexion_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=nRgxYX2Ve9w"
     },
     {
       "id": "peso-muerto-convencional-barra",
