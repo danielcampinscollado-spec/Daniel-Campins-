@@ -659,7 +659,8 @@
       "grupo": "Gemelos",
       "equipo": "Máquina",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-sentado-maquina.webp"
+      "ilustracion": "ilustraciones/gemelos-sentado-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=JbyjNymZOt0"
     },
     {
       "id": "gemelos-prensa",
@@ -667,7 +668,8 @@
       "grupo": "Gemelos",
       "equipo": "Prensa",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-prensa.webp"
+      "ilustracion": "ilustraciones/gemelos-prensa.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=JbyjNymZOt0"
     },
     {
       "id": "gemelos-multipower",
@@ -1091,7 +1093,8 @@
       "grupo": "Trapecio",
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-multipower.webp"
+      "ilustracion": "ilustraciones/encogimientos-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
     },
     {
       "id": "rotacion-torso-maquina",
@@ -1461,7 +1464,8 @@
       "nombre": "Elevación de gemelos de pie con barra",
       "grupo": "Gemelos",
       "equipo": "Barra",
-      "patron": "flexion_plantar"
+      "patron": "flexion_plantar",
+      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
     },
     {
       "id": "gemelos-unilateral-escalon",
@@ -1476,7 +1480,8 @@
       "nombre": "Encogimientos de trapecio en polea",
       "grupo": "Trapecio",
       "equipo": "Polea",
-      "patron": "elevacion_escapular"
+      "patron": "elevacion_escapular",
+      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
     },
     {
       "id": "paseo-granjero-mancuernas",
