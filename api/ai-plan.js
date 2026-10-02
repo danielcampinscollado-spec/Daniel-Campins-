@@ -161,6 +161,8 @@ function validate(result,kind){
 
 module.exports=async function handler(req,res){
   if(req.method!=='POST')return json(res,405,{error:'Método no permitido'});
+  const contentLength=Number(req.headers['content-length']||0);
+  if(Number.isFinite(contentLength)&&contentLength>128*1024)return json(res,413,{error:'Solicitud demasiado grande'});
   try{
     const auth=String(req.headers.authorization||'');
     const token=auth.startsWith('Bearer ')?auth.slice(7).trim():'';
