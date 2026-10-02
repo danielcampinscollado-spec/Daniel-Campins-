@@ -463,7 +463,8 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/press-triceps-maquina.webp"
+      "ilustracion": "ilustraciones/press-triceps-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
     },
     {
       "id": "press-cerrado-barra",
@@ -579,7 +580,8 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-unilateral.webp"
+      "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -614,7 +616,8 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-maquina.webp"
+      "ilustracion": "ilustraciones/hip-thrust-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
     },
     {
       "id": "glute-drive-maquina",
@@ -622,7 +625,8 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/glute-drive-maquina.webp"
+      "ilustracion": "ilustraciones/glute-drive-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
     },
     {
       "id": "patada-gluteo-polea",
@@ -1020,7 +1024,8 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/fondos-maquina.webp"
+      "ilustracion": "ilustraciones/fondos-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=6kALZikXxLc"
     },
     {
       "id": "extension-triceps-maquina",
@@ -1028,7 +1033,8 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-maquina.webp"
+      "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
