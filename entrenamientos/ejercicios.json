@@ -491,7 +491,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-horizontal.webp"
+      "ilustracion": "ilustraciones/prensa-horizontal.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"
     },
     {
       "id": "hack-squat-maquina",
@@ -640,7 +641,8 @@
       "grupo": "Glúteos",
       "equipo": "Polea",
       "patron": "abduccion_cadera",
-      "ilustracion": "ilustraciones/abduccion-cadera-polea.webp"
+      "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
     },
     {
       "id": "aductor-maquina",
@@ -648,7 +650,8 @@
       "grupo": "Aductores",
       "equipo": "Máquina",
       "patron": "aduccion_cadera",
-      "ilustracion": "ilustraciones/aductor-maquina.webp"
+      "ilustracion": "ilustraciones/aductor-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
     },
     {
       "id": "aductor-polea",
@@ -1100,7 +1103,8 @@
       "grupo": "Femoral",
       "equipo": "Multipower",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2SHsk9AzdjA"
     },
     {
       "id": "hip-thrust-multipower",
@@ -1108,7 +1112,8 @@
       "grupo": "Glúteos",
       "equipo": "Multipower",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-multipower.webp"
+      "ilustracion": "ilustraciones/hip-thrust-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
     },
     {
       "id": "patada-gluteo-maquina",
