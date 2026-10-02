@@ -326,7 +326,8 @@
       "grupo": "Bíceps",
       "equipo": "Barra EZ",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-barra-ez.webp"
+      "ilustracion": "ilustraciones/curl-barra-ez.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=kwG2ipFRgfo"
     },
     {
       "id": "curl-barra-recta",
@@ -334,7 +335,8 @@
       "grupo": "Bíceps",
       "equipo": "Barra",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-barra-recta.webp"
+      "ilustracion": "ilustraciones/curl-barra-recta.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=kwG2ipFRgfo"
     },
     {
       "id": "curl-mancuernas-alterno",
@@ -342,7 +344,8 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-mancuernas-alterno.webp"
+      "ilustracion": "ilustraciones/curl-mancuernas-alterno.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=sAq_ocpRh_I"
     },
     {
       "id": "curl-inclinado-mancuernas",
@@ -1245,7 +1248,8 @@
       "nombre": "Curl de concentración con mancuerna",
       "grupo": "Bíceps",
       "equipo": "Mancuerna",
-      "patron": "flexion_codo"
+      "patron": "flexion_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=0AUGkch3tzc"
     },
     {
       "id": "curl-spider-mancuernas",
@@ -1259,7 +1263,8 @@
       "nombre": "Curl martillo cruzado",
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
-      "patron": "flexion_codo"
+      "patron": "flexion_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=zC3nLlEvin4"
     },
     {
       "id": "curl-predicador-unilateral-mancuerna",
