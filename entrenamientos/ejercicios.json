@@ -661,7 +661,8 @@
       "grupo": "Gemelos",
       "equipo": "Máquina",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-de-pie-maquina.webp"
+      "ilustracion": "ilustraciones/gemelos-de-pie-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=YMmgqO8Jo-k"
     },
     {
       "id": "gemelos-sentado-maquina",
@@ -687,7 +688,8 @@
       "grupo": "Gemelos",
       "equipo": "Multipower",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-multipower.webp"
+      "ilustracion": "ilustraciones/gemelos-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
     },
     {
       "id": "encogimientos-mancuernas",
@@ -713,7 +715,8 @@
       "grupo": "Trapecio",
       "equipo": "Máquina",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-maquina.webp"
+      "ilustracion": "ilustraciones/encogimientos-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
     },
     {
       "id": "curl-muneca-mancuernas",
@@ -748,7 +751,8 @@
       "grupo": "Lumbar",
       "equipo": "Máquina",
       "patron": "extension_columna",
-      "ilustracion": "ilustraciones/extension-lumbar-maquina.webp"
+      "ilustracion": "ilustraciones/extension-lumbar-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
     },
     {
       "id": "crunch-maquina",
