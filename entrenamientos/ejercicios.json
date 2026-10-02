@@ -371,7 +371,8 @@
       "grupo": "Bíceps",
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-predicador-ez.webp"
+      "ilustracion": "ilustraciones/curl-predicador-ez.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
     },
     {
       "id": "curl-polea-barra",
@@ -379,7 +380,8 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-barra.webp"
+      "ilustracion": "ilustraciones/curl-polea-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=NFzTWp2qpiE"
     },
     {
       "id": "curl-martillo-cuerda",
@@ -1284,7 +1286,8 @@
       "nombre": "Curl spider con mancuernas",
       "grupo": "Bíceps",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "flexion_codo"
+      "patron": "flexion_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=nvufDW-MSQk"
     },
     {
       "id": "curl-martillo-cruzado",
@@ -1299,7 +1302,8 @@
       "nombre": "Curl predicador unilateral con mancuerna",
       "grupo": "Bíceps",
       "equipo": "Mancuerna y banco predicador",
-      "patron": "flexion_codo"
+      "patron": "flexion_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=Jvj2wV0vOYU"
     },
     {
       "id": "fondos-paralelas-triceps",
