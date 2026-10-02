@@ -776,7 +776,8 @@
       "grupo": "Pectoral",
       "equipo": "Multipower",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-multipower.webp"
+      "ilustracion": "ilustraciones/press-banca-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=7FyJdsXeta8"
     },
     {
       "id": "press-inclinado-multipower",
@@ -1080,7 +1081,8 @@
       "nombre": "Press declinado con barra",
       "grupo": "Pectoral",
       "equipo": "Barra y banco declinado",
-      "patron": "empuje_horizontal"
+      "patron": "empuje_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=ifWEwZDWMAw"
     },
     {
       "id": "press-declinado-mancuernas",
