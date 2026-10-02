@@ -44,6 +44,7 @@
       #coach-main .dcc-meal-next{border:1px solid #e3b34f;background:linear-gradient(135deg,#f5d577,#dda73e);color:#17110a;box-shadow:0 10px 24px rgba(190,133,31,.14)}
       #coach-main .dcc-meal-next:disabled{opacity:.42;box-shadow:none}
       #coach-main .dcc-meal-back,#coach-main .dcc-meal-cancel{border:1px solid rgba(183,123,19,.22);background:#fffdf8;color:#5f6268}
+      #coach-main .dcc-meal-reorder{display:grid;gap:7px;margin-top:10px}.dcc-meal-reorder-row{display:grid;grid-template-columns:30px 1fr 36px 36px;align-items:center;gap:7px;padding:8px 9px;border:1px solid rgba(183,123,19,.22);border-radius:14px;background:#fffdf8}.dcc-meal-reorder-row b{font-size:12px;color:#17191d}.dcc-meal-reorder-num{width:27px;height:27px;display:grid;place-items:center;border-radius:50%;background:#f5ead2;color:#956b18;font-size:11px;font-weight:900}.dcc-meal-reorder-move{height:34px;border:1px solid rgba(183,123,19,.25);border-radius:10px;background:#fff;color:#7f5a18;font-weight:900}.dcc-meal-reorder-move:disabled{opacity:.25}
       #coach-main .dcc-meal-hint{padding:12px 13px;border:1px solid rgba(183,123,19,.18);border-radius:15px;background:rgba(245,234,210,.5);color:#776c5d;font-size:10px;line-height:1.45}
       @media(max-width:520px){#coach-main .dcc-meal-setup-card{padding:13px}#coach-main .dcc-meal-setup h2{font-size:18px}#coach-main .dcc-meal-counts{gap:7px}#coach-main .dcc-meal-count{height:44px}#coach-main .dcc-meal-option{min-height:44px}#coach-main .dcc-meal-option b{font-size:13px}}
     `;
@@ -94,6 +95,13 @@
     p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Añadir un momento de comida</h2><p>Elige el tipo de comida. No tendrás que escribir el nombre manualmente.</p><div class="dcc-meal-options">${available.length?available.map(name=>`<button type="button" class="dcc-meal-option" onclick="dccMealAddPreset('${name.replace(/'/g,"\\'")}')"><span class="tick">＋</span><span><b>${esc(name)}</b><small>Se añadirá al final de este día</small></span><span>›</span></button>`).join(''):'<div class="dcc-meal-hint">Ya están añadidos todos los tipos de comida disponibles.</div>'}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Volver</button></div>`;
     return true
   }
+
+
+  window.dccNutritionMealReorder=function(id,type){
+    currentId=String(id);currentType=type==='rest'?'rest':'training';injectCss();const p=pane(),d=window.data?.diets?.[currentId]?.[currentType];if(!p||!d)return false;const meals=Array.isArray(d.meals)?d.meals:[];
+    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Ordenar comidas</h2><p>Coloca las comidas en el orden exacto en el que las verá el cliente.</p><div class="dcc-meal-reorder">${meals.map((m,i)=>`<div class="dcc-meal-reorder-row"><span class="dcc-meal-reorder-num">${i+1}</span><b>${esc(m.name)}</b><button type="button" class="dcc-meal-reorder-move" ${i===0?'disabled':''} onclick="dccNutritionMealReorderMove('${currentId}','${currentType}',${i},-1)">↑</button><button type="button" class="dcc-meal-reorder-move" ${i===meals.length-1?'disabled':''} onclick="dccNutritionMealReorderMove('${currentId}','${currentType}',${i},1)">↓</button></div>`).join('')}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccNutritionV2Edit('${currentId}')">Volver al editor</button></div>`;return true;
+  };
+  window.dccNutritionMealReorderMove=async function(id,type,index,delta){const d=window.data?.diets?.[id]?.[type],a=d?.meals;if(!Array.isArray(a))return;const to=index+delta;if(to<0||to>=a.length)return;const next=a.slice(),item=next.splice(index,1)[0];next.splice(to,0,item);d.meals=next;try{await persistType(id,type);window.dccNutritionMealReorder(id,type)}catch(error){console.error('DCC reorder meals:',error);alert('No se pudo guardar el nuevo orden.')}};
 
   window.dccNutritionMealSetupStart=renderStep1;
   window.dccNutritionMealAddStart=(id,type)=>renderAddMealPicker(id,type||window.__dccDietType||'training');
