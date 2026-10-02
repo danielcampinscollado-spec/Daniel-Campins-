@@ -975,7 +975,8 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/deltoide-posterior-polea.webp"
+      "ilustracion": "ilustraciones/deltoide-posterior-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=rep-qVOkqgk"
     },
     {
       "id": "curl-biceps-maquina",
@@ -1035,7 +1036,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp"
+      "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
     },
     {
       "id": "extension-triceps-sobre-cabeza-unilateral",
@@ -1043,7 +1045,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp"
+      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
     },
     {
       "id": "pendulum-squat",
@@ -1101,7 +1104,8 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp"
+      "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "curl-femoral-de-pie",
@@ -1109,7 +1113,8 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-de-pie.webp"
+      "ilustracion": "ilustraciones/curl-femoral-de-pie.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "peso-muerto-rumano-multipower",
@@ -1135,7 +1140,8 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/patada-gluteo-maquina.webp"
+      "ilustracion": "ilustraciones/patada-gluteo-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=7h5NQOe7uS8"
     },
     {
       "id": "encogimientos-multipower",
