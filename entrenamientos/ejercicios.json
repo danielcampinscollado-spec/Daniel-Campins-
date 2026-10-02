@@ -57,7 +57,8 @@
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-mancuernas.webp"
+      "ilustracion": "ilustraciones/press-inclinado-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=oZVCBM9f8Eo"
     },
     {
       "id": "press-pecho-maquina",
@@ -74,7 +75,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-maquina.webp"
+      "ilustracion": "ilustraciones/press-inclinado-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=WxrKIPbeQP8"
     },
     {
       "id": "press-convergente-maquina",
@@ -98,7 +100,8 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-media.webp"
+      "ilustracion": "ilustraciones/cruces-polea-media.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=QcTcWpkn_bw"
     },
     {
       "id": "cruces-polea-alta",
@@ -106,7 +109,8 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-alta.webp"
+      "ilustracion": "ilustraciones/cruces-polea-alta.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=hhruLxo9yZU"
     },
     {
       "id": "cruces-polea-baja",
@@ -114,7 +118,8 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-baja.webp"
+      "ilustracion": "ilustraciones/cruces-polea-baja.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=wnFEC_34Bls"
     },
     {
       "id": "flexiones",
