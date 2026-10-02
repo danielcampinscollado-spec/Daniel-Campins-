@@ -778,7 +778,8 @@
       "grupo": "Core",
       "equipo": "Rueda abdominal",
       "patron": "estabilidad",
-      "ilustracion": "ilustraciones/rueda-abdominal.webp"
+      "ilustracion": "ilustraciones/rueda-abdominal.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=rqiTPdK1c_I"
     },
     {
       "id": "press-declinado-maquina",
@@ -1518,21 +1519,24 @@
       "nombre": "Crunch abdominal en el suelo",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_tronco"
+      "patron": "flexion_tronco",
+      "videoUrl": "https://www.youtube.com/watch?v=Xyd_fa5zoEU"
     },
     {
       "id": "crunch-inverso",
       "nombre": "Crunch inverso",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_cadera"
+      "patron": "flexion_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=hyv14e2QDq0"
     },
     {
       "id": "sit-up",
       "nombre": "Sit-up abdominal",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_tronco"
+      "patron": "flexion_tronco",
+      "videoUrl": "https://www.youtube.com/watch?v=jDwoBqPH0jk"
     },
     {
       "id": "dead-bug",
@@ -1563,14 +1567,16 @@
       "nombre": "Russian twist",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "rotacion_tronco"
+      "patron": "rotacion_tronco",
+      "videoUrl": "https://www.youtube.com/watch?v=wkD8rjkodUI"
     },
     {
       "id": "mountain-climbers",
       "nombre": "Mountain climbers",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad"
+      "patron": "estabilidad",
+      "videoUrl": "https://www.youtube.com/watch?v=nmwgirgXLYM"
     }
   ]
 }
