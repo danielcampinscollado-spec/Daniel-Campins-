@@ -390,7 +390,8 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-martillo-cuerda.webp"
+      "ilustracion": "ilustraciones/curl-martillo-cuerda.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Quc_tOv97I"
     },
     {
       "id": "curl-martillo-mancuernas",
@@ -965,7 +966,8 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-unilateral.webp"
+      "ilustracion": "ilustraciones/curl-polea-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=G5mlD2VQkEU"
     },
     {
       "id": "curl-polea-baja-cuerda",
@@ -973,7 +975,8 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp"
+      "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=1Quc_tOv97I"
     },
     {
       "id": "curl-polea-alta",
@@ -981,7 +984,8 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-alta.webp"
+      "ilustracion": "ilustraciones/curl-polea-alta.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=G5mlD2VQkEU"
     },
     {
       "id": "fondos-maquina",
