@@ -609,7 +609,8 @@
       "grupo": "Glúteos",
       "equipo": "Polea",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/patada-gluteo-polea.webp"
+      "ilustracion": "ilustraciones/patada-gluteo-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=7h5NQOe7uS8"
     },
     {
       "id": "abduccion-cadera-maquina",
@@ -617,7 +618,8 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "abduccion_cadera",
-      "ilustracion": "ilustraciones/abduccion-cadera-maquina.webp"
+      "ilustracion": "ilustraciones/abduccion-cadera-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
     },
     {
       "id": "abduccion-cadera-polea",
@@ -1402,7 +1404,8 @@
       "nombre": "Puente de glúteos con mancuerna",
       "grupo": "Glúteos",
       "equipo": "Mancuerna",
-      "patron": "extension_cadera"
+      "patron": "extension_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=OUgsJ8-Vi0E"
     },
     {
       "id": "abduccion-banda",
@@ -1417,7 +1420,8 @@
       "nombre": "Hip thrust con mancuerna",
       "grupo": "Glúteos",
       "equipo": "Mancuerna y banco",
-      "patron": "extension_cadera"
+      "patron": "extension_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=6W-ViGdQ6xM"
     },
     {
       "id": "sentadilla-sumo-mancuerna",
