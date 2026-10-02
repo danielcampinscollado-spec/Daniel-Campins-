@@ -643,7 +643,8 @@
       "grupo": "Aductores",
       "equipo": "Polea",
       "patron": "aduccion_cadera",
-      "ilustracion": "ilustraciones/aductor-polea.webp"
+      "ilustracion": "ilustraciones/aductor-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Y3mK0UO4J7c"
     },
     {
       "id": "gemelos-de-pie-maquina",
@@ -729,7 +730,8 @@
       "grupo": "Lumbar",
       "equipo": "Banco romano",
       "patron": "extension_columna",
-      "ilustracion": "ilustraciones/hiperextensiones-banco.webp"
+      "ilustracion": "ilustraciones/hiperextensiones-banco.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
     },
     {
       "id": "extension-lumbar-maquina",
@@ -1122,7 +1124,8 @@
       "grupo": "Lumbar",
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
-      "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp"
+      "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
     },
     {
       "id": "press-declinado-barra",
@@ -1445,7 +1448,8 @@
       "nombre": "Sentadilla sumo con barra",
       "grupo": "Aductores",
       "equipo": "Barra",
-      "patron": "aduccion_cadera"
+      "patron": "aduccion_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=9ZuXKqRbT9k"
     },
     {
       "id": "zancada-lateral-mancuernas",
