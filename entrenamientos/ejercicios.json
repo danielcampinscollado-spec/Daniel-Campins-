@@ -161,7 +161,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina asistida",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/dominadas-asistidas.webp"
+      "ilustracion": "ilustraciones/dominadas-asistidas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=PaW3kabkW5E"
     },
     {
       "id": "remo-sentado-polea-neutro",
@@ -210,7 +211,8 @@
       "grupo": "Espalda",
       "equipo": "Mancuerna y banco",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp"
+      "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
     },
     {
       "id": "remo-barra",
