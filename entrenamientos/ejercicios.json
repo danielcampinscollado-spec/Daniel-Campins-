@@ -262,7 +262,8 @@
       "grupo": "Hombros",
       "equipo": "Barra",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-militar-barra.webp"
+      "ilustracion": "ilustraciones/press-militar-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
     },
     {
       "id": "elevacion-lateral-mancuernas",
@@ -294,7 +295,8 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pajaros-maquina.webp"
+      "ilustracion": "ilustraciones/pajaros-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Z84HkxGCBqQ"
     },
     {
       "id": "pajaros-mancuernas",
@@ -1198,7 +1200,8 @@
       "nombre": "Elevaciones frontales con mancuernas",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=CH9JzDStL3U"
     },
     {
       "id": "elevacion-frontal-disco",
@@ -1212,7 +1215,8 @@
       "nombre": "Remo al mentón con barra",
       "grupo": "Hombros",
       "equipo": "Barra",
-      "patron": "traccion_horizontal"
+      "patron": "traccion_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=amCU-ziHITM"
     },
     {
       "id": "curl-concentracion-mancuerna",
