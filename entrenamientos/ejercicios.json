@@ -753,7 +753,8 @@
       "grupo": "Core",
       "equipo": "Polea",
       "patron": "flexion_tronco",
-      "ilustracion": "ilustraciones/crunch-polea.webp"
+      "ilustracion": "ilustraciones/crunch-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=AV5PmZJIrrw"
     },
     {
       "id": "elevacion-rodillas-silla",
@@ -761,7 +762,8 @@
       "grupo": "Core",
       "equipo": "Silla romana",
       "patron": "flexion_cadera",
-      "ilustracion": "ilustraciones/elevacion-rodillas-silla.webp"
+      "ilustracion": "ilustraciones/elevacion-rodillas-silla.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=hdng3Nm1x_E"
     },
     {
       "id": "elevacion-piernas-colgado",
@@ -769,7 +771,8 @@
       "grupo": "Core",
       "equipo": "Barra de dominadas",
       "patron": "flexion_cadera",
-      "ilustracion": "ilustraciones/elevacion-piernas-colgado.webp"
+      "ilustracion": "ilustraciones/elevacion-piernas-colgado.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Pr1ieGZ5atk"
     },
     {
       "id": "plancha",
@@ -1110,7 +1113,8 @@
       "grupo": "Core",
       "equipo": "Polea",
       "patron": "anti_rotacion",
-      "ilustracion": "ilustraciones/pallof-press-polea.webp"
+      "ilustracion": "ilustraciones/pallof-press-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=AH_QZLm_0-s"
     },
     {
       "id": "extension-lumbar-banco-45",
