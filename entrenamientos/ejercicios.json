@@ -424,7 +424,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-unilateral.webp"
+      "ilustracion": "ilustraciones/extension-triceps-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=9t5h9xX8JgU"
     },
     {
       "id": "extension-triceps-sobre-cabeza",
@@ -432,7 +433,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza.webp"
+      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
     },
     {
       "id": "fondos-maquina-asistida",
@@ -1326,7 +1328,8 @@
       "nombre": "Press francés con mancuerna",
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
-      "patron": "extension_codo"
+      "patron": "extension_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
     },
     {
       "id": "patada-triceps-mancuerna",
@@ -1341,7 +1344,8 @@
       "nombre": "Patada de tríceps en polea",
       "grupo": "Tríceps",
       "equipo": "Polea",
-      "patron": "extension_codo"
+      "patron": "extension_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
     },
     {
       "id": "sentadilla-frontal-barra",
