@@ -39,7 +39,8 @@
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-mancuernas.webp"
+      "ilustracion": "ilustraciones/press-banca-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Ixezut6Spys"
     },
     {
       "id": "press-inclinado-barra",
@@ -47,7 +48,8 @@
       "grupo": "Pectoral",
       "equipo": "Barra y banco inclinado",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-barra.webp"
+      "ilustracion": "ilustraciones/press-inclinado-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=qK-_A7CtQNM"
     },
     {
       "id": "press-inclinado-mancuernas",
@@ -63,7 +65,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-pecho-maquina.webp"
+      "ilustracion": "ilustraciones/press-pecho-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
     },
     {
       "id": "press-inclinado-maquina",
@@ -479,7 +482,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "extension_rodilla",
-      "ilustracion": "ilustraciones/extension-cuadriceps.webp"
+      "ilustracion": "ilustraciones/extension-cuadriceps.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=mG4bOaFzLqs"
     },
     {
       "id": "zancadas-mancuernas",
@@ -887,7 +891,8 @@
       "grupo": "Bíceps",
       "equipo": "Máquina",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-biceps-maquina.webp"
+      "ilustracion": "ilustraciones/curl-biceps-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Z8ySCGu761E"
     },
     {
       "id": "curl-polea-unilateral",
