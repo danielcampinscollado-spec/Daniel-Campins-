@@ -493,7 +493,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/hack-squat-maquina.webp"
+      "ilustracion": "ilustraciones/hack-squat-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
     },
     {
       "id": "sentadilla-multipower",
@@ -501,7 +502,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Multipower",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-multipower.webp"
+      "ilustracion": "ilustraciones/sentadilla-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=V2D5CwM5D9A"
     },
     {
       "id": "sentadilla-barra",
@@ -1049,7 +1051,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "extension_rodilla",
-      "ilustracion": "ilustraciones/extension-cuadriceps-unilateral.webp"
+      "ilustracion": "ilustraciones/extension-cuadriceps-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=mG4bOaFzLqs"
     },
     {
       "id": "prensa-unilateral",
@@ -1057,7 +1060,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-unilateral.webp"
+      "ilustracion": "ilustraciones/prensa-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ZYDTJaAM-gE"
     },
     {
       "id": "curl-femoral-tumbado-unilateral",
