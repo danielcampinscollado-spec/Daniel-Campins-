@@ -256,7 +256,8 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas y banco",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-militar-mancuernas.webp"
+      "ilustracion": "ilustraciones/press-militar-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=qEwKCR5JCog"
     },
     {
       "id": "press-militar-barra",
@@ -273,7 +274,8 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-mancuernas.webp"
+      "ilustracion": "ilustraciones/elevacion-lateral-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=3VcKaXpzqRo"
     },
     {
       "id": "elevacion-lateral-polea",
@@ -306,7 +308,8 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pajaros-mancuernas.webp"
+      "ilustracion": "ilustraciones/pajaros-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=EA7u4Q_8HQ0"
     },
     {
       "id": "face-pull-polea",
@@ -314,7 +317,8 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/face-pull-polea.webp"
+      "ilustracion": "ilustraciones/face-pull-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=rep-qVOkqgk"
     },
     {
       "id": "curl-barra-ez",
@@ -1203,7 +1207,8 @@
       "nombre": "Press Arnold con mancuernas",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "empuje_vertical"
+      "patron": "empuje_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=6Z15_WdXmVw"
     },
     {
       "id": "press-militar-mancuernas-pie",
