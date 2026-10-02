@@ -552,7 +552,8 @@
       "grupo": "Femoral",
       "equipo": "Barra",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-barra.webp"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2SHsk9AzdjA"
     },
     {
       "id": "peso-muerto-rumano-mancuernas",
@@ -560,7 +561,8 @@
       "grupo": "Femoral",
       "equipo": "Mancuernas",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-mancuernas.webp"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-mancuernas.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=hQgFixeXdZo"
     },
     {
       "id": "hip-thrust-barra",
@@ -1338,14 +1340,16 @@
       "nombre": "Buenos días con barra",
       "grupo": "Femoral",
       "equipo": "Barra",
-      "patron": "bisagra_cadera"
+      "patron": "bisagra_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=YA-h3n9L4YU"
     },
     {
       "id": "curl-nordico",
       "nombre": "Curl nórdico",
       "grupo": "Femoral",
       "equipo": "Peso corporal",
-      "patron": "flexion_rodilla"
+      "patron": "flexion_rodilla",
+      "videoUrl": "https://www.youtube.com/watch?v=3-4pKUhkzoQ"
     },
     {
       "id": "peso-muerto-rumano-unilateral-mancuerna",
