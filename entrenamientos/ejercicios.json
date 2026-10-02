@@ -284,7 +284,8 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-polea.webp"
+      "ilustracion": "ilustraciones/elevacion-lateral-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=PPrzBWZDOhA"
     },
     {
       "id": "elevacion-lateral-maquina",
@@ -938,7 +939,8 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp"
+      "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=PPrzBWZDOhA"
     },
     {
       "id": "deltoide-posterior-polea",
@@ -1254,7 +1256,8 @@
       "nombre": "Press militar con mancuernas de pie",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "empuje_vertical"
+      "patron": "empuje_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=qEwKCR5JCog"
     },
     {
       "id": "elevaciones-frontales-mancuernas",
@@ -1269,7 +1272,8 @@
       "nombre": "Elevación frontal con disco",
       "grupo": "Hombros",
       "equipo": "Disco",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=-t7fuZ0KhDA"
     },
     {
       "id": "remo-menton-barra",
