@@ -204,24 +204,8 @@
   }
 
   function installDraftActions(){
-    const addFood=window.dccDietAddFood;
-    if(typeof addFood==='function'&&!chainHas(addFood,'__dccDraftV6')){
-      const base=addFood;
-      const fn=async function(id,type,mi,oi){
-        if(!isEditing(id))return base.apply(this,arguments);
-        const m=meal(id,type,mi);if(!m)return;
-        const os=options(m);if(!os[oi])oi=0;remember(mi,oi);
-        const c=(window.data?.clients||[]).find(x=>String(x.id)===String(id));
-        const avoid=String(c?.foods_to_avoid??c?.foodsToAvoid??'').trim();
-        if(avoid)alert('Aviso del cliente\nNo incluir: '+avoid+'.');
-        const name=prompt('Nombre del alimento','');if(name===null||!name.trim())return;
-        const quantity=prompt('Cantidad','');if(quantity===null)return;
-        os[oi].foods=Array.isArray(os[oi].foods)?os[oi].foods:[];
-        os[oi].foods.push([name.trim(),quantity.trim()]);
-        writeOptions(m,os);remember(mi,oi);renderDraft(id);restoreEditor(String(id));
-      };
-      fn.__dccDraftV6=true;fn.__base=base;window.dccDietAddFood=fn;
-    }
+    // Añadir alimento: conservar siempre el selector premium canónico.
+    // El filtrado/aviso de alimentos no deseados se resuelve en client-admin-premium.
 
     const editFood=window.dccDietEditFood;
     if(typeof editFood==='function'&&!chainHas(editFood,'__dccDraftV6')){
