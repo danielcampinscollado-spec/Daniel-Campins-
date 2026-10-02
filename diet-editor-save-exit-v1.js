@@ -295,6 +295,7 @@
         const fn=async function(id){
           const result=await base.apply(this,arguments);
           beginEdit(id);
+          installDraftActions();
           restoreEditor(String(id));
           return result;
         };
