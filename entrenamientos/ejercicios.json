@@ -135,7 +135,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-ancho.webp"
+      "ilustracion": "ilustraciones/jalon-pecho-ancho.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
     },
     {
       "id": "jalon-pecho-neutro",
@@ -1167,7 +1168,8 @@
       "nombre": "Remo con barra T",
       "grupo": "Espalda",
       "equipo": "Barra T",
-      "patron": "traccion_horizontal"
+      "patron": "traccion_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=rvbjGSQ2tVE"
     },
     {
       "id": "jalon-brazos-rectos-polea",
