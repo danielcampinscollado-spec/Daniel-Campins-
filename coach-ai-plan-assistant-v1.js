@@ -112,7 +112,7 @@ function mapRoutine(result){
         reps:String(x?.reps||''),
         restBetweenSets:Math.max(0,Number(x?.rest_between_sets)||0),
         restBetweenExercises:Math.max(0,Number(x?.rest_between_exercises)||0),
-        videoUrl:String(x?.video_url||hit?.videoUrl||hit?.video||'')
+        videoUrl:String(hit?.videoUrl||hit?.video||'')
       };
       if(method==='superset'){
         const group=String(x?.method_group||'A').replace(/[^a-z0-9_-]/gi,'').slice(0,18)||'A';
