@@ -233,7 +233,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pullover-polea.webp"
+      "ilustracion": "ilustraciones/pullover-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
     },
     {
       "id": "pullover-maquina",
@@ -920,7 +921,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-polea-unilateral.webp"
+      "ilustracion": "ilustraciones/remo-polea-unilateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
     },
     {
       "id": "remo-multipower",
@@ -928,7 +930,8 @@
       "grupo": "Espalda",
       "equipo": "Multipower",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-multipower.webp"
+      "ilustracion": "ilustraciones/remo-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=TZLCvXbej_Q"
     },
     {
       "id": "press-hombro-iso-lateral",
@@ -1212,7 +1215,8 @@
       "nombre": "Dominadas con agarre prono",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical"
+      "patron": "traccion_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=eGo4IYlbE5g"
     },
     {
       "id": "dominadas-neutras",
