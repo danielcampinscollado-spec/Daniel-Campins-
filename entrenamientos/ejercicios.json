@@ -85,7 +85,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-convergente-maquina.webp"
+      "ilustracion": "ilustraciones/press-convergente-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
     },
     {
       "id": "aperturas-pec-deck",
@@ -822,7 +823,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-declinado-maquina.webp"
+      "ilustracion": "ilustraciones/press-declinado-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Ixezut6Spys"
     },
     {
       "id": "press-pecho-iso-lateral",
@@ -830,7 +832,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp"
+      "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
     },
     {
       "id": "press-inclinado-iso-lateral",
@@ -838,7 +841,8 @@
       "grupo": "Pectoral",
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp"
+      "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=WxrKIPbeQP8"
     },
     {
       "id": "press-banca-multipower",
@@ -939,7 +943,8 @@
       "grupo": "Hombros",
       "equipo": "Máquina de palancas",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-iso-lateral.webp"
+      "ilustracion": "ilustraciones/press-hombro-iso-lateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=WvLMauqrnK8"
     },
     {
       "id": "press-hombro-multipower",
@@ -947,7 +952,8 @@
       "grupo": "Hombros",
       "equipo": "Multipower",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-multipower.webp"
+      "ilustracion": "ilustraciones/press-hombro-multipower.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
