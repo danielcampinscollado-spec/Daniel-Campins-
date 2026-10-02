@@ -19,11 +19,18 @@
     label.className='dcc-nc-field';
     label.innerHTML='<span class="dcc-nc-label"><span>Email de acceso</span></span><input class="dcc-nc-input" id="new-access-email" type="email" inputmode="email" autocomplete="email" placeholder="cliente@email.com"><span style="display:block;margin-top:6px;color:#7f8994;font-size:9px;line-height:1.35">Este será el email que el cliente usará para entrar con su enlace seguro.</span>';
     nameField.insertAdjacentElement('afterend',label);
+    if(!document.getElementById('new-trial-duration')){
+      const trial=document.createElement('label');
+      trial.className='dcc-nc-field';
+      trial.innerHTML='<span class="dcc-nc-label"><span>Acceso inicial</span></span><div class="dcc-nc-select-wrap"><select class="dcc-nc-select" id="new-trial-duration"><option value="">Cliente normal</option><option value="7d">Prueba · 7 días</option><option value="15d">Prueba · 15 días</option><option value="1m">Prueba · 1 mes</option></select></div><span style="display:block;margin-top:6px;color:#7f8994;font-size:9px;line-height:1.35">Las pruebas reciben acceso Complete y el cuestionario completo.</span>';
+      label.insertAdjacentElement('afterend',trial);
+    }
   }
 
   async function createClientAtomic(){
     const name=document.getElementById('new-name')?.value.trim()||'';
     const accessEmail=document.getElementById('new-access-email')?.value.trim().toLowerCase()||'';
+    const trialDuration=document.getElementById('new-trial-duration')?.value||'';
     if(!name){notify('Introduce el nombre y apellidos');return}
     if(!validEmail(accessEmail)){notify('Introduce un email de acceso válido');return}
     const database=db();if(!database){notify('No se pudo conectar con la base de datos');return}
@@ -32,7 +39,9 @@
     if(button){button.dataset.dccCreating='1';button.disabled=true;button.innerHTML='Creando cliente…'}
     const id='client_'+Date.now();
     try{
-      const {data:ok,error}=await database.rpc('dcc_create_client_access',{p_id:id,p_name:name,p_access_email:accessEmail});
+      const rpc=trialDuration?'dcc_create_trial_client_access':'dcc_create_client_access';
+      const args=trialDuration?{p_id:id,p_name:name,p_access_email:accessEmail,p_trial_duration:trialDuration}:{p_id:id,p_name:name,p_access_email:accessEmail};
+      const {data:ok,error}=await database.rpc(rpc,args);
       if(error||ok!==true)throw error||new Error('Alta no confirmada');
       const redirectUrl=new URL(location.origin+location.pathname);redirectUrl.searchParams.set('dcc_activate','1');const redirectTo=redirectUrl.toString();
       const {error:mailError}=await database.auth.signInWithOtp({email:accessEmail,options:{emailRedirectTo:redirectTo,shouldCreateUser:true}});
@@ -42,7 +51,7 @@
       try{if(typeof closeModal==='function')closeModal();else window.closeModal?.()}catch(_){}
       window.selectedClient='';window.__dccClientAdminId='';
       if(typeof window.showCoach==='function')window.showCoach('clients');
-      notify('Acceso creado · enlace enviado al correo');
+      notify(trialDuration?'Prueba creada · Complete activado · enlace enviado':'Acceso creado · enlace enviado al correo');
     }catch(error){
       console.error('DCC alta mínima de cliente:',error);
       const message=String(error?.message||'').toLowerCase();
