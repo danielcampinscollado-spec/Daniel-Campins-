@@ -412,7 +412,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-barra.webp"
+      "ilustracion": "ilustraciones/extension-triceps-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
     },
     {
       "id": "extension-triceps-unilateral",
@@ -1278,14 +1279,16 @@
       "nombre": "Fondos en paralelas para tríceps",
       "grupo": "Tríceps",
       "equipo": "Paralelas",
-      "patron": "empuje_vertical"
+      "patron": "empuje_vertical",
+      "videoUrl": "https://www.youtube.com/watch?v=6kALZikXxLc"
     },
     {
       "id": "press-frances-barra-ez",
       "nombre": "Press francés con barra EZ",
       "grupo": "Tríceps",
       "equipo": "Barra EZ",
-      "patron": "extension_codo"
+      "patron": "extension_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=d_KZxkY_0cM"
     },
     {
       "id": "press-frances-mancuerna",
@@ -1299,7 +1302,8 @@
       "nombre": "Patada de tríceps con mancuerna",
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
-      "patron": "extension_codo"
+      "patron": "extension_codo",
+      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
     },
     {
       "id": "patada-triceps-polea",
