@@ -6126,6 +6126,9 @@ async function openApp(app){
       if(!claimedClient){
         throw new Error("No se pudo cargar el perfil del cliente");
       }
+      if(claimedClient.access_suspended===true){
+        throw new Error("plan_suspended");
+      }
       if(claimedClient.password_setup_completed!==true){
         if(typeof window.dccOpenFirstPasswordSetup==='function'){
           window.dccOpenFirstPasswordSetup(claimedClient);
