@@ -570,7 +570,8 @@
       "grupo": "Glúteos",
       "equipo": "Barra y banco",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-barra.webp"
+      "ilustracion": "ilustraciones/hip-thrust-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
     },
     {
       "id": "hip-thrust-maquina",
@@ -1363,7 +1364,8 @@
       "nombre": "Puente de glúteos con barra",
       "grupo": "Glúteos",
       "equipo": "Barra",
-      "patron": "extension_cadera"
+      "patron": "extension_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=wPM8icPu6H8"
     },
     {
       "id": "puente-gluteo-mancuerna",
@@ -1377,7 +1379,8 @@
       "nombre": "Abducción de cadera con banda",
       "grupo": "Glúteos",
       "equipo": "Banda elástica",
-      "patron": "abduccion_cadera"
+      "patron": "abduccion_cadera",
+      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
     },
     {
       "id": "hip-thrust-mancuerna",
