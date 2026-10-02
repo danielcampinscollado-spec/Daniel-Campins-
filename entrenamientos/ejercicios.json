@@ -886,7 +886,8 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-unilateral-polea.webp"
+      "ilustracion": "ilustraciones/jalon-unilateral-polea.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=4y-GyEQ74Hk"
     },
     {
       "id": "jalon-maquina-convergente",
@@ -894,7 +895,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-maquina-convergente.webp"
+      "ilustracion": "ilustraciones/jalon-maquina-convergente.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
     },
     {
       "id": "jalon-iso-lateral",
@@ -902,7 +904,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-iso-lateral.webp"
+      "ilustracion": "ilustraciones/jalon-iso-lateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
     },
     {
       "id": "remo-bajo-maquina",
@@ -910,7 +913,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-bajo-maquina.webp"
+      "ilustracion": "ilustraciones/remo-bajo-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
     },
     {
       "id": "remo-alto-maquina",
@@ -918,7 +922,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-alto-maquina.webp"
+      "ilustracion": "ilustraciones/remo-alto-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
     },
     {
       "id": "remo-iso-lateral",
@@ -926,7 +931,8 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-iso-lateral.webp"
+      "ilustracion": "ilustraciones/remo-iso-lateral.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
     },
     {
       "id": "remo-polea-unilateral",
