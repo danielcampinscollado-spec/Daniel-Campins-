@@ -1066,7 +1066,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/pendulum-squat.webp"
+      "ilustracion": "ilustraciones/pendulum-squat.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
     },
     {
       "id": "v-squat-maquina",
@@ -1074,7 +1075,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/v-squat-maquina.webp"
+      "ilustracion": "ilustraciones/v-squat-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
     },
     {
       "id": "belt-squat-maquina",
@@ -1082,7 +1084,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/belt-squat-maquina.webp"
+      "ilustracion": "ilustraciones/belt-squat-maquina.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
     },
     {
       "id": "sentadilla-hack-inversa",
@@ -1090,7 +1093,8 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp"
+      "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
     },
     {
       "id": "extension-cuadriceps-unilateral",
