@@ -394,7 +394,8 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-cuerda.webp"
+      "ilustracion": "ilustraciones/extension-triceps-cuerda.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=7OF77JMEXhM"
     },
     {
       "id": "extension-triceps-barra",
@@ -442,7 +443,8 @@
       "grupo": "Tríceps",
       "equipo": "Barra y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-cerrado-barra.webp"
+      "ilustracion": "ilustraciones/press-cerrado-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=a2G3IdaTcPU"
     },
     {
       "id": "extension-triceps-tumbado-ez",
@@ -450,7 +452,8 @@
       "grupo": "Tríceps",
       "equipo": "Barra EZ y banco",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-tumbado-ez.webp"
+      "ilustracion": "ilustraciones/extension-triceps-tumbado-ez.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=BDAMt_LnmMM"
     },
     {
       "id": "prensa-45",
