@@ -31,7 +31,8 @@
       "grupo": "Pectoral",
       "equipo": "Barra y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-barra.webp"
+      "ilustracion": "ilustraciones/press-banca-barra.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=rT7DgCr-3pg"
     },
     {
       "id": "press-banca-mancuernas",
@@ -127,7 +128,8 @@
       "grupo": "Pectoral",
       "equipo": "Peso corporal",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/flexiones.webp"
+      "ilustracion": "ilustraciones/flexiones.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=IODxDxX7oi4"
     },
     {
       "id": "jalon-pecho-ancho",
@@ -1134,14 +1136,16 @@
       "nombre": "Fondos en paralelas para pectoral",
       "grupo": "Pectoral",
       "equipo": "Paralelas",
-      "patron": "empuje_horizontal"
+      "patron": "empuje_horizontal",
+      "videoUrl": "https://www.youtube.com/watch?v=2z8JmcrW-As"
     },
     {
       "id": "pullover-mancuerna",
       "nombre": "Pullover con mancuerna",
       "grupo": "Pectoral",
       "equipo": "Mancuerna y banco",
-      "patron": "aislamiento"
+      "patron": "aislamiento",
+      "videoUrl": "https://www.youtube.com/watch?v=FK4rHfWKEac"
     },
     {
       "id": "dominadas-pronas",
