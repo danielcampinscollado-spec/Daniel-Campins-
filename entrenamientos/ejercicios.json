@@ -757,7 +757,8 @@
       "grupo": "Core",
       "equipo": "Peso corporal",
       "patron": "estabilidad",
-      "ilustracion": "ilustraciones/plancha.webp"
+      "ilustracion": "ilustraciones/plancha.webp",
+      "videoUrl": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
     },
     {
       "id": "rueda-abdominal",
@@ -1479,14 +1480,16 @@
       "nombre": "Peso muerto convencional con barra",
       "grupo": "Lumbar",
       "equipo": "Barra",
-      "patron": "extension_tronco"
+      "patron": "extension_tronco",
+      "videoUrl": "https://www.youtube.com/watch?v=op9kVnSso6Q"
     },
     {
       "id": "superman-suelo",
       "nombre": "Superman en el suelo",
       "grupo": "Lumbar",
       "equipo": "Peso corporal",
-      "patron": "extension_columna"
+      "patron": "extension_columna",
+      "videoUrl": "https://www.youtube.com/watch?v=z6PJMT2y8GQ"
     },
     {
       "id": "crunch-suelo",
@@ -1514,21 +1517,24 @@
       "nombre": "Dead bug",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad"
+      "patron": "estabilidad",
+      "videoUrl": "https://www.youtube.com/watch?v=4XLEnwUr1d8"
     },
     {
       "id": "bird-dog",
       "nombre": "Bird dog",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad"
+      "patron": "estabilidad",
+      "videoUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA"
     },
     {
       "id": "plancha-lateral",
       "nombre": "Plancha lateral",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad"
+      "patron": "estabilidad",
+      "videoUrl": "https://www.youtube.com/watch?v=K2VljzCC16g"
     },
     {
       "id": "russian-twist",
