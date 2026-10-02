@@ -121,8 +121,12 @@
       const followupChanged=String(current.data.checkin_frequency||'off')!==String(privateFreq)||String(current.data.photo_frequency||'off')!==String(privatePhoto)||String(current.data.next_diet_review||'')!==String(diet||'')||String(current.data.next_routine_review||'')!==String(routine||'');
       if(followupChanged){saved=await d.rpc('dcc_save_coach_followup',{p_client_id:String(id),p_checkin:privateFreq,p_photo:privatePhoto,p_diet:diet,p_routine:routine});if(saved.error||!saved.data)throw saved.error||new Error('No se pudo guardar el seguimiento privado')}
       const c=client(id);if(c){c.checkin_frequency=saved.data.checkin_frequency||privateFreq;c.photo_frequency=saved.data.photo_frequency||privatePhoto;c.next_checkin_date=normal;c.next_photo_checkin_date=photo;c.next_diet_review=c.nextDietReview=saved.data.next_diet_review||'';c.next_routine_review=c.nextRoutineReview=saved.data.next_routine_review||'';c.followup_configured_at=saved.data.followup_configured_at||null;if(Array.isArray(saved.data.coach_notes))c.coachNotes=saved.data.coach_notes;saveLocal()}
-      stateCache[id]=null;followupCache[id]=saved.data;toastSafe('Programación guardada');await patchFollowup(id);
-    }catch(e){console.error('DCC save check-in schedule:',e);toastSafe('No se pudo guardar la programación')}
+      stateCache[id]=null;followupCache[id]=saved.data;toastSafe('Programación guardada');
+    }catch(e){console.error('DCC save check-in schedule:',e);toastSafe('No se pudo guardar la programación');return}
+    /* El refresco visual no forma parte de la transacción de guardado.
+       Si el DOM cambia mientras se repinta Seguimiento, no debemos informar
+       falsamente de un fallo cuando Supabase ya confirmó la programación. */
+    try{await patchFollowup(id)}catch(e){console.error('DCC refresh check-in schedule:',e)}
   };
 
   async function latestPhotoCheckin(id){
