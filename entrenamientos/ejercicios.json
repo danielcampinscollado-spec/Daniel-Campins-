@@ -1094,7 +1094,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=3Kopway1dyg"
     },
     {
       "id": "extension-cuadriceps-unilateral",
@@ -1130,7 +1130,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-de-pie.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=t_k-ivoEykw"
     },
     {
       "id": "peso-muerto-rumano-multipower",
