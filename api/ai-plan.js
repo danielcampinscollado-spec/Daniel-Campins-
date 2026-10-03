@@ -161,7 +161,16 @@ function safetyTokens(c){
  const text=[c.foods_to_avoid,c.food_allergy_details].filter(Boolean).join(',').toLowerCase();
  return text.split(/[,;\n/]+/).map(x=>x.trim()).filter(x=>x.length>2);
 }
-function validateAgainstClient(result,kind,c){
+function upperBodyIntent(instructions){
+ const s=String(instructions||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ return /tren superior|parte superior|upper body/.test(s);
+}
+function muscleBucket(v){
+ const s=normMuscle(v);
+ if(/pect|pecho/.test(s))return'pecho'; if(/dors|espalda|remo/.test(s))return'espalda'; if(/homb|delto/.test(s))return'hombro';
+ if(/biceps/.test(s))return'biceps'; if(/triceps/.test(s))return'triceps'; if(/abd|core/.test(s))return'core'; return s;
+}
+function validateAgainstClient(result,kind,c,instructions){
  const errors=[];
  if(kind==='diet'){
    const blocked=safetyTokens(c);
@@ -174,14 +183,22 @@ function validateAgainstClient(result,kind,c){
    const days=result?.routine||[];
    const requested=Math.max(0,Math.min(7,Number(c?.preferred_training_days)||0));
    if(requested&&days.length!==requested)errors.push('La rutina no respeta los días semanales indicados por el cliente');
+   const weekly={};
    for(const d of days){
      const groups={};
      for(const ex of d.exercises||[]){
-       const m=normMuscle(ex?.muscle);if(m)groups[m]=(groups[m]||0)+(Number(ex?.sets)||0);
+       const m=muscleBucket(ex?.muscle);if(m){groups[m]=(groups[m]||0)+(Number(ex?.sets)||0);weekly[m]=(weekly[m]||0)+(Number(ex?.sets)||0)}
      }
      const supers={};
      for(const ex of d.exercises||[])if(ex?.method==='superset'){const g=String(ex?.method_group||'').trim();supers[g]=(supers[g]||0)+1}
      if(Object.values(supers).some(n=>n<2))errors.push('Una superserie no puede contener un solo ejercicio');
+   }
+   if(upperBodyIntent(instructions)){
+     for(const m of ['pecho','espalda','hombro','biceps','triceps'])if(!(weekly[m]>0))errors.push('Rutina de tren superior incompleta: falta trabajo para '+m);
+     if(days.length>=2){
+       const signatures=days.map(d=>[...new Set((d.exercises||[]).map(x=>muscleBucket(x?.muscle)).filter(Boolean))].sort().join('|'));
+       if(signatures.length>1&&new Set(signatures).size===1)errors.push('Los días de tren superior repiten exactamente la misma distribución muscular; redistribuye la semana');
+     }
    }
  }
  return [...new Set(errors)];
@@ -261,7 +278,7 @@ module.exports=async function handler(req,res){
     let result;
     try{result=JSON.parse(text)}catch(_){return json(res,502,{error:'La IA devolvió un borrador no válido. Inténtalo de nuevo.'})}
     if(!validate(result,kind))return json(res,502,{error:'El borrador recibido no tiene el formato de DCC Fitness'});
-    const conflicts=validateAgainstClient(result,kind,client);
+    const conflicts=validateAgainstClient(result,kind,client,instructions);
     if(conflicts.length)return json(res,422,{error:'El borrador contradice datos del cuestionario. Vuelve a generarlo.',conflicts});
     return json(res,200,{kind,model:AI_MODEL,draft:result});
   }catch(error){
