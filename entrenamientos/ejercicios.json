@@ -383,7 +383,7 @@
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-predicador-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
+      "videoUrl": ""
     },
     {
       "id": "curl-polea-barra",
@@ -581,7 +581,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -653,7 +653,7 @@
       "equipo": "Polea",
       "patron": "abduccion_cadera",
       "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Y3mK0UO4J7c"
+      "videoUrl": ""
     },
     {
       "id": "aductor-maquina",
@@ -734,7 +734,7 @@
       "equipo": "Máquina",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
+      "videoUrl": ""
     },
     {
       "id": "curl-muneca-mancuernas",
@@ -770,7 +770,7 @@
       "equipo": "Máquina",
       "patron": "extension_columna",
       "ilustracion": "ilustraciones/extension-lumbar-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+      "videoUrl": ""
     },
     {
       "id": "crunch-maquina",
@@ -923,7 +923,7 @@
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-alto-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
+      "videoUrl": ""
     },
     {
       "id": "remo-iso-lateral",
@@ -968,7 +968,7 @@
       "equipo": "Multipower",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/press-hombro-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
+      "videoUrl": ""
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
@@ -1040,7 +1040,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+      "videoUrl": ""
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
@@ -1058,7 +1058,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
+      "videoUrl": ""
     },
     {
       "id": "pendulum-squat",
@@ -1094,7 +1094,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
+      "videoUrl": ""
     },
     {
       "id": "extension-cuadriceps-unilateral",
@@ -1121,7 +1121,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "curl-femoral-de-pie",
@@ -1130,7 +1130,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-de-pie.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "peso-muerto-rumano-multipower",
@@ -1166,7 +1166,7 @@
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
+      "videoUrl": ""
     },
     {
       "id": "rotacion-torso-maquina",
@@ -1193,7 +1193,7 @@
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
       "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+      "videoUrl": ""
     },
     {
       "id": "press-declinado-barra",
@@ -1265,7 +1265,7 @@
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
       "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
+      "videoUrl": ""
     },
     {
       "id": "remo-barra-agarre-supino",
@@ -1281,7 +1281,7 @@
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
+      "videoUrl": ""
     },
     {
       "id": "remo-barra-t",
@@ -1393,7 +1393,7 @@
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
       "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
+      "videoUrl": ""
     },
     {
       "id": "patada-triceps-mancuerna",
@@ -1409,7 +1409,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
+      "videoUrl": ""
     },
     {
       "id": "sentadilla-frontal-barra",
@@ -1425,7 +1425,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuerna",
       "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
+      "videoUrl": ""
     },
     {
       "id": "zancadas-caminando-mancuernas",
@@ -1553,7 +1553,7 @@
       "grupo": "Gemelos",
       "equipo": "Barra",
       "patron": "flexion_plantar",
-      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
+      "videoUrl": ""
     },
     {
       "id": "gemelos-unilateral-escalon",
@@ -1569,7 +1569,7 @@
       "grupo": "Trapecio",
       "equipo": "Polea",
       "patron": "elevacion_escapular",
-      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
+      "videoUrl": ""
     },
     {
       "id": "paseo-granjero-mancuernas",
@@ -1585,7 +1585,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra",
       "patron": "flexion_muneca",
-      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
+      "videoUrl": ""
     },
     {
       "id": "extension-muneca-barra",
