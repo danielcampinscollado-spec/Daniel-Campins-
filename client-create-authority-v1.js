@@ -60,6 +60,26 @@
     }
   }
 
+  async function resendClientAccess(clientId){
+    const id=String(clientId||window.selectedClient||window.__dccClientAdminId||'').trim();
+    if(!id){notify('Selecciona un cliente');return false}
+    const database=db();if(!database){notify('No se pudo conectar con la base de datos');return false}
+    try{
+      const {data:rows,error}=await database.from('clients').select('access_email,password_setup_completed').eq('id',id).limit(1);
+      if(error)throw error;
+      const row=Array.isArray(rows)?rows[0]:null,email=String(row?.access_email||'').trim().toLowerCase();
+      if(!validEmail(email))throw new Error('El cliente no tiene un email de acceso válido');
+      const redirectTo='https://dccfitness.com/?dcc_activate=1';
+      const {error:mailError}=row?.password_setup_completed===true
+        ? await database.auth.resetPasswordForEmail(email,{redirectTo})
+        : await database.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo,shouldCreateUser:true}});
+      if(mailError)throw mailError;
+      notify('Nuevo enlace de acceso enviado');
+      return true;
+    }catch(error){console.error('DCC reenviar acceso:',error);notify('No se pudo enviar el nuevo enlace');return false}
+  }
+  window.dccResendClientAccess=resendClientAccess;
+
   function installCreate(){
     window.createClient=createClientAtomic;
     window.createClient.__dccAtomicCreateV3=true;
