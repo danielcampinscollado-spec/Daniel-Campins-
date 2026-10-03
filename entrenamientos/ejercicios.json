@@ -1022,7 +1022,7 @@
       "equipo": "Polea",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-polea-alta.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=G5mlD2VQkEU"
     },
     {
       "id": "fondos-maquina",
@@ -1040,7 +1040,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
@@ -1569,7 +1569,7 @@
       "grupo": "Trapecio",
       "equipo": "Polea",
       "patron": "elevacion_escapular",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
     },
     {
       "id": "paseo-granjero-mancuernas",
