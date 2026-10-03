@@ -221,7 +221,7 @@
       "equipo": "Mancuerna y banco",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=pYcpY20QaE8"
     },
     {
       "id": "remo-barra",
@@ -383,7 +383,7 @@
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-predicador-ez.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
     },
     {
       "id": "curl-polea-barra",
@@ -1265,7 +1265,7 @@
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
       "patron": "traccion_vertical",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
     },
     {
       "id": "remo-barra-agarre-supino",
@@ -1425,7 +1425,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuerna",
       "patron": "sentadilla",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
     },
     {
       "id": "zancadas-caminando-mancuernas",
