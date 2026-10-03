@@ -279,8 +279,15 @@ module.exports=async function handler(req,res){
     try{result=JSON.parse(text)}catch(_){return json(res,502,{error:'La IA devolvió un borrador no válido. Inténtalo de nuevo.'})}
     if(!validate(result,kind))return json(res,502,{error:'El borrador recibido no tiene el formato de DCC Fitness'});
     if(kind==='routine'&&catalog.length){
-      const allowed=new Set(catalog.map(x=>String(x.name||'').trim().toLowerCase()));
-      const outside=(result.routine||[]).flatMap(d=>(d.exercises||[]).map(ex=>String(ex?.name||'').trim()).filter(name=>!allowed.has(name.toLowerCase())));
+      const key=v=>String(v||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const allowed=new Map(catalog.map(x=>[key(x.name),x]));
+      const outside=[];
+      for(const d of result.routine||[])for(const ex of d.exercises||[]){
+        const hit=allowed.get(key(ex?.name));
+        if(!hit){outside.push(String(ex?.name||'').trim());continue}
+        ex.name=hit.name;
+        ex.library_id=hit.id;
+      }
       if(outside.length)return json(res,422,{error:'La IA propuso ejercicios fuera de la biblioteca DCC. Vuelve a generarlo.',conflicts:[...new Set(outside)].slice(0,10)});
     }
     const conflicts=validateAgainstClient(result,kind,client,instructions);
