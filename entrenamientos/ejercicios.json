@@ -176,7 +176,7 @@
       "equipo": "Polea",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-sentado-polea-neutro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
+      "videoUrl": "https://www.youtube.com/watch?v=QAtIXYgL1DI"
     },
     {
       "id": "remo-sentado-polea-ancho",
@@ -212,7 +212,7 @@
       "equipo": "Máquina / barra T",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-barra-t-apoyado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=rvbjGSQ2tVE"
+      "videoUrl": "https://www.youtube.com/watch?v=w0KnlQ-b7jw"
     },
     {
       "id": "remo-mancuerna-unilateral",
@@ -257,7 +257,7 @@
       "equipo": "Máquina",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/press-hombro-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=WvLMauqrnK8"
+      "videoUrl": "https://www.youtube.com/watch?v=Z8oNFGK-mLc"
     },
     {
       "id": "press-militar-mancuernas",
