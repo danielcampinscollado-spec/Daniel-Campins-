@@ -581,7 +581,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=tQZkJ9GZZRI"
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -1166,7 +1166,7 @@
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=DXp4JYCN8Y0"
     },
     {
       "id": "rotacion-torso-maquina",
