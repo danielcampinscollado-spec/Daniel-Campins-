@@ -91,8 +91,9 @@
         const first=row.firstElementChild;if(first&&first.tagName==='DIV'&&!first.className)first.remove();
         let summary=row.querySelector('.dcc-training-rest-summary');
         if(!summary){summary=document.createElement('div');summary.className='dcc-training-rest-summary';row.querySelector('.dcc-tr-ex-name')?.appendChild(summary);}
-        const text=`Descanso: ${daySetRest}s entre series · ${dayExerciseRest}s entre ejercicios`;
+        const text='';
         if(summary.textContent!==text)summary.textContent=text;
+        summary.style.display='none';
         const editRow=row.querySelector('.dcc-tr-editrow');
         if(!editRow||row.querySelector('.dcc-training-extra-fields'))return;
         const isLibraryExercise=!!String(ex.libraryId||'').trim();
