@@ -6450,6 +6450,18 @@ function getWeeklyWorkoutCount(clientId){
 }
 function dccClientModuleAllowed(c,area){const explicit=area==="training"?c?.training_enabled:c?.nutrition_enabled;if(explicit===true||explicit===false)return explicit;const p=String(c?.active_plan||c?.requested_plan||c?.plan||"").trim().toLowerCase();return area==="training"?(p==="training"||p==="complete"||p==="entrenamiento"||p.includes("complet")):(p==="nutrition"||p==="complete"||p==="nutrición"||p==="nutricion"||p==="alimentación"||p==="alimentacion"||p.includes("complet"))}
 function dccRenderPlanLocked(area){const main=document.getElementById("client-main");if(!main)return;const name=area==="training"?"Entrenamiento":"Alimentación";main.innerHTML=`<div style="max-width:560px;margin:22px auto;padding:0 14px"><section style="padding:22px 18px;border:1px solid rgba(177,119,18,.28);border-radius:22px;background:linear-gradient(145deg,#fffefa,#fbf7ed);text-align:center;box-shadow:0 12px 30px rgba(83,61,20,.06)"><div style="width:42px;height:42px;margin:0 auto 11px;border:1px solid #d6aa50;border-radius:50%;display:grid;place-items:center;color:#9a6915;font-size:19px">🔒</div><h2 style="margin:0;color:#17191d;font-size:20px">${name} no está incluido en tu plan</h2><p style="margin:8px auto 0;max-width:390px;color:#777064;font-size:11px;line-height:1.55">Este servicio no está activado actualmente. Si quieres añadirlo a tu plan, contacta con tu entrenador.</p></section></div>`}
+function dccDownloadDietPdf(){
+  try{
+    const details=[...document.querySelectorAll('.meal-card')];
+    details.forEach(el=>el.setAttribute('open',''));
+    const restore=()=>details.forEach(el=>el.removeAttribute('open'));
+    window.addEventListener('afterprint',restore,{once:true});
+    window.print();
+    setTimeout(()=>{try{window.removeEventListener('afterprint',restore);restore()}catch(_){}},30000);
+  }catch(e){console.error('DCC diet PDF:',e);alert('No se pudo preparar el PDF. Inténtalo de nuevo.');}
+}
+window.dccDownloadDietPdf=dccDownloadDietPdf;
+
 function showClient(screen){
 
   currentScreen=screen;
@@ -6635,7 +6647,7 @@ if(screen==="food"){
     <button
       type="button"
       class="diet-pdf-button"
-      onclick="window.print()"
+      onclick="dccDownloadDietPdf()"
     >
 
       <svg
