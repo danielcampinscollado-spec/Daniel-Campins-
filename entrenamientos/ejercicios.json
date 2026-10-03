@@ -581,7 +581,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -923,7 +923,7 @@
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-alto-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
     },
     {
       "id": "remo-iso-lateral",
@@ -1094,7 +1094,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
     },
     {
       "id": "extension-cuadriceps-unilateral",
