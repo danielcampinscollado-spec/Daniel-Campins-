@@ -968,7 +968,7 @@
       "equipo": "Multipower",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/press-hombro-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
@@ -1281,7 +1281,7 @@
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "traccion_horizontal",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
     },
     {
       "id": "remo-barra-t",
@@ -1585,7 +1585,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra",
       "patron": "flexion_muneca",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
     },
     {
       "id": "extension-muneca-barra",
