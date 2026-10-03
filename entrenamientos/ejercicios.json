@@ -653,7 +653,7 @@
       "equipo": "Polea",
       "patron": "abduccion_cadera",
       "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=pvnR8CDb4BU"
     },
     {
       "id": "aductor-maquina",
@@ -1553,7 +1553,7 @@
       "grupo": "Gemelos",
       "equipo": "Barra",
       "patron": "flexion_plantar",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=Zo8zxjT78xg"
     },
     {
       "id": "gemelos-unilateral-escalon",
