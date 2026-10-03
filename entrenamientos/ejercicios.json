@@ -248,7 +248,7 @@
       "equipo": "Máquina",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/pullover-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
+      "videoUrl": ""
     },
     {
       "id": "press-hombro-maquina",
@@ -455,7 +455,7 @@
       "equipo": "Máquina asistida",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/fondos-maquina-asistida.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=PaW3kabkW5E"
+      "videoUrl": ""
     },
     {
       "id": "press-triceps-maquina",
@@ -464,7 +464,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/press-triceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+      "videoUrl": ""
     },
     {
       "id": "press-cerrado-barra",
@@ -500,7 +500,7 @@
       "equipo": "Máquina",
       "patron": "prensa",
       "ilustracion": "ilustraciones/prensa-horizontal.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"
+      "videoUrl": ""
     },
     {
       "id": "hack-squat-maquina",
@@ -617,7 +617,7 @@
       "equipo": "Máquina",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/hip-thrust-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
+      "videoUrl": ""
     },
     {
       "id": "glute-drive-maquina",
@@ -626,7 +626,7 @@
       "equipo": "Máquina",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/glute-drive-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
+      "videoUrl": ""
     },
     {
       "id": "patada-gluteo-polea",
@@ -653,7 +653,7 @@
       "equipo": "Polea",
       "patron": "abduccion_cadera",
       "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
+      "videoUrl": ""
     },
     {
       "id": "aductor-maquina",
@@ -734,7 +734,7 @@
       "equipo": "Máquina",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
+      "videoUrl": ""
     },
     {
       "id": "curl-muneca-mancuernas",
@@ -770,7 +770,7 @@
       "equipo": "Máquina",
       "patron": "extension_columna",
       "ilustracion": "ilustraciones/extension-lumbar-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+      "videoUrl": ""
     },
     {
       "id": "crunch-maquina",
@@ -833,7 +833,7 @@
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-declinado-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Ixezut6Spys"
+      "videoUrl": ""
     },
     {
       "id": "press-pecho-iso-lateral",
@@ -896,7 +896,7 @@
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-maquina-convergente.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
+      "videoUrl": ""
     },
     {
       "id": "jalon-iso-lateral",
@@ -905,7 +905,7 @@
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
+      "videoUrl": ""
     },
     {
       "id": "remo-bajo-maquina",
@@ -1022,7 +1022,7 @@
       "equipo": "Polea",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-polea-alta.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=G5mlD2VQkEU"
+      "videoUrl": ""
     },
     {
       "id": "fondos-maquina",
@@ -1040,7 +1040,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+      "videoUrl": ""
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
@@ -1049,7 +1049,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+      "videoUrl": ""
     },
     {
       "id": "extension-triceps-sobre-cabeza-unilateral",
@@ -1067,7 +1067,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/pendulum-squat.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
+      "videoUrl": ""
     },
     {
       "id": "v-squat-maquina",
@@ -1076,7 +1076,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/v-squat-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
+      "videoUrl": ""
     },
     {
       "id": "belt-squat-maquina",
@@ -1094,7 +1094,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
+      "videoUrl": ""
     },
     {
       "id": "extension-cuadriceps-unilateral",
@@ -1148,7 +1148,7 @@
       "equipo": "Multipower",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/hip-thrust-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=SEdqd1n0cvg"
+      "videoUrl": ""
     },
     {
       "id": "patada-gluteo-maquina",
@@ -1157,7 +1157,7 @@
       "equipo": "Máquina",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/patada-gluteo-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=7h5NQOe7uS8"
+      "videoUrl": ""
     },
     {
       "id": "encogimientos-multipower",
@@ -1166,7 +1166,7 @@
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
+      "videoUrl": ""
     },
     {
       "id": "rotacion-torso-maquina",
@@ -1505,7 +1505,7 @@
       "grupo": "Glúteos",
       "equipo": "Banda elástica",
       "patron": "abduccion_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
+      "videoUrl": ""
     },
     {
       "id": "hip-thrust-mancuerna",
@@ -1569,7 +1569,7 @@
       "grupo": "Trapecio",
       "equipo": "Polea",
       "patron": "elevacion_escapular",
-      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
+      "videoUrl": ""
     },
     {
       "id": "paseo-granjero-mancuernas",
