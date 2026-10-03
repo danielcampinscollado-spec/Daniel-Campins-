@@ -653,7 +653,7 @@
       "equipo": "Polea",
       "patron": "abduccion_cadera",
       "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=Y3mK0UO4J7c"
     },
     {
       "id": "aductor-maquina",
@@ -1058,7 +1058,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
     },
     {
       "id": "pendulum-squat",
@@ -1121,7 +1121,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
     },
     {
       "id": "curl-femoral-de-pie",
