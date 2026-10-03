@@ -96,7 +96,17 @@
         const editRow=row.querySelector('.dcc-tr-editrow');
         if(!editRow||row.querySelector('.dcc-training-extra-fields'))return;
         const isLibraryExercise=!!String(ex.libraryId||'').trim();
-        if(isLibraryExercise)return;
+        if(isLibraryExercise){
+          let lib=[];try{lib=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[]}catch(_){}
+          const hit=lib.find(item=>String(item?.id??'')===String(ex.libraryId));
+          const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+          if(url){
+            const extra=document.createElement('div');extra.className='dcc-training-extra-fields';
+            extra.innerHTML=`<div class="dcc-tr-field"><label>Vídeo de técnica</label><a class="btn secondary" href="${url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" target="_blank" rel="noopener noreferrer">Ver vídeo del ejercicio</a></div>`;
+            editRow.insertAdjacentElement('afterend',extra);
+          }
+          return;
+        }
         const extra=document.createElement('div');extra.className='dcc-training-extra-fields';extra.innerHTML=`<div class="dcc-tr-field"><label>Vídeo de técnica (opcional)</label><input type="url" value="${String(ex.videoUrl||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" placeholder="https://..."></div>`;
         const input=extra.querySelector('input');input.addEventListener('input',()=>{ex.videoUrl=input.value.trim();});
         editRow.insertAdjacentElement('afterend',extra);
