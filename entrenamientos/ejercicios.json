@@ -734,7 +734,7 @@
       "equipo": "Máquina",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
     },
     {
       "id": "curl-muneca-mancuernas",
@@ -770,7 +770,7 @@
       "equipo": "Máquina",
       "patron": "extension_columna",
       "ilustracion": "ilustraciones/extension-lumbar-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
     },
     {
       "id": "crunch-maquina",
