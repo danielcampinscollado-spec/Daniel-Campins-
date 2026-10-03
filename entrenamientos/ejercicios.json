@@ -86,7 +86,7 @@
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-convergente-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=gnqvtktV7yI"
     },
     {
       "id": "aperturas-pec-deck",
@@ -851,7 +851,7 @@
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=41rF2YduhoI"
     },
     {
       "id": "press-banca-multipower",
