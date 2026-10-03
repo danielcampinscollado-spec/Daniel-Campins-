@@ -1193,7 +1193,7 @@
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
       "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
     },
     {
       "id": "press-declinado-barra",
@@ -1409,7 +1409,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
     },
     {
       "id": "sentadilla-frontal-barra",
@@ -1553,7 +1553,7 @@
       "grupo": "Gemelos",
       "equipo": "Barra",
       "patron": "flexion_plantar",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
     },
     {
       "id": "gemelos-unilateral-escalon",
