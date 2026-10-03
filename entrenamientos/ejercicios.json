@@ -248,7 +248,7 @@
       "equipo": "Máquina",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/pullover-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=8lDC4Ri9zAQ"
     },
     {
       "id": "press-hombro-maquina",
@@ -626,7 +626,7 @@
       "equipo": "Máquina",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/glute-drive-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=0wQq3Yt9cZg"
     },
     {
       "id": "patada-gluteo-polea",
