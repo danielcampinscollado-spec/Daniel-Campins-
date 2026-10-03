@@ -65,6 +65,8 @@
   }
   function addDayRestFields(id,days){
     if(!window.__dccTrainingEdit)return;
+    document.querySelectorAll('#coach-main .dcc-training-day-rest').forEach(el=>el.remove());
+    return;
     document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day').forEach((dayEl,di)=>{
       const day=days?.[di];if(!day||dayEl.querySelector('.dcc-training-day-rest'))return;
       const exercises=dayEl.querySelector('.dcc-tr-exercises');if(!exercises)return;
