@@ -88,7 +88,7 @@
       if(existingExercise(day,exerciseId))return;
       const ex=library().find(item=>String(item?.id)===String(exerciseId));
       if(!ex)return;
-      day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:''});
+      day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0});
       changed=true;
     });
     day.selectedExerciseIds=[];
@@ -340,7 +340,7 @@
       ensureRoutineBackup(id);
       const supersetId='superset-'+Date.now();
       selected.forEach((ex,index)=>day.exercises.push({
-        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,
         supersetId,supersetOrder:index+1,supersetSize:selected.length,supersetRounds:'',supersetRest:null
       }));
       day.selectedExerciseIds=[];
@@ -359,7 +359,7 @@
       ensureRoutineBackup(id);
       const ex=selected[0];
       day.exercises.push({
-        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:'',
+        libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,
         restPause:true,restPauseReps:'',restPauseBlocks:0,restPauseSeconds:null,restPauseFinalRest:null
       });
       day.selectedExerciseIds=[];
@@ -497,7 +497,7 @@
           <label>Mini-descanso<input data-seconds type="number" min="1" inputmode="numeric" value="${esc(group.seconds)}" placeholder="7"></label>
           <label>Descanso entre series<input data-final-rest type="number" min="0" inputmode="numeric" value="${esc(group.finalRest)}" placeholder="90"></label>
         </div>
-        <div class="dcc-method-video"><input data-video type="url" value="${esc(group.ex.videoUrl||'')}" placeholder="Enlace del vídeo (opcional)"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+        <div class="dcc-method-video"><button type="button" data-open-video>Ver vídeo</button><button type="button" data-delete-rest aria-label="Eliminar REST-pause" title="Eliminar ejercicio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4h6m-9 3h12m-10 0 .6 12h6.8L16 7M10 10v6m4-6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
         <div class="dcc-method-note">Cada secuencia completa es 1 serie. Ejemplo: 12 reps → 7 s → 10 → 7 s → 8 → 7 s → 6; después empieza el descanso entre series. Series, repeticiones y descansos son configurables.</div>`;
       card.parentNode.insertBefore(box,card);
       card.style.display='none';
@@ -505,8 +505,7 @@
       box.querySelector('[data-reps]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'reps',e.target.value));
       box.querySelector('[data-seconds]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'seconds',e.target.value));
       box.querySelector('[data-final-rest]')?.addEventListener('input',e=>updateRestPause(id,di,group.exerciseIndex,'finalRest',e.target.value));
-      box.querySelector('[data-video]')?.addEventListener('input',e=>{markRoutineDirty(id);group.ex.videoUrl=e.target.value;save(id);});
-      box.querySelector('[data-open-video]')?.addEventListener('click',()=>{const url=String(group.ex.videoUrl||'').trim();if(url)window.open(url,'_blank','noopener');else notify('Añade primero el enlace del vídeo');});
+      box.querySelector('[data-open-video]')?.addEventListener('click',()=>{const lib=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];const hit=lib.find(x=>String(x?.id||'')===String(group.ex.libraryId||group.ex.id||''));const url=String(hit?.videoUrl||hit?.video||group.ex.videoUrl||'').trim();if(url)window.open(url,'_blank','noopener');else notify('Vídeo no disponible');});
       box.querySelector('[data-delete-rest]')?.addEventListener('click',()=>window.removeTrainingExercise?.(id,di,group.exerciseIndex));
     });
   }
@@ -530,7 +529,7 @@
         }else{
           const ex=library().find(item=>String(item?.id)===String(exerciseId));
           if(!ex)return;
-          day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0,videoUrl:''});
+          day.exercises.push({libraryId:ex.id,name:ex.name,muscle:ex.muscle,image:ex.image||'',sets:'',reps:'',restBetweenSets:0,restBetweenExercises:0});
         }
         day.trainingSetupStarted=true;
         day.selectedExerciseIds=[];
