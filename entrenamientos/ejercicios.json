@@ -941,7 +941,7 @@
       "equipo": "Polea",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-polea-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=UCXxvVItLoM"
     },
     {
       "id": "remo-multipower",
@@ -977,7 +977,7 @@
       "equipo": "Polea",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=Z5FA9aq3L6A"
     },
     {
       "id": "deltoide-posterior-polea",
@@ -1049,7 +1049,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=hNnUo5kHhHI"
     },
     {
       "id": "extension-triceps-sobre-cabeza-unilateral",
@@ -1601,7 +1601,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra",
       "patron": "flexion_codo",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=nRgxYX2Ve9w"
     },
     {
       "id": "peso-muerto-convencional-barra",
