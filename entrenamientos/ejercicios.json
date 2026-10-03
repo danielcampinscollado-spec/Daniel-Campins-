@@ -500,7 +500,7 @@
       "equipo": "Máquina",
       "patron": "prensa",
       "ilustracion": "ilustraciones/prensa-horizontal.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=kUcT8eiRc8A"
     },
     {
       "id": "hack-squat-maquina",
@@ -1148,7 +1148,7 @@
       "equipo": "Multipower",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/hip-thrust-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=nr-7dwp9q1o"
     },
     {
       "id": "patada-gluteo-maquina",
