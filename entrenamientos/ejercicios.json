@@ -1139,7 +1139,7 @@
       "equipo": "Multipower",
       "patron": "bisagra_cadera",
       "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=jYEVqa4C0yg"
     },
     {
       "id": "hip-thrust-multipower",
@@ -1297,7 +1297,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=AjCCGN2tU3Q"
     },
     {
       "id": "press-arnold",
@@ -1313,7 +1313,7 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "empuje_vertical",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=B-aVuyhvLHU"
     },
     {
       "id": "elevaciones-frontales-mancuernas",
@@ -1377,7 +1377,7 @@
       "grupo": "Tríceps",
       "equipo": "Paralelas",
       "patron": "empuje_vertical",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=0326dy_-CzM"
     },
     {
       "id": "press-frances-barra-ez",
