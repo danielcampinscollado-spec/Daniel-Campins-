@@ -210,6 +210,23 @@
     if(btn)btn.setAttribute('aria-expanded',String(!!window.__dccWorkoutTipOpen));
   };
 
+  function currentExerciseVideo(exercise){
+    const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
+    const id=String(exercise?.libraryId??exercise?.library_id??exercise?.id??exercise?.exerciseId??exercise?.exercise_id??'').trim();
+    if(id){
+      const hit=list.find(x=>String(x?.id??'')===id);
+      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+      if(url)return url;
+    }
+    const name=norm(exercise?.name??exercise?.nombre??'');
+    if(name){
+      const hit=list.find(x=>norm(x?.name)===name);
+      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+      if(url)return url;
+    }
+    return String(exercise?.videoUrl||exercise?.video_url||exercise?.video||'').trim();
+  }
+
   function renderPremiumWorkout(){
     const workout=window.activeWorkout;
     if(!workout)return;
@@ -236,7 +253,8 @@
     const tip=exerciseTip(exercise);
     const tipKey=`${workout.currentExercise}:${norm(exercise.name)}`;
     if(window.__dccWorkoutTipKey!==tipKey){window.__dccWorkoutTipKey=tipKey;window.__dccWorkoutTipOpen=false;}
-    const techniqueAction=exercise.videoUrl?`window.open('${esc(exercise.videoUrl)}','_blank','noopener')`:`window.dccWorkoutTechniqueUnavailable()`;
+    const techniqueVideo=currentExerciseVideo(exercise);
+    const techniqueAction=techniqueVideo?`window.open('${esc(techniqueVideo)}','_blank','noopener')`:`window.dccWorkoutTechniqueUnavailable()`;
 
     main.innerHTML=`
       <style id="dcc-workout-premium-v3">
