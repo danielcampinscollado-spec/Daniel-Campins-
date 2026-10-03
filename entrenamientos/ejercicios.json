@@ -455,7 +455,7 @@
       "equipo": "Máquina asistida",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/fondos-maquina-asistida.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=6kRFFpYQ2mg"
     },
     {
       "id": "press-triceps-maquina",
@@ -617,7 +617,7 @@
       "equipo": "Máquina",
       "patron": "extension_cadera",
       "ilustracion": "ilustraciones/hip-thrust-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=5gcunl9ul6M"
     },
     {
       "id": "glute-drive-maquina",
