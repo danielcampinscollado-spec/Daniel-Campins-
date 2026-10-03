@@ -1121,7 +1121,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=lQSlJHtsnRA"
     },
     {
       "id": "curl-femoral-de-pie",
@@ -1193,7 +1193,7 @@
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
       "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=xyV2rF8ismg"
     },
     {
       "id": "press-declinado-barra",
