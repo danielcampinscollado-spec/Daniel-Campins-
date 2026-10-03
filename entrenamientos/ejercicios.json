@@ -905,7 +905,7 @@
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-iso-lateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=CAwf7n6Luuc"
     },
     {
       "id": "remo-bajo-maquina",
@@ -914,7 +914,7 @@
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-bajo-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=GZbfZ033f74"
     },
     {
       "id": "remo-alto-maquina",
