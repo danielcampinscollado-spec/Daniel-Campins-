@@ -977,7 +977,7 @@
       "equipo": "Polea",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=PPrzBWZDOhA"
+      "videoUrl": ""
     },
     {
       "id": "deltoide-posterior-polea",
@@ -1013,7 +1013,7 @@
       "equipo": "Polea",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Quc_tOv97I"
+      "videoUrl": ""
     },
     {
       "id": "curl-polea-alta",
@@ -1193,7 +1193,7 @@
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
       "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+      "videoUrl": ""
     },
     {
       "id": "press-declinado-barra",
@@ -1297,7 +1297,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
+      "videoUrl": ""
     },
     {
       "id": "press-arnold",
@@ -1553,7 +1553,7 @@
       "grupo": "Gemelos",
       "equipo": "Barra",
       "patron": "flexion_plantar",
-      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
+      "videoUrl": ""
     },
     {
       "id": "gemelos-unilateral-escalon",
@@ -1601,7 +1601,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra",
       "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=nRgxYX2Ve9w"
+      "videoUrl": ""
     },
     {
       "id": "peso-muerto-convencional-barra",
