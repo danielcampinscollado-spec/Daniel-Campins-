@@ -230,7 +230,7 @@
       "equipo": "Barra",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=TZLCvXbej_Q"
+      "videoUrl": "https://www.youtube.com/watch?v=FWJR5Ve8bnQ"
     },
     {
       "id": "pullover-polea",
@@ -419,7 +419,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-cuerda.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=7OF77JMEXhM"
+      "videoUrl": "https://www.youtube.com/watch?v=vB5OHsJ3EME"
     },
     {
       "id": "extension-triceps-barra",
