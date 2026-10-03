@@ -59,7 +59,7 @@
       "equipo": "Mancuernas y banco inclinado",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-inclinado-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=oZVCBM9f8Eo"
+      "videoUrl": "https://www.youtube.com/watch?v=o_jrAnrSkUc"
     },
     {
       "id": "press-pecho-maquina",
@@ -149,7 +149,7 @@
       "equipo": "Polea",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-pecho-neutro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=4y-GyEQ74Hk"
+      "videoUrl": "https://www.youtube.com/watch?v=B2vOdTyP6Pk"
     },
     {
       "id": "jalon-pecho-supino",
@@ -329,7 +329,7 @@
       "equipo": "Polea",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/face-pull-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=rep-qVOkqgk"
+      "videoUrl": "https://www.youtube.com/watch?v=xD4yvWZEcw4"
     },
     {
       "id": "curl-barra-ez",
@@ -338,7 +338,7 @@
       "equipo": "Barra EZ",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-barra-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=kwG2ipFRgfo"
+      "videoUrl": "https://www.youtube.com/watch?v=KQX5HfmQYy0"
     },
     {
       "id": "curl-barra-recta",
@@ -1249,7 +1249,7 @@
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
       "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=eGo4IYlbE5g"
+      "videoUrl": "https://www.youtube.com/watch?v=MROmHRXY06M"
     },
     {
       "id": "dominadas-neutras",
