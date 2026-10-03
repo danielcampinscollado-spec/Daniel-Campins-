@@ -1013,7 +1013,7 @@
       "equipo": "Polea",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=1Quc_tOv97I"
     },
     {
       "id": "curl-polea-alta",
@@ -1166,7 +1166,7 @@
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
       "ilustracion": "ilustraciones/encogimientos-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
     },
     {
       "id": "rotacion-torso-maquina",
@@ -1393,7 +1393,7 @@
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
       "patron": "extension_codo",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
     },
     {
       "id": "patada-triceps-mancuerna",
