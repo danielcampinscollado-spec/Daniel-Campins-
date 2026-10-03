@@ -464,7 +464,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/press-triceps-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=8VV69abnz-A"
     },
     {
       "id": "press-cerrado-barra",
@@ -1067,7 +1067,7 @@
       "equipo": "Máquina",
       "patron": "sentadilla",
       "ilustracion": "ilustraciones/pendulum-squat.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=pzSKMfHThBI"
     },
     {
       "id": "v-squat-maquina",
@@ -1505,7 +1505,7 @@
       "grupo": "Glúteos",
       "equipo": "Banda elástica",
       "patron": "abduccion_cadera",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/shorts/8vHjNnJjjYc"
     },
     {
       "id": "hip-thrust-mancuerna",
