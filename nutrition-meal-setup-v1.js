@@ -92,7 +92,7 @@
   }
   function renderAddMealPicker(id,type){
     currentId=id;currentType=type;injectCss();const p=pane();if(!p)return false;const available=remainingMeals(id,type);
-    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Añadir un momento de comida</h2><p>Elige el tipo de comida. No tendrás que escribir el nombre manualmente.</p><div class="dcc-meal-options">${available.length?available.map(name=>`<button type="button" class="dcc-meal-option" onclick="dccMealAddPreset('${name.replace(/'/g,"\\'")}')"><span class="tick">＋</span><span><b>${esc(name)}</b><small>Se añadirá al final de este día</small></span><span>›</span></button>`).join(''):'<div class="dcc-meal-hint">Ya están añadidos todos los tipos de comida disponibles.</div>'}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Volver</button></div>`;
+    p.innerHTML=`<div class="dcc-meal-setup"><div class="dcc-meal-setup-card"><h2>Añadir un momento de comida</h2><p>Elige el tipo de comida. No tendrás que escribir el nombre manualmente.</p><div class="dcc-meal-options">${available.length?available.map(name=>`<button type="button" class="dcc-meal-option" onclick="dccMealAddPreset('${name.replace(/'/g,"\\'")}')"><span class="tick">＋</span><span><b>${esc(name)}</b><small>Después podrás colocarla donde quieras</small></span><span>›</span></button>`).join(''):'<div class="dcc-meal-hint">Ya están añadidos todos los tipos de comida disponibles.</div>'}</div></div><button type="button" class="dcc-meal-cancel" onclick="dccClientAdmin('${id}','food')">Volver</button></div>`;
     return true
   }
 
@@ -139,7 +139,7 @@
     const id=currentId,type=currentType,d=window.data?.diets?.[id]?.[type];if(!d||!MEALS.includes(name))return;
     d.meals=Array.isArray(d.meals)?d.meals:[];
     if(!d.meals.some(m=>normalizeMealName(m?.name)===normalizeMealName(name)))d.meals.push(meal(name));
-    try{await persistType(id,type);if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');if(typeof window.toast==='function')window.toast(name+' añadida')}catch(error){console.error('DCC add preset meal:',error);alert('No se pudo guardar la nueva comida.')}
+    try{await persistType(id,type);if(typeof window.toast==='function')window.toast(name+' añadida');return window.dccNutritionMealReorder(id,type)}catch(error){console.error('DCC add preset meal:',error);alert('No se pudo guardar la nueva comida.')}
   };
 
   injectCss();
