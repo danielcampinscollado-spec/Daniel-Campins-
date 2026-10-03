@@ -101,10 +101,12 @@ function mapRoutine(result){
     muscles:Array.isArray(d?.muscles)?d.muscles:[],
     muscle:Array.isArray(d?.muscles)&&d.muscles.length?d.muscles.join(' · '):String(d?.title||'Día '+(di+1)),
     exercises:(d?.exercises||[]).map((x,ei)=>{
-      const hit=libraryHit(x?.name,x?.muscle);
+      const lib=(()=>{try{return Array.isArray(exerciseLibraryFull)?exerciseLibraryFull:[]}catch(_){return Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[]}})();
+      const stableId=String(x?.library_id??x?.libraryId??'').trim();
+      const hit=(stableId?lib.find(item=>String(item?.id??'')===stableId):null)||libraryHit(x?.name,x?.muscle);
       const method=String(x?.method||'normal');
       const ex={
-        libraryId:hit?.id??null,
+        libraryId:hit?.id??stableId??null,
         name:String(hit?.name??hit?.nombre??x?.name??'Ejercicio'),
         muscle:String(hit?.muscle??x?.muscle??''),
         image:String(hit?.image??hit?.imageStart??''),
