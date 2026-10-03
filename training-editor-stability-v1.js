@@ -44,11 +44,11 @@
   function openMusclePicker(di){
     const d=days()[di];if(!d)return;
     remember();ensurePickerCss();closePicker();muscleDraft=dayMuscles(d);
+    const cl=(window.data?.clients||[]).find(x=>String(x?.id)===cid())||{},sex=norm(cl?.sex),isFemale=sex==='female'||sex==='mujer'||sex==='femenino'||sex==='f';muscleSex=isFemale?'female':'male';
     const modal=document.createElement('div');modal.id='dcc-stable-muscle-modal';modal.className='dcc-stable-muscle-modal';
     const card=document.createElement('div');card.className='dcc-stable-muscle-card';
-    card.innerHTML=`<div class="dcc-stable-muscle-head"><h3>Elegir músculos · Día ${di+1}</h3><button type="button" class="dcc-stable-muscle-close">×</button></div><p class="dcc-stable-muscle-sub">Selecciona Hombre o Mujer y los grupos musculares del día.</p><div class="dcc-stable-sex"><button type="button" data-sex="male" class="on">Hombre</button><button type="button" data-sex="female">Mujer</button></div><div class="dcc-stable-anatomy"><img src="${ANATOMY.male}" alt="Anatomía masculina"></div><div class="dcc-stable-muscle-grid"></div><button type="button" class="dcc-stable-muscle-save">Guardar músculos</button>`;
+    card.innerHTML=`<div class="dcc-stable-muscle-head"><h3>Elegir músculos · Día ${di+1}</h3><button type="button" class="dcc-stable-muscle-close">×</button></div><p class="dcc-stable-muscle-sub">Selecciona los grupos musculares del día.</p><div class="dcc-stable-anatomy"><img src="${ANATOMY[muscleSex]}" alt="${muscleSex==='female'?'Anatomía femenina':'Anatomía masculina'}"></div><div class="dcc-stable-muscle-grid"></div><button type="button" class="dcc-stable-muscle-save">Guardar músculos</button>`;
     const anatomy=card.querySelector('.dcc-stable-anatomy img');
-    card.querySelectorAll('.dcc-stable-sex button').forEach(b=>b.addEventListener('click',()=>{muscleSex=b.dataset.sex;card.querySelectorAll('.dcc-stable-sex button').forEach(x=>x.classList.toggle('on',x===b));anatomy.src=ANATOMY[muscleSex];anatomy.alt=muscleSex==='female'?'Anatomía femenina':'Anatomía masculina'}));
     const grid=card.querySelector('.dcc-stable-muscle-grid');
     MUSCLES.forEach(m=>{const b=document.createElement('button');b.type='button';b.className='dcc-stable-muscle-chip'+(muscleDraft.includes(m)?' on':'');b.textContent=m;b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();muscleDraft=muscleDraft.includes(m)?muscleDraft.filter(x=>x!==m):[...muscleDraft,m];b.classList.toggle('on')});grid.appendChild(b)});
     card.querySelector('.dcc-stable-muscle-close').addEventListener('click',closePicker);
