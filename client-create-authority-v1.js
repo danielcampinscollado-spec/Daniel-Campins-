@@ -143,7 +143,7 @@
     observer.observe(document.documentElement,{childList:true,subtree:true});
   }
 
-  function install(){installCreate();installNewClient();installCreateButtonAuthority();observeNewClientModal();injectAccessEmailField()}
+  function install(){installCreate();installNewClient();installCreateButtonAuthority();installResendButton();observeNewClientModal();injectAccessEmailField()}
   install();
   document.addEventListener('DOMContentLoaded',install,{once:true});
   window.addEventListener('load',install,{once:true});
