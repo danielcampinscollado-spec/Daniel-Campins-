@@ -662,7 +662,7 @@
       "equipo": "Máquina",
       "patron": "aduccion_cadera",
       "ilustracion": "ilustraciones/aductor-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
+      "videoUrl": "https://www.youtube.com/watch?v=eL17hL5Vt8w"
     },
     {
       "id": "aductor-polea",
@@ -698,7 +698,7 @@
       "equipo": "Prensa",
       "patron": "flexion_plantar",
       "ilustracion": "ilustraciones/gemelos-prensa.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=JbyjNymZOt0"
+      "videoUrl": "https://www.youtube.com/watch?v=3UWi44yN-wM"
     },
     {
       "id": "gemelos-multipower",
