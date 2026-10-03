@@ -95,6 +95,8 @@
         if(summary.textContent!==text)summary.textContent=text;
         const editRow=row.querySelector('.dcc-tr-editrow');
         if(!editRow||row.querySelector('.dcc-training-extra-fields'))return;
+        const isLibraryExercise=!!String(ex.libraryId||'').trim();
+        if(isLibraryExercise)return;
         const extra=document.createElement('div');extra.className='dcc-training-extra-fields';extra.innerHTML=`<div class="dcc-tr-field"><label>Vídeo de técnica (opcional)</label><input type="url" value="${String(ex.videoUrl||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" placeholder="https://..."></div>`;
         const input=extra.querySelector('input');input.addEventListener('input',()=>{ex.videoUrl=input.value.trim();});
         editRow.insertAdjacentElement('afterend',extra);
