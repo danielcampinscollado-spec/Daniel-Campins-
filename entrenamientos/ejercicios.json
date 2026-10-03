@@ -842,7 +842,7 @@
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=wH1tBZC2LZQ"
     },
     {
       "id": "press-inclinado-iso-lateral",
@@ -896,7 +896,7 @@
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-maquina-convergente.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=5K0KGW9VTSE"
     },
     {
       "id": "jalon-iso-lateral",
