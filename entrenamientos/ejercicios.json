@@ -383,7 +383,7 @@
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-predicador-ez.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=DoCWeUBA0Gs"
     },
     {
       "id": "curl-polea-barra",
@@ -968,7 +968,7 @@
       "equipo": "Multipower",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/press-hombro-multipower.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=4bIReY0eO1M"
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
@@ -1281,7 +1281,7 @@
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "traccion_horizontal",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=6gvmcqr226U"
     },
     {
       "id": "remo-barra-t",
