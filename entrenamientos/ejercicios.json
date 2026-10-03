@@ -1040,7 +1040,7 @@
       "equipo": "Máquina",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=6Fzep104f0s"
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
@@ -1058,7 +1058,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=4Y2ZdHCOXok"
     },
     {
       "id": "pendulum-squat",
@@ -1393,7 +1393,7 @@
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
       "patron": "extension_codo",
-      "videoUrl": ""
+      "videoUrl": "https://www.youtube.com/watch?v=_gsUck-7M74"
     },
     {
       "id": "patada-triceps-mancuerna",
