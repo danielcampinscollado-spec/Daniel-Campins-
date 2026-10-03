@@ -86,7 +86,7 @@ window.dccAIPlanOpen=function(kind,id){
 };
 function catalog(){
   let lib=[];try{lib=Array.isArray(exerciseLibraryFull)?exerciseLibraryFull:[]}catch(_){lib=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[]}
-  return lib.slice(0,180).map(x=>({name:String(x?.name??x?.nombre??''),muscle:String(x?.muscle??x?.group??'')})).filter(x=>x.name);
+  return lib.map(x=>({id:String(x?.id??''),name:String(x?.name??x?.nombre??''),muscle:String(x?.muscle??x?.group??''),equipment:String(x?.equipment??'')})).filter(x=>x.id&&x.name);
 }
 function libraryHit(name,muscle){
   let lib=[];try{lib=Array.isArray(exerciseLibraryFull)?exerciseLibraryFull:[]}catch(_){lib=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[]}
