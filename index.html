@@ -4432,7 +4432,7 @@ body{
     position:fixed !important;
     left:8px !important;
     right:8px !important;
-    bottom:0 !important;
+    bottom:max(8px,env(safe-area-inset-bottom)) !important;
     top:auto !important;
     width:auto !important;
     height:78px !important;
@@ -4525,7 +4525,7 @@ body{
     letter-spacing:-.55px !important;
   }
 
-  #client-main{padding-bottom:96px !important}
+  #client-main{padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important}
 }
 @media (max-width:390px){
   html body #client > .side{left:4px !important;right:4px !important;height:68px !important;min-height:68px !important}
@@ -4535,7 +4535,7 @@ body{
   html body #client #client-nav > button span{font-size:7.6px !important;letter-spacing:-.5px !important}
   html body #client #client-nav > button:nth-child(2) span{font-size:7.1px !important}
   html body #client #client-nav > button:nth-child(3) span{font-size:6.9px !important;letter-spacing:-.7px !important}
-  #client-main{padding-bottom:84px !important}
+  #client-main{padding-bottom:calc(94px + env(safe-area-inset-bottom)) !important}
 }
 
 /* Coach check-in review — Light Premium authority */
