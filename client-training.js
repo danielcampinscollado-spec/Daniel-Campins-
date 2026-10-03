@@ -15,10 +15,8 @@
   const activeClientId=()=>{try{return currentClientId||null}catch(_){return window.currentClientId||null}};
 
   function exerciseVideo(ex){
-    const direct=String(ex?.videoUrl||ex?.video_url||ex?.video||'').trim();
-    if(direct)return direct;
     const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
-    const id=String(ex?.id??ex?.exerciseId??ex?.exercise_id??'').trim();
+    const id=String(ex?.libraryId??ex?.library_id??ex?.id??ex?.exerciseId??ex?.exercise_id??'').trim();
     if(id){
       const hit=list.find(x=>String(x?.id??'')===id);
       const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
@@ -30,7 +28,7 @@
       const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
       if(url)return url;
     }
-    return '';
+    return String(ex?.videoUrl||ex?.video_url||ex?.video||'').trim();
   }
 
   function exerciseDisplayMeta(ex){
