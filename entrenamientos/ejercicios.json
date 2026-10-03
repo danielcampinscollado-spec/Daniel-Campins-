@@ -86,7 +86,7 @@
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-convergente-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
+      "videoUrl": ""
     },
     {
       "id": "aperturas-pec-deck",
@@ -221,7 +221,7 @@
       "equipo": "Mancuerna y banco",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
+      "videoUrl": ""
     },
     {
       "id": "remo-barra",
@@ -383,7 +383,7 @@
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-predicador-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
+      "videoUrl": ""
     },
     {
       "id": "curl-polea-barra",
@@ -581,7 +581,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -842,7 +842,7 @@
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
+      "videoUrl": ""
     },
     {
       "id": "press-inclinado-iso-lateral",
@@ -851,7 +851,7 @@
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=WxrKIPbeQP8"
+      "videoUrl": ""
     },
     {
       "id": "press-banca-multipower",
@@ -914,7 +914,7 @@
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-bajo-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
+      "videoUrl": ""
     },
     {
       "id": "remo-alto-maquina",
@@ -923,7 +923,7 @@
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-alto-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
+      "videoUrl": ""
     },
     {
       "id": "remo-iso-lateral",
@@ -932,7 +932,7 @@
       "equipo": "Máquina de palancas",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
+      "videoUrl": ""
     },
     {
       "id": "remo-polea-unilateral",
@@ -941,7 +941,7 @@
       "equipo": "Polea",
       "patron": "traccion_horizontal",
       "ilustracion": "ilustraciones/remo-polea-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
+      "videoUrl": ""
     },
     {
       "id": "remo-multipower",
@@ -968,7 +968,7 @@
       "equipo": "Multipower",
       "patron": "empuje_vertical",
       "ilustracion": "ilustraciones/press-hombro-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
+      "videoUrl": ""
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
@@ -1058,7 +1058,7 @@
       "equipo": "Polea",
       "patron": "extension_codo",
       "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
+      "videoUrl": ""
     },
     {
       "id": "pendulum-squat",
@@ -1121,7 +1121,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "curl-femoral-de-pie",
@@ -1130,7 +1130,7 @@
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
       "ilustracion": "ilustraciones/curl-femoral-de-pie.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "videoUrl": ""
     },
     {
       "id": "peso-muerto-rumano-multipower",
@@ -1139,7 +1139,7 @@
       "equipo": "Multipower",
       "patron": "bisagra_cadera",
       "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2SHsk9AzdjA"
+      "videoUrl": ""
     },
     {
       "id": "hip-thrust-multipower",
@@ -1265,7 +1265,7 @@
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
       "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
+      "videoUrl": ""
     },
     {
       "id": "remo-barra-agarre-supino",
@@ -1281,7 +1281,7 @@
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
+      "videoUrl": ""
     },
     {
       "id": "remo-barra-t",
@@ -1313,7 +1313,7 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "empuje_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=qEwKCR5JCog"
+      "videoUrl": ""
     },
     {
       "id": "elevaciones-frontales-mancuernas",
@@ -1377,7 +1377,7 @@
       "grupo": "Tríceps",
       "equipo": "Paralelas",
       "patron": "empuje_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=6kALZikXxLc"
+      "videoUrl": ""
     },
     {
       "id": "press-frances-barra-ez",
@@ -1393,7 +1393,7 @@
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
       "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
+      "videoUrl": ""
     },
     {
       "id": "patada-triceps-mancuerna",
@@ -1409,7 +1409,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
+      "videoUrl": ""
     },
     {
       "id": "sentadilla-frontal-barra",
@@ -1425,7 +1425,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuerna",
       "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
+      "videoUrl": ""
     },
     {
       "id": "zancadas-caminando-mancuernas",
@@ -1585,7 +1585,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra",
       "patron": "flexion_muneca",
-      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
+      "videoUrl": ""
     },
     {
       "id": "extension-muneca-barra",
