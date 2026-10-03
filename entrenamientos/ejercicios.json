@@ -32,7 +32,7 @@
       "equipo": "Barra y banco",
       "patron": "empuje_horizontal",
       "ilustracion": "ilustraciones/press-banca-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=rT7DgCr-3pg"
+      "videoUrl": "https://www.youtube.com/watch?v=AroudGIsKSk"
     },
     {
       "id": "press-banca-mancuernas",
@@ -95,7 +95,7 @@
       "equipo": "Máquina",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/aperturas-pec-deck.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Z57CtFmRMxA"
+      "videoUrl": "https://www.youtube.com/watch?v=RbQ9L6KDADs"
     },
     {
       "id": "cruces-polea-media",
@@ -149,7 +149,7 @@
       "equipo": "Polea",
       "patron": "traccion_vertical",
       "ilustracion": "ilustraciones/jalon-pecho-neutro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=B2vOdTyP6Pk"
+      "videoUrl": "https://www.youtube.com/watch?v=bHl2Q3tsN9U"
     },
     {
       "id": "jalon-pecho-supino",
@@ -302,7 +302,7 @@
       "equipo": "Máquina",
       "patron": "aislamiento",
       "ilustracion": "ilustraciones/elevacion-lateral-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0o07iGKUarY"
+      "videoUrl": "https://www.youtube.com/watch?v=aKDYtQbCKWY"
     },
     {
       "id": "pajaros-maquina",
@@ -365,7 +365,7 @@
       "equipo": "Mancuernas y banco inclinado",
       "patron": "flexion_codo",
       "ilustracion": "ilustraciones/curl-inclinado-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=uRd77KxhxeE"
+      "videoUrl": "https://www.youtube.com/watch?v=ysEVZPMY0Y8"
     },
     {
       "id": "curl-predicador-maquina",
