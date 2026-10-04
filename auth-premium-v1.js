@@ -204,15 +204,33 @@
 
     hideLogin();
     const activationFlow=params.get('dcc_activate')==='1';
-    if(activationFlow)window.__dccActivationRouting=true;
+    if(activationFlow){
+      window.__dccActivationRouting=true;
+      document.getElementById('client')?.style.setProperty('display','none');
+      document.getElementById('coach')?.style.setProperty('display','none');
+    }
     try{
-      if(activationFlow&&params.get('code')){
+      if(activationFlow){
         const activationCode=params.get('code');
-        const {error:exchangeError}=await db.auth.exchangeCodeForSession(activationCode);
-        if(exchangeError)throw exchangeError;
-        params.delete('code');
+        if(activationCode){
+          const {error:exchangeError}=await db.auth.exchangeCodeForSession(activationCode);
+          if(exchangeError)throw exchangeError;
+          params.delete('code');
+        }
+        let activationSession=null;
+        for(let i=0;i<30;i++){
+          const probe=await db.auth.getSession();
+          if(probe.error)throw probe.error;
+          if(probe.data?.session){activationSession=probe.data.session;break}
+          await new Promise(r=>setTimeout(r,100));
+        }
+        if(!activationSession)throw new Error('No se pudo establecer la sesión del enlace de acceso');
+        const routed=await routeSession(activationSession);
+        if(!routed)throw new Error('No se pudo asociar el acceso al cliente');
+        params.delete('dcc_activate');
         const q=params.toString();
         history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
+        return;
       }
       const {data,error}=await db.auth.getSession();
       if(error)throw error;
