@@ -11,7 +11,7 @@ function load(src){if(exactExisting(src))return Promise.resolve();if(pending.has
 function loadMany(list){return Promise.all(list.map(load))}
 async function loadTraining(list){for(const src of list)await load(src)}
 async function loadSequential(list){for(const src of list)await load(src)}
-const coachAuthority='./coach-premium-core-v13.js?v=20261004-no-duplicate-count1';
+const coachAuthority='./coach-premium-core-v13.js?v=20261004-task-authority1';
 const profileCritical=['./dcc-app-core-v1.js?v=20260916-clean1','./coach-client-profile-actions-v1.js?v=20260922-stable-summary1','./checkin-review-authority-v1.js?v=20260924-no-retry1','./coach-ai-plan-assistant-v1.js?v=20261002-curated-video1'];
 const authCritical=['./auth-preview-redirect-guard-v1.js?v=20260916-runtime1','./client-first-password-v1.js?v=20261004-onboarding-authority1','./auth-premium-v1.js?v=20261004-trial-two-step1'];
 const core=['./local-cache-authority-v1.js?v=20260916-runtime1','./data-authority-v1.js?v=20260916-runtime1','./server-actions-v1.js?v=20260916-runtime1','./client-server-source-v1.js?v=20260916-runtime1','./client-delete-atomic-v4.js?v=20260925-no-hang-v9','./client-access-coach-v1.js?v=20261001-resend1','./coach-client-final-consistency-v1.js?v=20260916-runtime1','./client-profile-preferences-v1.js?v=20260910-2405','./client-plan-access-v1.js?v=20261004-onboarding-guard2','./client-plan-renewal-v1.js?v=20261004-expiry-flow1'];
