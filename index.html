@@ -6152,7 +6152,17 @@ async function openApp(app){
 
       await loadClientsFromSupabase();
 
-      const claimedClient=client(currentClientId);
+      let claimedClient=client(currentClientId);
+      if(!claimedClient){
+        const {data:retryClientId,error:retryClaimError}=await supabaseClient.rpc("dcc_claim_client_access");
+        if(retryClaimError)throw retryClaimError;
+        if(retryClientId){
+          currentClientId=String(retryClientId);
+          window.currentClientId=currentClientId;
+          await loadClientsFromSupabase();
+          claimedClient=client(currentClientId);
+        }
+      }
       if(!claimedClient){
         throw new Error("No se pudo cargar el perfil del cliente");
       }
