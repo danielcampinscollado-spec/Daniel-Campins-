@@ -6151,9 +6151,13 @@ async function openApp(app){
       currentClientId=String(claimedClientId);
       window.currentClientId=currentClientId;
 
+      const preloadedClient=client(currentClientId);
       await loadClientsFromSupabase();
 
-      let claimedClient=client(currentClientId);
+      let claimedClient=client(currentClientId)||preloadedClient;
+      if(claimedClient&&!client(currentClientId)){
+        data.clients=[...(data.clients||[]).filter(x=>String(x.id)!==String(currentClientId)),claimedClient];
+      }
       if(!claimedClient){
         const {data:directClient,error:directClientError}=await supabaseClient.from("clients").select("*").eq("id",currentClientId).maybeSingle();
         if(directClientError)throw directClientError;
