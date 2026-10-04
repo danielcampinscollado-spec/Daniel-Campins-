@@ -6155,6 +6155,14 @@ async function openApp(app){
 
       let claimedClient=client(currentClientId);
       if(!claimedClient){
+        const {data:directClient,error:directClientError}=await supabaseClient.from("clients").select("*").eq("id",currentClientId).maybeSingle();
+        if(directClientError)throw directClientError;
+        if(directClient){
+          data.clients=[...(data.clients||[]).filter(x=>String(x.id)!==String(currentClientId)),directClient];
+          claimedClient=directClient;
+        }
+      }
+      if(!claimedClient){
         const {data:retryClientId,error:retryClaimError}=await supabaseClient.rpc("dcc_claim_client_access");
         if(retryClaimError)throw retryClaimError;
         if(retryClientId){
