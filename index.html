@@ -6180,7 +6180,9 @@ async function openApp(app){
         throw new Error('Configuración de contraseña no disponible');
       }
       if(claimedClient?.status==='Pendiente de cuestionario'){
-        for(let i=0;i<30&&typeof window.dccOpenInitialQuestionnaire!=='function';i++)await new Promise(resolve=>setTimeout(resolve,100));
+        window.__dccOnboardingGate=true;
+        document.querySelector('#client .side')?.style.setProperty('display','none','important');
+        for(let i=0;i<60&&typeof window.dccOpenInitialQuestionnaire!=='function';i++)await new Promise(resolve=>setTimeout(resolve,100));
         if(typeof window.dccOpenInitialQuestionnaire==='function'){
           window.dccOpenInitialQuestionnaire(claimedClient);
           window.__dccOpenAppPromise=null;
@@ -6188,6 +6190,8 @@ async function openApp(app){
         }
         throw new Error('Cuestionario inicial no disponible');
       }
+      window.__dccOnboardingGate=false;
+      document.querySelector('#client .side')?.style.removeProperty('display');
 
 
       // Inicio depende de rutina, check-in, historial, métricas, mensajes y
@@ -8533,7 +8537,7 @@ if(e.target===this)closeModal();
 
 </script>
 <script src="./new-client-premium-v1.js?v=20260916-runtime1"></script>
-<script src="./client-create-authority-v1.js?v=20261004-magic-access2ss-scope2send-access1ss-resend3"></script>
+<script src="./client-create-authority-v1.js?v=20261004-magic-access3ss2ss-scope2send-access1ss-resend3"></script>
 <script src="./client-first-password-v1.js?v=20261003-onboarding-fix1"></script>
 <script src="./client-initial-questionnaire-v1.js?v=20261002-onboarding1"></script>
 <script src="./client-admin-premium.js?v=20261004-client-access-scope2sex-authority1"></script>
