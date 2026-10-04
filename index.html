@@ -6077,6 +6077,10 @@ async function openApp(app){
   const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
   const alreadyOpen = currentApp===app && document.getElementById(app)?.style.display==="block" && loginAlreadyHidden;
 
+  if(alreadyOpen && app==="client" && window.__dccOnboardingGate){
+    return true;
+  }
+
   if(alreadyOpen){
     if(app==="client"){
       const clientMain=document.getElementById("client-main");
@@ -6494,6 +6498,10 @@ function dccDownloadDietPdf(){
 window.dccDownloadDietPdf=dccDownloadDietPdf;
 
 function showClient(screen){
+
+  if(window.__dccOnboardingGate){
+    return;
+  }
 
   currentScreen=screen;
   window.currentScreen=screen;
