@@ -203,6 +203,8 @@
     }
 
     hideLogin();
+    const activationFlow=params.get('dcc_activate')==='1';
+    if(activationFlow)window.__dccActivationRouting=true;
     try{
       const {data,error}=await db.auth.getSession();
       if(error)throw error;
@@ -220,6 +222,11 @@
           await openRecovery(data.session);
         }else{
           const routed=await routeSession(data.session);
+          if(activationFlow&&routed){
+            params.delete('dcc_activate');
+            const cleanQuery=params.toString();
+            history.replaceState({},'',window.location.pathname+(cleanQuery?'?'+cleanQuery:'')+window.location.hash);
+          }
           if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
         }
       }else{
@@ -230,6 +237,7 @@
       renderLogin();showLogin();
     }
     db.auth.onAuthStateChange((event,session)=>{
+      if(window.__dccActivationRouting&&event!=='SIGNED_OUT'&&event!=='PASSWORD_RECOVERY')return;
       if(event==='PASSWORD_RECOVERY'&&session){
         // Recovery establishes a temporary session. Do not route it through
         // normal client access; force the password setup screen first.
