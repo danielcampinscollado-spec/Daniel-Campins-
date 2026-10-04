@@ -203,35 +203,7 @@
     }
 
     hideLogin();
-    const activationFlow=params.get('dcc_activate')==='1';
-    if(activationFlow){
-      window.__dccActivationRouting=true;
-      document.getElementById('client')?.style.setProperty('display','none');
-      document.getElementById('coach')?.style.setProperty('display','none');
-    }
     try{
-      if(activationFlow){
-        const activationCode=params.get('code');
-        if(activationCode){
-          const {error:exchangeError}=await db.auth.exchangeCodeForSession(activationCode);
-          if(exchangeError)throw exchangeError;
-          params.delete('code');
-        }
-        let activationSession=null;
-        for(let i=0;i<30;i++){
-          const probe=await db.auth.getSession();
-          if(probe.error)throw probe.error;
-          if(probe.data?.session){activationSession=probe.data.session;break}
-          await new Promise(r=>setTimeout(r,100));
-        }
-        if(!activationSession)throw new Error('No se pudo establecer la sesión del enlace de acceso');
-        const routed=await routeSession(activationSession);
-        if(!routed)throw new Error('No se pudo asociar el acceso al cliente');
-        params.delete('dcc_activate');
-        const q=params.toString();
-        history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
-        return;
-      }
       const {data,error}=await db.auth.getSession();
       if(error)throw error;
       if(data?.session){
@@ -248,11 +220,6 @@
           await openRecovery(data.session);
         }else{
           const routed=await routeSession(data.session);
-          if(activationFlow&&routed){
-            params.delete('dcc_activate');
-            const cleanQuery=params.toString();
-            history.replaceState({},'',window.location.pathname+(cleanQuery?'?'+cleanQuery:'')+window.location.hash);
-          }
           if(!routed&&!document.querySelector('.dcc-auth-pending')){renderLogin();showLogin();}
         }
       }else{
@@ -263,7 +230,6 @@
       renderLogin();showLogin();
     }
     db.auth.onAuthStateChange((event,session)=>{
-      if(window.__dccActivationRouting&&event!=='SIGNED_OUT'&&event!=='PASSWORD_RECOVERY')return;
       if(event==='PASSWORD_RECOVERY'&&session){
         // Recovery establishes a temporary session. Do not route it through
         // normal client access; force the password setup screen first.
