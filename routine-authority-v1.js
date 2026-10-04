@@ -66,7 +66,7 @@
       const current=await database.rpc('dcc_get_coach_followup',{p_client_id:String(id)});if(current.error||!current.data)throw current.error||new Error('No se pudo cargar el seguimiento privado');
       const saved=await database.rpc('dcc_save_coach_followup',{p_client_id:String(id),p_checkin:current.data.checkin_frequency||'off',p_photo:current.data.photo_frequency||'off',p_diet:current.data.next_diet_review||null,p_routine:next});if(saved.error||!saved.data)throw saved.error||new Error('No se pudo programar la revisión de rutina');
       client.checkinFrequency=client.checkin_frequency=saved.data.checkin_frequency||'off';client.photoFrequency=client.photo_frequency=saved.data.photo_frequency||'off';client.nextDietReview=client.next_diet_review=saved.data.next_diet_review||'';client.next_routine_review=client.nextRoutineReview=saved.data.next_routine_review||next;if(Array.isArray(saved.data.coach_notes))client.coachNotes=saved.data.coach_notes;
-      applyRoutine(id,routine);try{renderClientRoutine(id)}catch(renderError){console.warn('DCC render tras enviar rutina:',renderError)}notify('Rutina enviada correctamente');return true;
+      applyRoutine(id,routine);const rr=await database.rpc('dcc_reconcile_client_active_status',{p_client_id:String(id)});if(rr.error)console.warn('DCC status reconcile:',rr.error);else if(rr.data)client.status='Activo';try{renderClientRoutine(id)}catch(renderError){console.warn('DCC render tras enviar rutina:',renderError)}notify('Rutina enviada correctamente');return true;
     }catch(error){console.error('DCC enviar rutina:',error);notify('No se pudo enviar la rutina');return false}
   };
 
