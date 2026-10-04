@@ -81,25 +81,14 @@
   window.dccResendClientAccess=resendClientAccess;
 
   function installResendButton(){
-    if(window.__dccResendAccessButtonV1)return;
-    window.__dccResendAccessButtonV1=true;
+    if(window.__dccResendAccessButtonV2)return;
+    window.__dccResendAccessButtonV2=true;
     document.addEventListener('click',function(event){
       const b=event.target?.closest?.('[data-dcc-resend-access]');
       if(!b)return;
       event.preventDefault();event.stopImmediatePropagation();
       window.dccResendClientAccess?.(b.dataset.dccResendAccess);
     },true);
-    const inject=()=>{
-      const id=String(window.selectedClient||window.__dccClientAdminId||'').trim();
-      if(!id)return;
-      const c=typeof window.client==='function'?window.client(id):null;
-      if(!c)return;
-      const host=document.querySelector('#coach-main .client-actions, #coach-main .client-header, #coach-main .section-actions, #coach-main');
-      if(!host||host.querySelector('[data-dcc-resend-access]'))return;
-      const b=document.createElement('button');b.type='button';b.className='btn secondary';b.dataset.dccResendAccess=id;b.textContent='Reenviar correo de acceso';host.prepend(b);
-    };
-    new MutationObserver(()=>queueMicrotask(inject)).observe(document.body,{childList:true,subtree:true});
-    setInterval(inject,1200);
   }
 
   function installCreate(){
