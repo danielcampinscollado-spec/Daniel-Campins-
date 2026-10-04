@@ -81,6 +81,11 @@
   const FEMALE_FALLBACK_POS={lumbar:[0,34],lumbares:[0,34]};
 
   function dayAnatomy(day){
+    const id=activeClientId();
+    const cl=(appData()?.clients||[]).find?.(x=>String(x?.id)===String(id))||{};
+    const sex=String(cl?.sex??cl?.sexo??cl?.gender??'').trim().toLowerCase();
+    if(sex==='female'||sex==='mujer'||sex==='femenino'||sex==='f')return'female';
+    if(sex==='male'||sex==='hombre'||sex==='masculino'||sex==='m')return'male';
     return String(day?.anatomy||'male').toLowerCase()==='female'?'female':'male';
   }
 
