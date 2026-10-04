@@ -6160,16 +6160,20 @@ async function openApp(app){
         throw new Error("plan_suspended");
       }
       if(claimedClient.password_setup_completed!==true){
+        for(let i=0;i<30&&typeof window.dccOpenFirstPasswordSetup!=='function';i++)await new Promise(resolve=>setTimeout(resolve,100));
         if(typeof window.dccOpenFirstPasswordSetup==='function'){
           window.dccOpenFirstPasswordSetup(claimedClient);
-          return;
+          window.__dccOpenAppPromise=null;
+          return true;
         }
         throw new Error('Configuración de contraseña no disponible');
       }
       if(claimedClient?.status==='Pendiente de cuestionario'){
+        for(let i=0;i<30&&typeof window.dccOpenInitialQuestionnaire!=='function';i++)await new Promise(resolve=>setTimeout(resolve,100));
         if(typeof window.dccOpenInitialQuestionnaire==='function'){
           window.dccOpenInitialQuestionnaire(claimedClient);
-          return;
+          window.__dccOpenAppPromise=null;
+          return true;
         }
         throw new Error('Cuestionario inicial no disponible');
       }
