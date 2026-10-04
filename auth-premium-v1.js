@@ -206,6 +206,14 @@
     const activationFlow=params.get('dcc_activate')==='1';
     if(activationFlow)window.__dccActivationRouting=true;
     try{
+      if(activationFlow&&params.get('code')){
+        const activationCode=params.get('code');
+        const {error:exchangeError}=await db.auth.exchangeCodeForSession(activationCode);
+        if(exchangeError)throw exchangeError;
+        params.delete('code');
+        const q=params.toString();
+        history.replaceState({},'',window.location.pathname+(q?'?'+q:'')+window.location.hash);
+      }
       const {data,error}=await db.auth.getSession();
       if(error)throw error;
       if(data?.session){
