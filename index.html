@@ -6068,10 +6068,12 @@ async function openApp(app){
   }
 
   if(window.__dccOpenAppPromise){
-    // A concurrent auth/session event must never repaint Client Home while
-    // first-access gates are still being resolved. The active openApp call
-    // owns password setup + questionnaire routing.
-    return window.__dccOpenAppPromise;
+    // Only client onboarding owns the client entry. Never let a stale client
+    // promise block the coach panel or a fresh authenticated coach session.
+    if(app==="client" && window.__dccOnboardingGate){
+      return window.__dccOpenAppPromise;
+    }
+    window.__dccOpenAppPromise=null;
   }
 
   const loginAlreadyHidden = document.getElementById("login")?.style.display==="none";
