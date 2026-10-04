@@ -1,6 +1,6 @@
 /* DCC — cuestionario inicial de cliente. Autoridad de onboarding. */
 (function(){
-'use strict';if(window.__dccInitialQuestionnaireV1)return;window.__dccInitialQuestionnaireV1=true;
+'use strict';window.__dccInitialQuestionnaireV1=true;
 const db=()=>window.supabaseClient||null;
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const num=id=>{const n=parseFloat(String(document.getElementById(id)?.value||'').replace(',','.'));return Number.isFinite(n)?n:null};
