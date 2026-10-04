@@ -86,9 +86,10 @@
 
   function patchTasks(main){
     const clients=Array.isArray(appData()?.clients)?appData().clients:[];
-    const pending=clients.filter(pendingCheck).length;
-    const missingRoutine=clients.filter(c=>!hasRoutine(c.id)).length;
-    const missingDietClients=clients.filter(c=>!hasDiet(c.id));
+    const eligible=clients.filter(c=>String(c?.status||'').trim().toLowerCase()!=='pendiente de cuestionario');
+    const pending=eligible.filter(pendingCheck).length;
+    const missingRoutine=eligible.filter(c=>!hasRoutine(c.id)).length;
+    const missingDietClients=eligible.filter(c=>!hasDiet(c.id));
     const total=pending+missingRoutine+missingDietClients.length;
     const tasks=main.querySelector('#dccP9Tasks');
     const badge=tasks?.querySelector('.dcc-p9-count');
