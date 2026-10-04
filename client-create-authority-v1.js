@@ -70,9 +70,7 @@
       const row=Array.isArray(rows)?rows[0]:null,email=String(row?.access_email||'').trim().toLowerCase();
       if(!validEmail(email))throw new Error('El cliente no tiene un email de acceso válido');
       const redirectTo='https://dccfitness.com/?dcc_activate=1';
-      const {error:mailError}=row?.password_setup_completed===true
-        ? await database.auth.resetPasswordForEmail(email,{redirectTo})
-        : await database.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo,shouldCreateUser:true}});
+      const {error:mailError}=await database.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo,shouldCreateUser:false}});
       if(mailError)throw mailError;
       notify('Nuevo enlace de acceso enviado');
       return true;
