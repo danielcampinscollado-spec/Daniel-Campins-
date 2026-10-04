@@ -111,6 +111,8 @@ function enhance(){
     if(sub)sub.textContent='Genera un PDF limpio para guardar o imprimir.';
     if(btn){
       btn.type='button';
+      const trial=String(currentClient()?.access_kind||'').toLowerCase()==='trial';
+      if(trial){btn.disabled=true;btn.style.opacity='.55';btn.style.cursor='not-allowed';}
       const label=btn.querySelector('span');
       if(label)label.textContent='ABRIR PDF';
       btn.onclick=e=>{e.preventDefault();e.stopPropagation();window.dccPrintClientDiet?.()};
@@ -141,6 +143,11 @@ function mealHtml(meal,index){
 }
 
 window.dccPrintClientDiet=function(){
+  const access=currentClient();
+  if(String(access?.access_kind||'').toLowerCase()==='trial'){
+    try{toast('La descarga de la dieta no está disponible durante el periodo de prueba')}catch(_){window.toast?.('La descarga de la dieta no está disponible durante el periodo de prueba')}
+    return false;
+  }
   const d=day();
   const meals=Array.isArray(d?.meals)?d.meals:[];
   const c=currentClient();
