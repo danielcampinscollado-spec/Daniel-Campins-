@@ -138,7 +138,7 @@
     login.classList.add('dcc-auth-light-ready');
     login.classList.remove('dcc-auth-hidden');
     const box=login.querySelector('.login-box')||login.firstElementChild||login;
-    const choices=box.querySelector('.choices');
+    const choices=box.querySelector('.choices');if(choices)choices.style.setProperty('display','none','important');
     let section=document.getElementById(ROOT_ID);
     if(!section){
       section=document.createElement('section');section.id=ROOT_ID;
