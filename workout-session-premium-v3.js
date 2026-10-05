@@ -210,22 +210,7 @@
     if(btn)btn.setAttribute('aria-expanded',String(!!window.__dccWorkoutTipOpen));
   };
 
-  function currentExerciseVideo(exercise){
-    const list=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
-    const id=String(exercise?.libraryId??exercise?.library_id??exercise?.id??exercise?.exerciseId??exercise?.exercise_id??'').trim();
-    if(id){
-      const hit=list.find(x=>String(x?.id??'')===id);
-      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
-      if(url)return url;
-    }
-    const name=norm(exercise?.name??exercise?.nombre??'');
-    if(name){
-      const hit=list.find(x=>norm(x?.name)===name);
-      const url=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
-      if(url)return url;
-    }
-    return String(exercise?.videoUrl||exercise?.video_url||exercise?.video||'').trim();
-  }
+  function currentExerciseVideo(exercise){return String(exercise?.videoUrl||exercise?.video_url||exercise?.video||'').trim()}
 
   function renderPremiumWorkout(){
     const workout=window.activeWorkout;
