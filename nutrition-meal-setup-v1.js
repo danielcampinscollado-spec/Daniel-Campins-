@@ -52,7 +52,7 @@
   }
 
   function pane(){return document.getElementById('dcc-coach-client-pane')}
-  function meal(name){return{name,options:[{name:'Opción 1',foods:[]}]}}
+  function meal(name){return{name,options:[{name:'Opción 1',foods:[]},{name:'Opción 2',foods:[]}]}}
   function hasCurrentPlan(id){const p=window.data?.diets?.[id];return !!(p&&['training','rest'].some(k=>Array.isArray(p?.[k]?.meals)&&p[k].meals.length))}
   function normalizeMealName(name){const n=String(name||'').trim().toLowerCase().replace(/[-–—]/g,' ').replace(/\s+/g,' ');if(n==='media mañana')return'merienda mañana';if(n==='media tarde')return'merienda tarde';return n}
   function remainingMeals(id,type){const current=window.data?.diets?.[id]?.[type]?.meals||[],used=new Set(current.map(x=>normalizeMealName(x?.name)));return MEALS.filter(name=>!used.has(normalizeMealName(name)))}
