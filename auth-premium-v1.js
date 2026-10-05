@@ -183,7 +183,7 @@
     if(typeof window.dccOpenInitialQuestionnaire==='function')return true;
     if(!window.__dccInitialQuestionnaireLoadPromise){
       window.__dccInitialQuestionnaireLoadPromise=new Promise((resolve,reject)=>{
-        const src='./client-initial-questionnaire-v1.js?v=20261004-trial-two-step1';
+        const src='./client-initial-questionnaire-v1.js?v=20261005-paid-activation-gate1';
         const existing=[...document.scripts].find(s=>{try{const u=new URL(s.src,location.href),w=new URL(src,location.href);return u.pathname===w.pathname&&u.search===w.search}catch(_){return false}});
         const done=()=>typeof window.dccOpenInitialQuestionnaire==='function'?resolve(true):reject(new Error('DCC questionnaire authority failed to register'));
         if(existing){if(typeof window.dccOpenInitialQuestionnaire==='function')return resolve(true);existing.addEventListener('load',done,{once:true});existing.addEventListener('error',()=>reject(new Error('DCC questionnaire load failed')),{once:true});return}
