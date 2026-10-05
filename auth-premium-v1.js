@@ -181,13 +181,28 @@
   }
   async function ensureInitialQuestionnaire(){
     if(typeof window.dccOpenInitialQuestionnaire==='function')return true;
-    window.__dccInitialQuestionnaireLoadPromise=null;
+    const existing=[...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname.endsWith('/client-initial-questionnaire-v1.js')}catch(_){return false}});
+    if(existing){
+      for(let i=0;i<40;i++){
+        if(typeof window.dccOpenInitialQuestionnaire==='function')return true;
+        await new Promise(r=>setTimeout(r,100));
+      }
+      existing.remove();
+    }
     return new Promise((resolve,reject)=>{
       const script=document.createElement('script');
       let done=false;
-      const finish=(error)=>{if(done)return;done=true;clearTimeout(timer);if(error)return reject(error);typeof window.dccOpenInitialQuestionnaire==='function'?resolve(true):reject(new Error('DCC questionnaire authority failed to register'))};
+      const finish=(error)=>{
+        if(done)return;
+        done=true;
+        clearTimeout(timer);
+        if(error)return reject(error);
+        typeof window.dccOpenInitialQuestionnaire==='function'
+          ? resolve(true)
+          : reject(new Error('DCC questionnaire authority failed to register'));
+      };
       const timer=setTimeout(()=>finish(new Error('DCC questionnaire load timed out')),8000);
-      script.src='./client-initial-questionnaire-v1.js?v=20261005-initializer-order2';
+      script.src='./client-initial-questionnaire-v1.js?v=20261005-single-authority7';
       script.onload=()=>finish();
       script.onerror=()=>finish(new Error('DCC questionnaire load failed'));
       document.head.appendChild(script);
