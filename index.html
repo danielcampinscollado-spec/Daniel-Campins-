@@ -6199,14 +6199,9 @@ async function openApp(app){
       }
       if(claimedClient?.status==='Pendiente de cuestionario'){
         window.__dccOnboardingGate=true;
+        window.__dccOpenAppPromise=null;
         document.querySelector('#client .side')?.style.setProperty('display','none','important');
-        for(let i=0;i<60&&typeof window.dccOpenInitialQuestionnaire!=='function';i++)await new Promise(resolve=>setTimeout(resolve,100));
-        if(typeof window.dccOpenInitialQuestionnaire==='function'){
-          window.dccOpenInitialQuestionnaire(claimedClient);
-          window.__dccOpenAppPromise=null;
-          return true;
-        }
-        throw new Error('Cuestionario inicial no disponible');
+        return true;
       }
       window.__dccOnboardingGate=false;
       document.querySelector('#client .side')?.style.removeProperty('display');
