@@ -1,7 +1,7 @@
 /* DCC — acceso seguro Supabase Auth v1 (Google OAuth RC) */
 (function(){
   'use strict';
-  const BUILD='20261004-single-route1';
+  const BUILD='20261005-questionnaire-recovery1';
   if(window.__dccSecureAuth===BUILD)return;
   window.__dccSecureAuth=BUILD;
 
@@ -183,11 +183,25 @@
     if(typeof window.dccOpenInitialQuestionnaire==='function')return true;
     if(!window.__dccInitialQuestionnaireLoadPromise){
       window.__dccInitialQuestionnaireLoadPromise=new Promise((resolve,reject)=>{
-        const src='./client-initial-questionnaire-v1.js?v=20261005-paid-activation-gate1';
-        const existing=[...document.scripts].find(s=>{try{const u=new URL(s.src,location.href),w=new URL(src,location.href);return u.pathname===w.pathname&&u.search===w.search}catch(_){return false}});
-        const done=()=>typeof window.dccOpenInitialQuestionnaire==='function'?resolve(true):reject(new Error('DCC questionnaire authority failed to register'));
-        if(existing){if(typeof window.dccOpenInitialQuestionnaire==='function')return resolve(true);existing.addEventListener('load',done,{once:true});existing.addEventListener('error',()=>reject(new Error('DCC questionnaire load failed')),{once:true});return}
-        const s=document.createElement('script');s.src=src;s.async=false;s.onload=done;s.onerror=()=>reject(new Error('DCC questionnaire load failed'));document.head.appendChild(s);
+        const base='./client-initial-questionnaire-v1.js';
+        const src=base+'?v=20261005-questionnaire-recovery1';
+        const matches=[...document.scripts].filter(s=>{try{const u=new URL(s.src,location.href),w=new URL(base,location.href);return u.pathname===w.pathname}catch(_){return false}});
+        // A matching script can already have fired load without registering its
+        // authority. Waiting for that past event leaves onboarding frozen forever.
+        matches.forEach(s=>s.remove());
+        const script=document.createElement('script');
+        let settled=false;
+        const finish=(error)=>{
+          if(settled)return;settled=true;clearTimeout(timer);
+          if(error)return reject(error);
+          if(typeof window.dccOpenInitialQuestionnaire==='function')return resolve(true);
+          reject(new Error('DCC questionnaire authority failed to register'));
+        };
+        const timer=setTimeout(()=>finish(new Error('DCC questionnaire load timed out')),8000);
+        script.src=src;script.async=false;
+        script.onload=()=>finish();
+        script.onerror=()=>finish(new Error('DCC questionnaire load failed'));
+        document.head.appendChild(script);
       }).catch(error=>{window.__dccInitialQuestionnaireLoadPromise=null;throw error});
     }
     return window.__dccInitialQuestionnaireLoadPromise;
