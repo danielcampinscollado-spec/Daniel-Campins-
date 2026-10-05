@@ -93,7 +93,7 @@
     const draft=clone(appData().routines?.[id])||[];
     let backup=null;
     try{
-      if(window.__dccTrainingBackup!==undefined)backup=JSON.parse(window.__dccTrainingBackup);
+      if(window.__dccTrainingBackup!==undefined&&String(window.__dccTrainingBackupClient||'')===String(id))backup=JSON.parse(window.__dccTrainingBackup);
     }catch(_){backup=null}
 
     try{
@@ -105,6 +105,7 @@
       const remaining=Math.max(0,required-configured);
       window.__dccTrainingEdit=false;
       delete window.__dccTrainingBackup;
+      delete window.__dccTrainingBackupClient;
       window.__dccRoutineDraftDirty=false;
       window.__dccRoutineUnsavedBackup=undefined;
       window.__dccRoutineUnsavedBackupSet=false;
@@ -117,6 +118,7 @@
       else await reloadRoutines();
       window.__dccTrainingEdit=false;
       delete window.__dccTrainingBackup;
+      delete window.__dccTrainingBackupClient;
       window.__dccRoutineDraftDirty=false;
       window.__dccRoutineUnsavedBackup=undefined;
       window.__dccRoutineUnsavedBackupSet=false;
@@ -147,6 +149,7 @@
     // Crear una rutina nueva empieza siempre como borrador local. La rutina activa
     // del servidor no se archiva ni se vacía hasta que el entrenador la guarda/envía.
     window.__dccTrainingBackup=JSON.stringify(current);
+    window.__dccTrainingBackupClient=String(id);
     window.__dccTrainingEdit=true;
     window.__dccRoutineDraftDirty=false;
     window.__dccRoutineUnsavedBackup=clone(current);
