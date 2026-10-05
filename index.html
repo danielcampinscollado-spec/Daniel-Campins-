@@ -8558,7 +8558,18 @@ if(e.target===this)closeModal();
 <script src="./new-client-premium-v1.js?v=20260916-runtime1"></script>
 <script src="./client-create-authority-v1.js?v=20261004-access-stable1ss3ss2ss-scope2send-access1ss-resend3"></script>
 <script src="./client-first-password-v1.js?v=20261005-questionnaire-transition1"></script>
+<script>
+window.__dccQuestionnaireEvalError=null;
+window.addEventListener('error',function dccQuestionnaireEvalCapture(e){
+  const file=String(e.filename||'');
+  if(!file.includes('client-initial-questionnaire-v2.js'))return;
+  window.__dccQuestionnaireEvalError={message:String(e.message||'Script evaluation error'),filename:file,lineno:e.lineno||0,colno:e.colno||0};
+},{capture:true});
+</script>
 <script src="./client-initial-questionnaire-v2.js?v=20261005-clean-authority1"></script>
+<script>
+window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnaire==='function';
+</script>
 <script src="./client-admin-premium.js?v=20261005-routine-owner1"></script>
 <script src="./coach-client-profile-v2.js?v=20261001-photo-viewer5"></script>
 <script src="./coach-client-profile-light-v1.js?v=20260925-compact-authority1"></script>
