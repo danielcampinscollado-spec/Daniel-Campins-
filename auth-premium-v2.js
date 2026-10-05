@@ -199,7 +199,7 @@
         if(error)return reject(error);
         typeof window.dccOpenInitialQuestionnaire==='function'
           ? resolve(true)
-          : reject(new Error('DCC questionnaire authority failed to register'));
+          : reject(new Error(window.__dccQuestionnaireEvalError ? ('DCC questionnaire evaluation failed: '+window.__dccQuestionnaireEvalError.message+' @ '+window.__dccQuestionnaireEvalError.filename+':'+window.__dccQuestionnaireEvalError.lineno+':'+window.__dccQuestionnaireEvalError.colno) : 'DCC questionnaire authority failed to register'));
       };
       const timer=setTimeout(()=>finish(new Error('DCC questionnaire load timed out')),8000);
       script.src='./client-initial-questionnaire-v2.js?v=20261005-single-authority7';
