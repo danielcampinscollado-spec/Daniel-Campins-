@@ -185,7 +185,7 @@
           <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
         </div>
         ${renderSavedToday(workout.sets)}
-        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${actionLabel} <b>→</b></button>`}
+        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${actionLabel} <b>→</b></button>${!exercise.supersetId||((workout.exercises||[]).findIndex(x=>x?.supersetId===exercise.supersetId)===workout.currentExercise)?`<button type="button" onclick="dccDeferWorkoutExercise()" style="width:100%;margin-top:8px;border:1px solid rgba(217,170,74,.38);border-radius:12px;background:transparent;color:#9b6b18;min-height:38px;font-size:9px;font-weight:850">Saltar por ahora · hacer después</button>`:''} `}
     </section>`;
   }
 
