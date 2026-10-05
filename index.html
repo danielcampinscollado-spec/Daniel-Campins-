@@ -8108,6 +8108,32 @@ function deleteWorkoutSet(index){
 
   toast("Serie eliminada");
 }
+
+function dccDeferWorkoutExercise(){
+  const workout=window.activeWorkout;
+  if(!workout||!Array.isArray(workout.exercises)||workout.exercises.length<2)return;
+  if(workout.restUntil&&workout.restUntil>Date.now()){toast("Omite el descanso antes de aplazar el ejercicio");return;}
+  const idx=Number(workout.currentExercise)||0,exercise=workout.exercises[idx];
+  if(!exercise)return;
+  if(exercise.supersetId){
+    const members=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===exercise.supersetId);
+    const first=Math.min(...members.map(x=>x.index));
+    if(idx!==first||workout.sets?.length||Number(workout.supersetState?.[exercise.supersetId]?.round||1)>1){toast("La superserie ya está en curso y no se puede aplazar a mitad");return;}
+    const group=workout.exercises.splice(first,members.length);
+    workout.exercises.push(...group);
+    workout.currentExercise=first>=workout.exercises.length?0:first;
+  }else{
+    const [moved]=workout.exercises.splice(idx,1);
+    workout.exercises.push(moved);
+    workout.currentExercise=idx>=workout.exercises.length?0:idx;
+  }
+  workout.deferredExercises=workout.deferredExercises||[];
+  workout.deferredExercises.push({name:exercise.name||"Ejercicio",at:Date.now()});
+  workout.restUntil=null;workout.restMode=null;
+  renderWorkoutSession();
+  toast("Ejercicio aplazado · volverá al final");
+}
+
 function nextWorkoutExercise(){
 
   const workout=window.activeWorkout;
