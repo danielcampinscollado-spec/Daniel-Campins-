@@ -1,7 +1,16 @@
 {
   "headers": [
     {
-      "source": "/(.*\\.js)",
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/((?!service-worker\\.js$).*\\.js)",
       "headers": [
         {
           "key": "Cache-Control",
