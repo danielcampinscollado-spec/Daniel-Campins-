@@ -5029,11 +5029,11 @@ async function loadDietsFromSupabase(){
     if(error){
 
       console.error("Error cargando dietas:",error);
-      return;
+      return false;
 
     }
 
-    if(!diets) return;
+    if(!diets) return false;
 
     // Supabase is authoritative for diet assignments. Seed empty plans for
     // current clients, then fill only the diet rows confirmed by the server.
@@ -5423,11 +5423,11 @@ async function loadRoutinesFromSupabase(){
         error
       );
 
-      return;
+      return false;
 
     }
 
-    if(!routines) return;
+    if(!routines) return false;
 
     // Rebuild the server-backed routine domains so deleted or replaced
     // routines cannot survive in localStorage after a reload.
@@ -6304,8 +6304,10 @@ async function openApp(app){
       loadNotificationStateFromSupabase(),
       loadCheckinsFromSupabase()
     ]);
-    }).then(()=>{
-      window.__dccCoachPlanDataHydrated=true;
+    }).then(results=>{
+      const dietOk=results?.[0]?.status==="fulfilled"&&results[0].value===true;
+      const routineOk=results?.[1]?.status==="fulfilled"&&results[1].value===true;
+      window.__dccCoachPlanDataHydrated=dietOk&&routineOk;
       if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
     });
 
