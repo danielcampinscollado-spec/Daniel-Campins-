@@ -1,0 +1,42 @@
+(()=>{
+'use strict';
+const STYLE='dcc-coach-evolution-v1-css',cache={};
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const db=()=>window.supabaseClient;
+const client=id=>(window.data?.clients||[]).find(x=>String(x.id)===String(id));
+function css(){if(document.getElementById(STYLE))return;const s=document.createElement('style');s.id=STYLE;s.textContent=`
+#coach-main .dcc-ev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+#coach-main .dcc-ev-kpi{padding:10px;border:1px solid rgba(177,119,18,.22);border-radius:12px;background:#fffefa;text-align:center}
+#coach-main .dcc-ev-kpi b{display:block;color:#17191d;font-size:16px}#coach-main .dcc-ev-kpi span{display:block;margin-top:3px;color:#7d8490;font-size:8px}
+#coach-main .dcc-ev-chart{margin-top:10px;padding:10px;border:1px solid rgba(177,119,18,.18);border-radius:13px;background:#fffefa}
+#coach-main .dcc-ev-chart-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:7px}
+#coach-main .dcc-ev-chart-head b{font-size:11px;color:#17191d}#coach-main .dcc-ev-chart-head span{font-size:8px;color:#8a8173}
+#coach-main .dcc-ev-chart svg{display:block;width:100%;height:110px;overflow:visible}
+#coach-main .dcc-ev-chart .axis{stroke:#e8dfcf;stroke-width:1}#coach-main .dcc-ev-chart .line{fill:none;stroke:#b17712;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#coach-main .dcc-ev-chart .dot{fill:#fff;stroke:#b17712;stroke-width:2}
+#coach-main .dcc-ev-status{margin-top:10px;padding:10px 11px;border:1px solid rgba(177,119,18,.2);border-radius:12px;background:#fffaf0;color:#675b48;font-size:9px;line-height:1.45}
+#coach-main .dcc-ev-status b{color:#9b670c}
+#coach-main .dcc-ev-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+#coach-main .dcc-ev-photo-set{padding:8px;border:1px solid rgba(177,119,18,.18);border-radius:12px;background:#fffefa}
+#coach-main .dcc-ev-photo-set>small{display:block;margin-bottom:6px;color:#8a8173;font-size:8px;font-weight:800}
+#coach-main .dcc-ev-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+#coach-main .dcc-ev-photos img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:7px;background:#f2eee5}
+#coach-main .dcc-ev-empty{padding:14px 8px;text-align:center;color:#8f98a3;font-size:9px}
+@media(max-width:420px){#coach-main .dcc-ev-grid{gap:5px}#coach-main .dcc-ev-kpi{padding:9px 5px}#coach-main .dcc-ev-kpi b{font-size:14px}}
+`;document.head.appendChild(s)}
+const n=v=>{const x=Number(v);return Number.isFinite(x)?x:null};
+const date=v=>{const d=new Date(v);return Number.isFinite(d.getTime())?d:null};
+function chart(rows,key,unit){const a=(rows||[]).map(x=>({v:n(x[key]),d:date(x.recorded_at||x.sent_at)})).filter(x=>x.v!=null&&x.d).sort((x,y)=>x.d-y.d);if(a.length<2)return '<div class="dcc-ev-empty">Se necesitan al menos 2 registros para mostrar la gráfica.</div>';const vals=a.map(x=>x.v),min=Math.min(...vals),max=Math.max(...vals),span=Math.max(.5,max-min),w=300,h=90,p=9;const pts=a.map((x,i)=>({x:p+(w-2*p)*(i/(a.length-1)),y:p+(h-2*p)*(1-(x.v-min)/span),...x}));const path=pts.map((q,i)=>(i?'L':'M')+q.x.toFixed(1)+' '+q.y.toFixed(1)).join(' ');return `<svg viewBox="0 0 300 90" role="img" aria-label="Evolución ${esc(unit)}"><line class="axis" x1="9" y1="81" x2="291" y2="81"/><path class="line" d="${path}"/>${pts.map(q=>`<circle class="dot" cx="${q.x}" cy="${q.y}" r="3"><title>${q.v.toFixed(1)} ${esc(unit)} · ${q.d.toLocaleDateString('es-ES')}</title></circle>`).join('')}</svg>`}
+function statusText(workouts,expected,checkins,weights){const adh=expected?Math.min(100,Math.round(workouts/expected*100)):null;let t=adh==null?'Sin objetivo semanal configurado.':adh>=85?'Adherencia de entrenamiento alta.':adh>=60?'Adherencia de entrenamiento moderada.':'Adherencia de entrenamiento baja.';if(!checkins)t+=' Sin check-ins registrados en los últimos 30 días.';if(weights.length>=2){const d=n(weights.at(-1)?.weight)-n(weights[0]?.weight);if(Number.isFinite(d))t+=Math.abs(d)<.2?' Peso estable en el periodo.':` Cambio de peso: ${d>0?'+':''}${d.toFixed(1).replace('.',',')} kg.`}return t}
+async function signed(path){if(!path)return'';const {data,error}=await db().storage.from('checkin-photos').createSignedUrl(path,900);return error?'':(data?.signedUrl||'')}
+async function photoSet(row,label){if(!row)return'';const p=row.photos||{},urls=await Promise.all([signed(p.front),signed(p.side),signed(p.back)]);if(!urls.some(Boolean))return'';return `<div class="dcc-ev-photo-set"><small>${esc(label)} · ${date(row.sent_at)?.toLocaleDateString('es-ES')||''}</small><div class="dcc-ev-photos">${urls.map((u,i)=>u?`<img src="${esc(u)}" alt="${['Frontal','Lateral','Espalda'][i]}">`:'<div></div>').join('')}</div></div>`}
+async function load(id){if(cache[id])return cache[id];const d=db();if(!d)throw new Error('Sin conexión');const [w,f,h,wo]=await Promise.all([
+d.from('client_weights').select('weight,recorded_at').eq('client_id',id).order('recorded_at'),
+d.from('client_body_fat_history').select('body_fat,recorded_at').eq('client_id',id).order('recorded_at'),
+d.from('client_checkin_history').select('weight,body_fat,sent_at,checkin_type,photos').eq('client_id',id).order('sent_at'),
+d.from('workout_history').select('workout_date,duration,day_index,day_name').eq('client_id',id).order('workout_date')
+]);for(const r of [w,f,h,wo])if(r.error)throw r.error;return cache[id]={weights:w.data||[],fat:f.data||[],checkins:h.data||[],workouts:wo.data||[]}}
+async function render(id){const root=document.querySelector('#dcc-coach-client-pane[data-dcc-pane="summary"]');if(!root)return;css();const cl=client(id)||{},slot=document.createElement('section');slot.className='dcc-ca-card';slot.id='dccEvolutionInsights';slot.innerHTML='<div class="dcc-ca-section-head"><h2>Evolución y adherencia</h2></div><div class="dcc-ev-empty">Cargando evolución…</div>';root.appendChild(slot);try{const x=await load(String(id));if(!document.getElementById('dccEvolutionInsights'))return;const cut=Date.now()-30*864e5,work30=x.workouts.filter(r=>(date(r.workout_date)?.getTime()||0)>=cut).length,check30=x.checkins.filter(r=>(date(r.sent_at)?.getTime()||0)>=cut).length,days=Math.max(0,Number(cl.preferred_training_days)||0),expected=days?Math.max(1,Math.round(days*30/7)):0,adh=expected?Math.min(100,Math.round(work30/expected*100)):null;const latestW=x.weights.at(-1)?.weight,latestF=x.fat.at(-1)?.body_fat;slot.innerHTML=`<div class="dcc-ca-section-head"><h2>Evolución y adherencia</h2><span style="font-size:8px;color:#8f98a3">Últimos 30 días</span></div><div class="dcc-ev-grid"><div class="dcc-ev-kpi"><b>${work30}${expected?'/'+expected:''}</b><span>Entrenamientos</span></div><div class="dcc-ev-kpi"><b>${adh==null?'—':adh+' %'}</b><span>Adherencia</span></div><div class="dcc-ev-kpi"><b>${check30}</b><span>Check-ins</span></div></div><div class="dcc-ev-status"><b>Resumen:</b> ${esc(statusText(work30,expected,check30,x.weights))}</div><div class="dcc-ev-chart"><div class="dcc-ev-chart-head"><b>Peso</b><span>${latestW!=null?Number(latestW).toFixed(1).replace('.',',')+' kg':''}</span></div>${chart(x.weights,'weight','kg')}</div><div class="dcc-ev-chart"><div class="dcc-ev-chart-head"><b>Grasa corporal</b><span>${latestF!=null?Number(latestF).toFixed(1).replace('.',',')+' %':''}</span></div>${chart(x.fat,'body_fat','%')}</div>`;const complete=x.checkins.filter(r=>r.checkin_type==='complete'&&r.photos).slice(-2),sets=await Promise.all([photoSet(complete[0],'Anterior'),photoSet(complete[1],'Actual')]);if(sets.some(Boolean))slot.insertAdjacentHTML('beforeend',`<div class="dcc-ev-chart-head" style="margin-top:12px"><b>Comparativa fotográfica</b><span>Privada</span></div><div class="dcc-ev-compare">${sets.filter(Boolean).join('')}</div>`)}catch(e){console.error('DCC evolution:',e);slot.innerHTML='<div class="dcc-ca-section-head"><h2>Evolución y adherencia</h2></div><div class="dcc-ev-empty">No se pudo cargar la evolución.</div>'}}
+function wrap(){const base=window.dccClientAdmin;if(typeof base!=='function'||base.__dccEvolutionV1)return false;const fn=function(id,tab){const r=base.apply(this,arguments);if((tab||'summary')==='summary')setTimeout(()=>render(String(id)),0);return r};fn.__dccEvolutionV1=true;fn.__base=base;window.dccClientAdmin=fn;return true}
+let tries=0;const t=setInterval(()=>{if(wrap()||++tries>80)clearInterval(t)},100);
+})();
