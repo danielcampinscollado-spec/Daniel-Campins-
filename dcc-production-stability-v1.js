@@ -102,7 +102,6 @@
   }
 
   function loadRuntimeFixes(){
-    loadSecureAuth();
     loadTrainingDayWizard();
     loadClientDeleteAtomic();
     loadClientProfileEditor();
