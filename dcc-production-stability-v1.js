@@ -45,7 +45,7 @@
   function loadSecureAuth(){
     if(window.__dccSecureAuthV1||document.querySelector('script[data-dcc-secure-auth]'))return;
     const s=document.createElement('script');
-    s.src='./auth-premium-v1.js?v=20260912-2235';
+    s.src='./auth-premium-v2.js?v=20260912-2235';
     s.async=false;
     s.dataset.dccSecureAuth='1';
     (document.head||document.documentElement).appendChild(s);
