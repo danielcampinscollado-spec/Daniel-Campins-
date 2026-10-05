@@ -8677,5 +8677,14 @@ window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnai
 <script src="./client-checkin-schedule-v4.js?v=20260926-atomic-entry2"></script>
 <script src="./coach-checkin-schedule-v1.js?v=20260924-no-retry1"></script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js', { updateViaCache: 'none' })
+      .catch(function (error) { console.warn('DCC PWA service worker:', error); });
+  });
+}
+</script>
+
 </body>
 </html>
