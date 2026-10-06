@@ -88,8 +88,8 @@
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
   function messageBubble(m){
-    const coach=msgIsCoach(m);const d=msgDate(m);
-    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓✓</span>'}</div></div></div>`;
+    const coach=msgIsCoach(m),d=msgDate(m);
+    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
   }
   function scrollClientChatToBottom(smooth=false){
     const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
