@@ -195,7 +195,7 @@
     window.__dccCoachChatV2=id;
     try{if(typeof closeModal==='function')closeModal()}catch(e){}
     main.className='dcc-message-chat-v2';
-    main.innerHTML=`<div class="dcc-mcv2"><button type="button" class="dcc-mcv2-back" onclick="dccCloseCoachChatV2()">← Mensajes</button><header class="dcc-mcv2-person"><div class="dcc-mcv2-avatar">${esc(initials(c.name))}</div><div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-mcv2-status"><span class="dcc-mcv2-dot"></span>Conversación activa</div></div></header><div class="dcc-mcv2-stream" id="dccCoachChatStreamV2">${messagesHtml(id,c)}</div></div><div class="dcc-mcv2-composer"><button type="button" class="dcc-mcv2-photo-btn" onclick="document.getElementById('dccCoachPhotoV2').click()" aria-label="Enviar foto">📷</button><input id="dccCoachPhotoV2" class="dcc-mcv2-file" type="file" accept="image/*"><textarea id="dccCoachMessageV2" class="dcc-mcv2-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccCoachSendV2('${esc(id)}')}"></textarea><button id="dccCoachSendV2Button" type="button" class="dcc-mcv2-send" onclick="dccCoachSendV2('${esc(id)}')" aria-label="Enviar">➤</button></div>`;
+    main.innerHTML=`<div class="dcc-mcv2"><button type="button" class="dcc-mcv2-back" onclick="dccCloseCoachChatV2()">← Mensajes</button><header class="dcc-mcv2-person"><div class="dcc-mcv2-avatar">${esc(initials(c.name))}</div><div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-mcv2-status"><span class="dcc-mcv2-dot"></span>Conversación activa</div></div></header><div class="dcc-mcv2-stream" id="dccCoachChatStreamV2">${messagesHtml(id,c)}</div></div><div class="dcc-mcv2-composer"><button type="button" class="dcc-mcv2-photo-btn" onclick="document.getElementById('dccCoachPhotoV2').click()" aria-label="Enviar foto">📷</button><input id="dccCoachPhotoV2" class="dcc-mcv2-file" type="file" accept="image/*" onchange="dccCoachPhotoSelectedV2(this)"><textarea id="dccCoachMessageV2" class="dcc-mcv2-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccCoachSendV2('${esc(id)}')}"></textarea><button id="dccCoachSendV2Button" type="button" class="dcc-mcv2-send" onclick="dccCoachSendV2('${esc(id)}')" aria-label="Enviar">➤</button></div>`;
     requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
     startPolling();
   }
@@ -270,6 +270,21 @@
     }finally{
       if(input)input.disabled=false;if(button)button.disabled=false;
     }
+  };
+
+  window.dccCoachPhotoSelectedV2=async function(input){
+    const id=window.__dccCoachChatV2,file=input&&input.files&&input.files[0],client=db(),media=window.dccMessageMedia;
+    if(!id||!file||!client||!media)return;
+    try{
+      toastSafe('Subiendo foto…');
+      const a=await media.upload(id,file,'image');
+      const auth=await client.auth.getUser(),user=auth&&auth.data&&auth.data.user;
+      if(!user)throw new Error('Sesión no disponible');
+      const out=await client.from('client_messages').insert({client_id:id,sender:'Daniel Campins',sender_role:'coach',sender_user_id:user.id,message:'',attachment_type:'image',attachment_path:a.path,attachment_name:a.name,attachment_mime:a.mime,attachment_size:a.size});
+      if(out.error)throw out.error;
+      await syncMessages(id);refreshCoachChat(id);toastSafe('Foto enviada');
+    }catch(e){console.error('DCC foto entrenador:',e);toastSafe('No se pudo enviar la foto')}
+    finally{if(input)input.value=''}
   };
 
   let inboxLive=null;
