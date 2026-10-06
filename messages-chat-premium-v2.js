@@ -111,8 +111,17 @@
         .dcc-mcv2-composer{left:calc(50% + 120px);width:min(760px,calc(100vw - 300px))}
       }
       @media(max-width:430px){
-        #coach-main.dcc-message-chat-v2{padding-left:12px!important;padding-right:12px!important}
-        .dcc-mcv2-bubble{max-width:82%;font-size:11.5px}.dcc-mcv2-composer{width:calc(100vw - 24px)}
+        #coach-main.dcc-message-chat-v2{height:calc(100dvh - 76px)!important;min-height:0!important;overflow:hidden!important;padding:8px 12px 92px!important}
+        .dcc-mcv2{height:100%;display:flex;flex-direction:column;overflow:hidden}
+        .dcc-mcv2-back{min-height:34px;padding:0 11px}
+        .dcc-mcv2-person{flex:none;margin:9px 1px 8px;padding-bottom:9px}
+        .dcc-mcv2-avatar{width:44px;height:44px}
+        .dcc-mcv2-person h1{font-size:20px}
+        .dcc-mcv2-stream{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:4px 0 12px}
+        .dcc-mcv2-bubble{max-width:82%;font-size:11.5px}
+        .dcc-mcv2-composer{bottom:calc(78px + env(safe-area-inset-bottom));width:calc(100vw - 24px);padding:7px;border-radius:16px;grid-template-columns:minmax(0,1fr) 42px}
+        .dcc-mcv2-input{min-height:42px;padding:10px 11px}
+        .dcc-mcv2-send{width:42px;height:42px}
       }
     `;
     document.head.appendChild(s);
