@@ -163,6 +163,21 @@
   // Coach-side messaging is owned by messages-chat-premium-v2.js.
   // This module only owns the client conversation surface.
 
+  let liveChannel=null;
+  function closeLive(){
+    const client=database();
+    if(liveChannel&&client&&typeof client.removeChannel==='function'){try{client.removeChannel(liveChannel)}catch(_){}}
+    liveChannel=null;
+  }
+  function openLive(){
+    closeLive();const client=database(),id=activeClientId();if(!client||typeof client.channel!=='function'||!id)return;
+    liveChannel=client.channel('dccClientChat'+String(id)).on('postgres_changes',{event:'INSERT',schema:'public',table:'client_messages'},async payload=>{
+      if(String(payload?.new?.client_id||'')!==String(id)||window.__dccClientPremiumScreen!=='messages')return;
+      await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);
+      try{if(typeof markClientNotificationSeen==='function')await markClientNotificationSeen('message',id)}catch(_){}
+    }).subscribe();
+  }
+
   let pollTimer=null;
   function stopMessagePolling(){if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
   function startMessagePolling(){
@@ -188,11 +203,12 @@
 
   window.dccOpenClientMessagesPremium=function(){
     window.__dccClientPremiumScreen='messages';
-    requestAnimationFrame(()=>renderClientMessages());
+    requestAnimationFrame(()=>{renderClientMessages();openLive()});
   };
   window.dccStopClientMessagePolling=function(){
     window.__dccClientPremiumScreen='';
     stopMessagePolling();
+    closeLive();
   };
 
   // Navigation is owned by the canonical client authority.
