@@ -240,11 +240,17 @@
   };
 
   window.dccSyncCoachMessagesV2=syncMessages;
-  window.dccOpenCoachChatV2=async function(id){
-    await syncMessages(id);
-    await markCoachMessagesSeen(id);
+  window.dccOpenCoachChatV2=function(id){
+    /* Navigation is local and must be immediate; network work is background-only. */
     renderCoachChat(id);
-    openLive(id);
+    Promise.resolve().then(async()=>{
+      try{
+        await syncMessages(id);
+        if(String(window.__dccCoachChatV2||'')===String(id))refreshCoachChat(id);
+        await markCoachMessagesSeen(id);
+        openLive(id);
+      }catch(e){console.error('DCC abrir chat entrenador:',e)}
+    });
   };
   window.dccStopCoachMessagePolling=function(){
     stopPolling();
