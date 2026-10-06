@@ -270,9 +270,12 @@
       const {error}=await client.from('client_messages').insert({client_id:id,sender:'Daniel Campins',sender_role:'coach',sender_user_id:(await client.auth.getUser()).data.user.id,message:text});
       if(error)throw error;
       if(input)input.value='';
-      await syncMessages(id);
-      toastSafe('Mensaje enviado');
+      const d=appData();d.messages=d.messages||{};d.messages[id]=d.messages[id]||[];
+      d.messages[id].push(['Daniel Campins',text,new Date().toISOString(),'coach',null]);
+      saveLocal();
       if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id);
+      toastSafe('Mensaje enviado');
+      syncMessages(id).then(()=>{if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id)});
       else if(typeof window.dccOpenChat==='function'&&String(window.__dccOpenChat??'')===String(id))window.dccOpenChat(id);
     }catch(e){
       console.error('DCC mensaje entrenador v2:',e);toastSafe('No se pudo enviar el mensaje');
