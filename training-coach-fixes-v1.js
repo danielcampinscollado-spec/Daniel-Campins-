@@ -109,26 +109,25 @@
     });
   }
   function addExtraFields(){const id=String(window.selectedClient??'');if(!id)return;const days=routineDays(id);addDayRestFields(id,days);addExerciseFields(id,days);}
-  const EDIT_STATE_KEY='dcc_coach_training_edit_state_v1';
+  const EDIT_STATE_KEY='dcc_coach_training_edit_state_v2';
   function saveTrainingEditState(){
-    const id=String(window.selectedClient??'');if(!id||!window.__dccTrainingEdit)return;
-    try{
-      const activeDay=[...document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day')].findIndex(el=>el.offsetParent!==null);
-      sessionStorage.setItem(EDIT_STATE_KEY,JSON.stringify({id,activeDay:activeDay<0?0:activeDay,at:Date.now()}));
-    }catch(_){}
+    const id=String(window.selectedClient??'');if(!id)return;
+    const inTraining=!!document.querySelector('#coach-main .dcc-tr-days')||!!window.__dccTrainingEdit;
+    if(!inTraining)return;
+    try{localStorage.setItem(EDIT_STATE_KEY,JSON.stringify({id,edit:!!window.__dccTrainingEdit,open:Number.isInteger(window.__dccTrainingOpen)?window.__dccTrainingOpen:0,at:Date.now()}));}catch(_){}
   }
   function restoreTrainingEditState(){
-    let st=null;try{st=JSON.parse(sessionStorage.getItem(EDIT_STATE_KEY)||'null')}catch(_){}
+    let st=null;try{st=JSON.parse(localStorage.getItem(EDIT_STATE_KEY)||'null')}catch(_){}
     if(!st?.id||Date.now()-Number(st.at||0)>2*60*60*1000)return;
-    if(String(window.selectedClient??'')===String(st.id)&&window.__dccTrainingEdit){addExtraFields();return;}
     try{
       window.selectedClient=String(st.id);
-      if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
-      else if(typeof window.showCoach==='function')window.showCoach('training');
+      if(st.edit){window.__dccTrainingEdit=true;window.__dccTrainingOpen=Number.isInteger(st.open)?st.open:0;}
+      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
+      else if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
       setTimeout(()=>{try{
-        const edit=[...document.querySelectorAll('#coach-main button')].find(b=>/editar rutina/i.test(b.textContent||''));
-        if(edit&&!window.__dccTrainingEdit)edit.click();
-      }catch(_){}},180);
+        if(st.edit&&typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
+        addExtraFields();
+      }catch(_){}},120);
     }catch(_){}
   }
   function ensure(){installCss();wrapExerciseModal();addExtraFields();}
