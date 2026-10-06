@@ -182,7 +182,7 @@
         });
         d.messages=next;
       }
-      await hydrateAttachmentUrls(id);saveLocal();return true;
+      saveLocal();await hydrateAttachmentUrls(id);return true;
     }catch(e){
       console.error('DCC sync mensajes v2:',e);return false;
     }
@@ -209,7 +209,7 @@
     const followNewest=distanceToBottom<140;
     const previousHeight=root.scrollHeight;
     const previousY=window.scrollY;
-    stream.innerHTML=messagesHtml(id,c);
+    if(document.querySelector('.dcc-mcv2-audio.recording-active'))return;\n    stream.innerHTML=messagesHtml(id,c);
     requestAnimationFrame(()=>{
       if(followNewest)window.scrollTo(0,document.documentElement.scrollHeight);
       else window.scrollTo(0,previousY+(document.documentElement.scrollHeight-previousHeight));
