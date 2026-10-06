@@ -109,13 +109,38 @@
     });
   }
   function addExtraFields(){const id=String(window.selectedClient??'');if(!id)return;const days=routineDays(id);addDayRestFields(id,days);addExerciseFields(id,days);}
+  const EDIT_STATE_KEY='dcc_coach_training_edit_state_v1';
+  function saveTrainingEditState(){
+    const id=String(window.selectedClient??'');if(!id||!window.__dccTrainingEdit)return;
+    try{
+      const activeDay=[...document.querySelectorAll('#coach-main .dcc-tr-days>.dcc-tr-day')].findIndex(el=>el.offsetParent!==null);
+      sessionStorage.setItem(EDIT_STATE_KEY,JSON.stringify({id,activeDay:activeDay<0?0:activeDay,at:Date.now()}));
+    }catch(_){}
+  }
+  function restoreTrainingEditState(){
+    let st=null;try{st=JSON.parse(sessionStorage.getItem(EDIT_STATE_KEY)||'null')}catch(_){}
+    if(!st?.id||Date.now()-Number(st.at||0)>2*60*60*1000)return;
+    if(String(window.selectedClient??'')===String(st.id)&&window.__dccTrainingEdit){addExtraFields();return;}
+    try{
+      window.selectedClient=String(st.id);
+      if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
+      else if(typeof window.showCoach==='function')window.showCoach('training');
+      setTimeout(()=>{try{
+        const edit=[...document.querySelectorAll('#coach-main button')].find(b=>/editar rutina/i.test(b.textContent||''));
+        if(edit&&!window.__dccTrainingEdit)edit.click();
+      }catch(_){}},180);
+    }catch(_){}
+  }
   function ensure(){installCss();wrapExerciseModal();addExtraFields();}
   function scheduleEnsure(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;ensure();});}
 
   ensure();
   document.addEventListener('DOMContentLoaded',ensure,{once:true});
   window.addEventListener('load',ensure,{once:true});
-  window.addEventListener('pageshow',ensure);
+  window.addEventListener('pagehide',saveTrainingEditState);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)saveTrainingEditState();});
+  window.addEventListener('pageshow',()=>{ensure();restoreTrainingEditState();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)restoreTrainingEditState();});
   const root=document.getElementById('coach-main')||document.body;
   new MutationObserver(scheduleEnsure).observe(root,{childList:true,subtree:true});
 })();
