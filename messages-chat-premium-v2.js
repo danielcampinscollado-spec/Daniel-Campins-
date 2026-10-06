@@ -253,6 +253,20 @@
     }
   };
 
+  let inboxLive=null;
+  function startInboxLive(){
+    const client=db();if(!client||typeof client.channel!=='function'||inboxLive)return;
+    inboxLive=client.channel('dccCoachInboxLive').on('postgres_changes',{event:'INSERT',schema:'public',table:'client_messages'},async e=>{
+      if(String(e?.new?.sender_role||'').toLowerCase()!=='client')return;
+      const id=e?.new?.client_id;if(!id)return;
+      await syncMessages(id);
+      window.dccUpdateCoachMessageBadge?.();
+      if(String(window.__dccCoachChatV2||'')!==String(id)){
+        const person=clientById(id);toastSafe('Nuevo mensaje'+(person?.name?' · '+person.name:''));
+      }
+    }).subscribe();
+  }
+
   let liveChannel=null;
   function closeLive(){
     const client=db();
@@ -294,6 +308,7 @@
 
   function install(){
     injectCss();
+    startInboxLive();
     window.openMessages=function(id){window.dccOpenCoachChatV2(id)};
     window.sendCoachMessage=function(id){return window.dccCoachSendV2(id)};
     window.dccSendMessage=function(id){return window.dccCoachSendV2(id)};
