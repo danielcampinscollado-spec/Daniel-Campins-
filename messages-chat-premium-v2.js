@@ -241,11 +241,12 @@
   };
 
   window.dccSyncCoachMessagesV2=syncMessages;
-  window.dccOpenCoachChatV2=async function(id){
-    await syncMessages(id);
-    await markCoachMessagesSeen(id);
+  window.dccOpenCoachChatV2=function(id){
+    // Open immediately; network sync must never block navigation.
     renderCoachChat(id);
     openLive(id);
+    Promise.resolve(syncMessages(id)).then(ok=>{if(ok)refreshCoachChat(id)}).catch(e=>console.error('DCC sync al abrir chat:',e));
+    Promise.resolve(markCoachMessagesSeen(id)).catch(e=>console.error('DCC leído al abrir chat:',e));
   };
   window.dccStopCoachMessagePolling=function(){
     stopPolling();
@@ -365,7 +366,7 @@
   function install(){
     injectCss();
     startInboxLive();
-    window.openMessages=function(id){window.dccOpenCoachChatV2(id)};
+    window.openMessages=function(id){if(typeof window.dccOpenCoachChatV2==='function')return window.dccOpenCoachChatV2(id);console.error('DCC chat no disponible',id)};
     window.sendCoachMessage=function(id){return window.dccCoachSendV2(id)};
     window.dccSendMessage=function(id){return window.dccCoachSendV2(id)};
   }
