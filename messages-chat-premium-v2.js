@@ -208,6 +208,7 @@
     markCoachMessagesSeen(id);
   };
 
+  window.dccSyncCoachMessagesV2=syncMessages;
   window.dccOpenCoachChatV2=async function(id){
     await syncMessages(id);
     await markCoachMessagesSeen(id);
