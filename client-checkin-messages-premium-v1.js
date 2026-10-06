@@ -80,10 +80,10 @@
   // Check-in V1 retired; V4 owns rendering.
 
   function msgText(m){return String(Array.isArray(m)?(m[1]??''):(m?.text??m?.message??m?.body??m?.content??'')).trim()}
-  function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
+  function msgAttachment(m){return Array.isArray(m)?(m[4]||null):null}\n  function msgSender(m){return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''))}
   function msgDate(m){const v=Array.isArray(m)?m[2]:(m?.created_at??m?.createdAt??m?.date??m?.time??m?.timestamp);const d=v?new Date(v):null;return d&&Number.isFinite(d.getTime())?d:null}
   function msgIsCoach(m){const role=String(Array.isArray(m)?(m[3]||''):(m?.sender_role||m?.role||'')).toLowerCase();return role?role==='coach':(/daniel|coach|trainer|entrenador|admin/i.test(msgSender(m))||(m&&!Array.isArray(m)&&(m.isCoach===true||m.mine===false&&/coach/i.test(String(m.role||'')))))}
-  function thread(id){const a=appData().messages?.[id];return Array.isArray(a)?a.filter(m=>msgText(m)).slice().sort((x,y)=>(msgDate(x)?.getTime()||0)-(msgDate(y)?.getTime()||0)):[]}
+  function thread(id){const a=appData().messages?.[id];return Array.isArray(a)?a.filter(m=>msgText(m)||msgAttachment(m)).slice().sort((x,y)=>(msgDate(x)?.getTime()||0)-(msgDate(y)?.getTime()||0)):[]}
   function timeFmt(d){return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):''}
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
@@ -110,9 +110,9 @@
   async function syncMessages(){
     const db=database(),id=activeClientId();if(!db||!id)return false;
     try{
-      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role').eq('client_id',String(id)).order('created_at',{ascending:true});
+      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role,attachment_type,attachment_path,attachment_name,attachment_mime,attachment_size').eq('client_id',String(id)).order('created_at',{ascending:true});
       if(error)throw error;
-      const d=appData();d.messages=d.messages||{};d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
+      const d=appData();d.messages=d.messages||{};d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.attachment_type?{type:r.attachment_type,path:r.attachment_path,name:r.attachment_name||'',mime:r.attachment_mime||'',size:r.attachment_size||0}:null]);
       persistLocal();return true;
     }catch(e){console.error('DCC sync mensajes:',e);return false}
   }
