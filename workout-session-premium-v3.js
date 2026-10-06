@@ -262,6 +262,9 @@
         #client-main .dwa3-badge{min-height:27px;display:inline-flex;align-items:center;padding:0 9px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:linear-gradient(145deg,#131820,#0b0f14);color:#aab1bc;font-size:9px;font-weight:720}
         #client-main .dwa3-badge.gold{border-color:rgba(224,173,76,.72);background:rgba(217,170,74,.055);color:#f0c96b;font-size:8px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase}
         #client-main .dwa3-badge.superset{border-color:rgba(224,173,76,.72);color:#b17b18;background:#fff8e8;font-size:8px;font-weight:850;letter-spacing:.7px}
+        #client-main .dwa3-alt-help{margin-top:9px;padding:9px 10px;border:1px solid rgba(224,173,76,.24);border-radius:11px;background:rgba(217,170,74,.035);color:#aeb5bf;font-size:9px;line-height:1.45}
+        #client-main .dwa3-alt-help b{color:#f0c96b}
+        #client-main .dwa3-alt-help button{margin-top:7px;min-height:32px;padding:0 10px;border:1px solid rgba(224,173,76,.55);border-radius:9px;background:transparent;color:#f0c96b;font-size:9px;font-weight:800}
         #client-main .dwa3-actions{grid-area:actions;display:grid;grid-template-columns:minmax(0,1fr) 128px;gap:9px}
         #client-main .dwa3-tech,#client-main .dwa3-elapsed{min-height:45px;border:1px solid rgba(224,173,76,.70);border-radius:14px;background:linear-gradient(145deg,#11161c,#0a0e13)}
         #client-main .dwa3-tech{display:flex;align-items:center;justify-content:center;gap:9px;color:#f4f3ef;font-size:11px;font-weight:760}
@@ -380,6 +383,7 @@
             <div class="dwa3-kicker"><button type="button" class="dwa3-back" onclick="cancelWorkout()" aria-label="Volver">${icon('back')}</button><div><span>ENTRENAMIENTO</span><small>Ejercicio ${current} de ${total}</small></div></div>
             <h1 class="dwa3-title">${esc(exercise.name||'Ejercicio')}</h1>
             <div class="dwa3-badges">${supersetId?`<span class="dwa3-badge superset">🔗 SUPERSERIE · ${supersetMembers.length} EJERCICIOS · ${supersetPos+1}/${supersetMembers.length}</span>`:''}${exercise.dccAlternativeOf?`<span class="dwa3-badge gold">ALTERNATIVA A · ${esc(exercise.dccAlternativeOf)}</span>`:''}${muscle?`<span class="dwa3-badge gold">${esc(muscle)}</span>`:''}${planned?`<span class="dwa3-badge">${planned} series</span>`:''}${exercise.reps?`<span class="dwa3-badge">${esc(exercise.reps)} reps</span>`:''}</div>
+            ${exercise.dccAlternativeOf?`<div class="dwa3-alt-help">¿No conoces este ejercicio? Busca en YouTube: <b>«${esc(exercise.name||'Ejercicio')}»</b><br><button type="button" onclick="dccSearchExerciseOnYouTube('${esc(exercise.name||'Ejercicio')}')">Buscar en YouTube</button></div>`:''}
           </div>
           <div class="dwa3-media">${image?`<img src="./${esc(image)}" alt="${esc(exercise.name||'')}">`:'<div class="dwa3-media-placeholder">◇</div>'}</div>
           <div class="dwa3-actions"><button type="button" class="dwa3-tech" onclick="${techniqueAction}">${icon('play')} Ver técnica</button><div class="dwa3-elapsed"><div class="dwa3-elapsed-icon">${icon('clock')}</div><strong id="workout-elapsed">00:00</strong></div></div>
@@ -397,6 +401,11 @@
     startElapsedTimer(workout);
     if(typeof window.dccApplyWorkoutMuscleVisual==='function')window.dccApplyWorkoutMuscleVisual();
   }
+
+  window.dccSearchExerciseOnYouTube=function(name){
+    const q=encodeURIComponent(String(name||'').trim()+' técnica ejercicio');
+    window.open('https://www.youtube.com/results?search_query='+q,'_blank','noopener,noreferrer');
+  };
 
   window.dccWorkoutTechniqueUnavailable=function(){
     if(typeof window.toast==='function')window.toast('La técnica de este ejercicio estará disponible en la biblioteca.');
