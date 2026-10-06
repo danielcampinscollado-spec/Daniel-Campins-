@@ -54,11 +54,16 @@ function chooseCandidate(items,source,exercise,workout){
   const used=new Set((workout?.exercises||[]).map(x=>String(x?.libraryId||x?.id||'')));
   const sourceClass=equipmentClass(source?.equipo);
   const group=norm(source?.grupo),pattern=norm(source?.patron);
-  return items
+  const base=items
     .filter(x=>x&&String(x.id)!==String(source.id))
-    .filter(x=>norm(x.grupo)===group&&norm(x.patron)===pattern)
+    .filter(x=>norm(x.grupo)===group)
     .filter(x=>equipmentClass(x.equipo)!==sourceClass)
-    .filter(x=>!tried.has(String(x.id))&&!used.has(String(x.id)))
+    .filter(x=>!tried.has(String(x.id))&&!used.has(String(x.id)));
+  let candidates=base.filter(x=>norm(x.patron)===pattern);
+  if(!candidates.length&&group==='cuadriceps'&&(pattern==='prensa'||pattern==='extension_rodilla')){
+    candidates=base.filter(x=>norm(x.patron)==='sentadilla');
+  }
+  return candidates
     .sort((a,b)=>rankEquipment(equipmentClass(a.equipo))-rankEquipment(equipmentClass(b.equipo))||String(a.nombre||'').localeCompare(String(b.nombre||''),'es'))[0]||null;
 }
 window.dccUseAutomaticAlternative=async function(){
