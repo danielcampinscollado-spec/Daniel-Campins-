@@ -35,6 +35,12 @@
   function messageText(m){
     return String(Array.isArray(m)?(m[1]??''):(m?.message??m?.text??m?.body??m?.content??'')).trim();
   }
+  function messageAttachment(m){
+    if(Array.isArray(m))return m[4]&&typeof m[4]==='object'?m[4]:null;
+    if(!m||!m.attachment_type||!m.attachment_path)return null;
+    return {type:m.attachment_type,path:m.attachment_path,name:m.attachment_name||'',mime:m.attachment_mime||'',size:m.attachment_size||0};
+  }
+  function hasMessageContent(m){return !!(messageText(m)||messageAttachment(m))}
   function messageSender(m){
     return String(Array.isArray(m)?(m[0]??''):(m?.sender??m?.from??m?.role??m?.author??''));
   }
@@ -49,7 +55,7 @@
   }
   function thread(id){
     const a=appData().messages?.[id];
-    return Array.isArray(a)?a.filter(m=>messageText(m)).slice().sort((x,y)=>(messageDate(x)?.getTime()||0)-(messageDate(y)?.getTime()||0)):[];
+    return Array.isArray(a)?a.filter(m=>hasMessageContent(m)).slice().sort((x,y)=>(messageDate(x)?.getTime()||0)-(messageDate(y)?.getTime()||0)):[];
   }
   function timeFmt(d){
     return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'';
@@ -84,6 +90,7 @@
       .dcc-mcv2-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 16px}.dcc-mcv2-day{display:flex;align-items:center;gap:8px;margin:6px 0;color:#747e89;font-size:8.5px}.dcc-mcv2-day:before,.dcc-mcv2-day:after{content:'';height:1px;flex:1;background:#242d35}
       .dcc-mcv2-row{display:flex;align-items:flex-end;gap:7px}.dcc-mcv2-row.mine{justify-content:flex-end}.dcc-mcv2-mini{width:29px;height:29px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.55);border-radius:50%;background:#090d10;color:${GOLD2};font-size:8px;font-weight:850}
       .dcc-mcv2-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid #2a333b;border-radius:15px;background:linear-gradient(145deg,#11171c,#0b1014);color:#f3f1ed;font-size:12px;line-height:1.42;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}.dcc-mcv2-row.mine .dcc-mcv2-bubble{border-color:#b6862e;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.13),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)}
+      .dcc-mcv2-media{display:block;margin:0 0 7px}.dcc-mcv2-photo{display:block;width:min(280px,100%);max-height:330px;object-fit:cover;border-radius:11px}.dcc-mcv2-audio{display:block;width:min(280px,100%);height:38px}.dcc-mcv2-attachment-loading{font-size:9px;color:#818b96}
       .dcc-mcv2-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-mcv2-row.mine .dcc-mcv2-time{color:#b99a57}.dcc-mcv2-check{color:${GOLD2}}
       .dcc-mcv2-empty{padding:28px 15px;border:1px solid rgba(224,173,76,.34);border-radius:17px;background:linear-gradient(145deg,#10151a,#080c0f);color:#8f98a3;text-align:center;font-size:10px}
       .dcc-mcv2-composer{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));z-index:100;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(224,173,76,.48);border-radius:18px;background:rgba(10,14,18,.98);box-shadow:0 -10px 30px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.025);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
@@ -127,9 +134,21 @@
     document.head.appendChild(s);
   }
 
+  async function hydrateAttachmentUrls(id){
+    const client=db(),items=appData().messages?.[id]||[];if(!client)return;
+    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path||a.url)return;try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl)a.url=data.signedUrl}catch(_){}}));
+  }
+  function attachmentHtml(m){
+    const a=messageAttachment(m);if(!a)return'';
+    if(!a.url)return'<span class="dcc-mcv2-attachment-loading">Cargando archivo…</span>';
+    if(a.type==='image')return '<a class="dcc-mcv2-media" href="'+esc(a.url)+'" target="_blank" rel="noopener"><img class="dcc-mcv2-photo" src="'+esc(a.url)+'" alt="Foto enviada"></a>';
+    if(a.type==='audio')return '<audio class="dcc-mcv2-media dcc-mcv2-audio" controls preload="metadata" src="'+esc(a.url)+'"></audio>';
+    return'';
+  }
+
   function bubble(m,c){
     const mine=isCoach(m),d=messageDate(m);
-    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${esc(messageText(m)).replace(/\n/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
+    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${attachmentHtml(m)}${esc(messageText(m)).replace(/\n/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
   }
   function messagesHtml(id,c){
     const t=thread(id);
@@ -146,24 +165,24 @@
   async function syncMessages(id=null){
     const client=db();if(!client)return false;
     try{
-      let query=client.from('client_messages').select('client_id,sender,message,created_at,sender_role');
+      let query=client.from('client_messages').select('client_id,sender,message,created_at,sender_role,attachment_type,attachment_path,attachment_name,attachment_mime,attachment_size');
       if(id)query=query.eq('client_id',id);
       const {data:rows,error}=await query.order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData();
       d.messages=d.messages||{};
       if(id){
-        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
+        d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.attachment_type?{type:r.attachment_type,path:r.attachment_path,name:r.attachment_name||'',mime:r.attachment_mime||'',size:r.attachment_size||0}:null]);
       }else{
         const next={};
         (d.clients||[]).forEach(c=>next[c.id]=[]);
         (rows||[]).forEach(r=>{
           if(!next[r.client_id])next[r.client_id]=[];
-          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
+          next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.attachment_type?{type:r.attachment_type,path:r.attachment_path,name:r.attachment_name||'',mime:r.attachment_mime||'',size:r.attachment_size||0}:null]);
         });
         d.messages=next;
       }
-      saveLocal();return true;
+      await hydrateAttachmentUrls(id);saveLocal();return true;
     }catch(e){
       console.error('DCC sync mensajes v2:',e);return false;
     }
