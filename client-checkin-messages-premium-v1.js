@@ -95,8 +95,7 @@
   function attachmentHtml(m){const a=msgAttachment(m);if(!a?.url)return'';if(a.type==='image')return '<img class="dcc-cm-media dcc-cm-photo" src="'+esc(a.url)+'" alt="Foto enviada">';if(a.type==='audio')return '<audio class="dcc-cm-media dcc-cm-audio" controls preload="metadata" src="'+esc(a.url)+'"></audio>';return''}
   function messageBubble(m){
     const coach=msgIsCoach(m),d=msgDate(m);
-    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${attachmentHtml(m)}${esc(msgText(m)).replace(/
-/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
+    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${attachmentHtml(m)}${esc(msgText(m)).replace(/\\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
   }
   function scrollClientChatToBottom(smooth=false){
     const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
