@@ -87,7 +87,7 @@
   function timeFmt(d){return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):''}
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
-  function attachmentHtml(m){const a=msgAttachment(m);if(!a?.url)return'';if(a.type==='image')return '<img class="dcc-cm-media dcc-cm-photo" src="'+esc(a.url)+'" alt="Foto enviada">';if(a.type==='audio')return '<audio class="dcc-cm-media dcc-cm-audio" controls preload="metadata" src="'+esc(a.url)+'"></audio>';return''}\n  function messageBubble(m){
+  const clientSignedMediaUrls=new Map();\n  async function hydrateClientMedia(id){const db=database(),items=appData().messages?.[id]||[];if(!db)return;await Promise.all(items.map(async m=>{const a=msgAttachment(m);if(!a?.path)return;if(clientSignedMediaUrls.has(a.path)){a.url=clientSignedMediaUrls.get(a.path);return}try{const {data,error}=await db.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl){clientSignedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}catch(_){}}))}\n  function attachmentHtml(m){const a=msgAttachment(m);if(!a?.url)return'';if(a.type==='image')return '<img class="dcc-cm-media dcc-cm-photo" src="'+esc(a.url)+'" alt="Foto enviada">';if(a.type==='audio')return '<audio class="dcc-cm-media dcc-cm-audio" controls preload="metadata" src="'+esc(a.url)+'"></audio>';return''}\n  function messageBubble(m){
     const coach=msgIsCoach(m),d=msgDate(m);
     return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${attachmentHtml(m)}${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
   }
@@ -103,7 +103,7 @@
   function refreshClientThread(id){
     const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
     const follow=stream.scrollHeight-stream.scrollTop-stream.clientHeight<90;
-    stream.innerHTML=messagesHtml(id);
+    const playing=[...stream.querySelectorAll('audio')].some(a=>!a.paused);if(playing)return;const next=messagesHtml(id);if(stream.innerHTML===next)return;stream.innerHTML=next;
     if(follow)scrollClientChatToBottom(false);
   }
 
@@ -113,7 +113,7 @@
       const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role,attachment_type,attachment_path,attachment_name,attachment_mime,attachment_size').eq('client_id',String(id)).order('created_at',{ascending:true});
       if(error)throw error;
       const d=appData();d.messages=d.messages||{};d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null,r.attachment_type?{type:r.attachment_type,path:r.attachment_path,name:r.attachment_name||'',mime:r.attachment_mime||'',size:r.attachment_size||0}:null]);
-      persistLocal();return true;
+      persistLocal();await hydrateClientMedia(id);return true;
     }catch(e){console.error('DCC sync mensajes:',e);return false}
   }
 
