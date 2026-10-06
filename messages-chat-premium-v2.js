@@ -292,7 +292,7 @@
     try{toastSafe('Enviando audio…');const ext=String(mime||'').includes('mp4')?'m4a':String(mime||'').includes('ogg')?'ogg':'webm';const file=new File([blob],'nota-voz.'+ext,{type:mime||'audio/webm'});const a=await media.upload(id,file,'audio');const auth=await client.auth.getUser(),user=auth?.data?.user;if(!user)throw new Error('Sesión no disponible');const out=await client.from('client_messages').insert({client_id:id,sender:'Daniel Campins',sender_role:'coach',sender_user_id:user.id,message:'',attachment_type:'audio',attachment_path:a.path,attachment_name:a.name,attachment_mime:a.mime,attachment_size:a.size});if(out.error)throw out.error;await syncMessages(id);refreshCoachChat(id);toastSafe('Audio enviado')}catch(e){console.error('DCC audio entrenador:',e);toastSafe('No se pudo enviar el audio')}
   };
 
-  let voiceRecorderV2=null,voiceChunksV2=[],voiceStreamV2=null,voiceButtonV2=null;
+  let voiceRecorderV2=null,voiceChunksV2=[],voiceStreamV2=null,voiceButtonV2=null,voiceStartedV2=0,voiceTimerV2=null;
   window.dccCoachToggleVoiceV2=async function(button){
     try{
       if(voiceRecorderV2&&voiceRecorderV2.state==='recording'){voiceRecorderV2.stop();return}
@@ -300,8 +300,8 @@
       voiceStreamV2=await navigator.mediaDevices.getUserMedia({audio:true});voiceChunksV2=[];voiceButtonV2=button;
       voiceRecorderV2=new MediaRecorder(voiceStreamV2);
       voiceRecorderV2.ondataavailable=e=>{if(e.data&&e.data.size)voiceChunksV2.push(e.data)};
-      voiceRecorderV2.onstop=async()=>{const rec=voiceRecorderV2,type=rec.mimeType||'audio/webm';voiceStreamV2?.getTracks().forEach(t=>t.stop());voiceButtonV2?.classList.remove('recording');voiceRecorderV2=null;const blob=new Blob(voiceChunksV2,{type});if(!blob.size)return;await dccCoachSendVoiceBlobV2(blob,type)};
-      voiceRecorderV2.start();button?.classList.add('recording');toastSafe('Grabando nota de voz · pulsa otra vez para enviar');
+      voiceRecorderV2.onstop=async()=>{const rec=voiceRecorderV2,type=rec.mimeType||'audio/webm';voiceStreamV2?.getTracks().forEach(t=>t.stop());clearInterval(voiceTimerV2);voiceButtonV2?.classList.remove('recording');if(voiceButtonV2)voiceButtonV2.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V21h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 12a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg>';voiceRecorderV2=null;const blob=new Blob(voiceChunksV2,{type});if(!blob.size)return;await dccCoachSendVoiceBlobV2(blob,type)};
+      voiceRecorderV2.start();voiceStartedV2=Date.now();button?.classList.add('recording');if(button)button.innerHTML='<span class="dcc-mcv2-rec-time">0:00</span>';clearInterval(voiceTimerV2);voiceTimerV2=setInterval(()=>{if(!button)return;const s=Math.floor((Date.now()-voiceStartedV2)/1000);button.innerHTML='<span class="dcc-mcv2-rec-time">'+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+'</span>'},500);toastSafe('Grabando · pulsa el contador para enviar');
     }catch(e){voiceStreamV2?.getTracks().forEach(t=>t.stop());voiceRecorderV2=null;button?.classList.remove('recording');console.error('DCC voz entrenador:',e);toastSafe('No se pudo acceder al micrófono')}
   };
 
