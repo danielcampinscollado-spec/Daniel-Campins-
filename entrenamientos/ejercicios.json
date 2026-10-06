@@ -31,8 +31,7 @@
       "grupo": "Pectoral",
       "equipo": "Barra y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=AroudGIsKSk"
+      "ilustracion": "ilustraciones/press-banca-barra.webp"
     },
     {
       "id": "press-banca-mancuernas",
@@ -40,8 +39,7 @@
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Ixezut6Spys"
+      "ilustracion": "ilustraciones/press-banca-mancuernas.webp"
     },
     {
       "id": "press-inclinado-barra",
@@ -49,8 +47,7 @@
       "grupo": "Pectoral",
       "equipo": "Barra y banco inclinado",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=qK-_A7CtQNM"
+      "ilustracion": "ilustraciones/press-inclinado-barra.webp"
     },
     {
       "id": "press-inclinado-mancuernas",
@@ -58,8 +55,7 @@
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=o_jrAnrSkUc"
+      "ilustracion": "ilustraciones/press-inclinado-mancuernas.webp"
     },
     {
       "id": "press-pecho-maquina",
@@ -67,8 +63,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-pecho-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=XCFtfAkEWkE"
+      "ilustracion": "ilustraciones/press-pecho-maquina.webp"
     },
     {
       "id": "press-inclinado-maquina",
@@ -76,8 +71,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=WxrKIPbeQP8"
+      "ilustracion": "ilustraciones/press-inclinado-maquina.webp"
     },
     {
       "id": "press-convergente-maquina",
@@ -85,8 +79,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-convergente-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=gnqvtktV7yI"
+      "ilustracion": "ilustraciones/press-convergente-maquina.webp"
     },
     {
       "id": "aperturas-pec-deck",
@@ -94,8 +87,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/aperturas-pec-deck.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=RbQ9L6KDADs"
+      "ilustracion": "ilustraciones/aperturas-pec-deck.webp"
     },
     {
       "id": "cruces-polea-media",
@@ -103,8 +95,7 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-media.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=QcTcWpkn_bw"
+      "ilustracion": "ilustraciones/cruces-polea-media.webp"
     },
     {
       "id": "cruces-polea-alta",
@@ -112,8 +103,7 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-alta.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=hhruLxo9yZU"
+      "ilustracion": "ilustraciones/cruces-polea-alta.webp"
     },
     {
       "id": "cruces-polea-baja",
@@ -121,8 +111,7 @@
       "grupo": "Pectoral",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/cruces-polea-baja.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=wnFEC_34Bls"
+      "ilustracion": "ilustraciones/cruces-polea-baja.webp"
     },
     {
       "id": "flexiones",
@@ -130,8 +119,7 @@
       "grupo": "Pectoral",
       "equipo": "Peso corporal",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/flexiones.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=IODxDxX7oi4"
+      "ilustracion": "ilustraciones/flexiones.webp"
     },
     {
       "id": "jalon-pecho-ancho",
@@ -139,8 +127,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-ancho.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=lueEJGjTuPQ"
+      "ilustracion": "ilustraciones/jalon-pecho-ancho.webp"
     },
     {
       "id": "jalon-pecho-neutro",
@@ -148,8 +135,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-neutro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=bHl2Q3tsN9U"
+      "ilustracion": "ilustraciones/jalon-pecho-neutro.webp"
     },
     {
       "id": "jalon-pecho-supino",
@@ -157,8 +143,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-pecho-supino.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=6WeUXN7dQWg"
+      "ilustracion": "ilustraciones/jalon-pecho-supino.webp"
     },
     {
       "id": "dominadas-asistidas",
@@ -166,8 +151,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina asistida",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/dominadas-asistidas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=PaW3kabkW5E"
+      "ilustracion": "ilustraciones/dominadas-asistidas.webp"
     },
     {
       "id": "remo-sentado-polea-neutro",
@@ -175,8 +159,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-sentado-polea-neutro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=QAtIXYgL1DI"
+      "ilustracion": "ilustraciones/remo-sentado-polea-neutro.webp"
     },
     {
       "id": "remo-sentado-polea-ancho",
@@ -184,8 +167,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-sentado-polea-ancho.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xQNrFHEMhI4"
+      "ilustracion": "ilustraciones/remo-sentado-polea-ancho.webp"
     },
     {
       "id": "remo-maquina-pecho-apoyado",
@@ -193,8 +175,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-maquina-pecho-apoyado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=HtSuVb8r0NA"
+      "ilustracion": "ilustraciones/remo-maquina-pecho-apoyado.webp"
     },
     {
       "id": "remo-unilateral-maquina",
@@ -202,8 +183,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-unilateral-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ufhQhwyrx-4"
+      "ilustracion": "ilustraciones/remo-unilateral-maquina.webp"
     },
     {
       "id": "remo-barra-t-apoyado",
@@ -211,8 +191,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina / barra T",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-barra-t-apoyado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=w0KnlQ-b7jw"
+      "ilustracion": "ilustraciones/remo-barra-t-apoyado.webp"
     },
     {
       "id": "remo-mancuerna-unilateral",
@@ -220,8 +199,7 @@
       "grupo": "Espalda",
       "equipo": "Mancuerna y banco",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=pYcpY20QaE8"
+      "ilustracion": "ilustraciones/remo-mancuerna-unilateral.webp"
     },
     {
       "id": "remo-barra",
@@ -229,8 +207,7 @@
       "grupo": "Espalda",
       "equipo": "Barra",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=FWJR5Ve8bnQ"
+      "ilustracion": "ilustraciones/remo-barra.webp"
     },
     {
       "id": "pullover-polea",
@@ -238,8 +215,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pullover-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=eKJUJ2eFPUY"
+      "ilustracion": "ilustraciones/pullover-polea.webp"
     },
     {
       "id": "pullover-maquina",
@@ -247,8 +223,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pullover-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=8lDC4Ri9zAQ"
+      "ilustracion": "ilustraciones/pullover-maquina.webp"
     },
     {
       "id": "press-hombro-maquina",
@@ -256,8 +231,7 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Z8oNFGK-mLc"
+      "ilustracion": "ilustraciones/press-hombro-maquina.webp"
     },
     {
       "id": "press-militar-mancuernas",
@@ -265,8 +239,7 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas y banco",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-militar-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=qEwKCR5JCog"
+      "ilustracion": "ilustraciones/press-militar-mancuernas.webp"
     },
     {
       "id": "press-militar-barra",
@@ -274,8 +247,7 @@
       "grupo": "Hombros",
       "equipo": "Barra",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-militar-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Pmb8ZHndItQ"
+      "ilustracion": "ilustraciones/press-militar-barra.webp"
     },
     {
       "id": "elevacion-lateral-mancuernas",
@@ -283,8 +255,7 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=3VcKaXpzqRo"
+      "ilustracion": "ilustraciones/elevacion-lateral-mancuernas.webp"
     },
     {
       "id": "elevacion-lateral-polea",
@@ -292,8 +263,7 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=PPrzBWZDOhA"
+      "ilustracion": "ilustraciones/elevacion-lateral-polea.webp"
     },
     {
       "id": "elevacion-lateral-maquina",
@@ -301,8 +271,7 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=aKDYtQbCKWY"
+      "ilustracion": "ilustraciones/elevacion-lateral-maquina.webp"
     },
     {
       "id": "pajaros-maquina",
@@ -310,8 +279,7 @@
       "grupo": "Hombros",
       "equipo": "Máquina",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pajaros-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Z84HkxGCBqQ"
+      "ilustracion": "ilustraciones/pajaros-maquina.webp"
     },
     {
       "id": "pajaros-mancuernas",
@@ -319,8 +287,7 @@
       "grupo": "Hombros",
       "equipo": "Mancuernas",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/pajaros-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=EA7u4Q_8HQ0"
+      "ilustracion": "ilustraciones/pajaros-mancuernas.webp"
     },
     {
       "id": "face-pull-polea",
@@ -328,8 +295,7 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/face-pull-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xD4yvWZEcw4"
+      "ilustracion": "ilustraciones/face-pull-polea.webp"
     },
     {
       "id": "curl-barra-ez",
@@ -337,8 +303,7 @@
       "grupo": "Bíceps",
       "equipo": "Barra EZ",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-barra-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=KQX5HfmQYy0"
+      "ilustracion": "ilustraciones/curl-barra-ez.webp"
     },
     {
       "id": "curl-barra-recta",
@@ -346,8 +311,7 @@
       "grupo": "Bíceps",
       "equipo": "Barra",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-barra-recta.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=kwG2ipFRgfo"
+      "ilustracion": "ilustraciones/curl-barra-recta.webp"
     },
     {
       "id": "curl-mancuernas-alterno",
@@ -355,8 +319,7 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-mancuernas-alterno.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=sAq_ocpRh_I"
+      "ilustracion": "ilustraciones/curl-mancuernas-alterno.webp"
     },
     {
       "id": "curl-inclinado-mancuernas",
@@ -364,8 +327,7 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas y banco inclinado",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-inclinado-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ysEVZPMY0Y8"
+      "ilustracion": "ilustraciones/curl-inclinado-mancuernas.webp"
     },
     {
       "id": "curl-predicador-maquina",
@@ -373,8 +335,7 @@
       "grupo": "Bíceps",
       "equipo": "Máquina",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-predicador-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=fIWP-FRFNU0"
+      "ilustracion": "ilustraciones/curl-predicador-maquina.webp"
     },
     {
       "id": "curl-predicador-ez",
@@ -382,8 +343,7 @@
       "grupo": "Bíceps",
       "equipo": "Barra EZ y banco predicador",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-predicador-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=DoCWeUBA0Gs"
+      "ilustracion": "ilustraciones/curl-predicador-ez.webp"
     },
     {
       "id": "curl-polea-barra",
@@ -391,8 +351,7 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=NFzTWp2qpiE"
+      "ilustracion": "ilustraciones/curl-polea-barra.webp"
     },
     {
       "id": "curl-martillo-cuerda",
@@ -400,8 +359,7 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-martillo-cuerda.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Quc_tOv97I"
+      "ilustracion": "ilustraciones/curl-martillo-cuerda.webp"
     },
     {
       "id": "curl-martillo-mancuernas",
@@ -409,8 +367,7 @@
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-martillo-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=BRVDS6HVR9Q"
+      "ilustracion": "ilustraciones/curl-martillo-mancuernas.webp"
     },
     {
       "id": "extension-triceps-cuerda",
@@ -418,8 +375,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-cuerda.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=vB5OHsJ3EME"
+      "ilustracion": "ilustraciones/extension-triceps-cuerda.webp"
     },
     {
       "id": "extension-triceps-barra",
@@ -427,8 +383,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2-LAMcpzODU"
+      "ilustracion": "ilustraciones/extension-triceps-barra.webp"
     },
     {
       "id": "extension-triceps-unilateral",
@@ -436,8 +391,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=9t5h9xX8JgU"
+      "ilustracion": "ilustraciones/extension-triceps-unilateral.webp"
     },
     {
       "id": "extension-triceps-sobre-cabeza",
@@ -445,8 +399,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YbX7Wd8jQ-Q"
+      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza.webp"
     },
     {
       "id": "fondos-maquina-asistida",
@@ -454,8 +407,7 @@
       "grupo": "Tríceps",
       "equipo": "Máquina asistida",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/fondos-maquina-asistida.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=6kRFFpYQ2mg"
+      "ilustracion": "ilustraciones/fondos-maquina-asistida.webp"
     },
     {
       "id": "press-triceps-maquina",
@@ -463,8 +415,7 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/press-triceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=8VV69abnz-A"
+      "ilustracion": "ilustraciones/press-triceps-maquina.webp"
     },
     {
       "id": "press-cerrado-barra",
@@ -472,8 +423,7 @@
       "grupo": "Tríceps",
       "equipo": "Barra y banco",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-cerrado-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=a2G3IdaTcPU"
+      "ilustracion": "ilustraciones/press-cerrado-barra.webp"
     },
     {
       "id": "extension-triceps-tumbado-ez",
@@ -481,8 +431,7 @@
       "grupo": "Tríceps",
       "equipo": "Barra EZ y banco",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-tumbado-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=BDAMt_LnmMM"
+      "ilustracion": "ilustraciones/extension-triceps-tumbado-ez.webp"
     },
     {
       "id": "prensa-45",
@@ -490,8 +439,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-45.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"
+      "ilustracion": "ilustraciones/prensa-45.webp"
     },
     {
       "id": "prensa-horizontal",
@@ -499,8 +447,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-horizontal.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=kUcT8eiRc8A"
+      "ilustracion": "ilustraciones/prensa-horizontal.webp"
     },
     {
       "id": "hack-squat-maquina",
@@ -508,8 +455,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/hack-squat-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0tn5K9NlCfo"
+      "ilustracion": "ilustraciones/hack-squat-maquina.webp"
     },
     {
       "id": "sentadilla-multipower",
@@ -517,8 +463,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Multipower",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=V2D5CwM5D9A"
+      "ilustracion": "ilustraciones/sentadilla-multipower.webp"
     },
     {
       "id": "sentadilla-barra",
@@ -526,8 +471,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Barra",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ultWZbUMPL8"
+      "ilustracion": "ilustraciones/sentadilla-barra.webp"
     },
     {
       "id": "extension-cuadriceps",
@@ -535,8 +479,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "extension_rodilla",
-      "ilustracion": "ilustraciones/extension-cuadriceps.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YyvSfVjQeL0"
+      "ilustracion": "ilustraciones/extension-cuadriceps.webp"
     },
     {
       "id": "zancadas-mancuernas",
@@ -544,8 +487,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/zancadas-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=D7KaRcUTQeE"
+      "ilustracion": "ilustraciones/zancadas-mancuernas.webp"
     },
     {
       "id": "split-squat-bulgaro",
@@ -553,8 +495,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas y banco",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/split-squat-bulgaro.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2C-uNgKwPLE"
+      "ilustracion": "ilustraciones/split-squat-bulgaro.webp"
     },
     {
       "id": "curl-femoral-sentado",
@@ -562,8 +503,7 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-sentado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Orxowest56U"
+      "ilustracion": "ilustraciones/curl-femoral-sentado.webp"
     },
     {
       "id": "curl-femoral-tumbado",
@@ -571,8 +511,7 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-tumbado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      "ilustracion": "ilustraciones/curl-femoral-tumbado.webp"
     },
     {
       "id": "curl-femoral-unilateral",
@@ -580,8 +519,7 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=tQZkJ9GZZRI"
+      "ilustracion": "ilustraciones/curl-femoral-unilateral.webp"
     },
     {
       "id": "peso-muerto-rumano-barra",
@@ -589,8 +527,7 @@
       "grupo": "Femoral",
       "equipo": "Barra",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=2SHsk9AzdjA"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-barra.webp"
     },
     {
       "id": "peso-muerto-rumano-mancuernas",
@@ -598,8 +535,7 @@
       "grupo": "Femoral",
       "equipo": "Mancuernas",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=hQgFixeXdZo"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-mancuernas.webp"
     },
     {
       "id": "hip-thrust-barra",
@@ -607,8 +543,7 @@
       "grupo": "Glúteos",
       "equipo": "Barra y banco",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Zp26q4BY5HE"
+      "ilustracion": "ilustraciones/hip-thrust-barra.webp"
     },
     {
       "id": "hip-thrust-maquina",
@@ -616,8 +551,7 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=5gcunl9ul6M"
+      "ilustracion": "ilustraciones/hip-thrust-maquina.webp"
     },
     {
       "id": "glute-drive-maquina",
@@ -625,8 +559,7 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/glute-drive-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=0wQq3Yt9cZg"
+      "ilustracion": "ilustraciones/glute-drive-maquina.webp"
     },
     {
       "id": "patada-gluteo-polea",
@@ -634,8 +567,7 @@
       "grupo": "Glúteos",
       "equipo": "Polea",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/patada-gluteo-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=7h5NQOe7uS8"
+      "ilustracion": "ilustraciones/patada-gluteo-polea.webp"
     },
     {
       "id": "abduccion-cadera-maquina",
@@ -643,8 +575,7 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "abduccion_cadera",
-      "ilustracion": "ilustraciones/abduccion-cadera-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=G_8LItOiZ0Q"
+      "ilustracion": "ilustraciones/abduccion-cadera-maquina.webp"
     },
     {
       "id": "abduccion-cadera-polea",
@@ -652,8 +583,7 @@
       "grupo": "Glúteos",
       "equipo": "Polea",
       "patron": "abduccion_cadera",
-      "ilustracion": "ilustraciones/abduccion-cadera-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=pvnR8CDb4BU"
+      "ilustracion": "ilustraciones/abduccion-cadera-polea.webp"
     },
     {
       "id": "aductor-maquina",
@@ -661,8 +591,7 @@
       "grupo": "Aductores",
       "equipo": "Máquina",
       "patron": "aduccion_cadera",
-      "ilustracion": "ilustraciones/aductor-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=eL17hL5Vt8w"
+      "ilustracion": "ilustraciones/aductor-maquina.webp"
     },
     {
       "id": "aductor-polea",
@@ -670,8 +599,7 @@
       "grupo": "Aductores",
       "equipo": "Polea",
       "patron": "aduccion_cadera",
-      "ilustracion": "ilustraciones/aductor-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Y3mK0UO4J7c"
+      "ilustracion": "ilustraciones/aductor-polea.webp"
     },
     {
       "id": "gemelos-de-pie-maquina",
@@ -679,8 +607,7 @@
       "grupo": "Gemelos",
       "equipo": "Máquina",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-de-pie-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YMmgqO8Jo-k"
+      "ilustracion": "ilustraciones/gemelos-de-pie-maquina.webp"
     },
     {
       "id": "gemelos-sentado-maquina",
@@ -688,8 +615,7 @@
       "grupo": "Gemelos",
       "equipo": "Máquina",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-sentado-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=JbyjNymZOt0"
+      "ilustracion": "ilustraciones/gemelos-sentado-maquina.webp"
     },
     {
       "id": "gemelos-prensa",
@@ -697,8 +623,7 @@
       "grupo": "Gemelos",
       "equipo": "Prensa",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-prensa.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=3UWi44yN-wM"
+      "ilustracion": "ilustraciones/gemelos-prensa.webp"
     },
     {
       "id": "gemelos-multipower",
@@ -706,8 +631,7 @@
       "grupo": "Gemelos",
       "equipo": "Multipower",
       "patron": "flexion_plantar",
-      "ilustracion": "ilustraciones/gemelos-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=-M4-G8p8fmc"
+      "ilustracion": "ilustraciones/gemelos-multipower.webp"
     },
     {
       "id": "encogimientos-mancuernas",
@@ -715,8 +639,7 @@
       "grupo": "Trapecio",
       "equipo": "Mancuernas",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=g6qbq4Lf1FI"
+      "ilustracion": "ilustraciones/encogimientos-mancuernas.webp"
     },
     {
       "id": "encogimientos-barra",
@@ -724,8 +647,7 @@
       "grupo": "Trapecio",
       "equipo": "Barra",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-barra.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=NAqCVe2mwzM"
+      "ilustracion": "ilustraciones/encogimientos-barra.webp"
     },
     {
       "id": "encogimientos-maquina",
@@ -733,8 +655,7 @@
       "grupo": "Trapecio",
       "equipo": "Máquina",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=jaPZcST0D4A"
+      "ilustracion": "ilustraciones/encogimientos-maquina.webp"
     },
     {
       "id": "curl-muneca-mancuernas",
@@ -742,8 +663,7 @@
       "grupo": "Antebrazos",
       "equipo": "Mancuernas",
       "patron": "flexion_muneca",
-      "ilustracion": "ilustraciones/curl-muneca-mancuernas.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=7ac_qmBjkFI"
+      "ilustracion": "ilustraciones/curl-muneca-mancuernas.webp"
     },
     {
       "id": "curl-inverso-ez",
@@ -751,8 +671,7 @@
       "grupo": "Antebrazos",
       "equipo": "Barra EZ",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-inverso-ez.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=nRgxYX2Ve9w"
+      "ilustracion": "ilustraciones/curl-inverso-ez.webp"
     },
     {
       "id": "hiperextensiones-banco",
@@ -760,8 +679,7 @@
       "grupo": "Lumbar",
       "equipo": "Banco romano",
       "patron": "extension_columna",
-      "ilustracion": "ilustraciones/hiperextensiones-banco.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ph3pddpKzzw"
+      "ilustracion": "ilustraciones/hiperextensiones-banco.webp"
     },
     {
       "id": "extension-lumbar-maquina",
@@ -769,8 +687,7 @@
       "grupo": "Lumbar",
       "equipo": "Máquina",
       "patron": "extension_columna",
-      "ilustracion": "ilustraciones/extension-lumbar-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=8jXl6uU88vs"
+      "ilustracion": "ilustraciones/extension-lumbar-maquina.webp"
     },
     {
       "id": "crunch-maquina",
@@ -778,8 +695,7 @@
       "grupo": "Core",
       "equipo": "Máquina",
       "patron": "flexion_tronco",
-      "ilustracion": "ilustraciones/crunch-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=6GMKPQVERzw"
+      "ilustracion": "ilustraciones/crunch-maquina.webp"
     },
     {
       "id": "crunch-polea",
@@ -787,8 +703,7 @@
       "grupo": "Core",
       "equipo": "Polea",
       "patron": "flexion_tronco",
-      "ilustracion": "ilustraciones/crunch-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=AV5PmZJIrrw"
+      "ilustracion": "ilustraciones/crunch-polea.webp"
     },
     {
       "id": "elevacion-rodillas-silla",
@@ -796,8 +711,7 @@
       "grupo": "Core",
       "equipo": "Silla romana",
       "patron": "flexion_cadera",
-      "ilustracion": "ilustraciones/elevacion-rodillas-silla.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=hdng3Nm1x_E"
+      "ilustracion": "ilustraciones/elevacion-rodillas-silla.webp"
     },
     {
       "id": "elevacion-piernas-colgado",
@@ -805,8 +719,7 @@
       "grupo": "Core",
       "equipo": "Barra de dominadas",
       "patron": "flexion_cadera",
-      "ilustracion": "ilustraciones/elevacion-piernas-colgado.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Pr1ieGZ5atk"
+      "ilustracion": "ilustraciones/elevacion-piernas-colgado.webp"
     },
     {
       "id": "plancha",
@@ -814,8 +727,7 @@
       "grupo": "Core",
       "equipo": "Peso corporal",
       "patron": "estabilidad",
-      "ilustracion": "ilustraciones/plancha.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
+      "ilustracion": "ilustraciones/plancha.webp"
     },
     {
       "id": "rueda-abdominal",
@@ -823,8 +735,7 @@
       "grupo": "Core",
       "equipo": "Rueda abdominal",
       "patron": "estabilidad",
-      "ilustracion": "ilustraciones/rueda-abdominal.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=rqiTPdK1c_I"
+      "ilustracion": "ilustraciones/rueda-abdominal.webp"
     },
     {
       "id": "press-declinado-maquina",
@@ -832,8 +743,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-declinado-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=phQNceEoegg"
+      "ilustracion": "ilustraciones/press-declinado-maquina.webp"
     },
     {
       "id": "press-pecho-iso-lateral",
@@ -841,8 +751,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=wH1tBZC2LZQ"
+      "ilustracion": "ilustraciones/press-pecho-iso-lateral.webp"
     },
     {
       "id": "press-inclinado-iso-lateral",
@@ -850,8 +759,7 @@
       "grupo": "Pectoral",
       "equipo": "Máquina de palancas",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=41rF2YduhoI"
+      "ilustracion": "ilustraciones/press-inclinado-iso-lateral.webp"
     },
     {
       "id": "press-banca-multipower",
@@ -859,8 +767,7 @@
       "grupo": "Pectoral",
       "equipo": "Multipower",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-banca-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=7FyJdsXeta8"
+      "ilustracion": "ilustraciones/press-banca-multipower.webp"
     },
     {
       "id": "press-inclinado-multipower",
@@ -868,8 +775,7 @@
       "grupo": "Pectoral",
       "equipo": "Multipower",
       "patron": "empuje_horizontal",
-      "ilustracion": "ilustraciones/press-inclinado-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ig0NyNlSce4"
+      "ilustracion": "ilustraciones/press-inclinado-multipower.webp"
     },
     {
       "id": "aperturas-polea-banco",
@@ -877,8 +783,7 @@
       "grupo": "Pectoral",
       "equipo": "Poleas y banco",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/aperturas-polea-banco.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Iwe6AmxVf7o"
+      "ilustracion": "ilustraciones/aperturas-polea-banco.webp"
     },
     {
       "id": "jalon-unilateral-polea",
@@ -886,8 +791,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-unilateral-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=4y-GyEQ74Hk"
+      "ilustracion": "ilustraciones/jalon-unilateral-polea.webp"
     },
     {
       "id": "jalon-maquina-convergente",
@@ -895,8 +799,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-maquina-convergente.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=5K0KGW9VTSE"
+      "ilustracion": "ilustraciones/jalon-maquina-convergente.webp"
     },
     {
       "id": "jalon-iso-lateral",
@@ -904,8 +807,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_vertical",
-      "ilustracion": "ilustraciones/jalon-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=CAwf7n6Luuc"
+      "ilustracion": "ilustraciones/jalon-iso-lateral.webp"
     },
     {
       "id": "remo-bajo-maquina",
@@ -913,8 +815,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-bajo-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=GZbfZ033f74"
+      "ilustracion": "ilustraciones/remo-bajo-maquina.webp"
     },
     {
       "id": "remo-alto-maquina",
@@ -922,8 +823,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-alto-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=YaeWXDXVKGE"
+      "ilustracion": "ilustraciones/remo-alto-maquina.webp"
     },
     {
       "id": "remo-iso-lateral",
@@ -931,8 +831,7 @@
       "grupo": "Espalda",
       "equipo": "Máquina de palancas",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=XzgS8mWBnSg"
+      "ilustracion": "ilustraciones/remo-iso-lateral.webp"
     },
     {
       "id": "remo-polea-unilateral",
@@ -940,8 +839,7 @@
       "grupo": "Espalda",
       "equipo": "Polea",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-polea-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=UCXxvVItLoM"
+      "ilustracion": "ilustraciones/remo-polea-unilateral.webp"
     },
     {
       "id": "remo-multipower",
@@ -949,8 +847,7 @@
       "grupo": "Espalda",
       "equipo": "Multipower",
       "patron": "traccion_horizontal",
-      "ilustracion": "ilustraciones/remo-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=TZLCvXbej_Q"
+      "ilustracion": "ilustraciones/remo-multipower.webp"
     },
     {
       "id": "press-hombro-iso-lateral",
@@ -958,8 +855,7 @@
       "grupo": "Hombros",
       "equipo": "Máquina de palancas",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-iso-lateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=WvLMauqrnK8"
+      "ilustracion": "ilustraciones/press-hombro-iso-lateral.webp"
     },
     {
       "id": "press-hombro-multipower",
@@ -967,8 +863,7 @@
       "grupo": "Hombros",
       "equipo": "Multipower",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/press-hombro-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=4bIReY0eO1M"
+      "ilustracion": "ilustraciones/press-hombro-multipower.webp"
     },
     {
       "id": "elevacion-lateral-polea-unilateral",
@@ -976,8 +871,7 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Z5FA9aq3L6A"
+      "ilustracion": "ilustraciones/elevacion-lateral-polea-unilateral.webp"
     },
     {
       "id": "deltoide-posterior-polea",
@@ -985,8 +879,7 @@
       "grupo": "Hombros",
       "equipo": "Polea",
       "patron": "aislamiento",
-      "ilustracion": "ilustraciones/deltoide-posterior-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=rep-qVOkqgk"
+      "ilustracion": "ilustraciones/deltoide-posterior-polea.webp"
     },
     {
       "id": "curl-biceps-maquina",
@@ -994,8 +887,7 @@
       "grupo": "Bíceps",
       "equipo": "Máquina",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-biceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=Z8ySCGu761E"
+      "ilustracion": "ilustraciones/curl-biceps-maquina.webp"
     },
     {
       "id": "curl-polea-unilateral",
@@ -1003,8 +895,7 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=G5mlD2VQkEU"
+      "ilustracion": "ilustraciones/curl-polea-unilateral.webp"
     },
     {
       "id": "curl-polea-baja-cuerda",
@@ -1012,8 +903,7 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=hdXgJwbaIYg"
+      "ilustracion": "ilustraciones/curl-polea-baja-cuerda.webp"
     },
     {
       "id": "curl-polea-alta",
@@ -1021,8 +911,7 @@
       "grupo": "Bíceps",
       "equipo": "Polea",
       "patron": "flexion_codo",
-      "ilustracion": "ilustraciones/curl-polea-alta.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=d4YaCgGG-so"
+      "ilustracion": "ilustraciones/curl-polea-alta.webp"
     },
     {
       "id": "fondos-maquina",
@@ -1030,8 +919,7 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "empuje_vertical",
-      "ilustracion": "ilustraciones/fondos-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=6kALZikXxLc"
+      "ilustracion": "ilustraciones/fondos-maquina.webp"
     },
     {
       "id": "extension-triceps-maquina",
@@ -1039,8 +927,7 @@
       "grupo": "Tríceps",
       "equipo": "Máquina",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=6Fzep104f0s"
+      "ilustracion": "ilustraciones/extension-triceps-maquina.webp"
     },
     {
       "id": "extension-triceps-polea-agarre-inverso",
@@ -1048,8 +935,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=hNnUo5kHhHI"
+      "ilustracion": "ilustraciones/extension-triceps-polea-agarre-inverso.webp"
     },
     {
       "id": "extension-triceps-sobre-cabeza-unilateral",
@@ -1057,8 +943,7 @@
       "grupo": "Tríceps",
       "equipo": "Polea",
       "patron": "extension_codo",
-      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=4Y2ZdHCOXok"
+      "ilustracion": "ilustraciones/extension-triceps-sobre-cabeza-unilateral.webp"
     },
     {
       "id": "pendulum-squat",
@@ -1066,8 +951,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/pendulum-squat.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=pzSKMfHThBI"
+      "ilustracion": "ilustraciones/pendulum-squat.webp"
     },
     {
       "id": "v-squat-maquina",
@@ -1075,8 +959,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/v-squat-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=-361iwkdde0"
+      "ilustracion": "ilustraciones/v-squat-maquina.webp"
     },
     {
       "id": "belt-squat-maquina",
@@ -1084,8 +967,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/belt-squat-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=MeIiIdhvXT4"
+      "ilustracion": "ilustraciones/belt-squat-maquina.webp"
     },
     {
       "id": "sentadilla-hack-inversa",
@@ -1093,8 +975,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "sentadilla",
-      "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=3Kopway1dyg"
+      "ilustracion": "ilustraciones/sentadilla-hack-inversa.webp"
     },
     {
       "id": "extension-cuadriceps-unilateral",
@@ -1102,8 +983,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "extension_rodilla",
-      "ilustracion": "ilustraciones/extension-cuadriceps-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=mG4bOaFzLqs"
+      "ilustracion": "ilustraciones/extension-cuadriceps-unilateral.webp"
     },
     {
       "id": "prensa-unilateral",
@@ -1111,8 +991,7 @@
       "grupo": "Cuádriceps",
       "equipo": "Máquina",
       "patron": "prensa",
-      "ilustracion": "ilustraciones/prensa-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=ZYDTJaAM-gE"
+      "ilustracion": "ilustraciones/prensa-unilateral.webp"
     },
     {
       "id": "curl-femoral-tumbado-unilateral",
@@ -1120,8 +999,7 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=lQSlJHtsnRA"
+      "ilustracion": "ilustraciones/curl-femoral-tumbado-unilateral.webp"
     },
     {
       "id": "curl-femoral-de-pie",
@@ -1129,8 +1007,7 @@
       "grupo": "Femoral",
       "equipo": "Máquina",
       "patron": "flexion_rodilla",
-      "ilustracion": "ilustraciones/curl-femoral-de-pie.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=t_k-ivoEykw"
+      "ilustracion": "ilustraciones/curl-femoral-de-pie.webp"
     },
     {
       "id": "peso-muerto-rumano-multipower",
@@ -1138,8 +1015,7 @@
       "grupo": "Femoral",
       "equipo": "Multipower",
       "patron": "bisagra_cadera",
-      "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=jYEVqa4C0yg"
+      "ilustracion": "ilustraciones/peso-muerto-rumano-multipower.webp"
     },
     {
       "id": "hip-thrust-multipower",
@@ -1147,8 +1023,7 @@
       "grupo": "Glúteos",
       "equipo": "Multipower",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/hip-thrust-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=nr-7dwp9q1o"
+      "ilustracion": "ilustraciones/hip-thrust-multipower.webp"
     },
     {
       "id": "patada-gluteo-maquina",
@@ -1156,8 +1031,7 @@
       "grupo": "Glúteos",
       "equipo": "Máquina",
       "patron": "extension_cadera",
-      "ilustracion": "ilustraciones/patada-gluteo-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=P8yZ8IR7Dj8"
+      "ilustracion": "ilustraciones/patada-gluteo-maquina.webp"
     },
     {
       "id": "encogimientos-multipower",
@@ -1165,8 +1039,7 @@
       "grupo": "Trapecio",
       "equipo": "Multipower",
       "patron": "elevacion_escapular",
-      "ilustracion": "ilustraciones/encogimientos-multipower.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=DXp4JYCN8Y0"
+      "ilustracion": "ilustraciones/encogimientos-multipower.webp"
     },
     {
       "id": "rotacion-torso-maquina",
@@ -1174,8 +1047,7 @@
       "grupo": "Core",
       "equipo": "Máquina",
       "patron": "rotacion_tronco",
-      "ilustracion": "ilustraciones/rotacion-torso-maquina.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=3qjoXDTuyOE"
+      "ilustracion": "ilustraciones/rotacion-torso-maquina.webp"
     },
     {
       "id": "pallof-press-polea",
@@ -1183,8 +1055,7 @@
       "grupo": "Core",
       "equipo": "Polea",
       "patron": "anti_rotacion",
-      "ilustracion": "ilustraciones/pallof-press-polea.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=AH_QZLm_0-s"
+      "ilustracion": "ilustraciones/pallof-press-polea.webp"
     },
     {
       "id": "extension-lumbar-banco-45",
@@ -1192,496 +1063,434 @@
       "grupo": "Lumbar",
       "equipo": "Banco 45°",
       "patron": "extension_tronco",
-      "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp",
-      "videoUrl": "https://www.youtube.com/watch?v=xyV2rF8ismg"
+      "ilustracion": "ilustraciones/extension-lumbar-banco-45.webp"
     },
     {
       "id": "press-declinado-barra",
       "nombre": "Press declinado con barra",
       "grupo": "Pectoral",
       "equipo": "Barra y banco declinado",
-      "patron": "empuje_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=ifWEwZDWMAw"
+      "patron": "empuje_horizontal"
     },
     {
       "id": "press-declinado-mancuernas",
       "nombre": "Press declinado con mancuernas",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco declinado",
-      "patron": "empuje_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=0xRvl4Qv3ZY"
+      "patron": "empuje_horizontal"
     },
     {
       "id": "aperturas-mancuernas-plano",
       "nombre": "Aperturas con mancuernas en banco plano",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=QwuUZ5wgQOk"
+      "patron": "aislamiento"
     },
     {
       "id": "aperturas-inclinadas-mancuernas",
       "nombre": "Aperturas con mancuernas en banco inclinado",
       "grupo": "Pectoral",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=ajdFwa-qM98"
+      "patron": "aislamiento"
     },
     {
       "id": "fondos-paralelas-pectoral",
       "nombre": "Fondos en paralelas para pectoral",
       "grupo": "Pectoral",
       "equipo": "Paralelas",
-      "patron": "empuje_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=2z8JmcrW-As"
+      "patron": "empuje_horizontal"
     },
     {
       "id": "pullover-mancuerna",
       "nombre": "Pullover con mancuerna",
       "grupo": "Pectoral",
       "equipo": "Mancuerna y banco",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=FK4rHfWKEac"
+      "patron": "aislamiento"
     },
     {
       "id": "dominadas-pronas",
       "nombre": "Dominadas con agarre prono",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=MROmHRXY06M"
+      "patron": "traccion_vertical"
     },
     {
       "id": "dominadas-neutras",
       "nombre": "Dominadas con agarre neutro",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=brhRXlOhsAM"
+      "patron": "traccion_vertical"
     },
     {
       "id": "dominadas-supinas",
       "nombre": "Dominadas con agarre supino",
       "grupo": "Espalda",
       "equipo": "Barra de dominadas",
-      "patron": "traccion_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=zkTfE7Fgajw"
+      "patron": "traccion_vertical"
     },
     {
       "id": "remo-barra-agarre-supino",
       "nombre": "Remo con barra con agarre supino",
       "grupo": "Espalda",
       "equipo": "Barra",
-      "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=9efgcAjQe7E"
+      "patron": "traccion_horizontal"
     },
     {
       "id": "remo-mancuernas-banco-inclinado",
       "nombre": "Remo con mancuernas en banco inclinado",
       "grupo": "Espalda",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=6gvmcqr226U"
+      "patron": "traccion_horizontal"
     },
     {
       "id": "remo-barra-t",
       "nombre": "Remo con barra T",
       "grupo": "Espalda",
       "equipo": "Barra T",
-      "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=rvbjGSQ2tVE"
+      "patron": "traccion_horizontal"
     },
     {
       "id": "jalon-brazos-rectos-polea",
       "nombre": "Jalón con brazos rectos en polea",
       "grupo": "Espalda",
       "equipo": "Polea",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=AjCCGN2tU3Q"
+      "patron": "aislamiento"
     },
     {
       "id": "press-arnold",
       "nombre": "Press Arnold con mancuernas",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "empuje_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=6Z15_WdXmVw"
+      "patron": "empuje_vertical"
     },
     {
       "id": "press-militar-mancuernas-pie",
       "nombre": "Press militar con mancuernas de pie",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "empuje_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=B-aVuyhvLHU"
+      "patron": "empuje_vertical"
     },
     {
       "id": "elevaciones-frontales-mancuernas",
       "nombre": "Elevaciones frontales con mancuernas",
       "grupo": "Hombros",
       "equipo": "Mancuernas",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=CH9JzDStL3U"
+      "patron": "aislamiento"
     },
     {
       "id": "elevacion-frontal-disco",
       "nombre": "Elevación frontal con disco",
       "grupo": "Hombros",
       "equipo": "Disco",
-      "patron": "aislamiento",
-      "videoUrl": "https://www.youtube.com/watch?v=-t7fuZ0KhDA"
+      "patron": "aislamiento"
     },
     {
       "id": "remo-menton-barra",
       "nombre": "Remo al mentón con barra",
       "grupo": "Hombros",
       "equipo": "Barra",
-      "patron": "traccion_horizontal",
-      "videoUrl": "https://www.youtube.com/watch?v=amCU-ziHITM"
+      "patron": "traccion_horizontal"
     },
     {
       "id": "curl-concentracion-mancuerna",
       "nombre": "Curl de concentración con mancuerna",
       "grupo": "Bíceps",
       "equipo": "Mancuerna",
-      "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=0AUGkch3tzc"
+      "patron": "flexion_codo"
     },
     {
       "id": "curl-spider-mancuernas",
       "nombre": "Curl spider con mancuernas",
       "grupo": "Bíceps",
       "equipo": "Mancuernas y banco inclinado",
-      "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=nvufDW-MSQk"
+      "patron": "flexion_codo"
     },
     {
       "id": "curl-martillo-cruzado",
       "nombre": "Curl martillo cruzado",
       "grupo": "Bíceps",
       "equipo": "Mancuernas",
-      "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      "patron": "flexion_codo"
     },
     {
       "id": "curl-predicador-unilateral-mancuerna",
       "nombre": "Curl predicador unilateral con mancuerna",
       "grupo": "Bíceps",
       "equipo": "Mancuerna y banco predicador",
-      "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=Jvj2wV0vOYU"
+      "patron": "flexion_codo"
     },
     {
       "id": "fondos-paralelas-triceps",
       "nombre": "Fondos en paralelas para tríceps",
       "grupo": "Tríceps",
       "equipo": "Paralelas",
-      "patron": "empuje_vertical",
-      "videoUrl": "https://www.youtube.com/watch?v=0326dy_-CzM"
+      "patron": "empuje_vertical"
     },
     {
       "id": "press-frances-barra-ez",
       "nombre": "Press francés con barra EZ",
       "grupo": "Tríceps",
       "equipo": "Barra EZ",
-      "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=d_KZxkY_0cM"
+      "patron": "extension_codo"
     },
     {
       "id": "press-frances-mancuerna",
       "nombre": "Press francés con mancuerna",
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
-      "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=_gsUck-7M74"
+      "patron": "extension_codo"
     },
     {
       "id": "patada-triceps-mancuerna",
       "nombre": "Patada de tríceps con mancuerna",
       "grupo": "Tríceps",
       "equipo": "Mancuerna",
-      "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=6SS6K3lAwZ8"
+      "patron": "extension_codo"
     },
     {
       "id": "patada-triceps-polea",
       "nombre": "Patada de tríceps en polea",
       "grupo": "Tríceps",
       "equipo": "Polea",
-      "patron": "extension_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=54g1uN0yRrY"
+      "patron": "extension_codo"
     },
     {
       "id": "sentadilla-frontal-barra",
       "nombre": "Sentadilla frontal con barra",
       "grupo": "Cuádriceps",
       "equipo": "Barra",
-      "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=tlfGU7WfIYg"
+      "patron": "sentadilla"
     },
     {
       "id": "sentadilla-goblet",
       "nombre": "Sentadilla goblet con mancuerna",
       "grupo": "Cuádriceps",
       "equipo": "Mancuerna",
-      "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=MxsFDhcyFyE"
+      "patron": "sentadilla"
     },
     {
       "id": "zancadas-caminando-mancuernas",
       "nombre": "Zancadas caminando con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
-      "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=L8fvypPrzzs"
+      "patron": "sentadilla"
     },
     {
       "id": "zancada-atras-mancuernas",
       "nombre": "Zancada hacia atrás con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas",
-      "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=xrPteyQLGAo"
+      "patron": "sentadilla"
     },
     {
       "id": "step-up-mancuernas",
       "nombre": "Step-up al banco con mancuernas",
       "grupo": "Cuádriceps",
       "equipo": "Mancuernas y banco",
-      "patron": "sentadilla",
-      "videoUrl": "https://www.youtube.com/watch?v=dQqApCGd5Ss"
+      "patron": "sentadilla"
     },
     {
       "id": "peso-muerto-piernas-rigidas",
       "nombre": "Peso muerto con piernas rígidas",
       "grupo": "Femoral",
       "equipo": "Barra",
-      "patron": "bisagra_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=1uDiW5--rAE"
+      "patron": "bisagra_cadera"
     },
     {
       "id": "buenos-dias-barra",
       "nombre": "Buenos días con barra",
       "grupo": "Femoral",
       "equipo": "Barra",
-      "patron": "bisagra_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=YA-h3n9L4YU"
+      "patron": "bisagra_cadera"
     },
     {
       "id": "curl-nordico",
       "nombre": "Curl nórdico",
       "grupo": "Femoral",
       "equipo": "Peso corporal",
-      "patron": "flexion_rodilla",
-      "videoUrl": "https://www.youtube.com/watch?v=3-4pKUhkzoQ"
+      "patron": "flexion_rodilla"
     },
     {
       "id": "peso-muerto-rumano-unilateral-mancuerna",
       "nombre": "Peso muerto rumano unilateral con mancuerna",
       "grupo": "Femoral",
       "equipo": "Mancuerna",
-      "patron": "bisagra_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=GoKjrvJi-Iw"
+      "patron": "bisagra_cadera"
     },
     {
       "id": "puente-gluteo-barra",
       "nombre": "Puente de glúteos con barra",
       "grupo": "Glúteos",
       "equipo": "Barra",
-      "patron": "extension_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=wPM8icPu6H8"
+      "patron": "extension_cadera"
     },
     {
       "id": "puente-gluteo-mancuerna",
       "nombre": "Puente de glúteos con mancuerna",
       "grupo": "Glúteos",
       "equipo": "Mancuerna",
-      "patron": "extension_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=OUgsJ8-Vi0E"
+      "patron": "extension_cadera"
     },
     {
       "id": "abduccion-banda",
       "nombre": "Abducción de cadera con banda",
       "grupo": "Glúteos",
       "equipo": "Banda elástica",
-      "patron": "abduccion_cadera",
-      "videoUrl": "https://www.youtube.com/shorts/8vHjNnJjjYc"
+      "patron": "abduccion_cadera"
     },
     {
       "id": "hip-thrust-mancuerna",
       "nombre": "Hip thrust con mancuerna",
       "grupo": "Glúteos",
       "equipo": "Mancuerna y banco",
-      "patron": "extension_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=6W-ViGdQ6xM"
+      "patron": "extension_cadera"
     },
     {
       "id": "sentadilla-sumo-mancuerna",
       "nombre": "Sentadilla sumo con mancuerna",
       "grupo": "Aductores",
       "equipo": "Mancuerna",
-      "patron": "aduccion_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=vBA3vyOxJv0"
+      "patron": "aduccion_cadera"
     },
     {
       "id": "sentadilla-sumo-barra",
       "nombre": "Sentadilla sumo con barra",
       "grupo": "Aductores",
       "equipo": "Barra",
-      "patron": "aduccion_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=9ZuXKqRbT9k"
+      "patron": "aduccion_cadera"
     },
     {
       "id": "zancada-lateral-mancuernas",
       "nombre": "Zancada lateral con mancuernas",
       "grupo": "Aductores",
       "equipo": "Mancuernas",
-      "patron": "aduccion_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=FUX6Pz8vV0s"
+      "patron": "aduccion_cadera"
     },
     {
       "id": "gemelos-pie-mancuernas",
       "nombre": "Elevación de gemelos de pie con mancuernas",
       "grupo": "Gemelos",
       "equipo": "Mancuernas",
-      "patron": "flexion_plantar",
-      "videoUrl": "https://www.youtube.com/watch?v=wxwY7GXxL4k"
+      "patron": "flexion_plantar"
     },
     {
       "id": "gemelos-pie-barra",
       "nombre": "Elevación de gemelos de pie con barra",
       "grupo": "Gemelos",
       "equipo": "Barra",
-      "patron": "flexion_plantar",
-      "videoUrl": "https://www.youtube.com/watch?v=Zo8zxjT78xg"
+      "patron": "flexion_plantar"
     },
     {
       "id": "gemelos-unilateral-escalon",
       "nombre": "Elevación de gemelo unilateral en escalón",
       "grupo": "Gemelos",
       "equipo": "Peso corporal",
-      "patron": "flexion_plantar",
-      "videoUrl": "https://www.youtube.com/watch?v=9Zb5V1fM7A4"
+      "patron": "flexion_plantar"
     },
     {
       "id": "encogimientos-polea",
       "nombre": "Encogimientos de trapecio en polea",
       "grupo": "Trapecio",
       "equipo": "Polea",
-      "patron": "elevacion_escapular",
-      "videoUrl": "https://www.youtube.com/watch?v=lRk09qEf4UM"
+      "patron": "elevacion_escapular"
     },
     {
       "id": "paseo-granjero-mancuernas",
       "nombre": "Paseo del granjero con mancuernas",
       "grupo": "Trapecio",
       "equipo": "Mancuernas",
-      "patron": "elevacion_escapular",
-      "videoUrl": "https://www.youtube.com/watch?v=rt17lmnaLSM"
+      "patron": "elevacion_escapular"
     },
     {
       "id": "curl-muneca-barra",
       "nombre": "Curl de muñeca con barra",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_muneca",
-      "videoUrl": "https://www.youtube.com/watch?v=lA3QwdAn19Y"
+      "patron": "flexion_muneca"
     },
     {
       "id": "extension-muneca-barra",
       "nombre": "Extensión de muñeca con barra",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_muneca",
-      "videoUrl": "https://www.youtube.com/watch?v=Z3G3p7JH5aY"
+      "patron": "flexion_muneca"
     },
     {
       "id": "curl-inverso-barra-recta",
       "nombre": "Curl inverso con barra recta",
       "grupo": "Antebrazos",
       "equipo": "Barra",
-      "patron": "flexion_codo",
-      "videoUrl": "https://www.youtube.com/watch?v=9H3hFj2Xg5Y"
+      "patron": "flexion_codo"
     },
     {
       "id": "peso-muerto-convencional-barra",
       "nombre": "Peso muerto convencional con barra",
       "grupo": "Lumbar",
       "equipo": "Barra",
-      "patron": "extension_tronco",
-      "videoUrl": "https://www.youtube.com/watch?v=op9kVnSso6Q"
+      "patron": "extension_tronco"
     },
     {
       "id": "superman-suelo",
       "nombre": "Superman en el suelo",
       "grupo": "Lumbar",
       "equipo": "Peso corporal",
-      "patron": "extension_columna",
-      "videoUrl": "https://www.youtube.com/watch?v=z6PJMT2y8GQ"
+      "patron": "extension_columna"
     },
     {
       "id": "crunch-suelo",
       "nombre": "Crunch abdominal en el suelo",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_tronco",
-      "videoUrl": "https://www.youtube.com/watch?v=Xyd_fa5zoEU"
+      "patron": "flexion_tronco"
     },
     {
       "id": "crunch-inverso",
       "nombre": "Crunch inverso",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_cadera",
-      "videoUrl": "https://www.youtube.com/watch?v=hyv14e2QDq0"
+      "patron": "flexion_cadera"
     },
     {
       "id": "sit-up",
       "nombre": "Sit-up abdominal",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "flexion_tronco",
-      "videoUrl": "https://www.youtube.com/watch?v=jDwoBqPH0jk"
+      "patron": "flexion_tronco"
     },
     {
       "id": "dead-bug",
       "nombre": "Dead bug",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad",
-      "videoUrl": "https://www.youtube.com/watch?v=4XLEnwUr1d8"
+      "patron": "estabilidad"
     },
     {
       "id": "bird-dog",
       "nombre": "Bird dog",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad",
-      "videoUrl": "https://www.youtube.com/watch?v=wiFNA3sqjCA"
+      "patron": "estabilidad"
     },
     {
       "id": "plancha-lateral",
       "nombre": "Plancha lateral",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad",
-      "videoUrl": "https://www.youtube.com/watch?v=K2VljzCC16g"
+      "patron": "estabilidad"
     },
     {
       "id": "russian-twist",
       "nombre": "Russian twist",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "rotacion_tronco",
-      "videoUrl": "https://www.youtube.com/watch?v=wkD8rjkodUI"
+      "patron": "rotacion_tronco"
     },
     {
       "id": "mountain-climbers",
       "nombre": "Mountain climbers",
       "grupo": "Core",
       "equipo": "Peso corporal",
-      "patron": "estabilidad",
-      "videoUrl": "https://www.youtube.com/watch?v=nmwgirgXLYM"
+      "patron": "estabilidad"
     }
   ]
 }
