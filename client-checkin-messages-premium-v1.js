@@ -43,11 +43,11 @@
       }
       .dcc-cm{max-width:820px;height:100%;margin:0 auto;display:flex;flex-direction:column;overflow:hidden}.dcc-cm *{box-sizing:border-box}
       .dcc-cm-kicker{margin:0 0 8px;color:#a66d0d;font-size:11px;line-height:1;font-weight:850;letter-spacing:3.2px;text-transform:uppercase}
-      .dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 0 10px;padding:0 0 11px;border-bottom:1px solid rgba(183,123,19,.18)}
+      .dcc-cm-person{display:flex;align-items:center;gap:11px;margin:0 0 8px;padding:0 0 9px;border-bottom:1px solid rgba(183,123,19,.18)}
       .dcc-cm-avatar{width:45px;height:45px;display:grid;place-items:center;border:1px solid rgba(183,123,19,.42);border-radius:50%;background:linear-gradient(145deg,#fff8e9,#f8e8c6);color:#a66d0d;font-size:14px;font-weight:850;box-shadow:0 6px 16px rgba(78,58,28,.06)}
       .dcc-cm-person h1{margin:0!important;color:#17191d!important;font-family:inherit!important;font-size:20px!important;line-height:1.05!important;font-weight:800!important;letter-spacing:-.45px!important}
       .dcc-cm-role{display:flex;align-items:center;gap:6px;margin-top:4px;color:#707782;font-size:10px}.dcc-cm-dot{width:6px;height:6px;border-radius:50%;background:#49b977;box-shadow:0 0 8px rgba(73,185,119,.25)}
-      .dcc-cm-stream{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;gap:8px;padding:3px 0 88px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}.dcc-cm-stream::-webkit-scrollbar{display:none}
+      .dcc-cm-stream{display:flex;flex:1 1 auto;min-height:0;flex-direction:column;gap:8px;padding:3px 0 76px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}.dcc-cm-stream::-webkit-scrollbar{display:none}
       .dcc-cm-day{display:flex;align-items:center;gap:8px;margin:5px 0;color:#8a919b;font-size:8.5px}.dcc-cm-day:before,.dcc-cm-day:after{content:'';height:1px;flex:1;background:rgba(183,123,19,.16)}
       .dcc-cm-row{display:flex;align-items:flex-end;gap:7px}.dcc-cm-row.mine{justify-content:flex-end}
       .dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(183,123,19,.35);border-radius:50%;background:#fff8e9;color:#a66d0d;font-size:8px;font-weight:850}
@@ -55,9 +55,9 @@
       .dcc-cm-row.mine .dcc-cm-bubble{border-color:rgba(183,123,19,.34);background:linear-gradient(145deg,#fff4d8,#f6dfaa);color:#211b11}
       .dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#8a919b;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#8c691f}.dcc-cm-check{color:#a66d0d}
       .dcc-cm-empty{padding:28px 15px;border:1px solid rgba(183,123,19,.24);border-radius:21px;background:linear-gradient(145deg,#fffefa,#fbf5eb);color:#707782;text-align:center;font-size:11px;box-shadow:0 10px 26px rgba(78,58,28,.07)}
-      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(183,123,19,.34);border-radius:19px;background:rgba(255,253,248,.97);box-shadow:0 -8px 26px rgba(78,58,28,.10);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-      .dcc-cm-input{min-height:44px;max-height:105px;resize:none;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fffdfa;color:#17191d;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#9298a1}.dcc-cm-input:focus{border-color:rgba(183,123,19,.55);box-shadow:none}
-      .dcc-cm-send{width:45px;height:45px;display:grid;place-items:center;border:1px solid #c58a20;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#17120a;font-size:19px}.dcc-cm-send:disabled{opacity:.45}
+      .dcc-cm-composer{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(183,123,19,.34);border-radius:19px;background:rgba(255,253,248,.97);box-shadow:0 -8px 26px rgba(78,58,28,.10);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+      .dcc-cm-input{min-height:42px;max-height:92px;resize:none;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fffdfa;color:#17191d;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#9298a1}.dcc-cm-input:focus{border-color:rgba(183,123,19,.55);box-shadow:none}
+      .dcc-cm-send{width:42px;height:42px;display:grid;place-items:center;border:1px solid #c58a20;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#17120a;font-size:19px}.dcc-cm-send:disabled{opacity:.45}
 
       /* El chat premium del entrenador también mantiene el compositor abajo y evita zoom en iPhone. */
       html body #coach #coach-main.dcc-premium-chat .dcc-chat{padding-bottom:110px!important}
