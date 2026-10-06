@@ -134,9 +134,9 @@
     document.head.appendChild(s);
   }
 
-  async function hydrateAttachmentUrls(id){
+  const signedMediaUrls=new Map();\n  async function hydrateAttachmentUrls(id){
     const client=db(),items=appData().messages?.[id]||[];if(!client)return;
-    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path||a.url)return;try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl)a.url=data.signedUrl}catch(_){}}));
+    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path)return;if(signedMediaUrls.has(a.path)){a.url=signedMediaUrls.get(a.path);return}try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl){signedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}}catch(_){}}));
   }
   function attachmentHtml(m){
     const a=messageAttachment(m);if(!a)return'';
@@ -344,9 +344,9 @@
     timer=setInterval(async()=>{
       if(document.hidden){stopPolling();return}
       const id=window.__dccCoachChatV2;if(!id){stopPolling();return}
-      const before=JSON.stringify(appData().messages?.[id]||[]);
+      const before=JSON.stringify((appData().messages?.[id]||[]).map(m=>[m?.[0],m?.[1],m?.[2],m?.[3],m?.[4]?.path,m?.[4]?.type]));
       const ok=await syncMessages(id);
-      const after=JSON.stringify(appData().messages?.[id]||[]);
+      const after=JSON.stringify((appData().messages?.[id]||[]).map(m=>[m?.[0],m?.[1],m?.[2],m?.[3],m?.[4]?.path,m?.[4]?.type]));
       if(ok&&before!==after){
         refreshCoachChat(id);
         await markCoachMessagesSeen(id);
