@@ -94,7 +94,8 @@
       .dcc-mcv2-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#818b96;font-size:7.5px}.dcc-mcv2-row.mine .dcc-mcv2-time{color:#b99a57}.dcc-mcv2-check{color:${GOLD2}}
       .dcc-mcv2-empty{padding:28px 15px;border:1px solid rgba(224,173,76,.34);border-radius:17px;background:linear-gradient(145deg,#10151a,#080c0f);color:#8f98a3;text-align:center;font-size:10px}
       .dcc-mcv2-composer{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));z-index:100;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 45px;gap:8px;padding:9px;border:1px solid rgba(224,173,76,.48);border-radius:18px;background:rgba(10,14,18,.98);box-shadow:0 -10px 30px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.025);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-      .dcc-mcv2-photo-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.35);border-radius:50%;background:#fffdfa;color:#9b6b16;font-size:24px;font-weight:400;line-height:1}.dcc-mcv2-file{display:none}.dcc-mcv2-audio-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.35);border-radius:50%;background:transparent;color:#9b6b16}.dcc-mcv2-audio-btn svg{width:17px;height:17px;fill:currentColor}.dcc-mcv2-audio-btn.recording{background:#fff0dc;color:#b64b24;width:52px;border-radius:14px;font-size:12px;font-weight:800}.dcc-mcv2-rec-time{font-variant-numeric:tabular-nums}\n      .dcc-mcv2-input{width:100%;min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-mcv2-input::placeholder{color:#6f7984}.dcc-mcv2-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none!important}
+      .dcc-mcv2-photo-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.35);border-radius:50%;background:#fffdfa;color:#9b6b16;font-size:24px;font-weight:400;line-height:1}.dcc-mcv2-file{display:none}.dcc-mcv2-audio-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(224,173,76,.35);border-radius:50%;background:transparent;color:#9b6b16}.dcc-mcv2-audio-btn svg{width:17px;height:17px;fill:currentColor}.dcc-mcv2-audio-btn.recording{background:#fff0dc;color:#b64b24;width:52px;border-radius:14px;font-size:12px;font-weight:800}.dcc-mcv2-rec-time{font-variant-numeric:tabular-nums}
+      .dcc-mcv2-input{width:100%;min-height:44px;max-height:105px;resize:none;border:1px solid #303a43;border-radius:13px;background:#0b1014;color:#f5f3ee;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-mcv2-input::placeholder{color:#6f7984}.dcc-mcv2-input:focus{border-color:rgba(224,173,76,.72);box-shadow:none!important}
       .dcc-mcv2-send{min-width:0;width:45px;height:45px;display:grid;place-items:center;border:1px solid #f0c96b;border-radius:50%;background:linear-gradient(135deg,#f3cf69,#d9a73e);color:#0b0905;font-size:19px}.dcc-mcv2-send:disabled{opacity:.45}
 
       html.dcc-theme-light-premium #coach-main.dcc-message-chat-v2{background:radial-gradient(circle at 88% 0,rgba(214,163,61,.10),transparent 26%),linear-gradient(180deg,#fffaf1 0%,#f5efe4 62%,#f1e9dc 100%)!important;color:#17191d!important}
@@ -149,7 +150,8 @@
 
   function bubble(m,c){
     const mine=isCoach(m),d=messageDate(m);
-    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${attachmentHtml(m)}${esc(messageText(m)).replace(/\n/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
+    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${attachmentHtml(m)}${esc(messageText(m)).replace(/
+/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
   }
   function messagesHtml(id,c){
     const t=thread(id);
@@ -210,7 +212,8 @@
     const followNewest=distanceToBottom<140;
     const previousHeight=root.scrollHeight;
     const previousY=window.scrollY;
-    const playing=stream.querySelector('audio:not([paused])');if(playing&&!playing.paused)return;\n    const next=messagesHtml(id,c);if(stream.innerHTML===next)return;stream.innerHTML=next;
+    const playing=stream.querySelector('audio:not([paused])');if(playing&&!playing.paused)return;
+    const next=messagesHtml(id,c);if(stream.innerHTML===next)return;stream.innerHTML=next;
     requestAnimationFrame(()=>{
       if(followNewest)window.scrollTo(0,document.documentElement.scrollHeight);
       else window.scrollTo(0,previousY+(document.documentElement.scrollHeight-previousHeight));
