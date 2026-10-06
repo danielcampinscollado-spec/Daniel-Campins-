@@ -8115,10 +8115,15 @@ function dccDeferWorkoutExercise(){
   if(workout.restUntil&&workout.restUntil>Date.now()){toast("Omite el descanso antes de aplazar el ejercicio");return;}
   const idx=Number(workout.currentExercise)||0,exercise=workout.exercises[idx];
   if(!exercise)return;
+  if(Array.isArray(workout.sets)&&workout.sets.length){toast("Ya has empezado este ejercicio; termínalo antes de aplazarlo");return;}
+  if(exercise.restPause){
+    const rp=workout.restPauseState?.[String(idx)];
+    if((Number(rp?.seriesCompleted)||0)>0||(Number(rp?.block)||0)>0){toast("Ya has empezado este REST-pause; termínalo antes de aplazarlo");return;}
+  }
   if(exercise.supersetId){
     const members=workout.exercises.map((ex,index)=>({ex,index})).filter(x=>x.ex?.supersetId===exercise.supersetId);
     const first=Math.min(...members.map(x=>x.index));
-    if(idx!==first||workout.sets?.length||Number(workout.supersetState?.[exercise.supersetId]?.round||1)>1){toast("La superserie ya está en curso y no se puede aplazar a mitad");return;}
+    const ss=workout.supersetState?.[exercise.supersetId];if(idx!==first||Number(ss?.round||1)>1||Object.keys(ss?.entries||{}).length){toast("La superserie ya está en curso y no se puede aplazar a mitad");return;}
     const group=workout.exercises.splice(first,members.length);
     workout.exercises.push(...group);
     workout.currentExercise=first>=workout.exercises.length?0:first;
