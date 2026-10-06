@@ -53,7 +53,7 @@
       .dcc-cm-mini{width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid rgba(183,123,19,.35);border-radius:50%;background:#fff8e9;color:#a66d0d;font-size:8px;font-weight:850}
       .dcc-cm-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid rgba(183,123,19,.18);border-radius:16px;background:linear-gradient(145deg,#fffefa,#fbf5eb);color:#30343a;font-size:12px;line-height:1.42;box-shadow:0 6px 18px rgba(78,58,28,.05)}
       .dcc-cm-row.mine .dcc-cm-bubble{border-color:rgba(183,123,19,.34);background:linear-gradient(145deg,#fff4d8,#f6dfaa);color:#211b11}
-      .dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#8a919b;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#8c691f}.dcc-cm-check{color:#a66d0d}
+      .dcc-cm-media{display:block;margin:0 0 7px}.dcc-cm-photo{display:block;width:min(280px,100%);max-height:330px;object-fit:cover;border-radius:11px}.dcc-cm-audio{display:block;width:min(280px,100%);height:38px}\n      .dcc-cm-time{display:flex;justify-content:flex-end;gap:4px;margin-top:5px;color:#8a919b;font-size:7.5px}.dcc-cm-row.mine .dcc-cm-time{color:#8c691f}.dcc-cm-check{color:#a66d0d}
       .dcc-cm-empty{padding:28px 15px;border:1px solid rgba(183,123,19,.24);border-radius:21px;background:linear-gradient(145deg,#fffefa,#fbf5eb);color:#707782;text-align:center;font-size:11px;box-shadow:0 10px 26px rgba(78,58,28,.07)}
       .dcc-cm-composer{position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));z-index:90;width:min(790px,calc(100vw - 26px));transform:translateX(-50%);display:grid;grid-template-columns:minmax(0,1fr) 45px;gap:8px;padding:9px;border:1px solid rgba(183,123,19,.34);border-radius:19px;background:rgba(255,253,248,.97);box-shadow:0 -8px 26px rgba(78,58,28,.10);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
       .dcc-cm-input{min-height:42px;max-height:92px;resize:none;border:1px solid rgba(183,123,19,.18);border-radius:13px;background:#fffdfa;color:#17191d;padding:11px 12px;outline:0;font-size:16px!important;line-height:1.35;-webkit-text-size-adjust:100%;touch-action:manipulation}.dcc-cm-input::placeholder{color:#9298a1}.dcc-cm-input:focus{border-color:rgba(183,123,19,.55);box-shadow:none}
@@ -87,9 +87,9 @@
   function timeFmt(d){return d?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):''}
   function dayFmt(d){if(!d)return'';const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const day=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();const dif=Math.round((today-day)/86400000);if(dif===0)return'Hoy';if(dif===1)return'Ayer';return d.toLocaleDateString('es-ES',{day:'numeric',month:'short'})}
 
-  function messageBubble(m){
+  function attachmentHtml(m){const a=msgAttachment(m);if(!a?.url)return'';if(a.type==='image')return '<img class="dcc-cm-media dcc-cm-photo" src="'+esc(a.url)+'" alt="Foto enviada">';if(a.type==='audio')return '<audio class="dcc-cm-media dcc-cm-audio" controls preload="metadata" src="'+esc(a.url)+'"></audio>';return''}\n  function messageBubble(m){
     const coach=msgIsCoach(m),d=msgDate(m);
-    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
+    return `<div class="dcc-cm-row ${coach?'':'mine'}">${coach?'<div class="dcc-cm-mini">DC</div>':''}<div class="dcc-cm-bubble">${attachmentHtml(m)}${esc(msgText(m)).replace(/\n/g,'<br>')}<div class="dcc-cm-time">${esc(timeFmt(d))}${coach?'':'<span class="dcc-cm-check">✓ Enviado</span>'}</div></div></div>`;
   }
   function scrollClientChatToBottom(smooth=false){
     const stream=document.getElementById('dccClientMessageStream');if(!stream)return;
