@@ -136,7 +136,7 @@
 
   const signedMediaUrls=new Map();\n  async function hydrateAttachmentUrls(id){
     const client=db(),items=appData().messages?.[id]||[];if(!client)return;
-    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path)return;if(signedMediaUrls.has(a.path)){a.url=signedMediaUrls.get(a.path);return}try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl){signedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}}catch(_){}}));
+    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path)return;if(signedMediaUrls.has(a.path)){a.url=signedMediaUrls.get(a.path);return}try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl){signedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}catch(_){}}));
   }
   function attachmentHtml(m){
     const a=messageAttachment(m);if(!a)return'';
