@@ -207,7 +207,7 @@
       );
       if(error)throw error;
       const d=appData();d.notificationState=d.notificationState||{};d.notificationState[id]=d.notificationState[id]||{};
-      d.notificationState[id].coachMessageSeenAt=now;saveLocal();
+      d.notificationState[id].coachMessageSeenAt=now;saveLocal();if(typeof window.dccUpdateCoachMessageBadge==='function')window.dccUpdateCoachMessageBadge();
     }catch(e){console.error('DCC estado mensajes entrenador:',e)}
   }
 
@@ -265,6 +265,7 @@
     liveChannel=client.channel('dccCoachChat'+String(id)).on('postgres_changes',{event:'INSERT',schema:'public',table:'client_messages'},async payload=>{
       if(String(payload?.new?.client_id||'')!==String(id))return;
       await syncMessages(id);
+      if(typeof window.dccUpdateCoachMessageBadge==='function')window.dccUpdateCoachMessageBadge();
       if(String(window.__dccCoachChatV2||'')===String(id)){refreshCoachChat(id);await markCoachMessagesSeen(id)}
     }).subscribe();
   }
