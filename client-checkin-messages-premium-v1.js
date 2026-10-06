@@ -160,6 +160,9 @@
     finally{if(input)input.disabled=false;if(send)send.disabled=false}
   };
 
+  async function sendClientAttachment(file,type){const id=activeClientId(),c=clientById(id),db=database(),media=window.dccMessageMedia;if(!id||!c||!db||!media||!file)return;try{toastSafe(type==='image'?'Subiendo foto…':'Enviando audio…');const a=await media.upload(id,file,type);const s=await db.auth.getSession(),uid=s?.data?.session?.user?.id;if(!uid)throw new Error('Sesión no disponible');const out=await db.from('client_messages').insert({client_id:id,sender:c.name||'Cliente',sender_role:'client',sender_user_id:uid,message:'',attachment_type:type,attachment_path:a.path,attachment_name:a.name,attachment_mime:a.mime,attachment_size:a.size});if(out.error)throw out.error;await syncMessages();refreshClientThread(id);scrollClientChatToBottom(true);toastSafe(type==='image'?'Foto enviada':'Audio enviado')}catch(e){console.error('DCC adjunto cliente:',e);toastSafe('No se pudo enviar el archivo')}}
+  window.dccClientPhotoSelectedV1=async function(input){const file=input?.files?.[0];if(file)await sendClientAttachment(file,'image');if(input)input.value=''};
+
   // Coach-side messaging is owned by messages-chat-premium-v2.js.
   // This module only owns the client conversation surface.
 
