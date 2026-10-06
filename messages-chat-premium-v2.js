@@ -135,10 +135,9 @@
     document.head.appendChild(s);
   }
 
-  const signedMediaUrls=new Map();
   async function hydrateAttachmentUrls(id){
     const client=db(),items=appData().messages?.[id]||[];if(!client)return;
-    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path)return;if(signedMediaUrls.has(a.path)){a.url=signedMediaUrls.get(a.path);return}try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl){signedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}catch(_){}}));
+    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path||a.url)return;try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl)a.url=data.signedUrl}catch(_){}}));
   }
   function attachmentHtml(m){
     const a=messageAttachment(m);if(!a)return'';
@@ -241,12 +240,11 @@
   };
 
   window.dccSyncCoachMessagesV2=syncMessages;
-  window.dccOpenCoachChatV2=function(id){
-    // Open immediately; network sync must never block navigation.
+  window.dccOpenCoachChatV2=async function(id){
+    await syncMessages(id);
+    await markCoachMessagesSeen(id);
     renderCoachChat(id);
     openLive(id);
-    Promise.resolve(syncMessages(id)).then(ok=>{if(ok)refreshCoachChat(id)}).catch(e=>console.error('DCC sync al abrir chat:',e));
-    Promise.resolve(markCoachMessagesSeen(id)).catch(e=>console.error('DCC leído al abrir chat:',e));
   };
   window.dccStopCoachMessagePolling=function(){
     stopPolling();
@@ -349,9 +347,9 @@
     timer=setInterval(async()=>{
       if(document.hidden){stopPolling();return}
       const id=window.__dccCoachChatV2;if(!id){stopPolling();return}
-      const before=JSON.stringify((appData().messages?.[id]||[]).map(m=>[m?.[0],m?.[1],m?.[2],m?.[3],m?.[4]?.path,m?.[4]?.type]));
+      const before=JSON.stringify(appData().messages?.[id]||[]);
       const ok=await syncMessages(id);
-      const after=JSON.stringify((appData().messages?.[id]||[]).map(m=>[m?.[0],m?.[1],m?.[2],m?.[3],m?.[4]?.path,m?.[4]?.type]));
+      const after=JSON.stringify(appData().messages?.[id]||[]);
       if(ok&&before!==after){
         refreshCoachChat(id);
         await markCoachMessagesSeen(id);
@@ -366,7 +364,7 @@
   function install(){
     injectCss();
     startInboxLive();
-    window.openMessages=function(id){if(typeof window.dccOpenCoachChatV2==='function')return window.dccOpenCoachChatV2(id);console.error('DCC chat no disponible',id)};
+    window.openMessages=function(id){window.dccOpenCoachChatV2(id)};
     window.sendCoachMessage=function(id){return window.dccCoachSendV2(id)};
     window.dccSendMessage=function(id){return window.dccCoachSendV2(id)};
   }
