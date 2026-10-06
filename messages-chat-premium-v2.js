@@ -222,9 +222,11 @@
     await syncMessages(id);
     await markCoachMessagesSeen(id);
     renderCoachChat(id);
+    openLive(id);
   };
   window.dccStopCoachMessagePolling=function(){
     stopPolling();
+    closeLive();
     window.__dccCoachChatV2=null;
   };
   window.dccCloseCoachChatV2=function(){
@@ -250,6 +252,22 @@
       if(input)input.disabled=false;if(button)button.disabled=false;
     }
   };
+
+  let liveChannel=null;
+  function closeLive(){
+    const client=db();
+    if(liveChannel&&client&&typeof client.removeChannel==='function'){try{client.removeChannel(liveChannel)}catch(_){}}
+    liveChannel=null;
+  }
+  function openLive(id){
+    closeLive();
+    const client=db();if(!client||typeof client.channel!=='function'||!id)return;
+    liveChannel=client.channel('dccCoachChat'+String(id)).on('postgres_changes',{event:'INSERT',schema:'public',table:'client_messages'},async payload=>{
+      if(String(payload?.new?.client_id||'')!==String(id))return;
+      await syncMessages(id);
+      if(String(window.__dccCoachChatV2||'')===String(id)){refreshCoachChat(id);await markCoachMessagesSeen(id)}
+    }).subscribe();
+  }
 
   let timer=null;
   function stopPolling(){if(timer){clearInterval(timer);timer=null}}
