@@ -287,6 +287,11 @@
     finally{if(input)input.value=''}
   };
 
+  window.dccCoachSendVoiceBlobV2=async function(blob,mime){
+    const id=window.__dccCoachChatV2,client=db(),media=window.dccMessageMedia;if(!id||!client||!media||!blob)return;
+    try{toastSafe('Enviando audio…');const ext=String(mime||'').includes('mp4')?'m4a':String(mime||'').includes('ogg')?'ogg':'webm';const file=new File([blob],'nota-voz.'+ext,{type:mime||'audio/webm'});const a=await media.upload(id,file,'audio');const auth=await client.auth.getUser(),user=auth?.data?.user;if(!user)throw new Error('Sesión no disponible');const out=await client.from('client_messages').insert({client_id:id,sender:'Daniel Campins',sender_role:'coach',sender_user_id:user.id,message:'',attachment_type:'audio',attachment_path:a.path,attachment_name:a.name,attachment_mime:a.mime,attachment_size:a.size});if(out.error)throw out.error;await syncMessages(id);refreshCoachChat(id);toastSafe('Audio enviado')}catch(e){console.error('DCC audio entrenador:',e);toastSafe('No se pudo enviar el audio')}
+  };
+
   let voiceRecorderV2=null,voiceChunksV2=[],voiceStreamV2=null,voiceButtonV2=null;
   window.dccCoachToggleVoiceV2=async function(button){
     try{
