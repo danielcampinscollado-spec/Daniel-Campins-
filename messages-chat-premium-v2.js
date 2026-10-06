@@ -149,8 +149,7 @@
 
   function bubble(m,c){
     const mine=isCoach(m),d=messageDate(m);
-    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${attachmentHtml(m)}${esc(messageText(m)).replace(/
-/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
+    return `<div class="dcc-mcv2-row ${mine?'mine':''}">${mine?'':`<div class="dcc-mcv2-mini">${esc(initials(c?.name||'C'))}</div>`}<div class="dcc-mcv2-bubble">${attachmentHtml(m)}${esc(messageText(m)).replace(/\\n/g,'<br>')}<div class="dcc-mcv2-time">${esc(timeFmt(d))}${mine?'<span class="dcc-mcv2-check">✓✓</span>':''}</div></div></div>`;
   }
   function messagesHtml(id,c){
     const t=thread(id);
