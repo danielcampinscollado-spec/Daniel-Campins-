@@ -287,6 +287,19 @@
     finally{if(input)input.value=''}
   };
 
+  let voiceRecorderV2=null,voiceChunksV2=[],voiceStreamV2=null,voiceButtonV2=null;
+  window.dccCoachToggleVoiceV2=async function(button){
+    try{
+      if(voiceRecorderV2&&voiceRecorderV2.state==='recording'){voiceRecorderV2.stop();return}
+      if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toastSafe('Tu dispositivo no permite grabar audio aquí');return}
+      voiceStreamV2=await navigator.mediaDevices.getUserMedia({audio:true});voiceChunksV2=[];voiceButtonV2=button;
+      voiceRecorderV2=new MediaRecorder(voiceStreamV2);
+      voiceRecorderV2.ondataavailable=e=>{if(e.data&&e.data.size)voiceChunksV2.push(e.data)};
+      voiceRecorderV2.onstop=async()=>{const rec=voiceRecorderV2,type=rec.mimeType||'audio/webm';voiceStreamV2?.getTracks().forEach(t=>t.stop());voiceButtonV2?.classList.remove('recording');voiceRecorderV2=null;const blob=new Blob(voiceChunksV2,{type});if(!blob.size)return;await dccCoachSendVoiceBlobV2(blob,type)};
+      voiceRecorderV2.start();button?.classList.add('recording');toastSafe('Grabando nota de voz · pulsa otra vez para enviar');
+    }catch(e){voiceStreamV2?.getTracks().forEach(t=>t.stop());voiceRecorderV2=null;button?.classList.remove('recording');console.error('DCC voz entrenador:',e);toastSafe('No se pudo acceder al micrófono')}
+  };
+
   let inboxLive=null;
   function startInboxLive(){
     const client=db();if(!client||typeof client.channel!=='function'||inboxLive)return;
