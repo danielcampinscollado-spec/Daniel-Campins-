@@ -108,13 +108,12 @@
   }
 
   async function syncMessages(){
-    const db=database();if(!db)return false;
+    const db=database(),id=activeClientId();if(!db||!id)return false;
     try{
-      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role').order('created_at',{ascending:true});
+      const {data:rows,error}=await db.from('client_messages').select('client_id,sender,message,created_at,sender_role').eq('client_id',String(id)).order('created_at',{ascending:true});
       if(error)throw error;
-      const d=appData(),next={};(d.clients||[]).forEach(c=>next[c.id]=[]);
-      (rows||[]).forEach(r=>{if(!next[r.client_id])next[r.client_id]=[];next[r.client_id].push([r.sender||'',r.message||'',r.created_at||null,r.sender_role||null])});
-      d.messages=next;persistLocal();return true;
+      const d=appData();d.messages=d.messages||{};d.messages[id]=(rows||[]).map(r=>[r.sender||'',r.message||'',r.created_at||null,r.sender_role||null]);
+      persistLocal();return true;
     }catch(e){console.error('DCC sync mensajes:',e);return false}
   }
 
