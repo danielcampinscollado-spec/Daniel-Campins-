@@ -135,9 +135,10 @@
     document.head.appendChild(s);
   }
 
+  const signedMediaUrls=new Map();
   async function hydrateAttachmentUrls(id){
     const client=db(),items=appData().messages?.[id]||[];if(!client)return;
-    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path||a.url)return;try{const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,3600);if(!error&&data?.signedUrl)a.url=data.signedUrl}catch(_){}}));
+    await Promise.all(items.map(async m=>{const a=messageAttachment(m);if(!a?.path)return;try{if(signedMediaUrls.has(a.path)){a.url=signedMediaUrls.get(a.path);return}const {data,error}=await client.storage.from('message-attachments').createSignedUrl(a.path,21600);if(!error&&data?.signedUrl){signedMediaUrls.set(a.path,data.signedUrl);a.url=data.signedUrl}}catch(_){}}));
   }
   function attachmentHtml(m){
     const a=messageAttachment(m);if(!a)return'';
@@ -210,7 +211,7 @@
     const followNewest=distanceToBottom<140;
     const previousHeight=root.scrollHeight;
     const previousY=window.scrollY;
-    const playing=stream.querySelector('audio:not([paused])');if(playing&&!playing.paused)return;
+    const playing=Array.from(stream.querySelectorAll('audio')).some(a=>!a.paused&&!a.ended);if(playing)return;
     const next=messagesHtml(id,c);if(stream.innerHTML===next)return;stream.innerHTML=next;
     requestAnimationFrame(()=>{
       if(followNewest)window.scrollTo(0,document.documentElement.scrollHeight);
