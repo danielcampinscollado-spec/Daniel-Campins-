@@ -8478,40 +8478,20 @@ if(screen==="messages" && !window.__dccCoachMessagesSyncedRoute && typeof window
 }
 if(screen!=="messages")window.__dccCoachMessagesSyncedRoute=false;
 if(screen==="messages"){
-  const messageClients=(data.clients||[]).slice().sort((a,b)=>{
-    const am=data.messages?.[a.id]||[], bm=data.messages?.[b.id]||[];
-    return new Date(bm.at(-1)?.[2]||0)-new Date(am.at(-1)?.[2]||0);
-  });
+  const isClientMessage=m=>{const role=String(m?.[3]||'').trim().toLowerCase();if(role)return role==='client';return !/daniel|coach|trainer|entrenador|admin/.test(String(m?.[0]||'').trim().toLowerCase())};
+  const unreadFor=c=>{const msgs=data.messages?.[c.id]||[],lastClient=msgs.slice().reverse().find(isClientMessage),seen=data.notificationState?.[c.id]?.coachMessageSeenAt||null;return !!lastClient?.[2]&&(!seen||new Date(lastClient[2])>new Date(seen))};
+  const messageClients=(data.clients||[]).slice().sort((a,b)=>{const au=unreadFor(a),bu=unreadFor(b);if(au!==bu)return bu-au;const am=data.messages?.[a.id]||[],bm=data.messages?.[b.id]||[];return new Date(bm.at(-1)?.[2]||0)-new Date(am.at(-1)?.[2]||0)});
+  const unreadCount=messageClients.filter(unreadFor).length;
+  const withMessages=messageClients.filter(x=>(data.messages?.[x.id]||[]).length).length;
   html=`
   <div class="dcc-coach-messages-light" style="padding:0 4px 100px;max-width:760px;margin:0 auto">
-    <div style="margin-bottom:11px">
-      <h1 style="margin:0;color:#17191d;font-size:28px;line-height:1.05">Conversaciones</h1>
-      <p style="margin:4px 0 0;color:#777f89;font-size:13px">Mensajes de tus clientes</p>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px">
+      <div><div style="color:#a66d0d;font-size:9px;font-weight:850;letter-spacing:2px;text-transform:uppercase">Comunicación</div><h1 style="margin:3px 0 0;color:#17191d;font-size:25px;line-height:1.05">Conversaciones</h1><p style="margin:3px 0 0;color:#777f89;font-size:11px">${withMessages} conversaciones activas</p></div>
+      <div style="min-width:70px;padding:7px 10px;border:1px solid #e4c98f;border-radius:14px;background:${unreadCount?'#fff0c5':'#fffdf9'};text-align:center"><b style="display:block;color:#8f5e08;font-size:18px;line-height:1">${unreadCount}</b><span style="display:block;margin-top:3px;color:#777f89;font-size:8px;font-weight:800;text-transform:uppercase">sin leer</span></div>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;height:42px;padding:0 13px;margin-bottom:9px;border:1px solid #e7d5b5;border-radius:16px;background:#fffdf9">
-      <span style="color:#b17b1d;font-size:19px">⌕</span>
-      <input id="messages-search" placeholder="Buscar cliente..." oninput="const q=this.value.toLowerCase().trim();document.querySelectorAll('[data-message-client]').forEach(el=>el.style.display=el.dataset.messageClient.includes(q)?'':'none')" style="width:100%;border:0!important;outline:0;background:transparent;color:#17191d;font-size:15px;padding:0!important">
-    </div>
-    <div style="display:grid;gap:7px">
-    ${messageClients.map(c=>{
-      const msgs=data.messages?.[c.id]||[], last=msgs.at(-1);
-      const isClientMessage=m=>{
-        const role=String(m?.[3]||'').trim().toLowerCase();
-        if(role)return role==='client';
-        const sender=String(m?.[0]||'').trim().toLowerCase();
-        return !/daniel|coach|trainer|entrenador|admin/.test(sender);
-      };
-      const lastClientMessage=msgs.slice().reverse().find(isClientMessage)||null;
-      const coachSeenAt=data.notificationState?.[c.id]?.coachMessageSeenAt||null;
-      const unread=!!lastClientMessage&&!!lastClientMessage?.[2]&&(!coachSeenAt||new Date(lastClientMessage[2])>new Date(coachSeenAt));
-      const initials=String(c.name||'').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();
-      const when=last?.[2]?new Date(last[2]).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}):'';
-      return `<button type="button" data-message-client="${esc(String(c.name||'').toLowerCase())}" onclick="openMessages('${c.id}')" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid #ead9bb;border-radius:16px;background:#fffdf9;text-align:left;color:#17191d;box-shadow:0 8px 24px rgba(120,82,20,.05)">
-        <span style="width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:#f6ecd9;color:#9c6913;font-weight:800">${esc(initials||'C')}</span>
-        <span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small style="color:#8b8f96;flex:none">${esc(when)}</small></span><span style="display:flex;align-items:center;gap:6px;margin-top:2px;color:#7a8088;font-size:12px;min-width:0">${unread?'<i style="width:7px;height:7px;border-radius:50%;background:#d7a62f;flex:none"></i>':''}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(last?.[1]||'Sin mensajes')}</span></span></span>
-        <span style="color:#b17b1d;font-size:21px">›</span>
-      </button>`;
-    }).join('')}
+    <div style="display:flex;align-items:center;gap:9px;height:40px;padding:0 12px;margin-bottom:8px;border:1px solid #e7d5b5;border-radius:14px;background:#fffdf9"><span style="color:#b17b1d;font-size:18px">⌕</span><input id="messages-search" placeholder="Buscar cliente..." oninput="const q=this.value.toLowerCase().trim();document.querySelectorAll('[data-message-client]').forEach(el=>el.style.display=el.dataset.messageClient.includes(q)?'':'none')" style="width:100%;border:0!important;outline:0;background:transparent;color:#17191d;font-size:14px;padding:0!important"></div>
+    <div style="display:grid;gap:6px">
+    ${messageClients.map(c=>{const msgs=data.messages?.[c.id]||[],last=msgs.at(-1),unread=unreadFor(c),initials=String(c.name||'').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase();let when='';if(last?.[2]){const d=new Date(last[2]),today=new Date();when=d.toDateString()===today.toDateString()?d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}return `<button type="button" data-message-client="${esc(String(c.name||'').toLowerCase())}" onclick="openMessages('${c.id}')" style="width:100%;display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid ${unread?'#d7a62f':'#ead9bb'};border-radius:15px;background:${unread?'#fff8e5':'#fffdf9'};text-align:left;color:#17191d;box-shadow:0 6px 18px rgba(120,82,20,.045)"><span style="position:relative;width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;background:#f6ecd9;color:#9c6913;font-weight:800">${esc(initials||'C')}${unread?'<i style="position:absolute;right:-1px;top:-1px;width:9px;height:9px;border:2px solid #fff8e5;border-radius:50%;background:#d7a62f"></i>':''}</span><span style="min-width:0;flex:1"><span style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small style="color:#8b8f96;flex:none;font-size:9px">${esc(when)}</small></span><span style="display:flex;align-items:center;gap:5px;margin-top:3px;color:${unread?'#5f4a21':'#7a8088'};font-size:11px;min-width:0;font-weight:${unread?'700':'500'}"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(last?.[1]||'Sin mensajes')}</span></span></span><span style="color:#b17b1d;font-size:19px">›</span></button>`}).join('')}
     </div>
   </div>`;
 }
