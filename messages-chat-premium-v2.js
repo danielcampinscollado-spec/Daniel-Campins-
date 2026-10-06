@@ -362,8 +362,13 @@
   });
 
   function install(){
-    injectCss();
-    startInboxLive();
+    /* Register navigation globals first. Realtime/CSS setup must never block chat entry. */
+    window.openMessages=function(id){return window.dccOpenCoachChatV2(id)};
+    window.sendCoachMessage=function(id){return window.dccCoachSendV2(id)};
+    window.dccSendMessage=function(id){return window.dccCoachSendV2(id)};
+    try{injectCss()}catch(e){console.error('DCC mensajes CSS:',e)}
+    try{startInboxLive()}catch(e){console.error('DCC mensajes realtime:',e)}
+    return;
     window.openMessages=function(id){window.dccOpenCoachChatV2(id)};
     window.sendCoachMessage=function(id){return window.dccCoachSendV2(id)};
     window.dccSendMessage=function(id){return window.dccCoachSendV2(id)};
