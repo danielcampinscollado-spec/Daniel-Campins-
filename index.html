@@ -8466,6 +8466,17 @@ if(screen==="routines"){
   return;
 }
 
+if(screen==="messages" && !window.__dccCoachMessagesSyncedRoute && typeof window.dccSyncCoachMessagesV2==="function"){
+  window.__dccCoachMessagesSyncedRoute=true;
+  main.innerHTML='<div style="padding:24px 14px;color:#777f89;font-size:12px">Actualizando conversaciones…</div>';
+  Promise.resolve(window.dccSyncCoachMessagesV2()).finally(()=>{
+    if((window.currentApp||'')==='coach'&&(window.currentScreen||'')==='messages'){
+      window.showCoach('messages');
+    }
+  });
+  return;
+}
+if(screen!=="messages")window.__dccCoachMessagesSyncedRoute=false;
 if(screen==="messages"){
   const messageClients=(data.clients||[]).slice().sort((a,b)=>{
     const am=data.messages?.[a.id]||[], bm=data.messages?.[b.id]||[];
@@ -8685,7 +8696,7 @@ window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnai
 
 <script src="./client-checkin-messages-premium-v1.js?v=20261006-scoped-chat1"></script>
 
-<script src="./messages-chat-premium-v2.js?v=20261001-unread-seen1"></script>
+<script src="./messages-chat-premium-v2.js?v=20261006-authority-sync1"></script>
 
 <script src="./checkin-coach-sync-v2.js?v=20261001-private-photos1"></script>
 
