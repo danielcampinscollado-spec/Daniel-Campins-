@@ -6281,10 +6281,7 @@ async function openApp(app){
     // no debe bloquear la primera pintura del entrenador.
     window.__dccCoachClientsHydrated=false;
     window.__dccCoachPlanDataHydrated=false;
-    let __dccResumeCtx=null;
-    try{__dccResumeCtx=JSON.parse(localStorage.getItem('dccCoachClientContextV1')||'null')}catch(_){}
-    const __dccResumeValid=!!(__dccResumeCtx?.id&&Date.now()-Number(__dccResumeCtx.at||0)<12*60*60*1000);
-    if(!__dccResumeValid)showCoach("dashboard");
+    showCoach("dashboard");
 
     setupMessageRealtime();
     // Client rows are the base identity set. Load them first, then hydrate
@@ -6292,9 +6289,7 @@ async function openApp(app){
     // tasks until diet + routine data have finished loading from Supabase.
     loadClientsFromSupabase().then(()=>{
       window.__dccCoachClientsHydrated=true;
-      if(__dccResumeValid&&typeof window.dccClientAdmin==="function"){
-        window.dccClientAdmin(String(__dccResumeCtx.id),String(__dccResumeCtx.tab||"summary"));
-      }else if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
+      if(window.currentApp==="coach"&&window.currentScreen==="dashboard")showCoach("dashboard");
       return Promise.allSettled([
       loadDietsFromSupabase(),
       loadRoutinesFromSupabase(),
@@ -8689,12 +8684,12 @@ window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnai
 <script src="./coach-client-plan-status-v1.js?v=20261004-expiry-renewal1"></script>
 
 <script src="./coach-light-stable-v1.js?v=20261002-single-clients-authority1"></script>
-<script src="./coach-premium-core-v13.js?v=20261007-resume-context1"></script>
+<script src="./coach-premium-core-v13.js?v=20261007-remove-stale-context1"></script>
 <script src="./client-light-stable-v1.js?v=20260922-light-surfaces2"></script>
 <script src="./client-food-light-premium-v1.js?v=20260922-diet-pdf-restore1"></script>
 <script src="./client-diet-print-premium-v1.js?v=20261004-trial-download-lock1"></script>
 <script src="./training-exercise-picker-v2.js?v=20261003-library-authority2"></script>
-<script src="./training-coach-fixes-v1.js?v=20261007-foreground-authority1"></script>
+<script src="./training-coach-fixes-v1.js?v=20261007-remove-resume-conflict1"></script>
 <script src="./coach-ai-plan-assistant-v1.js?v=20261003-library-authority2"></script>
 <script src="./training-superset-v1.js?v=20261003-library-authority1"></script>
 <script src="./client-training.js?v=20261005-manual-video-only1"></script>
