@@ -109,49 +109,15 @@
     });
   }
   function addExtraFields(){const id=String(window.selectedClient??'');if(!id)return;const days=routineDays(id);addDayRestFields(id,days);addExerciseFields(id,days);}
-  const EDIT_STATE_KEY='dcc_coach_training_edit_state_v2';
-  function saveTrainingEditState(){
-    const id=String(window.selectedClient??'');if(!id)return;
-    const inTraining=!!document.querySelector('#coach-main .dcc-tr-days')||!!window.__dccTrainingEdit;
-    if(!inTraining)return;
-    try{localStorage.setItem(EDIT_STATE_KEY,JSON.stringify({id,edit:!!window.__dccTrainingEdit,open:Number.isInteger(window.__dccTrainingOpen)?window.__dccTrainingOpen:0,at:Date.now()}));}catch(_){}
-  }
-  function restoreTrainingEditState(){
-    let st=null;try{st=JSON.parse(localStorage.getItem(EDIT_STATE_KEY)||'null')}catch(_){}
-    if(!st?.id||Date.now()-Number(st.at||0)>2*60*60*1000)return;
-    try{
-      window.selectedClient=String(st.id);
-      if(st.edit){window.__dccTrainingEdit=true;window.__dccTrainingOpen=Number.isInteger(st.open)?st.open:0;}
-      const restore=()=>{try{
-        if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
-        else if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
-        addExtraFields();
-      }catch(_){}};
-      restore();
-      setTimeout(restore,80);
-      setTimeout(restore,260);
-    }catch(_){}
-  }
-  function guardForegroundTraining(){
-    let st=null;try{st=JSON.parse(localStorage.getItem(EDIT_STATE_KEY)||'null')}catch(_){}
-    if(!st?.id||!st.edit||Date.now()-Number(st.at||0)>2*60*60*1000)return;
-    const enforce=()=>{try{
-      window.currentApp='coach';window.currentScreen='clients';window.selectedClient=String(st.id);
-      window.__dccTrainingEdit=true;window.__dccTrainingOpen=Number.isInteger(st.open)?st.open:0;
-      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
-    }catch(_){}};
-    enforce();setTimeout(enforce,40);setTimeout(enforce,180);setTimeout(enforce,500);
-  }
+  // iOS resume state is owned by the coach navigation authority.
+  // Do not force a client/training render from this enhancement module.
   function ensure(){installCss();wrapExerciseModal();addExtraFields();}
   function scheduleEnsure(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;ensure();});}
 
   ensure();
   document.addEventListener('DOMContentLoaded',ensure,{once:true});
   window.addEventListener('load',ensure,{once:true});
-  window.addEventListener('pagehide',saveTrainingEditState);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)saveTrainingEditState();});
-  window.addEventListener('pageshow',()=>{ensure();restoreTrainingEditState();});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){guardForegroundTraining();requestAnimationFrame(guardForegroundTraining);}}); window.addEventListener('focus',guardForegroundTraining);
+  window.addEventListener('pageshow',ensure);
   const root=document.getElementById('coach-main')||document.body;
   new MutationObserver(scheduleEnsure).observe(root,{childList:true,subtree:true});
 })();
