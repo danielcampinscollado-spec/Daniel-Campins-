@@ -66,7 +66,7 @@ function contextText(kind,id){
   if(kind==='routine'&&c.preferred_training_days)parts.push('Días indicados: '+c.preferred_training_days);
   if(kind==='routine'&&c.training_experience)parts.push('Experiencia: '+c.training_experience);
   if(c.current_injury&&c.injury_details)parts.push('Lesión registrada');
-  if(c.food_allergy||c.foods_to_avoid||c.foodsToAvoid)parts.push('Restricciones alimentarias registradas');
+  if(kind==='diet'&&(c.food_allergy||c.foods_to_avoid||c.foodsToAvoid))parts.push('Restricciones alimentarias registradas');
   return parts.length?parts.join(' · '):'La IA utilizará los datos disponibles del cuestionario del cliente.';
 }
 window.dccAIPlanClose=function(){document.getElementById('dcc-ai-plan-overlay')?.remove()};
