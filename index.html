@@ -6281,7 +6281,21 @@ async function openApp(app){
     // no debe bloquear la primera pintura del entrenador.
     window.__dccCoachClientsHydrated=false;
     window.__dccCoachPlanDataHydrated=false;
-    showCoach("dashboard");
+    let restoredCoachView=false;
+    try{
+      const savedView=JSON.parse(sessionStorage.getItem('dccCoachViewV2')||'null');
+      if(savedView?.kind==='client'&&savedView.id&&typeof window.dccClientAdmin==='function'){
+        window.selectedClient=String(savedView.id);
+        window.__dccTrainingEdit=!!savedView.edit;
+        window.__dccTrainingOpen=Number.isInteger(savedView.open)?savedView.open:null;
+        window.dccClientAdmin(String(savedView.id),String(savedView.tab||'summary'));
+        restoredCoachView=true;
+      }else if(savedView?.kind==='screen'&&savedView.screen&&savedView.screen!=='dashboard'){
+        showCoach(String(savedView.screen));
+        restoredCoachView=true;
+      }
+    }catch(_){}
+    if(!restoredCoachView)showCoach("dashboard");
 
     setupMessageRealtime();
     // Client rows are the base identity set. Load them first, then hydrate
