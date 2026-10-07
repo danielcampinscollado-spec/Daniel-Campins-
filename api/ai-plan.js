@@ -260,6 +260,9 @@ module.exports=async function handler(req,res){
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
     if(catalog.length)userPayload.available_exercises=catalog;
 
+    const requestedDietOptions=kind==='diet'&&/\b3\s*(?:opciones?|alternativas?)\b/i.test(instructions)?3:2;
+    const format=responseFormat(kind);
+    if(kind==='diet'){for(const day of ['training','rest'])format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.minItems=requestedDietOptions,format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.maxItems=requestedDietOptions;}
     const aiRes=await fetch(AI_GATEWAY_URL,{
       method:'POST',
       headers:{Authorization:'Bearer '+gatewayToken,'Content-Type':'application/json'},
@@ -269,7 +272,7 @@ module.exports=async function handler(req,res){
           {role:'system',content:systemPrompt(kind)},
           {role:'user',content:JSON.stringify(userPayload)}
         ],
-        response_format:responseFormat(kind)
+        response_format:format
       })
     });
     const payload=await aiRes.json().catch(()=>({}));
