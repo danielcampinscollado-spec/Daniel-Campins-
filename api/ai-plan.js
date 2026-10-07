@@ -249,6 +249,7 @@ module.exports=async function handler(req,res){
       :[];
     const context=clientContext(client);
     const nutrition_reference=kind==='diet'?nutritionTargets(client):null;
+    const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
     if(!gatewayToken)return json(res,503,{error:'La conexión segura con la IA no está configurada'});
 
@@ -261,7 +262,6 @@ module.exports=async function handler(req,res){
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
     if(catalog.length)userPayload.available_exercises=catalog;
 
-    const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const format=responseFormat(kind);
     console.log('DCC AI request',{kind,requestedDietOptions,instructions:instructions.slice(0,160)});
     const aiRes=await fetch(AI_GATEWAY_URL,{
@@ -299,10 +299,12 @@ module.exports=async function handler(req,res){
       if(outside.length)return json(res,422,{error:'La IA propuso ejercicios fuera de la biblioteca DCC. Vuelve a generarlo.',conflicts:[...new Set(outside)].slice(0,10)});
     }
     if(kind==='diet'){
+      const optionConflicts=[];
       for(const day of ['training','rest'])for(const meal of result?.diet?.[day]?.meals||[]){
-        if(requestedDietOptions===3&&Array.isArray(meal.options)&&meal.options.length===2){const clone=JSON.parse(JSON.stringify(meal.options[1]));clone.name='Opción 3';meal.options.push(clone)}
-        if(requestedDietOptions===2&&Array.isArray(meal.options)&&meal.options.length>2)meal.options=meal.options.slice(0,2);
+        const count=Array.isArray(meal.options)?meal.options.length:0;
+        if(count!==requestedDietOptions)optionConflicts.push(String(meal?.name||'Comida')+' ('+day+'): '+count+' opciones');
       }
+      if(optionConflicts.length)return json(res,422,{error:'La IA no respetó el número de opciones solicitado. Vuelve a generarlo.',conflicts:optionConflicts.slice(0,12)});
     }
     const conflicts=validateAgainstClient(result,kind,client,instructions);
     if(conflicts.length)return json(res,422,{error:'El borrador contradice datos del cuestionario. Vuelve a generarlo.',conflicts});
