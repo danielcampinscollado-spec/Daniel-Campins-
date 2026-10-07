@@ -8482,13 +8482,12 @@ if(screen==="routines"){
 
 if(screen==="messages" && !window.__dccCoachMessagesSyncedRoute && typeof window.dccSyncCoachMessagesV2==="function"){
   window.__dccCoachMessagesSyncedRoute=true;
-  main.innerHTML='<div style="padding:24px 14px;color:#777f89;font-size:12px">Actualizando conversaciones…</div>';
-  Promise.resolve(window.dccSyncCoachMessagesV2()).finally(()=>{
+  Promise.resolve(window.dccSyncCoachMessagesV2()).then(()=>{
     if((window.currentApp||'')==='coach'&&(window.currentScreen||'')==='messages'){
+      window.__dccCoachMessagesSyncedRoute=true;
       window.showCoach('messages');
     }
-  });
-  return;
+  }).catch(e=>console.error('DCC sync mensajes:',e));
 }
 if(screen!=="messages")window.__dccCoachMessagesSyncedRoute=false;
 if(screen==="messages"){
