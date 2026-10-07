@@ -44,7 +44,9 @@
 
   function exerciseImage(exercise){
     const clean=value=>String(value||'').replace(/^\.\/+/,'');
-    const direct=exercise?.image||exercise?.imageStart||exercise?.illustration||exercise?.ilustracion||'';
+    const client=(window.data?.clients||[]).find?.(x=>String(x?.id)===String(window.activeWorkout?.clientId||window.currentClientId||''))||{};
+    const female=['female','mujer','femenino','f'].includes(String(client?.sex??client?.sexo??client?.gender??'').trim().toLowerCase());
+    const direct=female?(exercise?.femaleImage||exercise?.imageFemale||exercise?.female_image||''):(exercise?.image||exercise?.imageStart||exercise?.illustration||exercise?.ilustracion||'');
     if(direct)return clean(direct);
     const library=Array.isArray(window.exerciseLibraryFull)?window.exerciseLibraryFull:[];
     const id=String(exercise?.id??exercise?.exerciseId??exercise?.exercise_id??'').trim();
@@ -64,7 +66,7 @@
         if(re.test(name)){hit=library.find(x=>String(x?.id??'')===libraryId)||null;if(hit)break;}
       }
     }
-    return clean(hit?.image||hit?.imageStart||'');
+    if(female){const femaleAsset=hit?.femaleImage||hit?.imageFemale||hit?.female_image||hit?.imagen_femenina||'';if(femaleAsset)return clean(femaleAsset);return '';} return clean(hit?.image||hit?.imageStart||'');
   }
 
   function historyStats(clientId,exercise){
