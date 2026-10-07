@@ -241,6 +241,11 @@
 
   window.dccSyncCoachMessagesV2=syncMessages;
   window.dccOpenCoachChatV2=function(id){
+    /* Chat is a first-class navigation substate. Persist it before rendering so
+       iOS/PWA restore events cannot replace the active conversation with a stale
+       client profile or the messages inbox. */
+    try{sessionStorage.setItem('dccCoachViewV2',JSON.stringify({kind:'chat',id:String(id)}));sessionStorage.setItem('dccCoachLastScreen','messages')}catch(_){}
+    try{window.currentApp='coach';window.currentScreen='messages';currentApp='coach';currentScreen='messages'}catch(_){}
     /* Navigation is local and must be immediate; network work is background-only. */
     renderCoachChat(id);
     Promise.resolve().then(async()=>{
@@ -259,6 +264,7 @@
   };
   window.dccCloseCoachChatV2=function(){
     window.dccStopCoachMessagePolling();
+    try{sessionStorage.setItem('dccCoachViewV2',JSON.stringify({kind:'screen',screen:'messages'}));sessionStorage.setItem('dccCoachLastScreen','messages')}catch(_){}
     if(typeof showCoach==='function')showCoach('messages');
   };
   window.dccCoachSendV2=async function(id){
