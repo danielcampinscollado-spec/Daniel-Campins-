@@ -282,7 +282,6 @@
       if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id);
       toastSafe('Mensaje enviado');
       syncMessages(id).then(()=>{if(String(window.__dccCoachChatV2??'')===String(id))refreshCoachChat(id)});
-      else if(typeof window.dccOpenChat==='function'&&String(window.__dccOpenChat??'')===String(id))window.dccOpenChat(id);
     }catch(e){
       console.error('DCC mensaje entrenador v2:',e);toastSafe('No se pudo enviar el mensaje');
     }finally{
