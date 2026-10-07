@@ -66,7 +66,7 @@
         if(re.test(name)){hit=library.find(x=>String(x?.id??'')===libraryId)||null;if(hit)break;}
       }
     }
-    if(female){const femaleAsset=hit?.femaleImage||hit?.imageFemale||hit?.female_image||hit?.imagen_femenina||'';if(femaleAsset)return clean(femaleAsset);return '';} return clean(hit?.image||hit?.imageStart||'');
+    if(female){const femaleAsset=hit?.femaleImage||hit?.imageFemale||hit?.female_image||hit?.imagen_femenina||'';if(femaleAsset)return clean(femaleAsset);/* The exercise catalogue currently has one verified illustration per exercise, not a female variant. Never blank the workout for female clients: use the canonical exercise illustration until a real female-specific asset exists. */return clean(hit?.image||hit?.imageStart||'');} return clean(hit?.image||hit?.imageStart||'');
   }
 
   function historyStats(clientId,exercise){
