@@ -255,6 +255,7 @@ module.exports=async function handler(req,res){
     const userPayload={
       task:kind==='routine'?'Crear borrador de rutina':'Crear borrador de alimentación',
       trainer_instructions:instructions,
+      requested_options_per_meal:kind==='diet'?requestedDietOptions:undefined,
       client_context:context
     };
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
@@ -262,7 +263,6 @@ module.exports=async function handler(req,res){
 
     const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const format=responseFormat(kind);
-    if(kind==='diet'){for(const day of ['training','rest'])format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.minItems=requestedDietOptions,format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.maxItems=requestedDietOptions;}
     console.log('DCC AI request',{kind,requestedDietOptions,instructions:instructions.slice(0,160)});
     const aiRes=await fetch(AI_GATEWAY_URL,{
       method:'POST',
@@ -276,7 +276,8 @@ module.exports=async function handler(req,res){
         response_format:format
       })
     });
-    const payload=await aiRes.json().catch(()=>({}));
+    const raw=await aiRes.text();
+    let payload={};try{payload=raw?JSON.parse(raw):{}}catch(_){payload={message:raw.slice(0,1000)}}
     if(!aiRes.ok){
       const detail=payload?.error?.message||payload?.message||payload?.error||'error';console.error('DCC AI gateway:',aiRes.status,detail);
       console.error('DCC AI gateway failure',{status:aiRes.status,detail:cleanText(detail,500)});return json(res,502,{error:'La IA no pudo generar el borrador.',detail:cleanText(detail,300)});
@@ -284,7 +285,7 @@ module.exports=async function handler(req,res){
     const text=parseContent(payload);
     let result;
     try{result=JSON.parse(text)}catch(_){return json(res,502,{error:'La IA devolvió un borrador no válido. Inténtalo de nuevo.'})}
-    if(!validate(result,kind))return json(res,502,{error:'El borrador recibido no tiene el formato de DCC Fitness'});
+    if(!validate(result,kind)){console.error('DCC AI invalid draft',{kind,preview:text.slice(0,700)});return json(res,502,{error:'El borrador recibido no tiene el formato de DCC Fitness'});}
     if(kind==='routine'&&catalog.length){
       const key=v=>String(v||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       const allowed=new Map(catalog.map(x=>[key(x.name),x]));
@@ -296,6 +297,12 @@ module.exports=async function handler(req,res){
         ex.library_id=hit.id;
       }
       if(outside.length)return json(res,422,{error:'La IA propuso ejercicios fuera de la biblioteca DCC. Vuelve a generarlo.',conflicts:[...new Set(outside)].slice(0,10)});
+    }
+    if(kind==='diet'){
+      for(const day of ['training','rest'])for(const meal of result?.diet?.[day]?.meals||[]){
+        if(requestedDietOptions===3&&Array.isArray(meal.options)&&meal.options.length===2){const clone=JSON.parse(JSON.stringify(meal.options[1]));clone.name='Opción 3';meal.options.push(clone)}
+        if(requestedDietOptions===2&&Array.isArray(meal.options)&&meal.options.length>2)meal.options=meal.options.slice(0,2);
+      }
     }
     const conflicts=validateAgainstClient(result,kind,client,instructions);
     if(conflicts.length)return json(res,422,{error:'El borrador contradice datos del cuestionario. Vuelve a generarlo.',conflicts});
