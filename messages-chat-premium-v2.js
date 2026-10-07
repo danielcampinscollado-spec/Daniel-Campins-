@@ -190,10 +190,10 @@
     }
   }
 
-  function renderCoachChat(id){
+  function renderCoachChat(id,clientHint=null){
     injectCss();
-    const c=clientById(id),main=document.getElementById('coach-main');
-    if(!c||!main)return;
+    const c=clientById(id)||clientHint||{id:String(id),name:'Cliente'},main=document.getElementById('coach-main');
+    if(!main)return;
     window.__dccCoachChatV2=id;
     try{if(typeof closeModal==='function')closeModal()}catch(e){}
     main.className='dcc-message-chat-v2';
@@ -240,14 +240,14 @@
   };
 
   window.dccSyncCoachMessagesV2=syncMessages;
-  window.dccOpenCoachChatV2=function(id){
+  window.dccOpenCoachChatV2=function(id,clientHint=null){
     /* Chat is a first-class navigation substate. Persist it before rendering so
        iOS/PWA restore events cannot replace the active conversation with a stale
        client profile or the messages inbox. */
     try{sessionStorage.setItem('dccCoachViewV2',JSON.stringify({kind:'chat',id:String(id)}));sessionStorage.setItem('dccCoachLastScreen','messages')}catch(_){}
     try{window.currentApp='coach';window.currentScreen='messages';currentApp='coach';currentScreen='messages'}catch(_){}
     /* Navigation is local and must be immediate; network work is background-only. */
-    renderCoachChat(id);
+    renderCoachChat(id,clientHint);
     Promise.resolve().then(async()=>{
       try{
         await syncMessages(id);
