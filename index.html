@@ -8487,7 +8487,7 @@ if(screen==="routines"){
 if(screen==="messages" && !window.__dccCoachMessagesSyncedRoute && typeof window.dccSyncCoachMessagesV2==="function"){
   window.__dccCoachMessagesSyncedRoute=true;
   Promise.resolve(window.dccSyncCoachMessagesV2()).then(()=>{
-    if((window.currentApp||'')==='coach'&&(window.currentScreen||'')==='messages'){
+    if((window.currentApp||'')==='coach'&&(window.currentScreen||'')==='messages'&&!window.__dccCoachChatV2){
       window.__dccCoachMessagesSyncedRoute=true;
       window.showCoach('messages');
     }
