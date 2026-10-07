@@ -6284,7 +6284,11 @@ async function openApp(app){
     let restoredCoachView=false;
     try{
       const savedView=JSON.parse(sessionStorage.getItem('dccCoachViewV2')||'null');
-      if(savedView?.kind==='client'&&savedView.id&&typeof window.dccClientAdmin==='function'){
+      if(savedView?.kind==='chat'&&savedView.id&&typeof window.dccOpenCoachChatV2==='function'){
+        showCoach('messages');
+        window.dccOpenCoachChatV2(String(savedView.id));
+        restoredCoachView=true;
+      }else if(savedView?.kind==='client'&&savedView.id&&typeof window.dccClientAdmin==='function'){
         window.selectedClient=String(savedView.id);
         window.__dccTrainingEdit=!!savedView.edit;
         window.__dccTrainingOpen=Number.isInteger(savedView.open)?savedView.open:null;
