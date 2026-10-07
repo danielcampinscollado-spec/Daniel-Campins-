@@ -260,9 +260,10 @@ module.exports=async function handler(req,res){
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
     if(catalog.length)userPayload.available_exercises=catalog;
 
-    const requestedDietOptions=kind==='diet'&&/\b3\s*(?:opciones?|alternativas?)\b/i.test(instructions)?3:2;
+    const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const format=responseFormat(kind);
     if(kind==='diet'){for(const day of ['training','rest'])format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.minItems=requestedDietOptions,format.json_schema.schema.properties.diet.properties[day].properties.meals.items.properties.options.maxItems=requestedDietOptions;}
+    console.log('DCC AI request',{kind,requestedDietOptions,instructions:instructions.slice(0,160)});
     const aiRes=await fetch(AI_GATEWAY_URL,{
       method:'POST',
       headers:{Authorization:'Bearer '+gatewayToken,'Content-Type':'application/json'},
@@ -278,7 +279,7 @@ module.exports=async function handler(req,res){
     const payload=await aiRes.json().catch(()=>({}));
     if(!aiRes.ok){
       const detail=payload?.error?.message||payload?.message||payload?.error||'error';console.error('DCC AI gateway:',aiRes.status,detail);
-      return json(res,502,{error:'La IA no pudo generar el borrador.',detail:cleanText(detail,300)});
+      console.error('DCC AI gateway failure',{status:aiRes.status,detail:cleanText(detail,500)});return json(res,502,{error:'La IA no pudo generar el borrador.',detail:cleanText(detail,300)});
     }
     const text=parseContent(payload);
     let result;
