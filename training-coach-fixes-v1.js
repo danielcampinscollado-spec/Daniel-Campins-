@@ -122,12 +122,14 @@
     try{
       window.selectedClient=String(st.id);
       if(st.edit){window.__dccTrainingEdit=true;window.__dccTrainingOpen=Number.isInteger(st.open)?st.open:0;}
-      if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
-      else if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
-      setTimeout(()=>{try{
-        if(st.edit&&typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
+      const restore=()=>{try{
+        if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(String(st.id),'training');
+        else if(typeof window.showClientAdmin==='function')window.showClientAdmin(String(st.id),'training');
         addExtraFields();
-      }catch(_){}},120);
+      }catch(_){}};
+      restore();
+      setTimeout(restore,80);
+      setTimeout(restore,260);
     }catch(_){}
   }
   function ensure(){installCss();wrapExerciseModal();addExtraFields();}
@@ -139,7 +141,7 @@
   window.addEventListener('pagehide',saveTrainingEditState);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)saveTrainingEditState();});
   window.addEventListener('pageshow',()=>{ensure();restoreTrainingEditState();});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)restoreTrainingEditState();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){restoreTrainingEditState();requestAnimationFrame(restoreTrainingEditState);}});
   const root=document.getElementById('coach-main')||document.body;
   new MutationObserver(scheduleEnsure).observe(root,{childList:true,subtree:true});
 })();
