@@ -145,6 +145,8 @@
     return `<section class="dwa3-card dwa3-rest"><div class="dwa3-rest-icon">${icon('timer')}</div><div><span>DESCANSO</span><strong id="rest-timer">${formatRest(remaining)}</strong><small>Recupera antes de la siguiente serie.</small></div><button type="button" onclick="skipRest()">Saltar</button></section>`;
   }
 
+  const equipmentStyle=document.createElement('style');equipmentStyle.textContent=`.dwa3-equipment-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.dwa3-equipment-btn{min-height:58px!important;border:1px solid rgba(217,170,74,.38)!important;border-radius:14px!important;background:#fffaf0!important;color:#765018!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;padding:8px 10px!important}.dwa3-equipment-btn b{display:block;font-size:10px;line-height:1.15}.dwa3-equipment-btn small{display:block;margin-top:3px;font-size:8px;line-height:1.15;color:#9b6b18}.dwa3-equipment-icon{font-size:18px;color:#b77b13}@media(max-width:380px){.dwa3-equipment-actions{grid-template-columns:1fr}.dwa3-equipment-btn{min-height:52px!important}}`;document.head.appendChild(equipmentStyle);
+
   function renderCurrent(workout,exercise,stats,planned,completed,finished){
     const currentIndex=Math.min(completed,Math.max(0,planned-1));
     const previousSeries=stats.latest?.sets?.[currentIndex]||null;
@@ -185,7 +187,7 @@
           <label><b>Repeticiones</b><div class="dwa3-input"><input id="workout-reps" type="number" inputmode="numeric" autocomplete="off" value="" placeholder="0" onfocus="this.select()"><span>reps</span></div><small>${previousSet?`Última vez: ${fmt(previousSet.reps)} repeticiones`:'Sin registro anterior'}</small></label>
         </div>
         ${renderSavedToday(workout.sets)}
-        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${actionLabel} <b>→</b></button>${!exercise.supersetId||((workout.exercises||[]).findIndex(x=>x?.supersetId===exercise.supersetId)===workout.currentExercise)?`<button type="button" onclick="dccDeferWorkoutExercise()" style="width:100%;margin-top:8px;border:1px solid rgba(217,170,74,.38);border-radius:12px;background:transparent;color:#9b6b18;min-height:38px;font-size:9px;font-weight:850">Saltar por ahora · hacer después</button><button type="button" onclick="dccUseAutomaticAlternative()" style="width:100%;margin-top:6px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.025);color:#c8cdd4;min-height:38px;font-size:9px;font-weight:800">${exercise.dccAlternativeOf?'Tampoco tengo esta · buscar otra':'No tengo esta máquina · alternativa automática'}</button>`:''} `}
+        <button class="dwa3-primary" type="button" onclick="saveWorkoutSet()">${actionLabel} <b>→</b></button>${!exercise.supersetId||((workout.exercises||[]).findIndex(x=>x?.supersetId===exercise.supersetId)===workout.currentExercise)?`<div class="dwa3-equipment-actions"><button type="button" class="dwa3-equipment-btn" onclick="dccDeferWorkoutExercise()"><span class="dwa3-equipment-icon">▷|</span><span><b>Máquina ocupada</b><small>Hacer ejercicio después</small></span></button><button type="button" class="dwa3-equipment-btn" onclick="dccUseAutomaticAlternative()"><span class="dwa3-equipment-icon">⇄</span><span><b>${exercise.dccAlternativeOf?'Buscar otra alternativa':'No tengo esta máquina'}</b><small>Mostrar alternativa</small></span></button></div>`:''} `}
     </section>`;
   }
 
