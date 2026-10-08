@@ -150,8 +150,10 @@ function applyRoutine(id,draft){
   window.__dccTrainingBackup=JSON.stringify(d.routines[id]??null);
   d.routines[id]=mapRoutine(draft);
   window.__dccTrainingEdit=true;window.__dccTrainingOpen=0;
-  try{window.dccMarkTrainingDraftDirty?.(id)}catch(_){}
+  window.__dccAIInternalDraftReady=true;
   if(typeof window.dccClientAdmin==='function'){window.__dccAIInternalRoutineNavigation=true;try{window.dccClientAdmin(id,'training')}finally{window.__dccAIInternalRoutineNavigation=false}}
+  try{window.dccMarkTrainingDraftDirty?.(id)}catch(_){}
+  window.__dccAIInternalDraftReady=false;
   notify('Borrador de rutina generado. Revísalo antes de guardar.');
 }
 function applyDiet(id,draft){
