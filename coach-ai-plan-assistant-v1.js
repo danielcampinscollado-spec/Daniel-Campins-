@@ -112,8 +112,8 @@ function mapRoutine(result){
         image:String(hit?.image??hit?.imageStart??''),
         sets:String(Math.max(1,Number(x?.sets)||1)),
         reps:String(x?.reps||''),
-        restBetweenSets:Math.max(0,Number(x?.rest_between_sets)||0),
-        restBetweenExercises:Math.max(0,Number(x?.rest_between_exercises)||0)
+        restBetweenSets:method==='normal'?60:Math.max(0,Number(x?.rest_between_sets)||0),
+        restBetweenExercises:method==='normal'?120:Math.max(0,Number(x?.rest_between_exercises)||0)
       };
       const libraryVideo=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
       const generatedVideo=String(x?.video_url||x?.videoUrl||'').trim();
