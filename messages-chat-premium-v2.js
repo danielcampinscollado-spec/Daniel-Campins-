@@ -87,7 +87,7 @@
       .dcc-mcv2-clients{margin-left:6px}.dcc-mcv2-person{display:flex;align-items:center;gap:11px;margin:14px 1px 13px;padding:0 0 13px;border-bottom:1px solid rgba(224,173,76,.20)}
       .dcc-mcv2-avatar{width:50px;height:50px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.68);border-radius:50%;background:radial-gradient(circle at 50% 30%,rgba(217,170,74,.13),#0a0e11 72%);color:${GOLD2};font-size:16px;font-weight:850}
       .dcc-mcv2-person h1{margin:0;color:#f7f5f0;font-size:22px;letter-spacing:-.55px}.dcc-mcv2-status{display:flex;align-items:center;gap:6px;margin-top:5px;color:#8f98a3;font-size:9px}.dcc-mcv2-dot{width:7px;height:7px;border-radius:50%;background:#5bd879;box-shadow:0 0 10px rgba(91,216,121,.4)}
-      .dcc-mcv2-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 16px}.dcc-mcv2-day{display:flex;align-items:center;gap:8px;margin:6px 0;color:#747e89;font-size:8.5px}.dcc-mcv2-day:before,.dcc-mcv2-day:after{content:'';height:1px;flex:1;background:#242d35}
+      .dcc-mcv2-stream{display:flex;flex-direction:column;gap:8px;padding:3px 0 16px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;min-height:0;flex:1;scroll-behavior:auto}.dcc-message-chat-v2 .dcc-mcv2{display:flex;flex-direction:column;height:calc(100dvh - 205px - env(safe-area-inset-bottom));min-height:240px;overflow:hidden}.dcc-message-chat-v2 .dcc-mcv2-person{flex:none}.dcc-message-chat-v2 .dcc-mcv2-back{align-self:flex-start;flex:none}.dcc-mcv2-day{display:flex;align-items:center;gap:8px;margin:6px 0;color:#747e89;font-size:8.5px}.dcc-mcv2-day:before,.dcc-mcv2-day:after{content:'';height:1px;flex:1;background:#242d35}
       .dcc-mcv2-row{display:flex;align-items:flex-end;gap:7px}.dcc-mcv2-row.mine{justify-content:flex-end}.dcc-mcv2-mini{width:29px;height:29px;display:grid;place-items:center;flex:none;border:1px solid rgba(224,173,76,.55);border-radius:50%;background:#090d10;color:${GOLD2};font-size:8px;font-weight:850}
       .dcc-mcv2-bubble{max-width:min(78%,560px);padding:10px 11px;border:1px solid #2a333b;border-radius:15px;background:linear-gradient(145deg,#11171c,#0b1014);color:#f3f1ed;font-size:12px;line-height:1.42;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}.dcc-mcv2-row.mine .dcc-mcv2-bubble{border-color:#b6862e;background:radial-gradient(circle at 100% 0,rgba(217,170,74,.13),transparent 42%),linear-gradient(145deg,#211a0f,#100e0a)}
       .dcc-mcv2-media{display:block;margin:0 0 7px}.dcc-mcv2-photo{display:block;width:min(280px,100%);max-height:330px;object-fit:cover;border-radius:11px}.dcc-mcv2-audio{display:block;width:min(280px,100%);height:38px}.dcc-mcv2-attachment-loading{font-size:9px;color:#818b96}
@@ -198,7 +198,7 @@
     try{if(typeof closeModal==='function')closeModal()}catch(e){}
     main.className='dcc-message-chat-v2';
     main.innerHTML=`<div class="dcc-mcv2"><button type="button" class="dcc-mcv2-back" onclick="dccCloseCoachChatV2()">← Mensajes</button><header class="dcc-mcv2-person"><div class="dcc-mcv2-avatar">${esc(initials(c.name))}</div><div><h1>${esc(c.name||'Cliente')}</h1><div class="dcc-mcv2-status"><span class="dcc-mcv2-dot"></span>Conversación activa</div></div></header><div class="dcc-mcv2-stream" id="dccCoachChatStreamV2">${messagesHtml(id,c)}</div></div><div class="dcc-mcv2-composer"><button type="button" class="dcc-mcv2-photo-btn" onclick="document.getElementById('dccCoachPhotoV2').click()" aria-label="Enviar foto"><span aria-hidden="true">＋</span></button><input id="dccCoachPhotoV2" class="dcc-mcv2-file" type="file" accept="image/*" onchange="dccCoachPhotoSelectedV2(this)"><textarea id="dccCoachMessageV2" class="dcc-mcv2-input" rows="1" placeholder="Escribe un mensaje..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();dccCoachSendV2('${esc(id)}')}"></textarea><button type="button" class="dcc-mcv2-audio-btn" onclick="dccCoachToggleVoiceV2(this)" aria-label="Grabar nota de voz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a1 1 0 1 1 2 0 7 7 0 0 1-6 6.93V21h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2.07A7 7 0 0 1 5 12a1 1 0 1 1 2 0 5 5 0 0 0 10 0Z"/></svg></button><button id="dccCoachSendV2Button" type="button" class="dcc-mcv2-send" onclick="dccCoachSendV2('${esc(id)}')" aria-label="Enviar">➤</button></div>`;
-    requestAnimationFrame(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+    requestAnimationFrame(()=>{const stream=document.getElementById('dccCoachChatStreamV2');if(stream)stream.scrollTop=stream.scrollHeight;});
     startPolling();
   }
 
@@ -206,16 +206,15 @@
     if(String(window.__dccCoachChatV2??'')!==String(id))return;
     const c=clientById(id),stream=document.getElementById('dccCoachChatStreamV2');
     if(!c||!stream)return;
-    const root=document.documentElement;
-    const distanceToBottom=root.scrollHeight-(window.scrollY+window.innerHeight);
-    const followNewest=distanceToBottom<140;
-    const previousHeight=root.scrollHeight;
-    const previousY=window.scrollY;
-    const playing=Array.from(stream.querySelectorAll('audio')).some(a=>!a.paused&&!a.ended);if(playing)return;
-    const next=messagesHtml(id,c);if(stream.innerHTML===next)return;stream.innerHTML=next;
+    const distance=stream.scrollHeight-stream.scrollTop-stream.clientHeight;
+    const followNewest=distance<160;
+    const previousTop=stream.scrollTop,previousHeight=stream.scrollHeight;
+    if(Array.from(stream.querySelectorAll('audio')).some(a=>!a.paused&&!a.ended))return;
+    const next=messagesHtml(id,c);if(stream.innerHTML===next)return;
+    stream.innerHTML=next;
     requestAnimationFrame(()=>{
-      if(followNewest)window.scrollTo(0,document.documentElement.scrollHeight);
-      else window.scrollTo(0,previousY+(document.documentElement.scrollHeight-previousHeight));
+      if(!stream.isConnected)return;
+      stream.scrollTop=followNewest?stream.scrollHeight:previousTop+(stream.scrollHeight-previousHeight);
     });
   }
 
@@ -361,8 +360,11 @@
     timer=setInterval(async()=>{
       if(document.hidden){stopPolling();return}
       const id=window.__dccCoachChatV2;if(!id){stopPolling();return}
+      if(window.__dccCoachMessageSyncBusy)return;
+      window.__dccCoachMessageSyncBusy=true;
       const before=JSON.stringify(appData().messages?.[id]||[]);
-      const ok=await syncMessages(id);
+      let ok=false;
+      try{ok=await syncMessages(id)}finally{window.__dccCoachMessageSyncBusy=false}
       const after=JSON.stringify(appData().messages?.[id]||[]);
       if(ok&&before!==after){
         refreshCoachChat(id);
