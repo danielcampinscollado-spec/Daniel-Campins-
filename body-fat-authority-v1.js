@@ -33,7 +33,12 @@
     d.checkins=d.checkins||{};
     (d.clients||[]).forEach(client=>{
       const id=String(client.id);
-      if(!latest.has(id))return;
+      if(!latest.has(id)){
+        // No verified measurement: never reuse onboarding/demo values as body fat.
+        ['bodyFat','body_fat','bodyFatInitial','initial_body_fat'].forEach(k=>{delete client[k]});
+        if(d.checkins[id])['bodyFat','body_fat'].forEach(k=>{delete d.checkins[id][k]});
+        return;
+      }
       const value=latest.get(id);
       client.bodyFat=value;
       client.body_fat=value;
