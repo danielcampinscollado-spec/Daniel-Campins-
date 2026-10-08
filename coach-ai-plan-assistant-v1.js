@@ -151,7 +151,7 @@ function applyRoutine(id,draft){
   d.routines[id]=mapRoutine(draft);
   window.__dccTrainingEdit=true;window.__dccTrainingOpen=0;
   try{window.dccMarkTrainingDraftDirty?.(id)}catch(_){}
-  if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'training');
+  if(typeof window.dccClientAdmin==='function'){window.__dccAIInternalRoutineNavigation=true;try{window.dccClientAdmin(id,'training')}finally{window.__dccAIInternalRoutineNavigation=false}}
   notify('Borrador de rutina generado. Revísalo antes de guardar.');
 }
 function applyDiet(id,draft){
