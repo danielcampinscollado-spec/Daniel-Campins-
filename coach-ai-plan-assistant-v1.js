@@ -115,6 +115,9 @@ function mapRoutine(result){
         restBetweenSets:Math.max(0,Number(x?.rest_between_sets)||0),
         restBetweenExercises:Math.max(0,Number(x?.rest_between_exercises)||0)
       };
+      const libraryVideo=String(hit?.videoUrl||hit?.video_url||hit?.video||'').trim();
+      const generatedVideo=String(x?.video_url||x?.videoUrl||'').trim();
+      if(libraryVideo||generatedVideo)ex.videoUrl=libraryVideo||generatedVideo;
       if(method==='superset'){
         const group=String(x?.method_group||'A').replace(/[^a-z0-9_-]/gi,'').slice(0,18)||'A';
         ex.supersetId='ai-'+di+'-'+group;
