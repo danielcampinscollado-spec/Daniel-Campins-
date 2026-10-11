@@ -115,9 +115,27 @@
   }
 
   function addMealControls(id){
-    // Meal ordering belongs to the explicit meal setup flow, not the generated/edit draft view.
+    // Only expose whole-meal removal while the explicit diet draft is active.
+    // Changes remain in the draft until Guardar plan is pressed.
+    if(!isEditing(id))return false;
     const p=pane();if(!p)return false;
-    p.querySelectorAll('.dcc-meal-edit-actions').forEach(el=>el.remove());
+    const type=window.__dccDietType||'training';
+    p.querySelectorAll('.dcc-diet-meal[data-meal-index]').forEach(article=>{
+      if(article.querySelector('.dcc-diet-delete-whole'))return;
+      const index=Number(article.dataset.mealIndex);
+      const m=meal(id,type,index);
+      if(!Number.isInteger(index)||!m)return;
+      const head=article.querySelector('.dcc-diet-meal-head');
+      if(!head)return;
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='dcc-diet-delete-whole';
+      button.textContent='Eliminar comida completa';
+      button.setAttribute('aria-label','Eliminar '+String(m.name||'comida')+' completa');
+      button.style.cssText='display:block;width:calc(100% - 20px);margin:0 10px 9px;min-height:34px;padding:7px 10px;border:1px solid rgba(190,75,65,.30);border-radius:10px;background:#fff8f5;color:#a34439;font-size:11px;font-weight:800;text-align:center';
+      button.addEventListener('click',()=>window.dccDietRemoveMeal?.(id,type,index));
+      head.insertAdjacentElement('afterend',button);
+    });
     return true;
   }
 
