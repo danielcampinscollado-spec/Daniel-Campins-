@@ -108,7 +108,9 @@ function fix(){
 
   media.classList.remove('dcc-muscle-reference','dcc-muscle-artwork');
 
-  const cl=(getData()?.clients||[]).find?.(x=>String(x?.id)===String(getClient()))||{};\n  const sex=String(cl?.sex??cl?.sexo??cl?.gender??'').trim().toLowerCase();\n  const anatomy=(sex==='female'||sex==='mujer'||sex==='femenino'||sex==='f')?'female':(sex==='male'||sex==='hombre'||sex==='masculino'||sex==='m')?'male':String(workout?.anatomy||'male').toLowerCase()==='female'?'female':'male';
+  const cl=(getData()?.clients||[]).find?.(x=>String(x?.id)===String(getClient()))||{};
+  const sex=String(cl?.sex??cl?.sexo??cl?.gender??'').trim().toLowerCase();
+  const anatomy=(sex==='female'||sex==='mujer'||sex==='femenino'||sex==='f')?'female':(sex==='male'||sex==='hombre'||sex==='masculino'||sex==='m')?'male':String(workout?.anatomy||'male').toLowerCase()==='female'?'female':'male';
   const visual=visualFor(m,anatomy);
   if(!visual){
     media.style.visibility='hidden';
