@@ -7809,28 +7809,24 @@ ${
 }
 
 
-function startRestTimer(){
-
+function dccUnlockWorkoutAudio(){
+  // iOS Safari requires AudioContext to be resumed from a direct user gesture.
   try{
-
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if(!window.workoutAudioCtx){
-      window.workoutAudioCtx = new AudioContext();
-    }
-
-    if(window.workoutAudioCtx.state === "suspended"){
-      window.workoutAudioCtx.resume();
-    }
-
-  }catch(e){
-
-    console.log("Audio no disponible:",e);
-
-  }
+    const AudioCtor=window.AudioContext||window.webkitAudioContext;
+    if(!AudioCtor)return false;
+    const ctx=window.workoutAudioCtx||(window.workoutAudioCtx=new AudioCtor());
+    if(ctx.state==='suspended')ctx.resume().catch(e=>console.warn('Audio suspendido:',e));
+    // A silent buffer primes audio on iOS without producing an unexpected beep.
+    const source=ctx.createBufferSource();
+    source.buffer=ctx.createBuffer(1,1,ctx.sampleRate);
+    source.connect(ctx.destination);
+    source.start(0);
+    return true;
+  }catch(e){console.warn('Audio no disponible:',e);return false;}
+}
+function startRestTimer(){
   clearInterval(window.restTimerInterval);
+  window.lastBeepSecond=null;
 
   const workout = window.activeWorkout;
 
@@ -7873,7 +7869,8 @@ function startRestTimer(){
         window.AudioContext ||
         window.webkitAudioContext;
 
-      const audioCtx = window.workoutAudioCtx || new AudioContext();
+      const audioCtx=window.workoutAudioCtx;
+      if(!audioCtx||audioCtx.state!=='running')return;
 
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
@@ -7947,6 +7944,8 @@ function saveWorkoutSet(){
   const exercise=workout.exercises[workout.currentExercise];
   if(!exercise)return;
 
+  // Save-series is a user tap: unlock the sound here, before any async timer.
+  dccUnlockWorkoutAudio();
   const kgInput=document.getElementById("workout-kg");
   const repsInput=document.getElementById("workout-reps");
   if(!kgInput||!repsInput)return;
@@ -8251,7 +8250,7 @@ function nextWorkoutExercise(){
 
 
 async function finishWorkout(){
-
+  if(window.__dccWorkoutSaving)return;
   clearInterval(window.restTimerInterval);
   window.restTimerInterval=null;
 
@@ -8331,7 +8330,7 @@ const totalDays =
   };
 
   /* Guardar definitivamente en Supabase antes de confirmar la sesión local. */
-
+  window.__dccWorkoutSaving=true;
   try{
     if(!supabaseClient) throw new Error("Sin conexión con Supabase");
     const {error}=await supabaseClient
@@ -8343,9 +8342,11 @@ const totalDays =
       "Error guardando entrenamiento en Supabase:",
       error
     );
-    toast("No se pudo guardar el entrenamiento. Inténtalo de nuevo.");
+    window.__dccWorkoutSaving=false;
+    toast("No se pudo guardar el entrenamiento. Sigue en esta pantalla y vuelve a intentarlo.");
     return;
   }
+  window.__dccWorkoutSaving=false;
 
   /* Mantener también copia local */
 
