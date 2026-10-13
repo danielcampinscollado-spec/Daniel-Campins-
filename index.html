@@ -7870,7 +7870,7 @@ function startRestTimer(){
         window.webkitAudioContext;
 
       const audioCtx=window.workoutAudioCtx;
-      if(!audioCtx||audioCtx.state!=='running')return;
+      if(!audioCtx||audioCtx.state!=='running')throw new Error('Audio no activado');
 
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
@@ -8273,7 +8273,8 @@ const totalDays =
     }
   }
 
-  if(lastExercise && workout.sets.length){
+  if(lastExercise && workout.sets.length && !workout.__dccLastExerciseCaptured){
+    workout.__dccLastExerciseCaptured=true;
     workout.completedExercises.push({
 
       name:lastExercise.name || "Ejercicio",
