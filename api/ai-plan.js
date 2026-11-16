@@ -118,6 +118,38 @@ async function verifyCoachAndClient(token,clientId){
   if(!rows?.length)throw Object.assign(new Error('Cliente no disponible para esta sesión'),{status:404});
   return rows[0];
 }
+async function loadPreviousRoutine(token,clientId){
+  const url='/rest/v1/client_routines?client_id=eq.'+encodeURIComponent(clientId)+'&select=routine&limit=1';
+  const res=await supabase(url,token);
+  if(!res.ok)throw Object.assign(new Error('No se pudo consultar la rutina anterior'),{status:503});
+  const rows=await res.json();
+  const days=Array.isArray(rows?.[0]?.routine)?rows[0].routine:[];
+  return days.slice(0,7).map((day,i)=>({
+    day:i+1,
+    title:cleanText(day?.name||day?.title||'',90),
+    muscles:Array.isArray(day?.muscleGroups)?day.muscleGroups.slice(0,3):[],
+    exercises:(Array.isArray(day?.exercises)?day.exercises:[]).slice(0,10).map(ex=>({
+      name:cleanText(ex?.name||ex?.nombre||ex?.exercise||'',100),
+      muscle:cleanText(ex?.muscle||'',60),
+      sets:Number(ex?.sets??ex?.series)||0,
+      reps:cleanText(ex?.reps??ex?.repetitions??'',40)
+    }))
+  }));
+}
+function routineNearDuplicate(previous,proposed){
+  if(!previous?.length||!proposed?.length||previous.length!==proposed.length)return false;
+  const key=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+  let total=0,matched=0;
+  for(let i=0;i<previous.length;i++){
+    const old=(previous[i].exercises||[]).map(e=>key(e.name)+'|'+Number(e.sets||0)+'|'+key(e.reps));
+    const now=(proposed[i].exercises||[]).map(e=>key(e.name)+'|'+Number(e.sets||0)+'|'+key(e.reps));
+    const available=new Map();
+    for(const x of old)available.set(x,(available.get(x)||0)+1);
+    for(const x of now){if((available.get(x)||0)>0){matched++;available.set(x,available.get(x)-1)}}
+    total+=Math.max(old.length,now.length);
+  }
+  return total>0&&matched/total>=0.85;
+}
 function clientContext(c){
   return {
     goal:c.goal||'',
@@ -248,6 +280,7 @@ module.exports=async function handler(req,res){
       ?body.exerciseCatalog.slice(0,250).map(x=>({id:cleanText(x?.id,100),name:cleanText(x?.name,80),muscle:cleanText(x?.muscle,40),equipment:cleanText(x?.equipment,60)})).filter(x=>x.id&&x.name)
       :[];
     const context=clientContext(client);
+    const previousRoutine=kind==='routine'?await loadPreviousRoutine(token,clientId):[];
     const nutrition_reference=kind==='diet'?nutritionTargets(client):null;
     const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
@@ -261,6 +294,10 @@ module.exports=async function handler(req,res){
     };
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
     if(catalog.length)userPayload.available_exercises=catalog;
+    if(kind==='routine'&&previousRoutine.length){
+      userPayload.previous_routine=previousRoutine;
+      userPayload.renewal_requirement='Crear una rutina NUEVA, no devolver la anterior. Mantener las restricciones del cliente, pero modificar de forma significativa ejercicios, distribución o progresión. Conservar ejercicios clave solo cuando tenga sentido. No copiar los mismos días, ejercicios, series y repeticiones.';
+    }
 
     const format=responseFormat(kind);
     console.log('DCC AI request',{kind,requestedDietOptions,instructions:instructions.slice(0,160)});
@@ -308,6 +345,9 @@ module.exports=async function handler(req,res){
     }
     const conflicts=validateAgainstClient(result,kind,client,instructions);
     if(conflicts.length)return json(res,422,{error:'El borrador contradice datos del cuestionario. Vuelve a generarlo.',conflicts});
+    if(kind==='routine'&&routineNearDuplicate(previousRoutine,result.routine)){
+      return json(res,422,{error:'La IA ha repetido prácticamente la rutina anterior. No se ha sustituido el plan de la clienta. Pide cambios más concretos y vuelve a generar.'});
+    }
     return json(res,200,{kind,model:AI_MODEL,draft:result});
   }catch(error){
     console.error('DCC AI plan:',error);

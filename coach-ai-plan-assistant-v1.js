@@ -77,7 +77,7 @@ window.dccAIPlanOpen=function(kind,id){
   window.dccAIPlanClose();css();
   const overlay=document.createElement('div');overlay.id='dcc-ai-plan-overlay';overlay.className='dcc-ai-overlay';
   const title=kind==='routine'?'Crear rutina con IA':'Crear dieta con IA';
-  overlay.innerHTML=`<div class="dcc-ai-card" role="dialog" aria-modal="true"><div class="dcc-ai-head"><div><span class="dcc-ai-kicker">IA · DCC FITNESS</span><h2>${title}</h2><p>Describe lo que quieres. Recibirás un borrador editable, nunca se enviará automáticamente.</p></div><button class="dcc-ai-close" type="button" onclick="dccAIPlanClose()">×</button></div><div class="dcc-ai-context">${esc(contextText(kind,id))}</div><label class="dcc-ai-label" for="dcc-ai-instructions">¿Qué quieres preparar?</label><textarea id="dcc-ai-instructions" class="dcc-ai-input" maxlength="1400" placeholder="${esc(defaultPlaceholder(kind))}"></textarea><div class="dcc-ai-chips">${placeholders(kind).map(x=>`<button type="button" class="dcc-ai-chip" data-ai-chip="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="dcc-ai-status" class="dcc-ai-status"></div><div class="dcc-ai-actions"><button type="button" class="dcc-ai-cancel" onclick="dccAIPlanClose()">Cancelar</button><button id="dcc-ai-generate" type="button" class="dcc-ai-generate">✦ Generar borrador</button></div><div class="dcc-ai-note">Revisa siempre el plan antes de guardarlo o enviarlo al cliente.</div></div>`;
+  overlay.innerHTML=`<div class="dcc-ai-card" role="dialog" aria-modal="true"><div class="dcc-ai-head"><div><span class="dcc-ai-kicker">IA · DCC FITNESS</span><h2>${title}</h2><p>Describe lo que quieres. La nueva rutina se comparará con la anterior. El borrador no se envía automáticamente.</p></div><button class="dcc-ai-close" type="button" onclick="dccAIPlanClose()">×</button></div><div class="dcc-ai-context">${esc(contextText(kind,id))}</div><label class="dcc-ai-label" for="dcc-ai-instructions">¿Qué quieres preparar?</label><textarea id="dcc-ai-instructions" class="dcc-ai-input" maxlength="1400" placeholder="${esc(defaultPlaceholder(kind))}"></textarea><div class="dcc-ai-chips">${placeholders(kind).map(x=>`<button type="button" class="dcc-ai-chip" data-ai-chip="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="dcc-ai-status" class="dcc-ai-status"></div><div class="dcc-ai-actions"><button type="button" class="dcc-ai-cancel" onclick="dccAIPlanClose()">Cancelar</button><button id="dcc-ai-generate" type="button" class="dcc-ai-generate">✦ Generar borrador</button></div><div class="dcc-ai-note">Revisa siempre el plan antes de guardarlo o enviarlo al cliente.</div></div>`;
   overlay.addEventListener('click',e=>{if(e.target===overlay)window.dccAIPlanClose()});
   overlay.querySelectorAll('[data-ai-chip]').forEach(b=>b.addEventListener('click',()=>window.dccAIPlanFill(b.dataset.aiChip||'')));
   overlay.querySelector('#dcc-ai-generate').addEventListener('click',()=>generate(kind,id));
@@ -150,14 +150,24 @@ function mapDiet(result){
 }
 function applyRoutine(id,draft){
   const d=appData();d.routines=d.routines||{};
-  window.__dccTrainingBackup=JSON.stringify(d.routines[id]??null);
+  // Keep the original server-backed routine for Cancelar, even when replacing an existing draft.
+  if(window.__dccTrainingBackup===undefined||String(window.__dccTrainingBackupClient||'')!==String(id)){
+    window.__dccTrainingBackup=JSON.stringify(d.routines[id]??null);
+  }
+  window.__dccTrainingBackupClient=String(id);
   d.routines[id]=mapRoutine(draft);
   window.__dccTrainingEdit=true;window.__dccTrainingOpen=0;
+  window.__dccRoutineDraftDirty=true;
   window.__dccAIInternalDraftReady=true;
-  if(typeof window.dccClientAdmin==='function'){window.__dccAIInternalRoutineNavigation=true;try{window.dccClientAdmin(id,'training')}finally{window.__dccAIInternalRoutineNavigation=false}}
-  try{window.dccMarkTrainingDraftDirty?.(id)}catch(_){}
-  window.__dccAIInternalDraftReady=false;
-  notify('Borrador de rutina generado. Revísalo antes de guardar.');
+  try{
+    if(typeof window.dccClientAdmin==='function'){
+      window.__dccAIInternalRoutineNavigation=true;
+      try{window.dccClientAdmin(id,'training')}
+      finally{window.__dccAIInternalRoutineNavigation=false}
+    }
+    window.dccMarkTrainingDraftDirty?.(id);
+  }finally{window.__dccAIInternalDraftReady=false}
+  notify('Nueva rutina en borrador. Pulsa Guardar cambios y después Enviar rutina al cliente.');
 }
 function applyDiet(id,draft){
   const d=appData();d.diets=d.diets||{};
@@ -186,6 +196,9 @@ async function generate(kind,id){
   const input=document.getElementById('dcc-ai-instructions'),button=document.getElementById('dcc-ai-generate'),status=document.getElementById('dcc-ai-status');
   const instructions=String(input?.value||'').trim();
   if(instructions.length<3){status.textContent='Escribe primero cómo quieres el plan.';status.classList.add('on');input?.focus();return}
+  if(kind==='routine'&&window.__dccTrainingEdit&&window.__dccRoutineDraftDirty&&
+     String(window.__dccTrainingBackupClient||'')===String(id)&&
+     !window.confirm('Ya tienes cambios de rutina sin guardar. ¿Quieres sustituir ese borrador por uno nuevo generado con IA?'))return;
   button.disabled=true;button.textContent='Generando…';status.textContent='Preparando el borrador con los datos del cliente…';status.classList.add('on');
   try{
     if(!window.supabaseClient)throw new Error('No hay conexión segura con Supabase');
