@@ -3,7 +3,7 @@
 */
 (function(){
 'use strict';
-const BUILD='20261006-auto-alternatives-v1';
+const BUILD='20261116-session-only-alternatives-v2';
 if(window.__dccWorkoutAlternatives===BUILD)return;
 window.__dccWorkoutAlternatives=BUILD;
 
@@ -76,6 +76,8 @@ window.dccUseAutomaticAlternative=async function(){
     return;
   }
   const items=await library();
+  // Avoid applying an async result after the user moved to another exercise.
+  if(window.activeWorkout!==workout||workout.currentExercise!==idx||workout.exercises[idx]!==exercise||!pristine(workout,exercise))return;
   const originalId=String(exercise.dccAlternativeOriginalLibraryId||exercise.libraryId||exercise.id||'');
   const source=items.find(x=>String(x?.id||'')===originalId);
   if(!source){
@@ -88,6 +90,10 @@ window.dccUseAutomaticAlternative=async function(){
     return;
   }
   const tried=[...(exercise.dccAlternativeTried||[]),String(candidate.id)];
+  // Exact original retained only inside the active session, never in the routine.
+  const original=exercise.dccAlternativeOriginalExercise
+    ?JSON.parse(JSON.stringify(exercise.dccAlternativeOriginalExercise))
+    :JSON.parse(JSON.stringify(exercise));
   const replacement={
     ...exercise,
     id:String(candidate.id),
@@ -97,11 +103,31 @@ window.dccUseAutomaticAlternative=async function(){
     dccAlternativeOf:String(exercise.dccAlternativeOf||source.nombre||exercise.name||'Ejercicio'),
     dccAlternativeOriginalLibraryId:originalId,
     dccAlternativeTried:tried,
+    dccAlternativeOriginalExercise:original,
     dccAlternativeReason:'equipment_unavailable'
   };
   delete replacement.videoUrl;delete replacement.video_url;delete replacement.video;
   workout.exercises[idx]=replacement;
   window.renderWorkoutSession?.();
-  notify('Alternativa automática: '+replacement.name);
+  notify('Alternativa solo para este entrenamiento: '+replacement.name);
+};
+window.dccRestoreOriginalWorkoutExercise=function(){
+  const workout=window.activeWorkout;
+  const idx=Number(workout?.currentExercise)||0;
+  const exercise=workout?.exercises?.[idx];
+  if(!workout||!exercise?.dccAlternativeOf)return;
+  if(!pristine(workout,exercise)){
+    notify('Solo puedes volver al original antes de empezar este ejercicio');
+    return;
+  }
+  let original=exercise.dccAlternativeOriginalExercise||null;
+  if(!original){
+    const planned=window.data?.routines?.[workout.clientId]?.[workout.dayIndex]?.exercises||[];
+    original=planned.find(ex=>norm(ex?.name)===norm(exercise.dccAlternativeOf))||null;
+  }
+  if(!original){notify('No se pudo recuperar el ejercicio original de esta sesión');return;}
+  workout.exercises[idx]=JSON.parse(JSON.stringify(original));
+  window.renderWorkoutSession?.();
+  notify('Ejercicio original restaurado');
 };
 })();

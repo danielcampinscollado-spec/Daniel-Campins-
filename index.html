@@ -7178,17 +7178,28 @@ function startWorkout(dayIndex){
     return;
   }
 
-  const exercises = (day.exercises || []).map(ex=>({
-    ...ex,
+  // A fresh session always starts from the coach's canonical routine.
+  // Equipment alternatives are temporary and must never become the weekly default.
+  const exercises = (day.exercises || []).map(ex=>{
+    const canonical=(ex?.dccAlternativeOf&&ex?.dccAlternativeOriginalExercise)
+      ?ex.dccAlternativeOriginalExercise:ex;
+    const {
+      dccAlternativeOf,dccAlternativeOriginalLibraryId,dccAlternativeTried,
+      dccAlternativeReason,dccAlternativeOriginalExercise,
+      ...base
+    }=canonical||{};
+    return {
+    ...base,
     restBetweenSets:
       day.restBetweenSetsGlobal !== undefined
         ? Math.max(0,parseInt(day.restBetweenSetsGlobal)||0)
-        : Math.max(0,parseInt(ex.restBetweenSets)||0),
+        : Math.max(0,parseInt(base.restBetweenSets)||0),
     restBetweenExercises:
       day.restBetweenExercisesGlobal !== undefined
         ? Math.max(0,parseInt(day.restBetweenExercisesGlobal)||0)
-        : Math.max(0,parseInt(ex.restBetweenExercises)||0)
-  }));
+        : Math.max(0,parseInt(base.restBetweenExercises)||0)
+  };
+  });
 
   if(!exercises.length){
     toast("Este entrenamiento no tiene ejercicios");
@@ -8712,8 +8723,8 @@ window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnai
 <script src="./coach-ai-plan-assistant-v1.js?v=20261116-routine-renewal-guard1"></script>
 <script src="./training-superset-v1.js?v=20261003-library-authority1"></script>
 <script src="./client-training.js?v=20261005-manual-video-only1"></script>
-<script src="./workout-session-premium-v3.js?v=20261007-female-actions2"></script>
-<script src="./workout-alternatives-v1.js?v=20261006-auto-alternatives1"></script>
+<script src="./workout-session-premium-v3.js?v=20261116-alt-session-only2"></script>
+<script src="./workout-alternatives-v1.js?v=20261116-alt-session-only2"></script>
 <script src="./client-home-authority-final-v1.js?v=20261001-home-checkin-mobile1"></script>
 
 <script src="./client-plan-renewal-v1.js?v=20261004-navguard1"></script>
