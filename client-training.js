@@ -218,6 +218,7 @@
       : {allowed:true,reason:'',code:'ready'};
     const completedDays=Array.isArray(d?.completedTrainingDays?.[id])?d.completedTrainingDays[id].map(Number):[];
     const dayCompleted=completedDays.includes(Number(dayIndex));
+    const completedAll=routine.length>0&&routine.every((_,i)=>completedDays.includes(i));
     const startLabel=dayCompleted
       ? '✓ Entrenamiento completado'
       : access.allowed
@@ -283,6 +284,31 @@
         }
         html.dcc-theme-light-premium body #client #client-main .dct3-day.is-locked{background:#fffafa!important;border-color:#e69a9a!important}
         html.dcc-theme-light-premium body #client #client-main .dct3-day.is-locked em{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:13px!important;height:13px!important;border-radius:50%!important;background:#ef3f47!important;color:#fff!important;font-size:11px!important}
+        html.dcc-theme-light-premium body #client #client-main .dct3-week-complete{
+          margin:0 0 12px!important;padding:15px!important;
+          border:1px solid rgba(183,123,19,.27)!important;border-radius:16px!important;
+          background:linear-gradient(135deg,#fffaf0,#f7edda)!important;
+          color:#27231b!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-week-complete strong{
+          display:block!important;font-size:14px!important;font-weight:800!important;line-height:1.3!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-week-complete p{
+          margin:7px 0 12px!important;font-size:12px!important;line-height:1.5!important;color:#666158!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-week-complete-actions{
+          display:flex!important;gap:8px!important;flex-wrap:wrap!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-week-complete-actions button{
+          min-height:39px!important;padding:9px 13px!important;border-radius:11px!important;
+          font-size:12px!important;font-weight:750!important;cursor:pointer!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-restart{
+          border:1px solid #c99538!important;background:#bd8730!important;color:white!important
+        }
+        html.dcc-theme-light-premium body #client #client-main .dct3-not-now{
+          border:1px solid #e3d9c8!important;background:white!important;color:#665e53!important
+        }
         html.dcc-theme-light-premium body #client #client-main .dct3-days{
           display:flex!important;
           gap:6px!important;
@@ -820,6 +846,7 @@
       </style>
       <div class="dcc-training-stable-v3">
         <div class="dct3-eyebrow">ENTRENAMIENTO</div>
+        ${completedAll?`<section class="dct3-week-complete" role="status" aria-live="polite"><strong>✓ ¡Semana de entrenamiento completada!</strong><p>Has terminado tus ${routine.length} entrenamientos programados. ¿Quieres reanudarlos o esperar a la próxima semana? Si reanudas hoy, el siguiente entrenamiento estará disponible mañana.</p><div class="dct3-week-complete-actions"><button type="button" class="dct3-restart">Reanudar entrenamientos</button><button type="button" class="dct3-not-now">Ahora no</button></div></section>`:''}
         <div class="dct3-days" data-count="${Math.min(routine.length,7)}">${dayButtons}</div>
         ${day?`
           <section class="dct3-card dct3-muscles" data-muscles="${muscles.length}"><div><div class="dct3-label">MÚSCULOS DE HOY</div><h2 class="dct3-title">${esc(title)}</h2><div class="dct3-region">${esc(region)}</div></div><div class="dct3-visuals" data-count="${muscles.length}">${visuals}</div></section>
@@ -828,6 +855,16 @@
         `:'<div class="dct3-empty">Todavía no tienes una rutina programada.</div>'}
       </div>`;
 
+    const restart=main.querySelector('.dct3-restart');
+    if(restart)restart.addEventListener('click',async e=>{
+      e.preventDefault();e.stopPropagation();
+      if(restart.disabled)return;
+      restart.disabled=true;restart.textContent='Preparando nuevo ciclo…';
+      try{await window.dccRestartWeeklyTrainingCycle?.(id);}
+      finally{if(restart.isConnected){restart.disabled=false;restart.textContent='Reanudar entrenamientos';}}
+    });
+    const later=main.querySelector('.dct3-not-now');
+    if(later)later.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();later.closest('.dct3-week-complete')?.remove();});
     main.querySelectorAll('.dct3-day').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();window.__dccManualTrainingDaySelection=true;window.trainingDayTab=Number(btn.dataset.day)||0;window.showClient('training');}));
     const view=main.querySelector('.dct3-view');
     if(view)view.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const card=view.closest('.dct3-routine');const open=card?.classList.toggle('open');view.setAttribute('aria-expanded',String(!!open));view.textContent=open?'Ocultar ejercicios':'Ver ejercicios';});

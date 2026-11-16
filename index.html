@@ -5599,6 +5599,53 @@ async function markTrainingDayCompleted(clientId,dayIndex,totalDays){
   return {completedAll:completed.length>=total,synced};
 }
 
+
+/* Repetir la rutina en la misma semana es una decisión explícita del cliente.
+   Solo se reinician las marcas de la semana; nunca se borran las sesiones,
+   cargas, historial ni el bloqueo que impide entrenar dos veces el mismo día. */
+window.dccRestartWeeklyTrainingCycle=async function(clientId){
+  const id=String(clientId||'');
+  if(!id||id!==String(currentClientId||''))return false;
+  if(window.__dccRestartingWeeklyTraining)return false;
+  ensureTrainingProgressWeek(id);
+  const routine=Array.isArray(data.routines?.[id])?data.routines[id]:[];
+  const completed=getCompletedTrainingDays(id);
+  if(!routine.length||!routine.every((_,i)=>completed.includes(i))){
+    toast('Todavía no has completado todos los entrenamientos de la semana');
+    return false;
+  }
+  if(!supabaseClient){
+    toast('Sin conexión. No se ha reiniciado el ciclo');
+    return false;
+  }
+  window.__dccRestartingWeeklyTraining=true;
+  try{
+    const next=getTrainingNextDayIndex(id,routine.length);
+    const {error}=await supabaseClient.from('client_training_progress').upsert({
+      client_id:id,
+      completed_days:[],
+      next_day_index:next,
+      week_start:getCurrentWeekKey(),
+      last_completed_at:data.trainingLastCompletedAt?.[id]||null,
+      updated_at:new Date().toISOString()
+    },{onConflict:'client_id'});
+    if(error)throw error;
+    data.completedTrainingDays[id]=[];
+    data.trainingProgressWeekStart[id]=getCurrentWeekKey();
+    window.trainingDayTab=next;
+    saveData();
+    toast('Nuevo ciclo preparado. El descanso entre días se mantiene');
+    showClient('training');
+    return true;
+  }catch(error){
+    console.error('Error reanudando entrenamientos:',error);
+    toast('No se pudo reanudar. Inténtalo de nuevo');
+    return false;
+  }finally{
+    window.__dccRestartingWeeklyTraining=false;
+  }
+};
+
 /* Acceso secuencial continuo: la rutina nunca reinicia su posición el lunes.
    Solo el next_day_index puede entrenarse. Tras completar un día, el siguiente
    queda bloqueado hasta el siguiente día natural local. */
@@ -5612,6 +5659,11 @@ function getTrainingAccessState(clientId,dayIndex){
   }
 
   const next=getTrainingNextDayIndex(clientId,total);
+  // A completed weekly cycle is not automatically repeated. Ask the client.
+  const completed=getCompletedTrainingDays(clientId);
+  if(routine.every((_,i)=>completed.includes(i))){
+    return {allowed:false,code:"week-complete",reason:"Semana completada. Elige reanudar los entrenamientos"};
+  }
   if(index!==next){
     return {allowed:false,code:"sequence-locked",reason:"Completa los entrenamientos en orden para desbloquear este día"};
   }
@@ -8392,7 +8444,7 @@ const progressResult =
   );
 
 if(progressResult.completedAll){
-  toast("¡Rutina completada! Nuevo ciclo disponible.");
+  toast("¡Has completado los entrenamientos de la semana!");
 }
   window.activeWorkout=null;
 
@@ -8402,7 +8454,8 @@ if(progressResult.completedAll){
     duration:duration
   };
   toast("Entrenamiento completado ✓");
-  showClient("home");
+  // Show the opt-in choice immediately after the last planned day.
+  showClient(progressResult.completedAll?"training":"home");
 
 }
 
@@ -8722,7 +8775,7 @@ window.__dccQuestionnaireStaticEvaluated=typeof window.dccOpenInitialQuestionnai
 <script src="./training-coach-fixes-v1.js?v=20261007-remove-resume-conflict1"></script>
 <script src="./coach-ai-plan-assistant-v1.js?v=20261116-routine-renewal-guard1"></script>
 <script src="./training-superset-v1.js?v=20261003-library-authority1"></script>
-<script src="./client-training.js?v=20261005-manual-video-only1"></script>
+<script src="./client-training.js?v=20261116-weekly-repeat-optin1"></script>
 <script src="./workout-session-premium-v3.js?v=20261116-alt-session-only2"></script>
 <script src="./workout-alternatives-v1.js?v=20261116-alt-session-only2"></script>
 <script src="./client-home-authority-final-v1.js?v=20261001-home-checkin-mobile1"></script>
