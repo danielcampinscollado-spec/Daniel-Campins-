@@ -136,6 +136,50 @@ async function loadPreviousRoutine(token,clientId){
     }))
   }));
 }
+
+async function loadPreviousDiet(token,clientId){
+  const url='/rest/v1/client_diets?client_id=eq.'+encodeURIComponent(clientId)+'&select=diet_type,meals';
+  const res=await supabase(url,token);
+  if(!res.ok)throw Object.assign(new Error('No se pudo consultar la dieta anterior'),{status:503});
+  const rows=await res.json(),previous={training:{meals:[]},rest:{meals:[]}};
+  for(const row of rows||[]){
+    if(!['training','rest'].includes(row?.diet_type))continue;
+    previous[row.diet_type].meals=(Array.isArray(row.meals)?row.meals:[]).slice(0,9).map(m=>({
+      name:cleanText(m?.name,80),
+      options:(Array.isArray(m?.options)?m.options:[]).slice(0,3).map(o=>({
+        name:cleanText(o?.name,100),
+        foods:(Array.isArray(o?.foods)?o.foods:[]).slice(0,7).map(f=>({
+          name:cleanText(Array.isArray(f)?f[0]:f?.name,75)
+        })).filter(f=>f.name)
+      }))
+    }));
+  }
+  return previous;
+}
+function dietNearDuplicate(previous,proposed){
+  const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+  const dish=v=>norm(v).replace(/^opcion\s*\d+\s*/,'').trim();
+  const options=(plan)=>['training','rest'].flatMap(day=>(plan?.[day]?.meals||[]).flatMap(m=>(m.options||[]).map(o=>({
+    dish:dish(o?.name),
+    foods:[...new Set((o?.foods||[]).map(f=>norm(Array.isArray(f)?f[0]:f?.name)).filter(Boolean))]
+  }))));
+  const prior=options(previous).filter(o=>o.dish||o.foods.length);
+  const now=options(proposed).filter(o=>o.dish||o.foods.length);
+  if(!prior.length||!now.length)return {near:false,repeated:0,total:now.length};
+  let repeated=0;
+  for(const candidate of now){
+    const matches=prior.some(old=>{
+      if(candidate.dish.length>5&&old.dish===candidate.dish)return true;
+      const a=new Set(candidate.foods),b=new Set(old.foods);
+      if(a.size<2||b.size<2)return false;
+      const common=[...a].filter(x=>b.has(x)).length;
+      return common>=2&&common/(a.size+b.size-common)>=0.7;
+    });
+    if(matches)repeated++;
+  }
+  return {near:repeated>=Math.max(3,Math.ceil(now.length*0.2)),repeated,total:now.length};
+}
+
 function routineNearDuplicate(previous,proposed){
   if(!previous?.length||!proposed?.length||previous.length!==proposed.length)return false;
   const key=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
@@ -295,7 +339,7 @@ function normMuscle(v){return String(v||'').toLowerCase().normalize('NFD').repla
 function systemPrompt(kind){
   const common='Eres el asistente profesional de DCC Fitness para un entrenador humano. Generas únicamente BORRADORES que el entrenador revisará antes de enviar. No diagnostiques ni trates enfermedades. Prioriza seguridad y respeta lesiones, cirugías, alergias y alimentos a evitar aunque una instrucción del entrenador entre en conflicto. No prescribas medicamentos, hormonas ni suplementos. Devuelve solo el JSON exigido por el esquema.';
   if(kind==='routine')return common+' Debes usar exclusivamente ejercicios presentes en available_exercises cuando se proporcione ese catálogo. Copia exactamente su name y no inventes variantes, agarres, máquinas ni ejercicios fuera del catálogo. El cuestionario del cliente es una restricción funcional del plan, no texto informativo: úsalo antes de programar y no ignores ninguna respuesta relevante. Si faltan datos, no inventes lesiones, alergias ni preferencias. Para rutinas: usa nomenclatura en español, programación realista, descansos en segundos y ejercicios compatibles con el objetivo y experiencia. Si el sexo del cliente es mujer/female, NO selecciones ejercicios con mancuernas salvo ejercicios de hombro, bíceps o tríceps; para pecho, espalda y tren inferior usa otras alternativas disponibles en el catálogo. Programa primero la semana completa y después cada sesión: usa los días disponibles, objetivo, experiencia y recuperación para repartir frecuencia y volumen. Evalúa el volumen semanal de cada grupo muscular antes de fijar las series de cada ejercicio. No decidas 2 series por defecto por ser un accesorio: 2 series solo son válidas cuando el trabajo directo e indirecto del resto de la semana hace suficiente el estímulo; si un músculo no volverá a recibir un estímulo relevante hasta la semana siguiente, dale un volumen directo razonable en esa sesión. Considera el trabajo indirecto de presses, remos y jalones, pero no lo cuentes igual que series directas. En ejercicios principales usa normalmente 3-4 series cuando sea coherente; en accesorios normalmente 2-4 según el volumen semanal acumulado. Evita dejar grupos del tren superior prácticamente sin estímulo en programas de 3 días. Si el entrenador pide tren superior, considera el conjunto completo: pectoral, dorsal/espalda, deltoides, bíceps y tríceps; incluye trabajo de core/abdomen cuando sea coherente con el objetivo y la distribución. No repitas mecánicamente los mismos 3 grupos todos los días: distribuye patrones y volumen con lógica semanal. Las lesiones, cirugías y limitaciones del cuestionario tienen prioridad sobre preferencias de ejercicios. El campo muscles es exclusivamente visual: incluye como máximo 3 grupos principales del día, elegidos por predominio del trabajo; no añadas músculos secundarios solo porque aparezcan en un ejercicio. Usa superseries o rest-pause solo cuando aporten valor o el entrenador lo pida. Una superserie comparte method_group entre sus ejercicios. REST-pause en DCC Fitness usa SIEMPRE exactamente esta secuencia por serie: "12 → 10 → 8 → 6". Cada flecha representa un mini-descanso de EXACTAMENTE 7 segundos. Para cada ejercicio rest-pause, rest_pause_sequence debe ser EXACTAMENTE "12 → 10 → 8 → 6", rest_pause_seconds debe ser EXACTAMENTE 7 y el descanso final debe ser de 90 a 120 segundos. No inventes otras secuencias, no omitas ningún tramo y no escribas explicaciones dentro de rest_pause_sequence. Si hay catálogo de ejercicios, prioriza sus nombres exactos para que DCC pueda asociar imágenes y vídeos.';
-  return common+' El cuestionario del cliente es una restricción funcional del plan, no texto informativo: úsalo antes de crear las comidas. Alergias, intolerancias, alimentos que no le gustan o ha pedido evitar son exclusiones estrictas. Si faltan datos, no inventes restricciones. Para alimentación: crea un plan práctico, realista y fácil de seguir en español. REGLA DE MEDIDAS CASERAS: siempre que un alimento se pueda contar de forma natural, expresa la cantidad en unidades y NO en gramos. Ejemplos: huevos en unidades (2 huevos), pan en rebanadas (2 rebanadas), tortitas de arroz/maíz en unidades (3 tortitas), fruta en piezas o unidades (1 plátano, 1 manzana), yogur en unidades (1 yogur), queso en lonchas cuando proceda. Reserva gramos para alimentos que normalmente se pesan o cuya ración necesita precisión, como arroz, pasta, avena, carne, pescado, patata o frutos secos, y ml para líquidos cuando proceda. No pongas huevos ni claras en gramos en comidas normales. Si propones huevos como plato, escribe \'Huevos\' o \'Tortilla francesa\' y expresa la cantidad como \'2 huevos\', \'3 huevos\', etc. No uses \'tortilla\' de forma ambigua. Las claras separadas solo deben aparecer cuando formen parte lógica de una receta, por ejemplo tortitas proteicas, y en ese caso puedes indicar claras + huevos según la receta. Prioriza que el cliente pueda ejecutar la dieta sin báscula cuando no sea necesaria. Usa nutrition_reference cuando esté disponible como presupuesto diario de referencia y distribúyelo entre TODAS las comidas del día antes de decidir raciones. Individualiza las necesidades energéticas usando sexo, edad, peso, altura, objetivo y contexto de entrenamiento disponibles; no reutilices por defecto las mismas cantidades entre personas. La proteína debe ser proporcional al peso, objetivo y entrenamiento, no una cantidad fija por sexo; evita excesos injustificados. Ajusta carbohidratos, grasas, calorías y tamaño de raciones al perfil y objetivo. Para fuerza o recomposición NO elimines por defecto los hidratos: salvo petición expresa de bajo contenido en hidratos, incluye arroz, patata, avena, pan, pasta, legumbres u otras fuentes de hidratos complejos compatibles en al menos dos comidas del día de entrenamiento, en TODAS las opciones de esas comidas. Devuelve carbohydrates y fat como gramos diarios estimados además de calories y protein; los cuatro valores deben ser coherentes entre sí (4 kcal/g proteína e hidratos, 9 kcal/g grasa). Son estimaciones orientativas, no análisis de composición de alimentos verificados. Todas las opciones deben contener alimentos con cantidades y unidades claras.  Cada comida debe ser SIMPLE: normalmente 2 a 4 alimentos/componentes y NUNCA más de 5. Evita concentrar proteína o calorías desproporcionadamente en una sola comida: reparte la proteína diaria de forma razonablemente uniforme entre las comidas principales y ajusta las raciones para que la suma diaria se aproxime a nutrition_reference. No añadas ingredientes accesorios solo para cuadrar macros ni generes platos con listas interminables. Prioriza combinaciones normales (por ejemplo, una fuente principal de proteína, una de carbohidrato cuando corresponda, verdura/fruta y una grasa cuando haga falta) y raciones plausibles. No aumentes el volumen de comida innecesariamente: para pérdida de grasa, especialmente, busca saciedad con un volumen razonable y sostenible. Respeta de forma estricta alergias y alimentos a evitar. No uses cantidades calóricas extremas ni promesas médicas. Puedes dejar el día de descanso sin comidas solo si el entrenador lo pide expresamente; en caso contrario genera ambos días. Genera 2 opciones para cada comida por defecto. Si el entrenador pide explícitamente 3 opciones, genera EXACTAMENTE 3 opciones para CADA comida. Nunca generes una sola opción. Todas las opciones de una misma comida deben ser alternativas comparables en energía y macronutrientes y mantener cantidades realistas.';
+  return common+' El cuestionario del cliente es una restricción funcional del plan, no texto informativo: úsalo antes de crear las comidas. Alergias, intolerancias, alimentos que no le gustan o ha pedido evitar son exclusiones estrictas. Si faltan datos, no inventes restricciones. Para alimentación: crea un plan práctico, realista y fácil de seguir en español. Si recibes previous_diet y se pide una dieta nueva, NO repitas las recetas o combinaciones principales de la anterior: una renovación exige platos genuinamente distintos, no solo cambiar cantidades o el nombre de la opción. REGLA DE MEDIDAS CASERAS: siempre que un alimento se pueda contar de forma natural, expresa la cantidad en unidades y NO en gramos. Ejemplos: huevos en unidades (2 huevos), pan en rebanadas (2 rebanadas), tortitas de arroz/maíz en unidades (3 tortitas), fruta en piezas o unidades (1 plátano, 1 manzana), yogur en unidades (1 yogur), queso en lonchas cuando proceda. Reserva gramos para alimentos que normalmente se pesan o cuya ración necesita precisión, como arroz, pasta, avena, carne, pescado, patata o frutos secos, y ml para líquidos cuando proceda. No pongas huevos ni claras en gramos en comidas normales. Si propones huevos como plato, escribe \'Huevos\' o \'Tortilla francesa\' y expresa la cantidad como \'2 huevos\', \'3 huevos\', etc. No uses \'tortilla\' de forma ambigua. Las claras separadas solo deben aparecer cuando formen parte lógica de una receta, por ejemplo tortitas proteicas, y en ese caso puedes indicar claras + huevos según la receta. Prioriza que el cliente pueda ejecutar la dieta sin báscula cuando no sea necesaria. Usa nutrition_reference cuando esté disponible como presupuesto diario de referencia y distribúyelo entre TODAS las comidas del día antes de decidir raciones. Individualiza las necesidades energéticas usando sexo, edad, peso, altura, objetivo y contexto de entrenamiento disponibles; no reutilices por defecto las mismas cantidades entre personas. La proteína debe ser proporcional al peso, objetivo y entrenamiento, no una cantidad fija por sexo; evita excesos injustificados. Ajusta carbohidratos, grasas, calorías y tamaño de raciones al perfil y objetivo. Para fuerza o recomposición NO elimines por defecto los hidratos: salvo petición expresa de bajo contenido en hidratos, incluye arroz, patata, avena, pan, pasta, legumbres u otras fuentes de hidratos complejos compatibles en al menos dos comidas del día de entrenamiento, en TODAS las opciones de esas comidas. Devuelve carbohydrates y fat como gramos diarios estimados además de calories y protein; los cuatro valores deben ser coherentes entre sí (4 kcal/g proteína e hidratos, 9 kcal/g grasa). Son estimaciones orientativas, no análisis de composición de alimentos verificados. Todas las opciones deben contener alimentos con cantidades y unidades claras.  Cada comida debe ser SIMPLE: normalmente 2 a 4 alimentos/componentes y NUNCA más de 5. Evita concentrar proteína o calorías desproporcionadamente en una sola comida: reparte la proteína diaria de forma razonablemente uniforme entre las comidas principales y ajusta las raciones para que la suma diaria se aproxime a nutrition_reference. No añadas ingredientes accesorios solo para cuadrar macros ni generes platos con listas interminables. Prioriza combinaciones normales (por ejemplo, una fuente principal de proteína, una de carbohidrato cuando corresponda, verdura/fruta y una grasa cuando haga falta) y raciones plausibles. No aumentes el volumen de comida innecesariamente: para pérdida de grasa, especialmente, busca saciedad con un volumen razonable y sostenible. Respeta de forma estricta alergias y alimentos a evitar. No uses cantidades calóricas extremas ni promesas médicas. Puedes dejar el día de descanso sin comidas solo si el entrenador lo pide expresamente; en caso contrario genera ambos días. Genera 2 opciones para cada comida por defecto. Si el entrenador pide explícitamente 3 opciones, genera EXACTAMENTE 3 opciones para CADA comida. Nunca generes una sola opción. Todas las opciones de una misma comida deben ser alternativas comparables en energía y macronutrientes y mantener cantidades realistas.';
 }
 function responseFormat(kind){
   return {type:'json_schema',json_schema:{name:kind==='routine'?'dcc_routine_draft':'dcc_diet_draft',strict:true,schema:kind==='routine'?routineSchema:dietSchema}};
@@ -334,6 +378,7 @@ module.exports=async function handler(req,res){
       :[];
     const context=clientContext(client);
     const previousRoutine=kind==='routine'?await loadPreviousRoutine(token,clientId):[];
+    const previousDiet=kind==='diet'?await loadPreviousDiet(token,clientId):null;
     const nutrition_reference=kind==='diet'?nutritionTargets(client):null;
     const requestedDietOptions=kind==='diet'&&/(?:\b3\s*(?:opciones?|alternativas?)\b|(?:opciones?|alternativas?)[^\d]{0,12}\b3\b)/i.test(instructions)?3:2;
     const gatewayToken=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN||String(req.headers['x-vercel-oidc-token']||'');
@@ -346,6 +391,10 @@ module.exports=async function handler(req,res){
       client_context:context
     };
     if(nutrition_reference)userPayload.nutrition_reference=nutrition_reference;
+    if(kind==='diet'&&previousDiet){
+      userPayload.previous_diet=previousDiet;
+      userPayload.renewal_requirement='Si el entrenador solicita una dieta nueva, crea recetas y combinaciones realmente distintas de previous_diet; NO reutilices platos ni cambies solo las cantidades. Mantén los alimentos seguros y apropiados al perfil. Respeta exactamente el número de comidas y opciones solicitado.';
+    }
     if(catalog.length)userPayload.available_exercises=catalog;
     if(kind==='routine'&&previousRoutine.length){
       userPayload.previous_routine=previousRoutine;
@@ -395,6 +444,20 @@ module.exports=async function handler(req,res){
         if(count!==requestedDietOptions)optionConflicts.push(String(meal?.name||'Comida')+' ('+day+'): '+count+' opciones');
       }
       if(optionConflicts.length)return json(res,422,{error:'La IA no respetó el número de opciones solicitado. Vuelve a generarlo.',conflicts:optionConflicts.slice(0,12)});
+      if(/\b5\s*comidas\b/i.test(instructions)){
+        const required=['desayuno','media manana','comida','merienda','cena'];
+        const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+        for(const day of ['training','rest']){
+          const meals=result.diet[day].meals||[];
+          const names=meals.map(m=>norm(m.name));
+          if(meals.length!==5||required.some(name=>!names.includes(name)))
+            return json(res,422,{error:'La IA debe entregar exactamente desayuno, media mañana, comida, merienda y cena en ambos tipos de día. Vuelve a generarlo.'});
+        }
+      }
+      if(/\b(nueva|nuevo|diferente|distinta|distinto|renovar|renovacion|desde cero|completamente)\b/i.test(instructions)){
+        const overlap=dietNearDuplicate(previousDiet,result.diet);
+        if(overlap.near)return json(res,422,{error:'La IA ha repetido demasiados platos de la dieta anterior ('+overlap.repeated+' de '+overlap.total+'). No se ha sustituido la dieta. Vuelve a generar una propuesta diferente.'});
+      }
     }
     const conflicts=validateAgainstClient(result,kind,client,instructions);
     if(kind==='diet')conflicts.push(...dccDietNutritionConflicts(result,client,instructions,nutrition_reference));

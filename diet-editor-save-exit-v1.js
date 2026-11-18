@@ -300,6 +300,46 @@
 
   }
 
+
+  // Dedicated AI draft path: bypass server-first edit wrappers that could
+  // reload the old plan and silently overwrite the freshly generated draft.
+  // The previous server plan is archived atomically only when Guardar plan succeeds.
+  window.dccCancelAIDietDraft=function(id){if(isEditing(id))cancelEdit(id)};
+  window.dccOpenAIDietDraft=function(id,newPlan){
+    const sid=String(id),next=clone(newPlan);
+    if(!sid||!next?.training||!next?.rest)throw new Error('Borrador IA incompleto');
+    for(const type of ['training','rest']){
+      const meals=next[type]?.meals;
+      if(!Array.isArray(meals)||meals.length!==5||meals.some(m=>
+        !Array.isArray(m?.options)||m.options.length!==3||
+        m.options.some(o=>!Array.isArray(o?.foods)||!o.foods.length||
+          o.foods.some(f=>!String(f?.[0]||'').trim()||!String(f?.[1]||'').trim()))
+      ))throw new Error('La dieta IA debe tener 5 comidas y 3 opciones completas por comida');
+    }
+    const before=clone(window.data?.diets?.[sid]);
+    const edit=nativeEditor||deepestBase(window.dccNutritionV2Edit);
+    if(typeof edit!=='function')throw new Error('Editor de alimentación no disponible');
+    window.data=window.data||{};
+    window.data.diets=window.data.diets||{};
+    window.data.diets[sid]=next;
+    beginEdit(sid,before,{mode:'ai',archiveLabel:'Plan anterior · antes de nueva dieta IA'});
+    window.__dccDietType='training';
+    window.__dccDietEditing=true;
+    window.__dccDietOpenMeal=null;
+    window.__dccDietOptionMap={};
+    try{
+      edit.call(window,sid);
+      installDraftActions();
+      restoreEditor(sid);
+    }catch(error){
+      if(before===null)delete window.data.diets[sid];
+      else window.data.diets[sid]=before;
+      clearEditState();
+      throw error;
+    }
+    return true;
+  };
+
   function install(){
     const edit=window.dccNutritionV2Edit;
     if(typeof edit==='function'){

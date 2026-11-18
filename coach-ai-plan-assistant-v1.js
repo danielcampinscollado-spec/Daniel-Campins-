@@ -171,13 +171,14 @@ function applyRoutine(id,draft){
 }
 function applyDiet(id,draft){
   const d=appData();d.diets=d.diets||{};
-  window.__dccAIDietBackup=JSON.stringify(d.diets[id]??null);
+  const mapped=mapDiet(draft);
+  if(typeof window.dccOpenAIDietDraft!=='function')
+    throw new Error('El editor seguro de dietas no está disponible. Recarga DCC Fitness.');
+  const previous=JSON.stringify(d.diets[id]??null);
+  window.dccOpenAIDietDraft(id,mapped);
+  window.__dccAIDietBackup=previous;
   window.__dccAIDietDraftClient=String(id);
-  d.diets[id]=mapDiet(draft);
-  window.__dccDietType='training';window.__dccDietEditing=true;window.__dccDietOpenMeal=null;
-  if(typeof window.dccNutritionV2Edit==='function')window.dccNutritionV2Edit(id);
-  else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
-  notify('Borrador de dieta generado. Revísalo antes de enviar.');
+  notify('Dieta nueva en borrador: 5 comidas y 3 opciones por comida. Revisa y pulsa Guardar plan.');
 }
 window.dccAIDiscardDietDraft=function(id){
   id=String(id||selectedId());if(!id||String(window.__dccAIDietDraftClient||'')!==id)return;
@@ -188,7 +189,8 @@ window.dccAIDiscardDietDraft=function(id){
   }catch(_){}
   delete window.__dccAIDietBackup;delete window.__dccAIDietDraftClient;
   window.__dccDietEditing=false;window.__dccDietOpenMeal=null;
-  if(typeof window.dccNutritionV2Home==='function')window.dccNutritionV2Home(id);
+  if(typeof window.dccCancelAIDietDraft==='function')window.dccCancelAIDietDraft(id);
+  else if(typeof window.dccNutritionV2Home==='function')window.dccNutritionV2Home(id);
   else if(typeof window.dccClientAdmin==='function')window.dccClientAdmin(id,'food');
   notify('Borrador IA descartado.');
 };
@@ -196,6 +198,7 @@ async function generate(kind,id){
   const input=document.getElementById('dcc-ai-instructions'),button=document.getElementById('dcc-ai-generate'),status=document.getElementById('dcc-ai-status');
   const instructions=String(input?.value||'').trim();
   if(instructions.length<3){status.textContent='Escribe primero cómo quieres el plan.';status.classList.add('on');input?.focus();return}
+  if(kind==='diet'&&window.__dccDietEditing&&!window.confirm('Hay una dieta en edición. ¿Quieres descartar los cambios sin guardar y sustituir el borrador por una dieta nueva con IA?'))return;
   if(kind==='routine'&&window.__dccTrainingEdit&&window.__dccRoutineDraftDirty&&
      String(window.__dccTrainingBackupClient||'')===String(id)&&
      !window.confirm('Ya tienes cambios de rutina sin guardar. ¿Quieres sustituir ese borrador por uno nuevo generado con IA?'))return;
