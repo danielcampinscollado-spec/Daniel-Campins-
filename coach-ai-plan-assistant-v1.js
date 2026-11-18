@@ -53,12 +53,12 @@ function inject(){
 function placeholders(kind){
   return kind==='routine'
     ?['4 días, hipertrofia, prioridad pecho y espalda, sesiones de 60 min.','Rutina de 3 días para ganar fuerza e hipertrofia, sin sentadilla libre.','5 días, prioridad glúteo y tren inferior, incluye alguna superserie.']
-    :['Déficit moderado, 5 comidas, alimentos sencillos y 2 opciones por comida.','Plan de mantenimiento, 4 comidas, fácil de preparar y con día de descanso.','5 comidas, alto en proteína, variedad y cantidades en gramos.'];
+    :['Dieta completamente nueva, 5 comidas y 3 opciones por comida, sin repetir platos anteriores.','Plan de mantenimiento, 4 comidas, fácil de preparar y con día de descanso.','5 comidas, alto en proteína, variedad y cantidades en gramos.'];
 }
 function defaultPlaceholder(kind){
   return kind==='routine'
     ?'Ej.: 4 días, hipertrofia, prioridad pecho y espalda, sesiones de 60 minutos, evita sentadilla libre y usa superseries solo en brazos.'
-    :'Ej.: déficit moderado, 5 comidas, 2 alternativas por comida, alimentos sencillos, no quiero pescado por la noche.';
+    :'Ej.: dieta completamente nueva, 5 comidas, 3 opciones por comida, no repetir platos de la anterior.';
 }
 function contextText(kind,id){
   const c=client(id)||{},parts=[];
@@ -77,7 +77,7 @@ window.dccAIPlanOpen=function(kind,id){
   window.dccAIPlanClose();css();
   const overlay=document.createElement('div');overlay.id='dcc-ai-plan-overlay';overlay.className='dcc-ai-overlay';
   const title=kind==='routine'?'Crear rutina con IA':'Crear dieta con IA';
-  overlay.innerHTML=`<div class="dcc-ai-card" role="dialog" aria-modal="true"><div class="dcc-ai-head"><div><span class="dcc-ai-kicker">IA · DCC FITNESS</span><h2>${title}</h2><p>Describe lo que quieres. La nueva rutina se comparará con la anterior. El borrador no se envía automáticamente.</p></div><button class="dcc-ai-close" type="button" onclick="dccAIPlanClose()">×</button></div><div class="dcc-ai-context">${esc(contextText(kind,id))}</div><label class="dcc-ai-label" for="dcc-ai-instructions">¿Qué quieres preparar?</label><textarea id="dcc-ai-instructions" class="dcc-ai-input" maxlength="1400" placeholder="${esc(defaultPlaceholder(kind))}"></textarea><div class="dcc-ai-chips">${placeholders(kind).map(x=>`<button type="button" class="dcc-ai-chip" data-ai-chip="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="dcc-ai-status" class="dcc-ai-status"></div><div class="dcc-ai-actions"><button type="button" class="dcc-ai-cancel" onclick="dccAIPlanClose()">Cancelar</button><button id="dcc-ai-generate" type="button" class="dcc-ai-generate">✦ Generar borrador</button></div><div class="dcc-ai-note">Revisa siempre el plan antes de guardarlo o enviarlo al cliente.</div></div>`;
+  overlay.innerHTML=`<div class="dcc-ai-card" role="dialog" aria-modal="true"><div class="dcc-ai-head"><div><span class="dcc-ai-kicker">IA · DCC FITNESS</span><h2>${title}</h2><p>${kind==='diet'?'La IA comparará la nueva dieta con la anterior. El borrador no se envía automáticamente.':'La nueva rutina se comparará con la anterior. El borrador no se envía automáticamente.'}</p></div><button class="dcc-ai-close" type="button" onclick="dccAIPlanClose()">×</button></div><div class="dcc-ai-context">${esc(contextText(kind,id))}</div><label class="dcc-ai-label" for="dcc-ai-instructions">¿Qué quieres preparar?</label><textarea id="dcc-ai-instructions" class="dcc-ai-input" maxlength="1400" placeholder="${esc(defaultPlaceholder(kind))}"></textarea><div class="dcc-ai-chips">${placeholders(kind).map(x=>`<button type="button" class="dcc-ai-chip" data-ai-chip="${esc(x)}">${esc(x)}</button>`).join('')}</div><div id="dcc-ai-status" class="dcc-ai-status"></div><div class="dcc-ai-actions"><button type="button" class="dcc-ai-cancel" onclick="dccAIPlanClose()">Cancelar</button><button id="dcc-ai-generate" type="button" class="dcc-ai-generate">✦ Generar borrador</button></div><div class="dcc-ai-note">Revisa siempre el plan antes de guardarlo o enviarlo al cliente.</div></div>`;
   overlay.addEventListener('click',e=>{if(e.target===overlay)window.dccAIPlanClose()});
   overlay.querySelectorAll('[data-ai-chip]').forEach(b=>b.addEventListener('click',()=>window.dccAIPlanFill(b.dataset.aiChip||'')));
   overlay.querySelector('#dcc-ai-generate').addEventListener('click',()=>generate(kind,id));
@@ -210,12 +210,16 @@ async function generate(kind,id){
     const body={kind,clientId:String(id),instructions};if(kind==='routine')body.exerciseCatalog=catalog();
     const response=await fetch('/api/ai-plan',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(body)});
     const payload=await response.json().catch(()=>({}));
-    if(!response.ok)throw new Error(payload?.error||'No se pudo generar el borrador');
+    if(!response.ok){
+      const timedOut=response.status===504||response.status===408;
+      const conflict=Array.isArray(payload?.conflicts)?payload.conflicts.slice(0,3).join(' · '):'';
+      throw new Error(timedOut?'La IA ha tardado demasiado. No se ha modificado la dieta. Inténtalo de nuevo.':(payload?.error||'No se pudo generar el borrador')+(conflict?' '+conflict:''));
+    }
     window.dccAIPlanClose();
     if(kind==='routine')applyRoutine(id,payload.draft);else applyDiet(id,payload.draft);
   }catch(error){
     console.error('DCC AI assistant:',error);
-    status.textContent=error?.message||'No se pudo generar el borrador. Inténtalo de nuevo.';
+    status.textContent=error?.name==='TypeError'?'Error de conexión o tiempo de espera. No se ha modificado la dieta. Inténtalo de nuevo.':(error?.message||'No se pudo generar el borrador. Inténtalo de nuevo.');
     status.classList.add('on');
     button.disabled=false;button.textContent='✦ Generar borrador';
   }
